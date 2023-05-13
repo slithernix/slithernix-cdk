@@ -472,7 +472,7 @@ module CDK
       end
 
       # Erase the scrolling window.
-      @field_win.werase
+      @field_win.erase
 
       # Start drawing in each line.
       (0...last_line).each do |x|

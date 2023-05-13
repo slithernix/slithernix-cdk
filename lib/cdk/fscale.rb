@@ -10,7 +10,7 @@ module CDK
     end
 
     def drawField
-      @field_win.werase
+      @field_win.erase
 
       # Draw the value in the field.
       digits = [@digits, 30].min

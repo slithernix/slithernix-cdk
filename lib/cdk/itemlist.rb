@@ -268,7 +268,7 @@ module CDK
       len = [@item_len[current_item], @field_width].min
 
       # Erase the field window.
-      @field_win.werase
+      @field_win.erase
 
       # Draw in the current item in the field.
       (0...len).each do |x|

@@ -413,7 +413,7 @@ module CDK
 
     # This draws the widget.
     def drawField
-      @field_win.werase
+      @field_win.erase
 
       # Draw the value in the field.
       temp = @current.to_s

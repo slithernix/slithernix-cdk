@@ -355,7 +355,7 @@ module CDK
       if !(@label_win.nil?)
         temp = '%s %d,' % [month_name, @day]
         Draw.writeChar(@label_win, 0, 0, temp, CDK::HORIZONTAL, 0, temp.size)
-        @label_win.wclrtoeol
+        @label_win.clrtoeol
 
         # Draw the year in.
         temp = '%d' % [@year]

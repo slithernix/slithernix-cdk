@@ -232,7 +232,7 @@ module CDK
 
     def self.discardWin(winp)
       unless winp.nil?
-        winp.werase
+        winp.erase
         winp.refresh
         winp.delwin
       end

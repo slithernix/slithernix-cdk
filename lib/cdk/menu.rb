@@ -372,9 +372,9 @@ module CDK
     def erase
       if self.validCDKObject
         (0...@menu_items).each do |x|
-          @title_win[x].werase
+          @title_win[x].erase
           @title_win[x].refresh
-          @pull_win[x].werase
+          @pull_win[x].erase
           @pull_win[x].refresh
         end
       end

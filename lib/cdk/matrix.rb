@@ -799,7 +799,7 @@ module CDK
     def drawEachColTitle
       (1..@vcols).each do |x|
         unless @cell[0][x].nil?
-          @cell[0][x].werase
+          @cell[0][x].erase
           Draw.writeChtype(@cell[0][x],
               @coltitle_pos[@lcol + x - 1], 0,
               @coltitle[@lcol + x - 1], CDK::HORIZONTAL, 0,
@@ -812,7 +812,7 @@ module CDK
     def drawEachRowTitle
       (1..@vrows).each do |x|
         unless @cell[x][0].nil?
-          @cell[x][0].werase
+          @cell[x][0].erase
           Draw.writeChtype(@cell[x][0],
               @rowtitle_pos[@trow + x - 1], 1,
               @rowtitle[@trow + x - 1], CDK::HORIZONTAL, 0,

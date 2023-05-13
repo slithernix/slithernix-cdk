@@ -323,7 +323,7 @@ module CDK
       hist_x = @title_lines + 1
       hist_y = @bar_size
 
-      @win.werase
+      @win.erase
 
       # Box the widget if asked.
       if box

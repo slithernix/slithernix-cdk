@@ -421,7 +421,7 @@ module CDK
       # Determine how many filler characters need to be drawn.
       filler_characters = (@current - @low) * step
 
-      @field_win.werase
+      @field_win.erase
 
       # Add the character to the window.
       (0...filler_characters).each do |x|

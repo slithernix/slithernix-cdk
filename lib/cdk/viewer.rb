@@ -713,7 +713,7 @@ module CDK
       line_adjust = false
 
       # Clear the window.
-      @win.werase
+      @win.erase
 
       self.drawTitle(@win)
 

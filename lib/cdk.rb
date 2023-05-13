@@ -93,6 +93,11 @@ module Curses
       self.setpos(y, x)
       self.addch(ch)
     end
+
+    def mvwinch(y, x)
+      self.setpos(y, x)
+      self.inch
+    end
   end
 end
 
@@ -800,7 +805,7 @@ module CDK
   def CDK.eraseCursesWindow (window)
     return if window.nil?
 
-    window.werase
+    window.erase
     window.refresh
   end
 
@@ -823,7 +828,7 @@ module CDK
     if window.mvwin(ypos[0], xpos[0]) != Curses::ERR
       xpos[0] += xdiff
       ypos[0] += ydiff
-      window.werase
+      window.erase
       window.mvwin(ypos[0], xpos[0])
     else
       CDK.Beep

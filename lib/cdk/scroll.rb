@@ -591,7 +591,7 @@ module CDK
         end
 
         if @list_size < self.maxViewSize
-          @win.werase  # force the next redraw to be complete
+          @win.erase  # force the next redraw to be complete
         end
 
         # do this to update the view size, etc
