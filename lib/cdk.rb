@@ -156,39 +156,39 @@ module CDK
 
   # ACS constants have been removed from ruby curses, putting them here
   # note that this is garbage and likely to break all over the place.
-  ACS_BLOCK     = 0x30
-  ACS_BOARD     = 0x65
-  ACS_BTEE      = 0x76
-  ACS_BULLET    = 0x7e
-  ACS_CKBOARD   = 0x61
-  ACS_DARROW    = 0x2e
-  ACS_DEGREE    = 0x66
-  ACS_DIAMOND   = 0x60
-  ACS_GEQUAL    = 0x7a
-  ACS_HLINE     = 0x71
-  ACS_LANTERN   = 0x69
-  ACS_LARROW    = 0x2c
-  ACS_LEQUAL    = 0x79
-  ACS_LLCORNER  = 0x6d
-  ACS_LRCORNER  = 0x6a
-  ACS_LTEE      = 0x74
-  ACS_NEQUAL    = 0x7c
-  ACS_PI        = 0x7b
-  ACS_PLMINUS   = 0x67
-  ACS_PLUS      = 0x6e
-  ACS_RARROW    = 0x2b
-  ACS_RTEE      = 0x75
-  ACS_S1        = 0x6f
-  ACS_S3        = 0x70
-  ACS_S5        = 0x71
-  ACS_S7        = 0x72
-  ACS_S9        = 0x73
-  ACS_STERLING  = 0x7d
-  ACS_TTEE      = 0x77
-  ACS_UARROW    = 0x2d
-  ACS_ULCORNER  = 0x6c
-  ACS_URCORNER  = 0x6b
-  ACS_VLINE     = 0x78
+  ACS_BLOCK     = 0x30 | Curses::A_ALTCHARSET
+  ACS_BOARD     = 0x65 | Curses::A_ALTCHARSET
+  ACS_BTEE      = 0x76 | Curses::A_ALTCHARSET
+  ACS_BULLET    = 0x7e | Curses::A_ALTCHARSET
+  ACS_CKBOARD   = 0x61 | Curses::A_ALTCHARSET
+  ACS_DARROW    = 0x2e | Curses::A_ALTCHARSET
+  ACS_DEGREE    = 0x66 | Curses::A_ALTCHARSET
+  ACS_DIAMOND   = 0x60 | Curses::A_ALTCHARSET
+  ACS_GEQUAL    = 0x7a | Curses::A_ALTCHARSET
+  ACS_HLINE     = 0x71 | Curses::A_ALTCHARSET
+  ACS_LANTERN   = 0x69 | Curses::A_ALTCHARSET
+  ACS_LARROW    = 0x2c | Curses::A_ALTCHARSET
+  ACS_LEQUAL    = 0x79 | Curses::A_ALTCHARSET
+  ACS_LLCORNER  = 0x6d | Curses::A_ALTCHARSET
+  ACS_LRCORNER  = 0x6a | Curses::A_ALTCHARSET
+  ACS_LTEE      = 0x74 | Curses::A_ALTCHARSET
+  ACS_NEQUAL    = 0x7c | Curses::A_ALTCHARSET
+  ACS_PI        = 0x7b | Curses::A_ALTCHARSET
+  ACS_PLMINUS   = 0x67 | Curses::A_ALTCHARSET
+  ACS_PLUS      = 0x6e | Curses::A_ALTCHARSET
+  ACS_RARROW    = 0x2b | Curses::A_ALTCHARSET
+  ACS_RTEE      = 0x75 | Curses::A_ALTCHARSET
+  ACS_S1        = 0x6f | Curses::A_ALTCHARSET
+  ACS_S3        = 0x70 | Curses::A_ALTCHARSET
+  ACS_S5        = 0x71 | Curses::A_ALTCHARSET
+  ACS_S7        = 0x72 | Curses::A_ALTCHARSET
+  ACS_S9        = 0x73 | Curses::A_ALTCHARSET
+  ACS_STERLING  = 0x7d | Curses::A_ALTCHARSET
+  ACS_TTEE      = 0x77 | Curses::A_ALTCHARSET
+  ACS_UARROW    = 0x2d | Curses::A_ALTCHARSET
+  ACS_ULCORNER  = 0x6c | Curses::A_ALTCHARSET
+  ACS_URCORNER  = 0x6b | Curses::A_ALTCHARSET
+  ACS_VLINE     = 0x78 | Curses::A_ALTCHARSET
 
   # This beeps then flushes the stdout stream
   def CDK.Beep
