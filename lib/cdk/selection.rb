@@ -239,7 +239,7 @@ module CDK
           when CDK::KEY_ESC
             self.setExitType(input)
             complete = true
-          when Curses::ERR
+          when Curses::Error
             self.setExitType(input)
             complete = true
           when Curses::KEY_ENTER, CDK::KEY_TAB, CDK::KEY_RETURN

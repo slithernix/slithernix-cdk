@@ -254,7 +254,7 @@ module CDK
             @last_selection = -1
             ret = @last_selection
             complete = true
-          when Curses::ERR
+          when Curses::Error
             self.setExitType(input)
             complete = true
           when CDK::REFRESH

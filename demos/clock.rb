@@ -54,7 +54,7 @@ class Clock
       # Draw the label and sleep
       demo.draw(demo.box)
       Curses.napms(500)
-    end while (demo.screen.window.getch) == Curses::ERR
+    end while (demo.screen.window.getch) == Curses::Error
 
     # Clean up
     demo.destroy

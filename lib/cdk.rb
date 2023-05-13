@@ -817,7 +817,7 @@ module CDK
     xpos = []
     ypos = []
     window.begyx(ypos, xpos)
-    if window.mvwin(ypos[0], xpos[0]) != Curses::ERR
+    if window.mvwin(ypos[0], xpos[0]) != Curses::Error
       xpos[0] += xdiff
       ypos[0] += ydiff
       window.erase

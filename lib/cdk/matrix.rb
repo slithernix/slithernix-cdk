@@ -231,7 +231,7 @@ module CDK
         plainchar = Display.filterByDisplayType(disptype, input)
         charcount = matrix.info[matrix.row][matrix.col].size
 
-        if plainchar == Curses::ERR
+        if plainchar == Curses::Error
           CDK.Beep
         elsif charcount == matrix.colwidths[matrix.col]
           CDK.Beep
@@ -544,7 +544,7 @@ module CDK
             self.setExitType(input)
             ret = 1
             complete = true
-          when Curses::ERR
+          when Curses::Error
             self.setExitType(input)
             complete = true
           when CDK::KEY_ESC

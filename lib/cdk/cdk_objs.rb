@@ -246,7 +246,7 @@ module CDK
     # is used too pervasively in older applications to move (yet).
     def setExitType(ch)
       case ch
-      when Curses::ERR
+      when Curses::Error
         @exit_type = :ERROR
       when CDK::KEY_ESC
         @exit_type = :ESCAPE_HIT

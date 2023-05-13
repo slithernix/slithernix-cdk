@@ -44,11 +44,11 @@ module CDK
     def Display.filterByDisplayType(type, input)
       result = input
       if !CDK.isChar(input)
-        result = Curses::ERR
+        result = Curses::Error
       elsif [:INT, :HINT].include?(type) && !CDK.digit?(result.chr)
-        result = Curses::ERR
+        result = Curses::Error
       elsif [:CHAR, :UCHAR, :LCHAR, :UHCHAR, :LHCHAR].include?(type) && CDK.digit?(result.chr)
-        result = Curses::ERR
+        result = Curses::Error
       elsif type == :VIEWONLY
         result = ERR
       elsif [:UCHAR, :UHCHAR, :UMIXED, :UHMIXED].include?(type) && CDK.alpha?(result.chr)

@@ -113,7 +113,7 @@ module CDK
         cursor_pos = mentry.getCursorPos
         newchar = Display.filterByDisplayType(mentry.disp_type, character)
 
-        if newchar == Curses::ERR
+        if newchar == Curses::Error
           CDK.Beep
         else
           mentry.info = mentry.info[0...cursor_pos] + newchar.chr +
@@ -384,7 +384,7 @@ module CDK
               ret = @info
               complete = true
             end
-          when Curses::ERR
+          when Curses::Error
             self.setExitType(input)
             complete = true
           when CDK::KEY_ESC

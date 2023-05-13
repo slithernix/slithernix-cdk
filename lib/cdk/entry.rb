@@ -15,7 +15,7 @@ module CDK
       box_width = 0
       xpos = xplace
       ypos = yplace
-      
+
       self.setBox(box)
       box_height = @border_size * 2 + 1
 
@@ -108,7 +108,7 @@ module CDK
       @callbackfn = lambda do |entry, character|
         plainchar = Display.filterByDisplayType(entry, character)
 
-        if plainchar == Curses::ERR || entry.info.size >= entry.max
+        if plainchar == Curses::Error || entry.info.size >= entry.max
           CDK.Beep
         else
           # Update the screen and pointer
@@ -330,7 +330,7 @@ module CDK
             else
               CDK.Beep
             end
-          when Curses::ERR
+          when Curses::Error
             self.setExitType(input)
             complete = true
           when CDK::REFRESH

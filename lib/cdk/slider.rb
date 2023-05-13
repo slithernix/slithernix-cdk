@@ -186,7 +186,7 @@ module CDK
       if new_position <= 0 || new_position >= @field_width
         return false
       end
-      if self.moveToEditPosition(new_position) == Curses::ERR
+      if self.moveToEditPosition(new_position) == Curses::Error
         return false
       end
       ch = @field_win.winch
@@ -195,7 +195,7 @@ module CDK
       end
       if new_position > 1
         # Don't use recursion - only one level is wanted
-        if self.moveToEditPosition(new_position - 1) == Curses::ERR
+        if self.moveToEditPosition(new_position - 1) == Curses::Error
           return false
         end
         ch = @field_win.winch
@@ -335,7 +335,7 @@ module CDK
           when CDK::KEY_ESC
             self.setExitType(input)
             complete = true
-          when Curses::ERR
+          when Curses::Error
             self.setExitType(input)
             complete = true
           when CDK::REFRESH
