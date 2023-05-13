@@ -535,7 +535,7 @@ module CDK
     # This execs a command and redirects the output to the scrolling window.
     def exec(command, insert_pos)
       count = -1
-      Curses.endwin
+      Curses.close_screen
 
       # Try to open the command.
       # XXX This especially needs exception handling given how Ruby

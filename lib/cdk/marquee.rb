@@ -234,7 +234,7 @@ module CDK
       unless winp.nil?
         winp.erase
         winp.refresh
-        winp.delwin
+        winp.close
       end
     end
   end

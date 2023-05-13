@@ -38,13 +38,13 @@ class SubwindowExample < CLIExample
 
     # Create a basic window.
     sub_window = Curses::Window.new(
-        Curses.LINES - 5, Curses.LINES - 10, 2, 5)
+        Curses.lines - 5, Curses.lines - 10, 2, 5)
 
     # Start Cdk.
     cdkscreen = CDK::SCREEN.new(sub_window)
 
     # Box our window.
-    Curses.box(sub_window, CDK::ACS_VLINE, CDK::ACS_HLINE)
+    sub_window.box(CDK::ACS_VLINE, CDK::ACS_HLINE)
     sub_window.refresh
 
     # Create a basic scrolling list inside the window.

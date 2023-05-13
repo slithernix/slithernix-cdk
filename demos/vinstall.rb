@@ -196,8 +196,8 @@ class Vinstall
 
     # Determine the height of the scrolling window.
     swndow_height = 3
-    if Curses.LINES >= 16
-      swindow_height = Curses.LINES - 13
+    if Curses.lines >= 16
+      swindow_height = Curses.lines - 13
     end
 
     # Create the scrolling window.

@@ -274,7 +274,7 @@ module CDK
     def self.endCDK
       Curses.echo
       Curses.nocbreak
-      Curses.endwin
+      Curses.close_screen
     end
   end
 end

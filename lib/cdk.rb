@@ -62,31 +62,23 @@ require_relative 'cdk/viewer'
 
 # I hate this but, whatever
 module Curses
+  def self.napms(ms)
+    sleep(ms / 1000.0)
+  end
+
   class Window
     def mvwvline(y, x, ch, n)
-      self.attron(Curses::A_ALTCHARSET)
-
-      self.setpos(y, x)
-
       n.times do |i|
         self.setpos(y + i, x)
         self.addch(ch)
       end
-
-      self.attroff(Curses::A_ALTCHARSET)
     end
 
     def mvwhline(y, x, ch, n)
-      self.attron(Curses::A_ALTCHARSET)
-
-      self.setpos(y, x)
-
       n.times do |i|
         self.setpos(y, x + i)
         self.addch(ch)
       end
-
-      self.attroff(Curses::A_ALTCHARSET)
     end
 
     def mvwaddch(y, x, ch)
@@ -814,7 +806,7 @@ module CDK
     return if window.nil?
 
     CDK.eraseCursesWindow(window)
-    window.delwin
+    window.close
   end
 
   # This moves a given window (if we're able to set the window's beginning).
