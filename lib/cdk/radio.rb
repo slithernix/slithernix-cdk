@@ -20,7 +20,7 @@ module CDK
         '<'           => Curses::KEY_HOME,
         '>'           => Curses::KEY_END,
       }
-      
+
       self.setBox(box)
 
       # If the height is a negative value, height will be ROWS-height,

@@ -836,7 +836,7 @@ module CDK
   end
 
   def CDK.isChar(c)
-    c >= 0 && c < Curses::KEY_MIN
+    c.ord >= 0 && c.ord < Curses::KEY_MIN
   end
 
   def CDK.KEY_F(n)

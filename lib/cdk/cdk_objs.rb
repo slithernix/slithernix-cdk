@@ -269,8 +269,11 @@ module CDK
       cdktype = self.object_type
       test = self.bindableObject(cdktype)
       result = @input_window.getch
+      #Curses.close_screen
+      #binding.pry
+      #Curses.refresh
 
-      if result >= 0 && !(test.nil?) && test.binding_list.include?(result) &&
+      if result.ord >= 0 && !(test.nil?) && test.binding_list.include?(result) &&
           test.binding_list[result][0] == :getc
         result = test.binding_list[result][1]
       elsif test.nil? || !(test.binding_list.include?(result)) ||
@@ -304,7 +307,7 @@ module CDK
 
     def getch(function_key)
       key = self.getc
-      function_key << (key >= Curses::KEY_MIN && key <= Curses::KEY_MAX)
+      function_key << (key.ord >= Curses::KEY_MIN && key.ord <= Curses::KEY_MAX)
       return key
     end
 
