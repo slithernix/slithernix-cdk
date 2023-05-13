@@ -7,8 +7,8 @@ module CDK
     def initialize(cdkscreen, x_pos, y_pos, height, width, title, rows, cols,
         buttons, button_count, highlight, box, shadow)
       super()
-      parent_width = cdkscreen.window.getmaxx
-      parent_height = cdkscreen.window.getmaxy
+      parent_width = cdkscreen.window.maxx
+      parent_height = cdkscreen.window.maxy
       col_width = 0
       current_button = 0
       @button = []
@@ -76,7 +76,7 @@ module CDK
       # Set up the buttonbox box attributes.
       @screen = cdkscreen
       @parent = cdkscreen.window
-      @win = Ncurses::WINDOW.new(box_height, box_width, ypos, xpos)
+      @win = Curses::Window.new(box_height, box_width, ypos, xpos)
       @shadow_win = nil
       @button_count = button_count
       @current_button = 0
@@ -88,7 +88,7 @@ module CDK
       @accepts_focus = true
       @input_window = @win
       @shadow = shadow
-      @button_attrib = Ncurses::A_NORMAL
+      @button_attrib = Curses::A_NORMAL
 
       # Set up the row adjustment.
       if box_height - rows - @title_lines > 0
@@ -109,7 +109,7 @@ module CDK
 
       # Was there a shadow?
       if shadow
-        @shadow_win = Ncurses::WINDOW.new(box_height, box_width,
+        @shadow_win = Curses::Window.new(box_height, box_width,
             ypos + 1, xpos + 1)
       end
 
@@ -170,25 +170,25 @@ module CDK
           complete = true
         else
           case input
-          when Ncurses::KEY_LEFT, Ncurses::KEY_BTAB, Ncurses::KEY_BACKSPACE
+          when Curses::KEY_LEFT, Curses::KEY_BTAB, Curses::KEY_BACKSPACE
             if @current_button - @rows < first_button
               @current_button = last_button
             else
               @current_button -= @rows
             end
-          when Ncurses::KEY_RIGHT, CDK::KEY_TAB, ' '.ord
+          when Curses::KEY_RIGHT, CDK::KEY_TAB, ' '.ord
             if @current_button + @rows > last_button
               @current_button = first_button
             else
               @current_button += @rows
             end
-          when Ncurses::KEY_UP
+          when Curses::KEY_UP
             if @current_button -1 < first_button
               @current_button = last_button
             else
               @current_button -= 1
             end
-          when Ncurses::KEY_DOWN
+          when Curses::KEY_DOWN
             if @current_button + 1 > last_button
               @current_button = first_button
             else
@@ -200,10 +200,10 @@ module CDK
           when CDK::KEY_ESC
             self.setExitType(input)
             complete = true
-          when Ncurses::ERR
+          when Curses::ERR
             self.setExitType(input)
             complete = true
-          when CDK::KEY_RETURN, Ncurses::KEY_ENTER
+          when CDK::KEY_RETURN, Curses::KEY_ENTER
             self.setExitType(input)
             ret = @current_button
             complete = true
@@ -296,9 +296,9 @@ module CDK
       end
 
       if cur_row >= 0 && cur_col >= 0
-        @win.wmove(cur_row, cur_col)
+        @win.move(cur_row, cur_col)
       end
-      @win.wrefresh
+      @win.refresh
     end
 
     # This erases the buttonbox box from the screen.

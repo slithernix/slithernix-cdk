@@ -71,7 +71,7 @@ class SelectionExample < CLIExample
     Etc.endpwent
 
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -104,7 +104,7 @@ class SelectionExample < CLIExample
         params.title,
         if params.c then [] else item end,
         if params.c then 0 else item.size end,
-        choices, 2, Ncurses::A_REVERSE, params.box, params.shadow)
+        choices, 2, Curses::A_REVERSE, params.box, params.shadow)
 
     if selection.nil?
       cdkscreen.destroyCDKScreen

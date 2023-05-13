@@ -15,7 +15,7 @@ class FileView
     ]
 
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -26,12 +26,12 @@ class FileView
       title = '<C>Pick a file.'
       label = 'File: '
       fselect = CDK::FSELECT.new(cdkscreen, CDK::CENTER, CDK::CENTER,
-          20, 65, title, label, Ncurses::A_NORMAL, '_', Ncurses::A_REVERSE,
+          20, 65, title, label, Curses::A_NORMAL, '_', Curses::A_REVERSE,
           '</5>', '</48>', '</N>', '</N>', true, false)
 
       # Set the starting directory.  This is not necessary because when
       # the file selector starts it uses the present directory as a default.
-      fselect.set(directory, Ncurses::A_NORMAL, '.', Ncurses::A_REVERSE,
+      fselect.set(directory, Curses::A_NORMAL, '.', Curses::A_REVERSE,
           '</5>', '</48>', '</N>', '</N>', fselect.box)
 
       # Activate the file selector.
@@ -60,7 +60,7 @@ class FileView
 
     # Create the file viewer to view the file selected.
     example = CDK::VIEWER.new(cdkscreen, CDK::CENTER, CDK::CENTER, 20, -2,
-        button, 2, Ncurses::A_REVERSE, true, false)
+        button, 2, Curses::A_REVERSE, true, false)
 
     # Could we create the viewer widget?
     if example.nil?
@@ -85,7 +85,7 @@ class FileView
 
     # Set up the viewer title and the contents to the widget.
     title = '<C></B/22>%20s<!22!B>' % filename
-    example.set(title, info, lines, Ncurses::A_REVERSE, true, true, true)
+    example.set(title, info, lines, Curses::A_REVERSE, true, true, true)
 
     # Activate the viewer widget.
     selected = example.activate([])

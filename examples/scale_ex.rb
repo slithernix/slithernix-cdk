@@ -40,7 +40,7 @@ class ScaleExample < Example
     params = parse(ARGV)
 
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -48,7 +48,7 @@ class ScaleExample < Example
 
     # Create the widget
     widget = CDK::SCALE.new(cdkscreen, params.x_value, params.y_value,
-        title, label, Ncurses::A_NORMAL, params.width, params.low, params.low,
+        title, label, Curses::A_NORMAL, params.width, params.low, params.low,
         params.high, params.inc, (params.inc * 2), params.box, params.shadow)
 
     # Is the widget nll?

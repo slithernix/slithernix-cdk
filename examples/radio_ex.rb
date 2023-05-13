@@ -50,7 +50,7 @@ class RadioExample < CLIExample
     end
 
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -62,7 +62,7 @@ class RadioExample < CLIExample
         params.h_value, params.w_value, params.title,
         if params.c then [] else item end,
         if params.c then 0 else count end,
-        '#'.ord | Ncurses::A_REVERSE, true, Ncurses::A_REVERSE,
+        '#'.ord | Curses::A_REVERSE, true, Curses::A_REVERSE,
         params.box, params.shadow)
 
     if radio.nil?

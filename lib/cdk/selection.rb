@@ -8,17 +8,17 @@ module CDK
         list, list_size, choices, choice_count, highlight, box, shadow)
       super()
       widest_item = -1
-      parent_width = cdkscreen.window.getmaxx
-      parent_height = cdkscreen.window.getmaxy
+      parent_width = cdkscreen.window.maxx
+      parent_height = cdkscreen.window.maxy
       box_width = width
       bindings = {
-        CDK::BACKCHAR => Ncurses::KEY_PPAGE,
-        CDK::FORCHAR  => Ncurses::KEY_NPAGE,
-        'g'           => Ncurses::KEY_HOME,
-        '1'           => Ncurses::KEY_HOME,
-        'G'           => Ncurses::KEY_END,
-        '<'           => Ncurses::KEY_HOME,
-        '>'           => Ncurses::KEY_END,
+        CDK::BACKCHAR => Curses::KEY_PPAGE,
+        CDK::FORCHAR  => Curses::KEY_NPAGE,
+        'g'           => Curses::KEY_HOME,
+        '1'           => Curses::KEY_HOME,
+        'G'           => Curses::KEY_END,
+        '<'           => Curses::KEY_HOME,
+        '>'           => Curses::KEY_END,
       }
 
       if choice_count <= 0
@@ -69,7 +69,7 @@ module CDK
       ypos = ytmp[0]
 
       # Make the selection window.
-      @win = Ncurses::WINDOW.new(@box_height, @box_width, ypos, xpos)
+      @win = Curses::Window.new(@box_height, @box_width, ypos, xpos)
 
       # Is the window nil?
       if @win.nil?
@@ -124,7 +124,7 @@ module CDK
 
       # Do we need to create a shadow.
       if shadow
-        @shadow_win = Ncurses::WINDOW.new(box_height, box_width,
+        @shadow_win = Curses::Window.new(box_height, box_width,
             ypos + 1, xpos + 1)
       end
 
@@ -146,8 +146,8 @@ module CDK
       ypos = self.SCREEN_YPOS(@current_item - @current_top)
       xpos = self.SCREEN_XPOS(0) + scrollbar_adj
 
-      @input_window.wmove(ypos, xpos)
-      @input_window.wrefresh
+      @input_window.move(ypos, xpos)
+      @input_window.refresh
     end
 
     # This actually manages the selection widget
@@ -206,21 +206,21 @@ module CDK
           complete = true
         else
           case input
-          when Ncurses::KEY_UP
+          when Curses::KEY_UP
             self.KEY_UP
-          when Ncurses::KEY_DOWN
+          when Curses::KEY_DOWN
             self.KEY_DOWN
-          when Ncurses::KEY_RIGHT
+          when Curses::KEY_RIGHT
             self.KEY_RIGHT
-          when Ncurses::KEY_LEFT
+          when Curses::KEY_LEFT
             self.KEY_LEFT
-          when Ncurses::KEY_PPAGE
+          when Curses::KEY_PPAGE
             self.KEY_PPAGE
-          when Ncurses::KEY_NPAGE
+          when Curses::KEY_NPAGE
             self.KEY_NPAGE
-          when Ncurses::KEY_HOME
+          when Curses::KEY_HOME
             self.KEY_HOME
-          when Ncurses::KEY_END
+          when Curses::KEY_END
             self.KEY_END
           when '$'.ord
             @left_char = @max_left_char
@@ -239,10 +239,10 @@ module CDK
           when CDK::KEY_ESC
             self.setExitType(input)
             complete = true
-          when Ncurses::ERR
+          when Curses::ERR
             self.setExitType(input)
             complete = true
-          when Ncurses::KEY_ENTER, CDK::KEY_TAB, CDK::KEY_RETURN
+          when Curses::KEY_ENTER, CDK::KEY_TAB, CDK::KEY_RETURN
             self.setExitType(input)
             ret = 1
             complete = true
@@ -309,13 +309,13 @@ module CDK
           xpos = self.SCREEN_XPOS(0)
 
           # Draw the empty line.
-          Draw.writeBlanks(@win, xpos, ypos, CDK::HORIZONTAL, 0, @win.getmaxx)
+          Draw.writeBlanks(@win, xpos, ypos, CDK::HORIZONTAL, 0, @win.maxx)
 
           # Draw the selection item.
           Draw.writeChtypeAttrib(@win,
               if screen_pos >= 0 then screen_pos else 1 end,
               ypos, @item[k],
-              if k == sel_item then @highlight else Ncurses::A_NORMAL end,
+              if k == sel_item then @highlight else Curses::A_NORMAL end,
               CDK::HORIZONTAL,
               if screen_pos >= 0 then 0 else 1 - screen_pos end,
               @item_len[k])
@@ -331,12 +331,12 @@ module CDK
       # Determine where the toggle is supposed to be.
       if @scrollbar
         @toggle_pos = (@current_item * @step).floor
-        @toggle_pos = [@toggle_pos, @scrollbar_win.getmaxy - 1].min
+        @toggle_pos = [@toggle_pos, @scrollbar_win.maxy - 1].min
 
-        @scrollbar_win.mvwvline(0, 0, Ncurses::ACS_CKBOARD,
-            @scrollbar_win.getmaxy)
+        @scrollbar_win.mvwvline(0, 0, CDK::ACS_CKBOARD,
+            @scrollbar_win.maxy)
         @scrollbar_win.mvwvline(@toggle_pos, 0,
-            ' '.ord | Ncurses::A_REVERSE, @toggle_size)
+            ' '.ord | Curses::A_REVERSE, @toggle_size)
       end
 
       # Box it if needed
@@ -401,7 +401,7 @@ module CDK
       # Clean up the display
       (0...@view_size).each do |j|
         Draw.writeBlanks(@win, self.SCREEN_XPOS(0), self.SCREEN_YPOS(j),
-            CDK::HORIZONTAL, 0, @win.getmaxx)
+            CDK::HORIZONTAL, 0, @win.maxx)
       end
 
       self.setViewSize(list_size)

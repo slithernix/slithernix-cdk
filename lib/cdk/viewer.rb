@@ -8,23 +8,23 @@ module CDK
     def initialize(cdkscreen, xplace, yplace, height, width,
         buttons, button_count, button_highlight, box, shadow)
       super()
-      parent_width = cdkscreen.window.getmaxx
-      parent_height = cdkscreen.window.getmaxy
+      parent_width = cdkscreen.window.maxx
+      parent_height = cdkscreen.window.maxy
       box_width = width
       box_height = height
       button_width = 0
       button_adj = 0
       button_pos = 1
       bindings = {
-          CDK::BACKCHAR => Ncurses::KEY_PPAGE,
-          'b'           => Ncurses::KEY_PPAGE,
-          'B'           => Ncurses::KEY_PPAGE,
-          CDK::FORCHAR  => Ncurses::KEY_NPAGE,
-          ' '           => Ncurses::KEY_NPAGE,
-          'f'           => Ncurses::KEY_NPAGE,
-          'F'           => Ncurses::KEY_NPAGE,
-          '|'           => Ncurses::KEY_HOME,
-          '$'           => Ncurses::KEY_END,
+          CDK::BACKCHAR => Curses::KEY_PPAGE,
+          'b'           => Curses::KEY_PPAGE,
+          'B'           => Curses::KEY_PPAGE,
+          CDK::FORCHAR  => Curses::KEY_NPAGE,
+          ' '           => Curses::KEY_NPAGE,
+          'f'           => Curses::KEY_NPAGE,
+          'F'           => Curses::KEY_NPAGE,
+          '|'           => Curses::KEY_HOME,
+          '$'           => Curses::KEY_END,
       }
 
       self.setBox(box)
@@ -40,7 +40,7 @@ module CDK
       ypos = ytmp[0]
 
       # Make the viewer window.
-      @win= Ncurses::WINDOW.new(box_height, box_width, ypos, xpos)
+      @win= Curses::Window.new(box_height, box_width, ypos, xpos)
       if @win.nil?
         self.destroy
         return nil
@@ -92,7 +92,7 @@ module CDK
 
       # Do we need to create a shadow?
       if shadow
-        @shadow_win = Ncurses::WINDOW.new(box_height, box_width + 1,
+        @shadow_win = Curses::Window.new(box_height, box_width + 1,
             ypos + 1, xpos + 1)
         if @shadow_win.nil?
           self.destroy
@@ -156,7 +156,7 @@ module CDK
             t << CDK.CharOf(list[y].ord)
             len += 1
           else
-            t << Ncurses.unctrl(list[y].ord)
+            t << Curses.unctrl(list[y].ord)
             len += 1
           end
         end
@@ -226,7 +226,7 @@ module CDK
             # Open the file and put it into the viewer
             file_len = CDK.readFile(filename, file_contents)
             if file_len == -1
-              fopen_fmt = if Ncurses.has_colors?
+              fopen_fmt = if Curses.has_colors?
                           then '<C></16>Link Failed: Could not open the file %s'
                           else '<C></K>Link Failed: Could not open the file %s'
                           end
@@ -372,35 +372,35 @@ module CDK
               # Redraw the buttons.
               self.drawButtons
             end
-          when Ncurses::KEY_UP
+          when Curses::KEY_UP
             if @current_top > 0
               @current_top -= 1
               refresh = true
             else
               CDK.Beep
             end
-          when Ncurses::KEY_DOWN
+          when Curses::KEY_DOWN
             if @current_top < @max_top_line
               @current_top += 1
               refresh = true
             else
               CDK.Beep
             end
-          when Ncurses::KEY_RIGHT
+          when Curses::KEY_RIGHT
             if @left_char < @max_left_char
               @left_char += 1
               refresh = true
             else
               CDK.Beep
             end
-          when Ncurses::KEY_LEFT
+          when Curses::KEY_LEFT
             if @left_char > 0
               @left_char -= 1
               refresh = true
             else
               CDK.Beep
             end
-          when Ncurses::KEY_PPAGE
+          when Curses::KEY_PPAGE
             if @current_top > 0
               if @current_top - (@view_size - 1) > 0
                 @current_top = @current_top - (@view_size - 1)
@@ -411,7 +411,7 @@ module CDK
             else
               CDK.Beep
             end
-          when Ncurses::KEY_NPAGE
+          when Curses::KEY_NPAGE
             if @current_top < @max_top_line
               if @current_top + @view_size < @max_top_line
                 @current_top = @current_top + (@view_size - 1)
@@ -422,10 +422,10 @@ module CDK
             else
               CDK.Beep
             end
-          when Ncurses::KEY_HOME
+          when Curses::KEY_HOME
             @left_char = 0
             refresh = true
-          when Ncurses::KEY_END
+          when Curses::KEY_END
             @left_char = @max_left_char
             refresh = true
           when 'g'.ord, '1'.ord, '<'.ord
@@ -485,10 +485,10 @@ module CDK
           when CDK::KEY_ESC
             self.setExitType(input)
             return -1
-          when Ncurses::ERR
+          when Curses::ERR
             self.setExitType(input)
             return -1
-          when Ncurses::KEY_ENTER, CDK::KEY_RETURN
+          when Curses::KEY_ENTER, CDK::KEY_RETURN
             self.setExitType(input)
             return @current_button
           when CDK::REFRESH
@@ -519,8 +519,8 @@ module CDK
 
       # Pop up the entry field.
       get_pattern = CDK::ENTRY.new(screen, CDK::CENTER, CDK::CENTER,
-          '', label, Ncurses.COLOR_PAIR(5) | Ncurses::A_BOLD,
-          '.' | Ncurses.COLOR_PAIR(5) | Ncurses::A_BOLD,
+          '', label, Curses.color_pair(5) | Curses::A_BOLD,
+          '.' | Curses.color_pair(5) | Curses::A_BOLD,
           :MIXED, 10, 0, 256, true, false)
 
       # Is there an old search pattern?
@@ -600,7 +600,7 @@ module CDK
     # This allows us to 'jump' to a given line in the file.
     def jumpToLine
       newline = CDK::SCALE.new(@screen, CDK::CENTER, CDK::CENTER,
-          '<C>Jump To Line', '</5>Line :', Ncurses::A_BOLD,
+          '<C>Jump To Line', '</5>Line :', Curses::A_BOLD,
           @list_size.size + 1, @current_top + 1, 0, @max_top_line + 1,
           1, 10, true, true)
       line = newline.activate([])
@@ -637,7 +637,7 @@ module CDK
       # Box it if it was asked for.
       if box
         Draw.drawObjBox(@win, self)
-        @win.wrefresh
+        @win.refresh
       end
 
       # Draw the info in the viewer.
@@ -668,7 +668,7 @@ module CDK
       end
 
       # Refresh the window.
-      @win.wrefresh
+      @win.refresh
     end
 
     # This sets the background attribute of the widget.
@@ -765,7 +765,7 @@ module CDK
       # Box it if we have to.
       if @box
         Draw.drawObjBox(@win, self)
-        @win.wrefresh
+        @win.refresh
       end
 
       # Draw the separation line.
@@ -776,9 +776,9 @@ module CDK
           @win.mvwaddch(@box_height - 3, x, @HZChar | boxattr)
         end
 
-        @win.mvwaddch(@box_height - 3, 0, Ncurses::ACS_LTEE | boxattr)
-        @win.mvwaddch(@box_height - 3, @win.getmaxx - 1,
-            Ncurses::ACS_RTEE | boxattr)
+        @win.mvwaddch(@box_height - 3, 0, CDK::ACS_LTEE | boxattr)
+        @win.mvwaddch(@box_height - 3, @win.maxx - 1,
+            CDK::ACS_RTEE | boxattr)
       end
 
       # Draw the buttons. This will call refresh on the viewer win.

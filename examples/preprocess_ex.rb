@@ -7,7 +7,7 @@ class PreProcessExample < Example
     title = "<C>Type in anything you want\n<C>but the dreaded letter </B>G<!B>!"
 
     # Set up CDK.
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Start color.
@@ -15,7 +15,7 @@ class PreProcessExample < Example
 
     # Create the entry field widget.
     widget = CDK::ENTRY.new(cdkscreen, CDK::CENTER, CDK::CENTER,
-        title, '', Ncurses::A_NORMAL, '.', :MIXED, 40, 0, 256,
+        title, '', Curses::A_NORMAL, '.', :MIXED, 40, 0, 256,
         true, false)
 
     if widget.nil?
@@ -39,7 +39,7 @@ class PreProcessExample < Example
         mesg << "<C><#HL(30)>"
 
         dialog = CDK::DIALOG.new(entry.screen, CDK::CENTER, CDK::CENTER,
-            mesg, mesg.size, buttons, button_count, Ncurses::A_REVERSE,
+            mesg, mesg.size, buttons, button_count, Curses::A_REVERSE,
             false, true, false)
         dialog.activate('')
         dialog.destroy

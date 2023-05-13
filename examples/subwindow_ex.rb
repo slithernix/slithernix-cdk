@@ -33,25 +33,25 @@ class SubwindowExample < CLIExample
     params = parse(ARGV)
 
     # Start curses
-    curses_win = Ncurses.initscr
-    Ncurses.curs_set(0)
+    curses_win = Curses.init_screen
+    Curses.curs_set(0)
 
     # Create a basic window.
-    sub_window = Ncurses::WINDOW.new(
-        Ncurses.LINES - 5, Ncurses.LINES - 10, 2, 5)
+    sub_window = Curses::Window.new(
+        Curses.LINES - 5, Curses.LINES - 10, 2, 5)
 
     # Start Cdk.
     cdkscreen = CDK::SCREEN.new(sub_window)
 
     # Box our window.
-    Ncurses.box(sub_window, Ncurses::ACS_VLINE, Ncurses::ACS_HLINE)
-    sub_window.wrefresh
+    Curses.box(sub_window, CDK::ACS_VLINE, CDK::ACS_HLINE)
+    sub_window.refresh
 
     # Create a basic scrolling list inside the window.
     dow_list = CDK::SCROLL.new(cdkscreen,
         params.x_value, params.y_value, params.spos,
         params.h_value, params.w_value, "<C></U>Pick a Day",
-        dow, 7, false, Ncurses::A_REVERSE, params.box, params.shadow)
+        dow, 7, false, Curses::A_REVERSE, params.box, params.shadow)
 
     # Put a title within the window.
     mesg = [

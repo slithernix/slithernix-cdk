@@ -37,14 +37,14 @@ class MentryExample < Example
     params = parse(ARGV)
 
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
     CDK::Draw.initCDKColor
 
     widget = CDK::MENTRY.new(cdkscreen, params.x_value, params.y_value,
-        title, label, Ncurses::A_BOLD, '.', :MIXED, params.w, params.h,
+        title, label, Curses::A_BOLD, '.', :MIXED, params.w, params.h,
         params.rows, 0, params.box, params.shadow)
 
     # Is the widget nil?

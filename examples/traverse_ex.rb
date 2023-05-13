@@ -47,7 +47,7 @@ class TraverseExample < Example
   def self.make_alphalist(cdkscreen, x, y)
     return CDK::ALPHALIST.new(cdkscreen, x, y, 10, 15, 'AlphaList', '->',
         TraverseExample::MONTHS, TraverseExample::MONTHS.size,
-        '_'.ord, Ncurses::A_REVERSE, true, false)
+        '_'.ord, Curses::A_REVERSE, true, false)
   end
 
   def self.make_button(cdkscreen, x, y)
@@ -57,15 +57,15 @@ class TraverseExample < Example
   def self.make_buttonbox(cdkscreen, x, y)
     return CDK::BUTTONBOX.new(cdkscreen, x, y, 10, 16, 'ButtonBox', 6, 2,
         TraverseExample::MONTHS, TraverseExample::MONTHS.size,
-        Ncurses::A_REVERSE, true, false)
+        Curses::A_REVERSE, true, false)
   end
 
   def self.make_calendar(cdkscreen, x, y)
     return CDK::CALENDAR.new(cdkscreen, x, y, 'Calendar', 25, 1, 2000,
-        Ncurses.COLOR_PAIR(16) | Ncurses::A_BOLD,
-        Ncurses.COLOR_PAIR(24) | Ncurses::A_BOLD,
-        Ncurses.COLOR_PAIR(32) | Ncurses::A_BOLD,
-        Ncurses.COLOR_PAIR(40) | Ncurses::A_REVERSE,
+        Curses.color_pair(16) | Curses::A_BOLD,
+        Curses.color_pair(24) | Curses::A_BOLD,
+        Curses.color_pair(32) | Curses::A_BOLD,
+        Curses.color_pair(40) | Curses::A_REVERSE,
         true, false)
   end
 
@@ -77,24 +77,24 @@ class TraverseExample < Example
 
     return CDK::DIALOG.new(cdkscreen, x,y, mesg, mesg.size,
         TraverseExample::YES_NO, TraverseExample::YES_NO.size,
-        Ncurses.COLOR_PAIR(2) | Ncurses::A_REVERSE,
+        Curses.color_pair(2) | Curses::A_REVERSE,
         true, true, false)
   end
 
   def self.make_dscale(cdkscreen, x, y)
     return CDK::DSCALE.new(cdkscreen, x, y, 'DScale', 'Value',
-        Ncurses::A_NORMAL, 15, 0.0, 0.0, 100.0, 1.0, (1.0 * 2.0), 1,
+        Curses::A_NORMAL, 15, 0.0, 0.0, 100.0, 1.0, (1.0 * 2.0), 1,
         true, false)
   end
 
   def self.make_entry(cdkscreen, x, y)
-    return CDK::ENTRY.new(cdkscreen, x, y, '', 'Entry:', Ncurses::A_NORMAL,
+    return CDK::ENTRY.new(cdkscreen, x, y, '', 'Entry:', Curses::A_NORMAL,
         '.'.ord, :MIXED, 40, 0, 256, true, false)
   end
 
   def self.make_fscale(cdkscreen, x, y)
     return CDK::FSCALE.new(cdkscreen, x, y, 'FScale', 'Value',
-        Ncurses::A_NORMAL, 15, 0.0, 0.0, 100.0, 1.0, (1.0 * 2.0), 1,
+        Curses::A_NORMAL, 15, 0.0, 0.0, 100.0, 1.0, (1.0 * 2.0), 1,
         true, false)
   end
 
@@ -103,13 +103,13 @@ class TraverseExample < Example
     high = 64.0
     inc = 0.1
     return CDK::FSLIDER.new(cdkscreen, x, y, 'FSlider', 'Label',
-        Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(29) | ' '.ord,
+        Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord,
         20, low, low, high, inc, (inc * 2), 3, true, false)
   end
 
   def self.make_fselect(cdkscreen, x, y)
     return CDK::FSELECT.new(cdkscreen, x, y, 15, 25, 'FSelect', '->',
-        Ncurses::A_NORMAL, '_'.ord, Ncurses::A_REVERSE, '</5>', '</48>',
+        Curses::A_NORMAL, '_'.ord, Curses::A_REVERSE, '</5>', '</48>',
         '</N>', '</N>', true, false)
   end
 
@@ -125,8 +125,8 @@ class TraverseExample < Example
   def self.make_histogram(cdkscreen, x, y)
     widget = CDK::HISTOGRAM.new(cdkscreen, x, y, 1, 20, CDK::HORIZONTAL,
         'Histogram', true, false)
-    widget.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 6,
-        ' '.ord | Ncurses::A_REVERSE, true)
+    widget.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 6,
+        ' '.ord | Curses::A_REVERSE, true)
     return widget
   end
 
@@ -183,13 +183,13 @@ class TraverseExample < Example
 
   def self.make_mentry(cdkscreen, x, y)
     return CDK::MENTRY.new(cdkscreen, x, y, 'MEntry', 'Label',
-        Ncurses::A_BOLD, '.', :MIXED, 20, 5, 20, 0, true, false)
+        Curses::A_BOLD, '.', :MIXED, 20, 5, 20, 0, true, false)
   end
 
   def self.make_radio(cdkscreen, x, y)
     return CDK::RADIO.new(cdkscreen, x, y, CDK::RIGHT, 10, 20, 'Radio',
         TraverseExample::MONTHS, TraverseExample::MONTHS.size,
-        '#'.ord | Ncurses::A_REVERSE, 1, Ncurses::A_REVERSE, true, false)
+        '#'.ord | Curses::A_REVERSE, 1, Curses::A_REVERSE, true, false)
   end
 
   def self.make_scale(cdkscreen, x, y)
@@ -197,13 +197,13 @@ class TraverseExample < Example
     high = 25
     inc = 2
     return CDK::SCALE.new(cdkscreen, x, y, 'Scale', 'Label',
-        Ncurses::A_NORMAL, 5, low, low, high, inc, (inc * 2), true, false)
+        Curses::A_NORMAL, 5, low, low, high, inc, (inc * 2), true, false)
   end
 
   def self.make_scroll(cdkscreen, x, y)
     return CDK::SCROLL.new(cdkscreen, x, y, CDK::RIGHT, 10, 20, 'Scroll',
         TraverseExample::MONTHS, TraverseExample::MONTHS.size,
-        true, Ncurses::A_REVERSE, true, false)
+        true, Curses::A_REVERSE, true, false)
   end
 
   def self.make_slider(cdkscreen, x, y)
@@ -211,7 +211,7 @@ class TraverseExample < Example
     high = 25
     inc = 1
     return CDK::SLIDER.new(cdkscreen, x, y, 'Slider', 'Label',
-        Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(29) | ' '.ord,
+        Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord,
         20, low, low, high, inc, (inc * 2), true, false)
   end
 
@@ -219,7 +219,7 @@ class TraverseExample < Example
     return CDK::SELECTION.new(cdkscreen, x, y, CDK::NONE, 8, 20,
         'Selection', TraverseExample::MONTHS, TraverseExample::MONTHS.size,
         TraverseExample::CHOICES, TraverseExample::CHOICES.size,
-        Ncurses::A_REVERSE, true, false)
+        Curses::A_REVERSE, true, false)
   end
 
   def self.make_swindow(cdkscreen, x, y)
@@ -246,7 +246,7 @@ class TraverseExample < Example
     high = 65535
     inc = 1
     return CDK::USCALE.new(cdkscreen, x, y, 'UScale', 'Label',
-        Ncurses::A_NORMAL, 5, low, low, high, inc, (inc * 32), true, false)
+        Curses::A_NORMAL, 5, low, low, high, inc, (inc * 32), true, false)
   end
 
   def self.make_uslider(cdkscreen, x, y)
@@ -254,17 +254,17 @@ class TraverseExample < Example
     high = 65535
     inc = 1
     return CDK::USLIDER.new(cdkscreen, x, y, 'USlider', 'Label',
-        Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(29) | ' '.ord, 20,
+        Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord, 20,
         low, low, high, inc, (inc * 32), true, false)
   end
 
   def self.make_viewer(cdkscreen, x, y)
     button = ['Ok']
     widget = CDK::VIEWER.new(cdkscreen, x, y, 10, 20, button, 1,
-        Ncurses::A_REVERSE, true, false)
+        Curses::A_REVERSE, true, false)
 
     widget.set('Viewer', TraverseExample::MONTHS, TraverseExample::MONTHS.size,
-        Ncurses::A_REVERSE, false, true, true)
+        Curses::A_REVERSE, false, true, true)
     widget.activate([])
     return widget
   end
@@ -365,7 +365,7 @@ class TraverseExample < Example
     else
       widget = self.send(func, cdkscreen, x, y)
       if widget.nil?
-        Ncurses.flash
+        Curses.flash
       else
         @@all_objects[menu] = widget
         self.rebind_esc(widget)
@@ -379,7 +379,7 @@ class TraverseExample < Example
     window = nil
 
     case input
-    when Ncurses::KEY_ENTER, CDK::KEY_RETURN
+    when Curses::KEY_ENTER, CDK::KEY_RETURN
       mtmp = []
       stmp = []
       object.getCurrentItem(mtmp, stmp)
@@ -390,8 +390,8 @@ class TraverseExample < Example
       window = screen.window
 
       window.mvwprintw(window.getmaxy - 1, 0, 'selection %d/%d', mp, sp)
-      Ncurses.clrtoeol
-      Ncurses.refresh
+      Curses.clrtoeol
+      Curses.refresh
       if sp >= 0 && sp < TraverseExample::MENU_TABLE.size
         self.make_any(screen, mp, TraverseExample::MENU_TABLE[sp][1])
       end
@@ -412,15 +412,15 @@ class TraverseExample < Example
     end
 
     # Create the curses window.
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Start CDK colours.
     CDK::Draw.initCDKColor
 
     menu = CDK::MENU.new(cdkscreen, menulist, TraverseExample::MY_MAX,
-        submenusize, menuloc, CDK::TOP, Ncurses::A_UNDERLINE,
-        Ncurses::A_REVERSE)
+        submenusize, menuloc, CDK::TOP, Curses::A_UNDERLINE,
+        Curses::A_REVERSE)
 
     if menu.nil?
       cdkscreen.destroy

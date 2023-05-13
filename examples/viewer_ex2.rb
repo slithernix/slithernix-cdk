@@ -44,7 +44,7 @@ class Viewer2Example < CLIExample
     params = parse(ARGV)
 
     # Start curses
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Start CDK colors.
@@ -53,8 +53,8 @@ class Viewer2Example < CLIExample
     f_select = nil
     if params.filename == ''
       f_select = CDK::FSELECT.new(cdkscreen, params.x_value, params.y_value,
-          params.h_value, params.w_value, title, label, Ncurses::A_NORMAL,
-          '_', Ncurses::A_REVERSE, '</5>', '</48>', '</N>', '</N',
+          params.h_value, params.w_value, title, label, Curses::A_NORMAL,
+          '_', Curses::A_REVERSE, '</5>', '</48>', '</N>', '</N',
           params.box, params.shadow)
 
       if f_select.nil?
@@ -67,8 +67,8 @@ class Viewer2Example < CLIExample
 
       # Set the starting directory. This is not necessary because when
       # the file selector starts it uses the present directory as a default.
-      f_select.set(params.directory, Ncurses::A_NORMAL, '.',
-          Ncurses::A_REVERSE, '</5>', '</48>', '</N>', '</N>', @box)
+      f_select.set(params.directory, Curses::A_NORMAL, '.',
+          Curses::A_REVERSE, '</5>', '</48>', '</N>', '</N>', @box)
 
       # Activate the file selector.
       params.filename = f_select.activate([])

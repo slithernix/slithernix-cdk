@@ -8,7 +8,7 @@ class CDKScreenExample < Example
     buttons = ["Continue", "Exit"]
 
     # Create the curses window.
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
 
     # Create the screens
     cdkscreen1 = CDK::SCREEN.new(curses_win)
@@ -67,7 +67,7 @@ class CDKScreenExample < Example
         "<C><#HL(30)>"
     ]
     dialog = CDK::DIALOG.new(cdkscreen5, CDK::CENTER, CDK::CENTER, dialog_mesg,
-        6, buttons, 2, Ncurses::A_REVERSE, true, true, false)
+        6, buttons, 2, Curses::A_REVERSE, true, true, false)
 
     # Do this forever... (almost)
     while true

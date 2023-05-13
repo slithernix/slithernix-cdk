@@ -59,7 +59,7 @@ class CalendarExample < Example
     end
 
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -68,10 +68,10 @@ class CalendarExample < Example
     # Declare the calendar widget.
     calendar = CDK::CALENDAR.new(cdkscreen, params.x_value, params.y_value,
         params.title, params.day, params.month, params.year,
-        Ncurses.COLOR_PAIR(16) | Ncurses::A_BOLD,
-        Ncurses.COLOR_PAIR(24) | Ncurses::A_BOLD,
-        Ncurses.COLOR_PAIR(32) | Ncurses::A_BOLD,
-        Ncurses.COLOR_PAIR(40) | Ncurses::A_REVERSE,
+        Curses.color_pair(16) | Curses::A_BOLD,
+        Curses.color_pair(24) | Curses::A_BOLD,
+        Curses.color_pair(32) | Curses::A_BOLD,
+        Curses.color_pair(40) | Curses::A_REVERSE,
         params.box, params.shadow)
 
     if calendar.nil?

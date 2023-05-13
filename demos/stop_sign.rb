@@ -4,7 +4,7 @@ require_relative '../lib/cdk'
 class StopSign
   def StopSign.main
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors

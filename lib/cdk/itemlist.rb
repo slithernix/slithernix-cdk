@@ -5,8 +5,8 @@ module CDK
     def initialize(cdkscreen, xplace, yplace, title, label, item, count,
         default_item, box, shadow)
       super()
-      parent_width = cdkscreen.window.getmaxx
-      parent_height = cdkscreen.window.getmaxy
+      parent_width = cdkscreen.window.maxx
+      parent_height = cdkscreen.window.maxy
       field_width = 0
 
       if !self.createList(item, count)
@@ -48,7 +48,7 @@ module CDK
       ypos = ytmp[0]
 
       # Make the window.
-      @win = Ncurses::WINDOW.new(box_height, box_width, ypos, xpos)
+      @win = Curses::Window.new(box_height, box_width, ypos, xpos)
       if @win.nil?
         self.destroy
         return nil
@@ -94,7 +94,7 @@ module CDK
 
       # Do we want a shadow?
       if shadow
-        @shadow_win = Ncurses::WINDOW.new(box_height, box_width,
+        @shadow_win = Curses::Window.new(box_height, box_width,
             ypos + 1, xpos + 1)
         if @shadow_win.nil?
           self.destroy
@@ -166,13 +166,13 @@ module CDK
           complete = true
         else
           case input
-          when Ncurses::KEY_UP, Ncurses::KEY_RIGHT, ' '.ord, '+'.ord, 'n'.ord
+          when Curses::KEY_UP, Curses::KEY_RIGHT, ' '.ord, '+'.ord, 'n'.ord
             if @current_item < @list_size - 1
               @current_item += 1
             else
               @current_item = 0
             end
-          when Ncurses::KEY_DOWN, Ncurses::KEY_LEFT, '-'.ord, 'p'.ord
+          when Curses::KEY_DOWN, Curses::KEY_LEFT, '-'.ord, 'p'.ord
             if @current_item > 0
               @current_item -= 1
             else
@@ -187,10 +187,10 @@ module CDK
           when CDK::KEY_ESC
             self.setExitType(input)
             complete = true
-          when Ncurses::ERR
+          when Curses::ERR
             self.setExitType(input)
             complete = true
-          when CDK::KEY_TAB, CDK::KEY_RETURN, Ncurses::KEY_ENTER
+          when CDK::KEY_TAB, CDK::KEY_RETURN, Curses::KEY_ENTER
             self.setExitType(input)
             ret = @current_item
             complete = true
@@ -244,7 +244,7 @@ module CDK
         Draw.drawObjBox(@win, self)
       end
 
-      @win.wrefresh
+      @win.refresh
 
       # Draw in the field.
       self.drawField(false)
@@ -275,14 +275,14 @@ module CDK
         c = @item[current_item][x]
 
         if highlight
-          c = c.ord | Ncurses::A_REVERSE
+          c = c.ord | Curses::A_REVERSE
         end
 
         @field_win.mvwaddch(0, x + @item_pos[current_item], c)
       end
 
       # Redraw the field window.
-      @field_win.wrefresh
+      @field_win.refresh
     end
 
     # This function removes the widget from the screen.
@@ -338,7 +338,7 @@ module CDK
         # field width if the title made the outer window wide enough
         self.updateFieldWidth
         if @field_width > old_width
-          self.createFieldWin(@field_win.getbegy, @field_win.getbegx)
+          self.createFieldWin(@field_win.begy, @field_win.begx)
         end
 
         # Draw the field.

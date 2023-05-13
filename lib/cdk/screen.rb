@@ -14,9 +14,9 @@ module CDK
         # #ifdef HAVE_SETLOCALE
         # setlocale (LC_ALL, "");
         # #endif
-        
-        Ncurses.noecho
-        Ncurses.cbreak
+
+        Curses.noecho
+        Curses.cbreak
       end
 
       CDK::ALL_SCREENS << self
@@ -121,7 +121,7 @@ module CDK
       #Create the label.
       popup = CDK::LABEL.new(self, CENTER, CENTER, mesg, count, true, false)
 
-      old_state = Ncurses.curs_set(0)
+      old_state = Curses.curs_set(0)
       #Draw it on the screen
       popup.draw(true)
 
@@ -133,7 +133,7 @@ module CDK
       popup.destroy
 
       # Clean the screen.
-      Ncurses.curs_set(old_state)
+      Curses.curs_set(old_state)
       self.erase
       self.refresh
     end
@@ -144,7 +144,7 @@ module CDK
       popup = CDK::LABEL.new(self, CENTER, CENTER, mesg, count, true, false)
       popup.setBackgroundAttrib
 
-      old_state = Ncurses.curs_set(0)
+      old_state = Curses.curs_set(0)
       # Draw it on the screen)
       popup.draw(true)
 
@@ -156,7 +156,7 @@ module CDK
       popup.destroy
 
       # Clean the screen.
-      Ncurses.curs_set(old_state)
+      Curses.curs_set(old_state)
       screen.erase
       screen.refresh
     end
@@ -165,7 +165,7 @@ module CDK
     def popupDialog(mesg, mesg_count, buttons, button_count)
       # Create the dialog box.
       popup = CDK::DIALOG.new(self, CDK::CENTER, CDK::CENTER,
-          mesg, mesg_count, buttons, button_count, Ncurses::A_REVERSE,
+          mesg, mesg_count, buttons, button_count, Curses::A_REVERSE,
           true, true, false)
 
       # Activate the dialog box
@@ -194,8 +194,8 @@ module CDK
     # it would not be necessary to touch the window to ensure that it covers
     # other windows.
     def SCREEN.refreshCDKWindow(win)
-      win.touchwin
-      win.wrefresh
+      win.touch
+      win.refresh
     end
 
     # This refreshes all the objects in the screen.
@@ -248,7 +248,7 @@ module CDK
       end
 
       # Refresh the screen.
-      @window.wrefresh
+      @window.refresh
     end
 
     # Destroy all the objects on a screen
@@ -272,9 +272,9 @@ module CDK
 
     # This is added to remain consistent
     def self.endCDK
-      Ncurses.echo
-      Ncurses.nocbreak
-      Ncurses.endwin
+      Curses.echo
+      Curses.nocbreak
+      Curses.endwin
     end
   end
 end

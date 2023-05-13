@@ -11,11 +11,11 @@ module CDK
         field_attribute, filler_char, highlight, d_attribute, f_attribute,
         l_attribute, s_attribute, box, shadow)
       super()
-      parent_width = cdkscreen.window.getmaxx
-      parent_height = cdkscreen.window.getmaxy
+      parent_width = cdkscreen.window.maxx
+      parent_height = cdkscreen.window.maxy
       bindings = {
-          CDK::BACKCHAR => Ncurses::KEY_PPAGE,
-          CDK::FORCHAR  => Ncurses::KEY_NPAGE,
+          CDK::BACKCHAR => Curses::KEY_PPAGE,
+          CDK::FORCHAR  => Curses::KEY_NPAGE,
       }
 
       self.setBox(box)
@@ -40,7 +40,7 @@ module CDK
       box_height = [box_height, 6].max
 
       # Make the file selector window.
-      @win = Ncurses::WINDOW.new(box_height, box_width, ypos, xpos)
+      @win = Curses::Window.new(box_height, box_width, ypos, xpos)
 
       # is the window nil?
       if @win.nil?
@@ -83,7 +83,7 @@ module CDK
                    then CDK::FULL
                    else box_width - 2 - label_len
                    end
-      @entry_field = CDK::ENTRY.new(cdkscreen, @win.getbegx, @win.getbegy,
+      @entry_field = CDK::ENTRY.new(cdkscreen, @win.begx, @win.begy,
           title, label, field_attribute, filler_char, :MIXED, temp_width,
           0, 512, box, false)
 
@@ -94,8 +94,8 @@ module CDK
       end
 
       # Set the lower left/right characters of the entry field.
-      @entry_field.setLLchar(Ncurses::ACS_LTEE)
-      @entry_field.setLRchar(Ncurses::ACS_RTEE)
+      @entry_field.setLLchar(CDK::ACS_LTEE)
+      @entry_field.setLRchar(CDK::ACS_RTEE)
 
       # This is a callback to the scrolling list which displays information
       # about the current file.  (and the whole directory as well)
@@ -296,7 +296,7 @@ module CDK
 
         # Create the dialog box.
         question = CDK::DIALOG.new(fselect.screen, CDK::CENTER, CDK::CENTER,
-            mesg, 2, buttons, 2, Ncurses::A_REVERSE, true, true, false)
+            mesg, 2, buttons, 2, Curses::A_REVERSE, true, true, false)
 
         # If the said yes then try to nuke it.
         if question.activate([]) == 1
@@ -351,10 +351,10 @@ module CDK
       end
 
       # Define the callbacks for the entry field.
-      @entry_field.bind(:ENTRY, Ncurses::KEY_UP, adjust_scroll_cb, self)
-      @entry_field.bind(:ENTRY, Ncurses::KEY_PPAGE, adjust_scroll_cb, self)
-      @entry_field.bind(:ENTRY, Ncurses::KEY_DOWN, adjust_scroll_cb, self)
-      @entry_field.bind(:ENTRY, Ncurses::KEY_NPAGE, adjust_scroll_cb, self)
+      @entry_field.bind(:ENTRY, Curses::KEY_UP, adjust_scroll_cb, self)
+      @entry_field.bind(:ENTRY, Curses::KEY_PPAGE, adjust_scroll_cb, self)
+      @entry_field.bind(:ENTRY, Curses::KEY_DOWN, adjust_scroll_cb, self)
+      @entry_field.bind(:ENTRY, Curses::KEY_NPAGE, adjust_scroll_cb, self)
       @entry_field.bind(:ENTRY, CDK::KEY_TAB, complete_filename_cb, self)
       @entry_field.bind(:ENTRY, CDK.CTRL('^'), display_file_info_cb, self)
 
@@ -362,23 +362,23 @@ module CDK
       @entry_field.setValue(@pwd)
 
       # Create the scrolling list in the selector.
-      temp_height = @entry_field.win.getmaxy - @border_size
+      temp_height = @entry_field.win.maxy - @border_size
       temp_width = if CDK::FSELECT.isFullWidth(width)
                    then CDK::FULL
                    else box_width - 1
                    end
       @scroll_field = CDK::SCROLL.new(cdkscreen,
-          @win.getbegx, @win.getbegy + temp_height, CDK::RIGHT,
+          @win.begx, @win.begy + temp_height, CDK::RIGHT,
           box_height - temp_height, temp_width, '', @dir_contents,
           @file_counter, false, @highlight, box, false)
 
       # Set the lower left/right characters of the entry field.
-      @scroll_field.setULchar(Ncurses::ACS_LTEE)
-      @scroll_field.setURchar(Ncurses::ACS_RTEE)
+      @scroll_field.setULchar(CDK::ACS_LTEE)
+      @scroll_field.setURchar(CDK::ACS_RTEE)
 
       # Do we want a shadow?
       if shadow
-        @shadow_win = Ncurses::WINDOW.new(box_height, box_width,
+        @shadow_win = Curses::Window.new(box_height, box_width,
             ypos + 1, xpos + 1)
       end
 
@@ -926,7 +926,7 @@ module CDK
     end
 
     def self.isFullWidth(width)
-      width == CDK::FULL || (Ncurses.COLS != 0 && width >= Ncurses.COLS)
+      width == CDK::FULL || (Curses.cols != 0 && width >= Curses.cols)
     end
 
     def position

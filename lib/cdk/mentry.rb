@@ -8,8 +8,8 @@ module CDK
     def initialize(cdkscreen, xplace, yplace, title, label, field_attr,
         filler, disp_type, f_width, f_rows, logical_rows, min, box, shadow)
       super()
-      parent_width = cdkscreen.window.getmaxx
-      parent_height = cdkscreen.window.getmaxy
+      parent_width = cdkscreen.window.maxx
+      parent_height = cdkscreen.window.maxy
       field_width = f_width
       field_rows = f_rows
 
@@ -57,7 +57,7 @@ module CDK
       ypos = ytmp[0]
 
       # Make the label window.
-      @win = Ncurses::WINDOW.new(box_height, box_width, ypos, xpos)
+      @win = Curses::Window.new(box_height, box_width, ypos, xpos)
 
       # Is the window nil?
       if @win.nil?
@@ -113,7 +113,7 @@ module CDK
         cursor_pos = mentry.getCursorPos
         newchar = Display.filterByDisplayType(mentry.disp_type, character)
 
-        if newchar == Ncurses::ERR
+        if newchar == Curses::ERR
           CDK.Beep
         else
           mentry.info = mentry.info[0...cursor_pos] + newchar.chr +
@@ -136,8 +136,8 @@ module CDK
               mentry.top_row += 1
               mentry.drawField
             end
-            mentry.field_win.wmove(mentry.current_row, mentry.current_col)
-            mentry.field_win.wrefresh
+            mentry.field_win.move(mentry.current_row, mentry.current_col)
+            mentry.field_win.refresh
           end
         end
       end
@@ -145,7 +145,7 @@ module CDK
 
       # Do we need to create a shadow.
       if shadow
-        @shadow_win = Ncurses::WINDOW.new(box_height, box_width,
+        @shadow_win = Curses::Window.new(box_height, box_width,
             ypos + 1, xpos + 1)
       end
 
@@ -255,10 +255,10 @@ module CDK
           redraw = false
 
           case input
-          when Ncurses::KEY_HOME
+          when Curses::KEY_HOME
             moved = self.setCurPos(0, 0)
             redraw = self.setTopRow(0)
-          when Ncurses::KEY_END
+          when Curses::KEY_END
             field_characters = @rows * @field_width
             if @info.size < field_characters
               redraw = self.setTopRow(0)
@@ -268,13 +268,13 @@ module CDK
               redraw = self.setTopRow(@info.size / @field_width, @rows + 1)
               moved = self.setCurPos(@rows - 1, @info.size % @field_width)
             end
-          when Ncurses::KEY_LEFT
+          when Curses::KEY_LEFT
             mtmp = [moved]
             rtmp = [redraw]
             self.KEY_LEFT(mtmp, rtmp)
             moved = mtmp[0]
             redraw = rtmp[0]
-          when Ncurses::KEY_RIGHT
+          when Curses::KEY_RIGHT
             if @current_col < @field_width - 1
               if self.getCursorPos + 1 <= @info.size
                 moved = self.setCurPos(@current_row, @current_col + 1)
@@ -290,7 +290,7 @@ module CDK
             if !moved && !redraw
               CDK.Beep
             end
-          when Ncurses::KEY_DOWN
+          when Curses::KEY_DOWN
             if @current_row != @rows - 1
               if self.getCursorPos + @field_width + 1 <= @info.size
                 moved = self.setCurPos(@current_row + 1, @current_col)
@@ -303,7 +303,7 @@ module CDK
             if !moved && !redraw
               CDK.Beep
             end
-          when Ncurses::KEY_UP
+          when Curses::KEY_UP
             if @current_row != 0
               moved = self.setCurPos(@current_row - 1, @current_col)
             elsif @top_row != 0
@@ -312,12 +312,12 @@ module CDK
             if !moved && !redraw
               CDK.Beep
             end
-          when Ncurses::KEY_BACKSPACE, Ncurses::KEY_DC
+          when Curses::KEY_BACKSPACE, Curses::KEY_DC
             if @disp_type == :VIEWONLY
               CDK.Beep
             elsif @info.length == 0
               CDK.Beep
-            elsif input == Ncurses::KEY_DC
+            elsif input == Curses::KEY_DC
               cursor_pos = self.getCursorPos
               if cursor_pos < @info.size
                 @info = @info[0...cursor_pos] + @info[cursor_pos + 1..-1]
@@ -376,7 +376,7 @@ module CDK
               self.setValue(@@g_paste_buffer)
               self.draw(@box)
             end
-          when CDK::KEY_TAB, CDK::KEY_RETURN, Ncurses::KEY_ENTER
+          when CDK::KEY_TAB, CDK::KEY_RETURN, Curses::KEY_ENTER
             if @info.size < @min + 1
               CDK.Beep
             else
@@ -384,7 +384,7 @@ module CDK
               ret = @info
               complete = true
             end
-          when Ncurses::ERR
+          when Curses::ERR
             self.setExitType(input)
             complete = true
           when CDK::KEY_ESC
@@ -404,8 +404,8 @@ module CDK
           if redraw
             self.drawField
           elsif moved
-            @field_win.wmove(@current_row, @current_col)
-            @field_win.wrefresh
+            @field_win.move(@current_row, @current_col)
+            @field_win.refresh
           end
         end
 
@@ -435,7 +435,7 @@ module CDK
       currchar = @field_width * @top_row
   
       self.drawTitle(@win)
-      @win.wrefresh
+      @win.refresh
   
       lastpos = @info.size
   
@@ -456,8 +456,8 @@ module CDK
       end
   
       # Refresh the screen.
-      @field_win.wmove(@current_row, @current_col)
-      @field_win.wrefresh
+      @field_win.move(@current_row, @current_col)
+      @field_win.refresh
     end
   
     # This function draws the multiple line entry field.
@@ -465,7 +465,7 @@ module CDK
       # Box the widget if asked.
       if box
         Draw.drawObjBox(@win, self)
-        @win.wrefresh
+        @win.refresh
       end
   
       # Do we need to draw in the shadow?
@@ -477,7 +477,7 @@ module CDK
       unless @label_win.nil?
         Draw.writeChtype(@label_win, 0, 0, @label, CDK::HORIZONTAL,
             0, @label_len)
-        @label_win.wrefresh
+        @label_win.refresh
       end
   
       # Draw the mentry field
@@ -595,12 +595,12 @@ module CDK
     end
   
     def focus
-      @field_win.wmove(0, @current_col)
-      @field_win.wrefresh
+      @field_win.move(0, @current_col)
+      @field_win.refresh
     end
   
     def unfocus
-      @field_win.wrefresh
+      @field_win.refresh
     end
 
     def position

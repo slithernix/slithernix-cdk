@@ -58,18 +58,18 @@ module CDK
     def initialize(cdkscreen, xplace, yplace, title, day, month, year,
         day_attrib, month_attrib, year_attrib, highlight, box, shadow)
       super()
-      parent_width = cdkscreen.window.getmaxx
-      parent_height = cdkscreen.window.getmaxy
+      parent_width = cdkscreen.window.maxx
+      parent_height = cdkscreen.window.maxy
       box_width = 24
       box_height = 11
       dayname = 'Su Mo Tu We Th Fr Sa '
       bindings = {
-          'T'           => Ncurses::KEY_HOME,
-          't'           => Ncurses::KEY_HOME,
-          'n'           => Ncurses::KEY_NPAGE,
-          CDK::FORCHAR  => Ncurses::KEY_NPAGE,
-          'p'           => Ncurses::KEY_PPAGE,
-          CDK::BACKCHAR => Ncurses::KEY_PPAGE,
+          'T'           => Curses::KEY_HOME,
+          't'           => Curses::KEY_HOME,
+          'n'           => Curses::KEY_NPAGE,
+          CDK::FORCHAR  => Curses::KEY_NPAGE,
+          'p'           => Curses::KEY_PPAGE,
+          CDK::BACKCHAR => Curses::KEY_PPAGE,
       }
 
       self.setBox(box)
@@ -89,7 +89,7 @@ module CDK
       ypos = ytmp[0]
 
       # Create the calendar window.
-      @win = Ncurses::WINDOW.new(box_height, box_width, ypos, xpos)
+      @win = Curses::Window.new(box_height, box_width, ypos, xpos)
 
       # Is the window nil?
       if @win.nil?
@@ -159,7 +159,7 @@ module CDK
 
       # If a shadow was requested, then create the shadow window.
       if shadow
-        @shadow_win = Ncurses::WINDOW.new(box_height, box_width,
+        @shadow_win = Curses::Window.new(box_height, box_width,
             ypos + 1, xpos + 1)
       end
 
@@ -225,17 +225,17 @@ module CDK
           complete = true
         else
           case input
-          when Ncurses::KEY_UP
+          when Curses::KEY_UP
             self.decrementCalendarDay(7)
-          when Ncurses::KEY_DOWN
+          when Curses::KEY_DOWN
             self.incrementCalendarDay(7)
-          when Ncurses::KEY_LEFT
+          when Curses::KEY_LEFT
             self.decrementCalendarDay(1)
-          when Ncurses::KEY_RIGHT
+          when Curses::KEY_RIGHT
             self.incrementCalendarDay(1)
-          when Ncurses::KEY_NPAGE
+          when Curses::KEY_NPAGE
             self.incrementCalendarMonth(1)
-          when Ncurses::KEY_PPAGE
+          when Curses::KEY_PPAGE
             self.decrementCalendarMonth(1)
           when 'N'.ord
             self.incrementCalendarMonth(6)
@@ -245,15 +245,15 @@ module CDK
             self.decrementCalendarYear(1)
           when '+'.ord
             self.incrementCalendarYear(1)
-          when Ncurses::KEY_HOME
+          when Curses::KEY_HOME
             self.setDate(-1, -1, -1)
           when CDK::KEY_ESC
             self.setExitType(input)
             complete = true
-          when Ncurses::ERR
+          when Curses::ERR
             self.setExitType(input)
             complete = true
-          when CDK::KEY_TAB, CDK::KEY_RETURN, Ncurses::KEY_ENTER
+          when CDK::KEY_TAB, CDK::KEY_RETURN, Curses::KEY_ENTER
             self.setExitType(input)
             ret = self.getCurrentTime
             complete = true
@@ -309,7 +309,7 @@ module CDK
             @day_name[src..-1], CDK::HORIZONTAL, 0, col_len)
       end
 
-      @win.wrefresh
+      @win.refresh
       self.drawField
     end
 
@@ -338,7 +338,7 @@ module CDK
 
             if @day == day
               marker = @highlight
-              save_y = ypos + @field_win.getbegy - @input_window.getbegy
+              save_y = ypos + @field_win.begy - @input_window.begy
               save_x = 1
             else
               marker |= self.getMarker(day, @month, year_index)
@@ -349,7 +349,7 @@ module CDK
           day += 1
         end
       end
-      @field_win.wrefresh
+      @field_win.refresh
 
       # Draw the month in.
       if !(@label_win.nil?)
@@ -363,11 +363,11 @@ module CDK
         Draw.writeChar(@label_win, @field_width - year_len, 0, temp,
             CDK::HORIZONTAL, 0, year_len)
 
-        @label_win.wmove(0, 0)
-        @label_win.wrefresh
+        @label_win.move(0, 0)
+        @label_win.refresh
       elsif save_y >= 0
-        @input_window.wmove(save_y, save_x)
-        @input_window.wrefresh
+        @input_window.move(save_y, save_x)
+        @input_window.refresh
       end
     end
 
@@ -486,7 +486,7 @@ module CDK
       # Check to see if a marker has not already been set
       if oldmarker != 0
         self.setCalendarCell(day, month, year_index,
-            oldmarker | Ncurses::A_BLINK)
+            oldmarker | Curses::A_BLINK)
       else
         self.setCalendarCell(day, month, year_index, marker)
       end

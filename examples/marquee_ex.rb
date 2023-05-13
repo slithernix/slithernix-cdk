@@ -83,9 +83,9 @@ class MarqueeExample < Example
     end
 
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
-    Ncurses.curs_set(0)
+    Curses.curs_set(0)
 
     # Set up CDK colors
     CDK::Draw.initCDKColor

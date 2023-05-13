@@ -130,7 +130,7 @@ module CDK
     def Traverse.traverseCDKOnce(screen, curobj, key_code,
         function_key, func_menu_key)
       case key_code
-      when Ncurses::KEY_BTAB
+      when Curses::KEY_BTAB
         switchFocus(setCDKFocusPrevious(screen), curobj)
       when CDK::KEY_TAB
         switchFocus(setCDKFocusNext(screen), curobj)
@@ -215,7 +215,7 @@ module CDK
     end
 
     def Traverse.unsetFocus(obj)
-      Ncurses.curs_set(0)
+      Curses.curs_set(0)
       unless obj.nil?
         obj.has_focus = false
         obj.unfocus
@@ -227,7 +227,7 @@ module CDK
         obj.has_focus = true
         obj.focus
       end
-      Ncurses.curs_set(1)
+      Curses.curs_set(1)
     end
 
     def Traverse.switchFocus(newobj, oldobj)

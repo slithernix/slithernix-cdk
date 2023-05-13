@@ -22,7 +22,7 @@ module CDK
           CDK::HORIZONTAL, 0, temp.size)
 
       self.moveToEditPosition(@field_edit)
-      @field_win.wrefresh
+      @field_win.refresh
     end
 
     def setDigits(digits)

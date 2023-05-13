@@ -24,7 +24,7 @@ class SwindowExample < CLIExample
     params = parse(ARGV)
 
     # Start curses
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Start CDK colors.

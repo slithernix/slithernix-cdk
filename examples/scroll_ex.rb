@@ -52,7 +52,7 @@ class ScrollExample < CLIExample
     params = parse(ARGV)
 
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -68,7 +68,7 @@ class ScrollExample < CLIExample
         params.h_value, params.w_value, params.title,
         if params.c then nil else item end,
         if params.c then 0 else count end,
-        true, Ncurses::A_REVERSE, params.box, params.shadow)
+        true, Curses::A_REVERSE, params.box, params.shadow)
 
     if scroll_list.nil?
       cdkscreen.destroyCDKScreen

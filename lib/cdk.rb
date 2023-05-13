@@ -25,8 +25,8 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'ncurses'
-require 'scanf'
+require 'curses'
+require 'pry'
 require_relative 'cdk/draw'
 require_relative 'cdk/display'
 require_relative 'cdk/traverse'
@@ -60,6 +60,42 @@ require_relative 'cdk/uscale'
 require_relative 'cdk/uslider'
 require_relative 'cdk/viewer'
 
+# I hate this but, whatever
+module Curses
+  class Window
+    def mvwvline(y, x, ch, n)
+      self.attron(Curses::A_ALTCHARSET)
+
+      self.setpos(y, x)
+
+      n.times do |i|
+        self.setpos(y + i, x)
+        self.addch(ch)
+      end
+
+      self.attroff(Curses::A_ALTCHARSET)
+    end
+
+    def mvwhline(y, x, ch, n)
+      self.attron(Curses::A_ALTCHARSET)
+
+      self.setpos(y, x)
+
+      n.times do |i|
+        self.setpos(y, x + i)
+        self.addch(ch)
+      end
+
+      self.attroff(Curses::A_ALTCHARSET)
+    end
+
+    def mvwaddch(y, x, ch)
+      self.setpos(y, x)
+      self.addch(ch)
+    end
+  end
+end
+
 module CDK
   # some useful global values
 
@@ -70,9 +106,9 @@ module CDK
   VERSION_MAJOR = 0
   VERSION_MINOR = 8
   VERSION_PATCH = 0
-  
+
   CDK_PATHMAX = 256
-  
+
   L_MARKER = '<'
   R_MARKER = '>'
 
@@ -112,10 +148,46 @@ module CDK
 
   ALL_SCREENS = []
   ALL_OBJECTS = []
-  
+
+  # ACS constants have been removed from ruby curses, putting them here
+  # note that this is garbage and likely to break all over the place.
+  ACS_BLOCK     = 0x30
+  ACS_BOARD     = 0x65
+  ACS_BTEE      = 0x76
+  ACS_BULLET    = 0x7e
+  ACS_CKBOARD   = 0x61
+  ACS_DARROW    = 0x2e
+  ACS_DEGREE    = 0x66
+  ACS_DIAMOND   = 0x60
+  ACS_GEQUAL    = 0x7a
+  ACS_HLINE     = 0x71
+  ACS_LANTERN   = 0x69
+  ACS_LARROW    = 0x2c
+  ACS_LEQUAL    = 0x79
+  ACS_LLCORNER  = 0x6d
+  ACS_LRCORNER  = 0x6a
+  ACS_LTEE      = 0x74
+  ACS_NEQUAL    = 0x7c
+  ACS_PI        = 0x7b
+  ACS_PLMINUS   = 0x67
+  ACS_PLUS      = 0x6e
+  ACS_RARROW    = 0x2b
+  ACS_RTEE      = 0x75
+  ACS_S1        = 0x6f
+  ACS_S3        = 0x70
+  ACS_S5        = 0x71
+  ACS_S7        = 0x72
+  ACS_S9        = 0x73
+  ACS_STERLING  = 0x7d
+  ACS_TTEE      = 0x77
+  ACS_UARROW    = 0x2d
+  ACS_ULCORNER  = 0x6c
+  ACS_URCORNER  = 0x6b
+  ACS_VLINE     = 0x78
+
   # This beeps then flushes the stdout stream
   def CDK.Beep
-    Ncurses.beep
+    Curses.beep
     $stdout.flush
   end
 
@@ -131,12 +203,12 @@ module CDK
   # This takes an x and y position and realigns the values iff they sent in
   # values like CENTER, LEFT, RIGHT
   #
-  # window is an Ncurses::WINDOW object
+  # window is an Curses::WINDOW object
   # xpos, ypos is an array with exactly one value, an integer
   # box_width, box_height is an integer
   def CDK.alignxy (window, xpos, ypos, box_width, box_height)
-    first = window.getbegx
-    last = window.getmaxx
+    first = window.begx
+    last = window.maxx
     if (gap = (last - box_width)) < 0
       gap = 0
     end
@@ -157,8 +229,8 @@ module CDK
       end
     end
 
-    first = window.getbegy
-    last = window.getmaxy
+    first = window.begy
+    last = window.maxy
     if (gap = (last - box_height)) < 0
       gap = 0
     end
@@ -228,38 +300,38 @@ module CDK
     mask << 0
     case string[from + 1]
     when 'B'
-      mask[0] = Ncurses::A_BOLD
+      mask[0] = Curses::A_BOLD
     when 'D'
-      mask[0] = Ncurses::A_DIM
+      mask[0] = Curses::A_DIM
     when 'K'
-      mask[0] = Ncurses::A_BLINK
+      mask[0] = Curses::A_BLINK
     when 'R'
-      mask[0] = Ncurses::A_REVERSE
+      mask[0] = Curses::A_REVERSE
     when 'S'
-      mask[0] = Ncurses::A_STANDOUT
+      mask[0] = Curses::A_STANDOUT
     when 'U'
-      mask[0] = Ncurses::A_UNDERLINE
+      mask[0] = Curses::A_UNDERLINE
     end
 
     if mask[0] != 0
       from += 1
     elsif CDK.digit?(string[from+1]) and CDK.digit?(string[from + 2])
-      if Ncurses.has_colors?
+      if Curses.has_colors?
         # XXX: Only checks if terminal has colours not if colours are started
         pair = string[from + 1..from + 2].to_i
-        mask[0] = Ncurses.COLOR_PAIR(pair)
+        mask[0] = Curses.color_pair(pair)
       else
-        mask[0] = Ncurses.A_BOLD
+        mask[0] = Curses.A_BOLD
       end
 
       from += 2
     elsif CDK.digit?(string[from + 1])
-      if Ncurses.has_colors?
+      if Curses.has_colors?
         # XXX: Only checks if terminal has colours not if colours are started
         pair = string[from + 1].to_i
-        mask[0] = Ncurses.COLOR_PAIR(pair)
+        mask[0] = Curses.color_pair(pair)
       else
-        mask[0] = Ncurses.A_BOLD
+        mask[0] = Curses.A_BOLD
       end
 
       from += 1
@@ -275,19 +347,19 @@ module CDK
 
   def CDK.decodeAttribute (string, from, oldattr, newattr)
     table = {
-      'B' => Ncurses::A_BOLD,
-      'D' => Ncurses::A_DIM,
-      'K' => Ncurses::A_BLINK,
-      'R' => Ncurses::A_REVERSE,
-      'S' => Ncurses::A_STANDOUT,
-      'U' => Ncurses::A_UNDERLINE
+      'B' => Curses::A_BOLD,
+      'D' => Curses::A_DIM,
+      'K' => Curses::A_BLINK,
+      'R' => Curses::A_REVERSE,
+      'S' => Curses::A_STANDOUT,
+      'U' => Curses::A_UNDERLINE
     }
 
     result = if string.nil? then '' else string end
     base_len = result.size
-    tmpattr = oldattr & Ncurses::A_ATTRIBUTES
+    tmpattr = oldattr & Curses::A_ATTRIBUTES
 
-    newattr &= Ncurses::A_ATTRIBUTES
+    newattr &= Curses::A_ATTRIBUTES
     if tmpattr != newattr
       while tmpattr != newattr
         found = false
@@ -307,10 +379,10 @@ module CDK
           end
         end
         # XXX: Only checks if terminal has colours not if colours are started
-        if Ncurses.has_colors?
-          if (tmpattr & Ncurses::A_COLOR) != (newattr & Ncurses::A_COLOR)
-            oldpair = Ncurses.PAIR_NUMBER(tmpattr)
-            newpair = Ncurses.PAIR_NUMBER(newattr)
+        if Curses.has_colors?
+          if (tmpattr & Curses::A_COLOR) != (newattr & Curses::A_COLOR)
+            oldpair = Curses.PAIR_NUMBER(tmpattr)
+            newpair = Curses.PAIR_NUMBER(newattr)
             if !found
               found = true
               result << CDK::L_MARKER
@@ -322,8 +394,8 @@ module CDK
               result << '/'
               result << newpair.to_s
             end
-            tmpattr &= ~(Ncurses::A_COLOR)
-            newattr &= ~(Ncurses::A_COLOR)
+            tmpattr &= ~(Curses::A_COLOR)
+            newattr &= ~(Curses::A_COLOR)
           end
         end
 
@@ -352,7 +424,7 @@ module CDK
       # The original code makes two passes since it has to pre-allocate space but
       # we should be able to make do with one since we can dynamically size it
       adjust = 0
-      attrib = Ncurses::A_NORMAL
+      attrib = Curses::A_NORMAL
       last_char = 0
       start = 0
       used = 0
@@ -374,7 +446,7 @@ module CDK
 
           # Pull out the bullet marker.
           while x < string.size and string[x] != R_MARKER
-            result << (string[x].ord | Ncurses::A_BOLD)
+            result << (string[x].ord | Curses::A_BOLD)
             x += 1
           end
           adjust = 1
@@ -386,7 +458,7 @@ module CDK
           from = 3
           x = 0
 
-          while from < string.size && string[from] != Ncurses.R_MARKER
+          while from < string.size && string[from] != Curses.R_MARKER
             if CDK.digit?(string[from])
               adjust = adjust * 10 + string[from].to_i
               x += 1
@@ -439,61 +511,61 @@ module CDK
             when 'L'
               case string[from + 1]
               when 'L'
-                last_char = Ncurses::ACS_LLCORNER
+                last_char = CDK::ACS_LLCORNER
               when 'U'
-                last_char = Ncurses::ACS_ULCORNER
+                last_char = CDK::ACS_ULCORNER
               when 'H'
-                last_char = Ncurses::ACS_HLINE
+                last_char = CDK::ACS_HLINE
               when 'V'
-                last_char = Ncurses::ACS_VLINE
+                last_char = CDK::ACS_VLINE
               when 'P'
-                last_char = Ncurses::ACS_PLUS
+                last_char = CDK::ACS_PLUS
               end
             when 'R'
               case string[from + 1]
               when 'L'
-                last_char = Ncurses::ACS_LRCORNER
+                last_char = CDK::ACS_LRCORNER
               when 'U'
-                last_char = Ncurses::ACS_URCORNER
+                last_char = CDK::ACS_URCORNER
               end
             when 'T'
               case string[from + 1]
               when 'T'
-                last_char = Ncurses::ACS_TTEE
+                last_char = CDK::ACS_TTEE
               when 'R'
-                last_char = Ncurses::ACS_RTEE
+                last_char = CDK::ACS_RTEE
               when 'L'
-                last_char = Ncurses::ACS_LTEE
+                last_char = CDK::ACS_LTEE
               when 'B'
-                last_char = Ncurses::ACS_BTEE
+                last_char = CDK::ACS_BTEE
               end
             when 'A'
               case string[from + 1]
               when 'L'
-                last_char = Ncurses::ACS_LARROW
+                last_char = CDK::ACS_LARROW
               when 'R'
-                last_char = Ncurses::ACS_RARROW
+                last_char = CDK::ACS_RARROW
               when 'U'
-                last_char = Ncurses::ACS_UARROW
+                last_char = CDK::ACS_UARROW
               when 'D'
-                last_char = Ncurses::ACS_DARROW
+                last_char = CDK::ACS_DARROW
               end
             else
               case [string[from + 1], string[from + 2]]
               when ['D', 'I']
-                last_char = Ncurses::ACS_DIAMOND
+                last_char = CDK::ACS_DIAMOND
               when ['C', 'B']
-                last_char = Ncurses::ACS_CKBOARD
+                last_char = CDK::ACS_CKBOARD
               when ['D', 'G']
-                last_char = Ncurses::ACS_DEGREE
+                last_char = CDK::ACS_DEGREE
               when ['P', 'M']
-                last_char = Ncurses::ACS_PLMINUS
+                last_char = CDK::ACS_PLMINUS
               when ['B', 'U']
-                last_char = Ncurses::ACS_BULLET
+                last_char = CDK::ACS_BULLET
               when ['S', '1']
-                last_char = Ncurses::ACS_S1
+                last_char = CDK::ACS_S1
               when ['S', '9']
-                last_char = Ncurses::ACS_S9
+                last_char = CDK::ACS_S9
               end
             end
 
@@ -729,7 +801,7 @@ module CDK
     return if window.nil?
 
     window.werase
-    window.wrefresh
+    window.refresh
   end
 
   # This safely deletes a given window.
@@ -747,8 +819,8 @@ module CDK
 
     xpos = []
     ypos = []
-    window.getbegyx(ypos, xpos)
-    if window.mvwin(ypos[0], xpos[0]) != Ncurses::ERR
+    window.begyx(ypos, xpos)
+    if window.mvwin(ypos[0], xpos[0]) != Curses::ERR
       xpos[0] += xdiff
       ypos[0] += ydiff
       window.werase
@@ -767,7 +839,7 @@ module CDK
   end
 
   def CDK.isChar(c)
-    c >= 0 && c < Ncurses::KEY_MIN
+    c >= 0 && c < Curses::KEY_MIN
   end
 
   def CDK.KEY_F(n)
@@ -782,7 +854,7 @@ module CDK
   def CDK.getString(screen, title, label, init_value)
     # Create the widget.
     widget = CDK::ENTRY.new(screen, CDK::CENTER, CDK::CENTER, title, label,
-        Ncurses::A_NORMAL, '.', :MIXED, 40, 0, 5000, true, false)
+        Curses::A_NORMAL, '.', :MIXED, 40, 0, 5000, true, false)
 
     # Set the default value.
     widget.setValue(init_value)
@@ -806,7 +878,7 @@ module CDK
   def CDK.selectFile(screen, title)
     # Create the file selector.
     fselect = CDK::FSELECT.new(screen, CDK::CENTER, CDK::CENTER, -4, -20,
-        title, 'File: ', Ncurses::A_NORMAL, '_', Ncurses::A_REVERSE,
+        title, 'File: ', Curses::A_NORMAL, '_', Curses::A_REVERSE,
         '</5>', '</48>', '</N>', '</N>', true, false)
 
     # Let the user play.
@@ -847,7 +919,7 @@ module CDK
 
     # Create the scrolling list.
     scrollp = CDK::SCROLL.new(screen, CDK::CENTER, CDK::CENTER, CDK::RIGHT,
-        height, width, title, list, list_size, numbers, Ncurses::A_REVERSE,
+        height, width, title, list, list_size, numbers, Curses::A_REVERSE,
         true, false)
 
     # Check if we made the lsit.
@@ -877,10 +949,10 @@ module CDK
 
     # Create the file viewer to view the file selected.
     viewer = CDK::VIEWER.new(screen, CDK::CENTER, CDK::CENTER, -6, -16,
-        buttons, button_count, Ncurses::A_REVERSE, true, true)
+        buttons, button_count, Curses::A_REVERSE, true, true)
 
     # Set up the viewer title, and the contents to the widget.
-    viewer.set(title, info, count, Ncurses::A_REVERSE, interpret, true, true)
+    viewer.set(title, info, count, Curses::A_REVERSE, interpret, true, true)
 
     # Activate the viewer widget.
     selected = viewer.activate([])

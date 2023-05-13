@@ -109,7 +109,7 @@ class Vinstall
     end
     
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -133,13 +133,13 @@ class Vinstall
     # Allow them to change the install directory.
     if source_path == ''
       source_entry = CDK::ENTRY.new(cdkscreen, CDK::CENTER, 8, '',
-          'Source Directory        :', Ncurses::A_NORMAL, '.'.ord,
+          'Source Directory        :', Curses::A_NORMAL, '.'.ord,
           :MIXED, 40, 0, 256, true, false)
     end
 
     if dest_path == ''
       dest_entry = CDK::ENTRY.new(cdkscreen, CDK::CENTER, 11, '',
-          'Destination Directory:', Ncurses::A_NORMAL, '.'.ord, :MIXED,
+          'Destination Directory:', Curses::A_NORMAL, '.'.ord, :MIXED,
           40, 0, 256, true, false)
     end
 
@@ -187,17 +187,17 @@ class Vinstall
         CDK::HORIZONTAL, '<C></56/B>Install Progress', true, false)
 
     # Set the top left/right characters of the histogram.
-    progress_bar.setLLchar(Ncurses::ACS_LTEE)
-    progress_bar.setLRchar(Ncurses::ACS_RTEE)
+    progress_bar.setLLchar(CDK::ACS_LTEE)
+    progress_bar.setLRchar(CDK::ACS_RTEE)
 
     # Set the initial value fo the histgoram.
-    progress_bar.set(:PERCENT, CDK::TOP, Ncurses::A_BOLD, 1, count, 1,
-        Ncurses.COLOR_PAIR(24) | Ncurses::A_REVERSE | ' '.ord, true)
+    progress_bar.set(:PERCENT, CDK::TOP, Curses::A_BOLD, 1, count, 1,
+        Curses.color_pair(24) | Curses::A_REVERSE | ' '.ord, true)
 
     # Determine the height of the scrolling window.
     swndow_height = 3
-    if Ncurses.LINES >= 16
-      swindow_height = Ncurses.LINES - 13
+    if Curses.LINES >= 16
+      swindow_height = Curses.LINES - 13
     end
 
     # Create the scrolling window.
@@ -205,8 +205,8 @@ class Vinstall
         swindow_height, 0, '<C></56/B>Install Results', 2000, true, false)
 
     # Set the top left/right characters of the scrolling window.
-    install_output.setULchar(Ncurses::ACS_LTEE)
-    install_output.setURchar(Ncurses::ACS_RTEE)
+    install_output.setULchar(CDK::ACS_LTEE)
+    install_output.setURchar(CDK::ACS_RTEE)
 
     # Draw the screen.
     cdkscreen.draw
@@ -245,8 +245,8 @@ class Vinstall
       install_output.draw(install_output.box)
 
       # Update the histogram.
-      progress_bar.set(:PERCENT, CDK::TOP, Ncurses::A_BOLD, 1, count,
-          x + 1, Ncurses.COLOR_PAIR(24) | Ncurses::A_REVERSE | ' '.ord, true)
+      progress_bar.set(:PERCENT, CDK::TOP, Curses::A_BOLD, 1, count,
+          x + 1, Curses.color_pair(24) | Curses::A_REVERSE | ' '.ord, true)
 
       # Update the screen.
       progress_bar.draw(true)
