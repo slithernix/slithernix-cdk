@@ -278,7 +278,7 @@ class Vinstall
       if ret == 0
         install_output.activate([])
       elsif ret == 1
-        install_output.inject('s'.ord)
+        install_output.inject('s')
       end
     else
       # If they specified the name of an output file, then save the
@@ -298,7 +298,7 @@ class Vinstall
           ]
 
           if cdkscreen.popupDialog(mesg, 2, buttons, 2) == 1
-            install_output.inject('s'.ord)
+            install_output.inject('s')
           end
         end
       end

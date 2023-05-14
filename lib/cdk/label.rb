@@ -196,7 +196,7 @@ module CDK
         # Only exit when a specific key is hit
         while true
           code = self.getch(function_key)
-          if code == key.ord
+          if code == key
             break
           end
         end
