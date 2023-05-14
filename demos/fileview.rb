@@ -75,7 +75,7 @@ class FileView
     end
 
     # Open the file and read the contents.
-    
+
     info = []
     lines = CDK.readFile(filename, info)
     if lines == -1

@@ -116,7 +116,7 @@ module CDK
 
       if actions.nil? || actions.size == 0
         input = 0
-        
+
         while true
           input = self.getch([])
 
@@ -166,23 +166,23 @@ module CDK
           complete = true
         else
           case input
-          when Curses::KEY_UP, Curses::KEY_RIGHT, ' '.ord, '+'.ord, 'n'.ord
+          when Curses::KEY_UP, Curses::KEY_RIGHT, ' ', '+', 'n'
             if @current_item < @list_size - 1
               @current_item += 1
             else
               @current_item = 0
             end
-          when Curses::KEY_DOWN, Curses::KEY_LEFT, '-'.ord, 'p'.ord
+          when Curses::KEY_DOWN, Curses::KEY_LEFT, '-', 'p'
             if @current_item > 0
               @current_item -= 1
             else
               @current_item = @list_size - 1
             end
-          when 'd'.ord, 'D'.ord
+          when 'd', 'D'
             @current_item = @default_item
-          when '0'.ord
+          when '0'
             @current_item = 0
-          when '$'.ord
+          when '$'
             @current_item = @list_size - 1
           when CDK::KEY_ESC
             self.setExitType(input)
@@ -375,7 +375,7 @@ module CDK
         @default_item = default_item
       end
     end
-    
+
     def getDefaultItem
       return @default_item
     end

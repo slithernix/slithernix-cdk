@@ -54,7 +54,7 @@ class ButtonboxExample < Example
     end
 
     entry.bind(:ENTRY, CDK::KEY_TAB, entryCB, button_widget)
-    
+
     # Activate the entry field.
     button_widget.draw(true)
     info = entry.activate('')

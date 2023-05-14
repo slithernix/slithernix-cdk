@@ -428,13 +428,13 @@ module CDK
           when Curses::KEY_END
             @left_char = @max_left_char
             refresh = true
-          when 'g'.ord, '1'.ord, '<'.ord
+          when 'g', '1', '<'
             @current_top = 0
             refresh = true
-          when 'G'.ord, '>'.ord
+          when 'G', '>'
             @current_top = @max_top_line
             refresh = true
-          when 'L'.ord
+          when 'L'
             x = (@list_size + @current_top) / 2
             if x < @max_top_line
               @current_top = x
@@ -442,7 +442,7 @@ module CDK
             else
               CDK.Beep
             end
-          when 'l'.ord
+          when 'l'
             x = @current_top / 2
             if x >= 0
               @current_top = x
@@ -450,36 +450,36 @@ module CDK
             else
               CDK.Beep
             end
-          when '?'.ord
+          when '?'
             @search_direction = CDK::VIEWER::UP
             self.getAndStorePattern(@screen)
             if !self.searchForWord(@search_pattern, @search_direction)
               self.PatternNotFound(@search_pattern)
             end
             refresh = true
-          when '/'.ord
+          when '/'
             @search_direction = CDK::VIEWER:DOWN
             self.getAndStorePattern(@screen)
             if !self.searchForWord(@search_pattern, @search_direction)
               self.PatternNotFound(@search_pattern)
             end
             refresh = true
-          when 'N'.ord, 'n'.ord
+          when 'N', 'n'
             if @search_pattern == ''
               temp_info[0] = '</5>There is no pattern in the buffer.<!5>'
               self.popUpLabel(temp_info)
             elsif !self.searchForWord(@search_pattern,
-                if input == 'n'.ord
+                if input == 'n'
                 then @search_direction
                 else 1 - @search_direction
                 end)
               self.PatternNotFound(@search_pattern)
             end
             refresh = true
-          when ':'.ord
+          when ':'
             @current_top = self.jumpToLine
             refresh = true
-          when 'i'.ord, 's'.ord, 'S'.ord
+          when 'i', 's', 'S'
             self.popUpLabel(file_info)
             refresh = true
           when CDK::KEY_ESC
@@ -596,7 +596,7 @@ module CDK
       end
       return found
     end
-    
+
     # This allows us to 'jump' to a given line in the file.
     def jumpToLine
       newline = CDK::SCALE.new(@screen, CDK::CENTER, CDK::CENTER,

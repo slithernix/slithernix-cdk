@@ -35,7 +35,7 @@ class Clock
     end
 
     Curses.curs_set(0)
-    demo.screen.window.wtimeout(50)
+    demo.screen.window.timeout = 50
 
     # Do this for a while
     begin

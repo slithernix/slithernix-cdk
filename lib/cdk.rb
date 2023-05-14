@@ -2,7 +2,7 @@
 
 # Copyright (c) 2013, Chris Sauro
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 #     * Redistributions of source code must retain the above copyright
@@ -13,7 +13,7 @@
 #     * Neither the name of Chris Sauro nor the
 #       names of its contributors may be used to endorse or promote products
 #       derived from this software without specific prior written permission.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 # ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,7 +25,16 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#trace = TracePoint.new(:call) do |tp|
+#  File.open('/tmp/execution_trace.log', 'a') do |f|
+#    f.puts "Called method '#{tp.method_id}' at #{tp.path}:#{tp.lineno}"
+#  end
+#end
+#
+#trace.enable
+
 require 'curses'
+#require 'logger'
 require 'pry'
 require_relative 'cdk/draw'
 require_relative 'cdk/display'
@@ -66,6 +75,21 @@ module Curses
     sleep(ms / 1000.0)
   end
 
+  def self.unctrl(ch)
+    raise Curses::Error, 'Input is not an Integer' unless ch.is_a?(Integer)
+    raise Curses::Error, 'Input is out of ASCII range' if ch < 0 || ch > 127
+
+    if (32..126).include?(ch)
+      ch.chr
+    elsif ch == 127
+      '^?'
+    else
+      "^#{(ch + 64).chr}"
+    end
+  rescue => e
+    raise Curses::Error, "Error in unctrl: #{e.message}"
+  end
+
   class Window
     def mvwvline(y, x, ch, n)
       n.times do |i|
@@ -75,8 +99,9 @@ module Curses
     end
 
     def mvwhline(y, x, ch, n)
+      self.setpos(y, x)
+
       n.times do |i|
-        self.setpos(y, x + i)
         self.addch(ch)
       end
     end
@@ -86,7 +111,17 @@ module Curses
       self.addch(ch)
     end
 
-    def mvwinch(y, x)
+    def mvwdelch(y, x)
+      self.setpos(y, x)
+      self.delch()
+    end
+
+    def mvwinsch(y, x, ch)
+      self.setpos(y, x)
+      self.insch(ch)
+    end
+
+    def mvinch(y, x)
       self.setpos(y, x)
       self.inch
     end
@@ -466,7 +501,7 @@ module CDK
           start = x + 4
         end
       end
-      
+
       while adjust > 0
         adjust -= 1
         result << ' '
@@ -649,7 +684,7 @@ module CDK
   # Formatting codes are omitted.
   def CDK.chtype2Char(string)
     newstring = ''
-    
+
     unless string.nil?
       string.each do |char|
         newstring << CDK.CharOf(char)
@@ -814,15 +849,15 @@ module CDK
   def CDK.moveCursesWindow (window, xdiff, ydiff)
     return if window.nil?
 
-    xpos = []
-    ypos = []
-    window.begyx(ypos, xpos)
-    if window.mvwin(ypos[0], xpos[0]) != Curses::Error
-      xpos[0] += xdiff
-      ypos[0] += ydiff
-      window.erase
-      window.mvwin(ypos[0], xpos[0])
-    else
+    xpos = window.begx + xdiff
+    ypos = window.begy + ydiff
+
+    old_window = window
+    begin
+      window = Curses::Window.new(old_window.begy, old_window.begx, ypos, xpos)
+      old_window.erase
+      window
+    rescue
       CDK.Beep
     end
   end

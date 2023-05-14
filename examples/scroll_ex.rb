@@ -103,9 +103,9 @@ class ScrollExample < CLIExample
     scroll_list.bind(:SCROLL, 'a', addItemCB, nil)
     scroll_list.bind(:SCROLL, 'i', insItemCB, nil);
     scroll_list.bind(:SCROLL, 'd', delItemCB, nil);
-    
+
     # Activate the scrolling list.
-    
+
     selection = scroll_list.activate('')
 
     # Determine how the widget was exited

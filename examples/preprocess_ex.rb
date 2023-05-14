@@ -33,7 +33,7 @@ class PreProcessExample < Example
       mesg = []
 
       # Check the input.
-      if input == 'g'.ord || input == 'G'.ord
+      if input == 'g' || input == 'G'
         mesg << "<C><#HL(30)>"
         mesg << "<C>I told you </B>NOT<!B> to type G"
         mesg << "<C><#HL(30)>"

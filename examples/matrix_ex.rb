@@ -77,7 +77,7 @@ class MatrixExample < Example
       # Exit CDK.
       cdkscreen.destroy
       CDK::SCREEN.endCDK
-    
+
       puts 'Cannot create the matrix widget. Is the window too small?'
       exit  # EXIT_FAILURE
     end

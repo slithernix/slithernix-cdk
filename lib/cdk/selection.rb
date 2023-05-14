@@ -222,11 +222,11 @@ module CDK
             self.KEY_HOME
           when Curses::KEY_END
             self.KEY_END
-          when '$'.ord
+          when '$'
             @left_char = @max_left_char
           when '|'
             @left_char = 0
-          when ' '.ord
+          when ' '
             if @mode[@current_item] == 0
               if @selections[@current_item] == @choice_count - 1
                 @selections[@current_item] = 0
@@ -251,18 +251,18 @@ module CDK
             @screen.refresh
           end
         end
-  
+
         # Should we call a post-process?
         if !complete && !(@post_process_func.nil?)
           @post_process_func.call(:SELECTION, self, @post_process_data, input)
         end
       end
-  
+
       unless complete
         self.drawList(@box)
         self.setExitType(0)
       end
-  
+
       @result_data = ret
       self.fixCursorPosition
       return ret

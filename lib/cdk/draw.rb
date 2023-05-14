@@ -155,8 +155,8 @@ module CDK
 
         # Draw the line on the bottom.
         shadow_win.mvwhline(y_hi, 1, CDK::ACS_HLINE | Curses::A_DIM, x_hi)
-        
-        # Draw the line on teh right.
+
+        # Draw the line on the right.
         shadow_win.mvwvline(0, x_hi, CDK::ACS_VLINE | Curses::A_DIM, y_hi)
 
         shadow_win.mvwaddch(0, x_hi, CDK::ACS_URCORNER | Curses::A_DIM)

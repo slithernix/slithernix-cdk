@@ -184,7 +184,7 @@ module CDK
         @list_pos += [0]
         @list_len += [0]
         self.setupLine(list, @list_size)
-        
+
         @max_left_char = @widest_line - (@box_width - 2)
 
         # Increment the item count and zero out the next row.
@@ -398,13 +398,13 @@ module CDK
             @left_char = 0
           when Curses::KEY_END
             @left_char = @max_left_char + 1
-          when 'g'.ord, '1'.ord, '<'.ord
+          when 'g', '1', '<'
             @current_top = 0
-          when 'G'.ord, '>'.ord
+          when 'G', '>'
             @current_top = @max_top_line
-          when 'l'.ord, 'L'.ord
+          when 'l', 'L'
             self.loadInformation
-          when 's'.ord, 'S'.ord
+          when 's', 'S'
             self.saveInformation
           when CDK::KEY_TAB, CDK::KEY_RETURN, Curses::KEY_ENTER
             self.setExitType(input)

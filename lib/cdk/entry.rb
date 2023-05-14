@@ -202,9 +202,9 @@ module CDK
 
       # Set the exit type
       self.setExitType(0)
-      
-      # Refresh the widget field.
-      self.drawField
+
+      # Refresh the widget field. This seems useless?
+      #self.drawField
 
       unless @pre_process_func.nil?
         pp_return = @pre_process_func.call(:ENTRY, self,
@@ -247,7 +247,7 @@ module CDK
               self.drawField
             else
               @screen_col -= 1
-              @field_win.move(0, @screen_col)
+              #@field_win.move(0, @screen_col)
             end
           when Curses::KEY_RIGHT
             if curr_pos >= @info.size
@@ -259,7 +259,7 @@ module CDK
             else
               # Move right.
               @screen_col += 1
-              @field_win.move(0, @screen_col)
+              #@field_win.move(0, @screen_col)
             end
           when Curses::KEY_BACKSPACE, Curses::KEY_DC
             if @disp_type == :VIEWONLY
@@ -279,7 +279,7 @@ module CDK
                   success = true
                 end
               end
-              
+
               if success
                 if input == Curses::KEY_BACKSPACE
                   if @screen_col > 0
@@ -360,7 +360,7 @@ module CDK
       self.move_specific(xplace, yplace, relative, refresh_flag,
           windows, [])
     end
-    
+
     # This erases the information in the entry field and redraws
     # a clean and empty entry field.
     def clean
@@ -421,7 +421,7 @@ module CDK
             @field_win.mvwaddch(0, x - @left_char, @info[x].ord | @field_attr)
           end
         end
-        @field_win.move(0, @screen_col)
+        #@field_win.move(0, @screen_col)
       end
 
       @field_win.refresh
@@ -536,7 +536,7 @@ module CDK
     end
 
     def focus
-      @field_win.move(0, @screen_col)
+      #@field_win.move(0, @screen_col)
       @field_win.refresh
     end
 

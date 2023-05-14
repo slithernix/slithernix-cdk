@@ -129,7 +129,7 @@ module CDK
       ypos = self.SCREEN_YPOS(@current_item - @current_top)
       xpos = self.SCREEN_XPOS(0) + scrollbar_adj
 
-      @input_window.move(ypos, xpos)
+      #@input_window.move(ypos, xpos)
       @input_window.refresh
     end
 
@@ -205,11 +205,11 @@ module CDK
             self.KEY_HOME
           when Curses::KEY_END
             self.KEY_END
-          when '$'.ord
+          when '$'
             @left_char = @max_left_char
-          when '|'.ord
+          when '|'
             @left_char = 0
-          when ' '.ord
+          when ' '
             @selected_item = @current_item
           when CDK::KEY_ESC
             self.setExitType(input)

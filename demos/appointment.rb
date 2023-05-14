@@ -123,7 +123,7 @@ class Appointment
 
     # Read the appointment book information.
     readAppointmentFile(filename, appointment_info)
-    
+
     # Set up CDK
     curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)

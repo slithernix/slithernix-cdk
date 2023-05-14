@@ -78,7 +78,7 @@ class CalendarExample < Example
       # Exit CDK.
       cdkscreen.destroy
       CDK::SCREEN.endCDK
-    
+
       puts 'Cannot create the calendar. Is the window too small?'
       exit  # EXIT_FAILURE
     end

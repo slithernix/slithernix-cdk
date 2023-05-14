@@ -239,7 +239,7 @@ module CDK
           # Update the screen.
           matrix.CurMatrixCell.move(1,
               matrix.info[matrix.row][matrix.col].size + 1)
-          matrix.CurMatrixCell.waddch(
+          matrix.CurMatrixCell.addch(
               if Display.isHiddenDisplayType(disptype)
               then matrix.filler
               else plainchar
@@ -623,7 +623,7 @@ module CDK
       disptype = @colvalues[@col]
       highlight = @highlight
       infolen = @info[@row][@col].size
-      
+
       # Given the dominance of the color/attributes, we need to set the
       # current cell attribute.
       if @dominant == CDK::ROW

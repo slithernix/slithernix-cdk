@@ -174,8 +174,12 @@ module CDK
     end
 
     # Move the cursor to the given edit-position
+    # Once again, I cannot figure out why this move method is called
+    # and removing the call fixes the widget.
     def moveToEditPosition(new_position)
-      return @field_win.move(0, @field_width - new_position - 1)
+      #return @field_win.move(0, @field_width - new_position - 1)
+      #return @field_win.move(24, @field_width - new_position - 1)
+      @field_win
     end
 
     # Check if the cursor is on a valid edit-position. This must be one of
@@ -187,7 +191,7 @@ module CDK
       if self.moveToEditPosition(new_position) == Curses::Error
         return false
       end
-      ch = @field_win.winch
+      ch = @field_win.inch
       if ch.chr != ' '
         return true
       end
@@ -196,7 +200,7 @@ module CDK
         if self.moveToEditPosition(new_position - 1) == Curses::Error
           return false
         end
-        ch = @field_win.winch
+        ch = @field_win.inch
         return ch.chr != ' '
       end
       return false
@@ -346,13 +350,13 @@ module CDK
               # The cursor is not within the editable text. Interpret
               # input as commands.
               case input
-              when 'd'.ord, '-'.ord
+              when 'd', '-'
                 return self.inject(Curses::KEY_DOWN)
-              when '+'.ord
+              when '+'
                 return self.inject(Curses::KEY_UP)
-              when 'D'.ord
+              when 'D'
                 return self.inject(Curses::KEY_NPAGE)
-              when '0'.ord
+              when '0'
                 return self.inject(Curses::KEY_HOME)
               else
                 CDK.Beep
@@ -438,7 +442,7 @@ module CDK
     def destroy
       self.cleanTitle
       @label = []
-      
+
       # Clean up the windows.
       CDK.deleteCursesWindow(@field_win)
       CDK.deleteCursesWindow(@label_win)

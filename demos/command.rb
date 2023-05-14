@@ -60,7 +60,7 @@ class Command
     if opts['t']
       title = opts['t']
     end
-    
+
     # Set up CDK
     curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)

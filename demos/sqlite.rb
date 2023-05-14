@@ -63,7 +63,7 @@ class SQLiteDemo
         '',
         '<C>Type </B>help<!B> to get help.',
     ]
-    
+
     # Display the message.
     screen.popupLabel(mesg, mesg.size)
   end

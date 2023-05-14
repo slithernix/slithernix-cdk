@@ -171,7 +171,7 @@ module CDK
 
       junk1 = []
       junk2 = []
-      
+
       # Convert the value of the environment variable to a chtype
       holder = CDK.char2Chtype(color, junk1, junk2)
 
@@ -184,7 +184,7 @@ module CDK
       if !title.nil? 
         temp = title.split("\n")
         @title_lines = temp.size
-        
+
         if box_width >= 0
           max_width = 0
           temp.each do |line|
@@ -240,7 +240,7 @@ module CDK
       @post_process_func = fn
       @post_process_data = data
     end
-    
+
     # Set the object's exit-type based on the input.
     # The .exitType field should have been part of the CDKOBJS struct, but it
     # is used too pervasively in older applications to move (yet).
@@ -269,9 +269,6 @@ module CDK
       cdktype = self.object_type
       test = self.bindableObject(cdktype)
       result = @input_window.getch
-      #Curses.close_screen
-      #binding.pry
-      #Curses.refresh
 
       if result.ord >= 0 && !(test.nil?) && test.binding_list.include?(result) &&
           test.binding_list[result][0] == :getc
@@ -279,13 +276,13 @@ module CDK
       elsif test.nil? || !(test.binding_list.include?(result)) ||
           test.binding_list[result][0].nil?
         case result
-        when "\r".ord, "\n".ord
+        when "\r", "\n"
           result = Curses::KEY_ENTER
-        when "\t".ord
+        when "\t"
           result = CDK::KEY_TAB
         when CDK::DELETE
           result = Curses::KEY_DC
-        when "\b".ord
+        when "\b"
           result = Curses::KEY_BACKSPACE
         when CDK::BEGOFLINE
           result = Curses::KEY_HOME
@@ -389,68 +386,68 @@ module CDK
       while !([CDK::KEY_RETURN, Curses::KEY_ENTER].include?(
           key = self.getch([])))
         case key
-        when Curses::KEY_UP, '8'.ord
+        when Curses::KEY_UP, '8'
           if win.begy > beg_y
             self.move(0, -1, true, true)
           else
             CDK.Beep
           end
-        when Curses::KEY_DOWN, '2'.ord
+        when Curses::KEY_DOWN, '2'
           if (win.begy + win.maxy) < end_y
             self.move(0, 1, true, true)
           else
             CDK.Beep
           end
-        when Curses::KEY_LEFT, '4'.ord
+        when Curses::KEY_LEFT, '4'
           if win.begx > beg_x
             self.move(-1, 0, true, true)
           else
             CDK.Beep
           end
-        when Curses::KEY_RIGHT, '6'.ord
+        when Curses::KEY_RIGHT, '6'
           if (win.begx + win.maxx) < end_x
             self.move(1, 0, true, true)
           else
             CDK.Beep
           end
-        when '7'.ord
+        when '7'
           if win.begy > beg_y && win.begx > beg_x
             self.move(-1, -1, true, true)
           else
             CDK.Beep
           end
-        when '9'.ord
+        when '9'
           if (win.begx + win.maxx) < end_x && win.begy > beg_y
             self.move(1, -1, true, true)
           else
             CDK.Beep
           end
-        when '1'.ord
+        when '1'
           if win.begx > beg_x && (win.begy + win.maxy) < end_y
             self.move(-1, 1, true, true)
           else
             CDK.Beep
           end
-        when '3'.ord
+        when '3'
           if (win.begx + win.maxx) < end_x &&
               (win.begy + win.maxy) < end_y
             self.move(1, 1, true, true)
           else
             CDK.Beep
           end
-        when '5'.ord
+        when '5'
           self.move(CDK::CENTER, CDK::CENTER, false, true)
-        when 't'.ord
+        when 't'
           self.move(win.begx, CDK::TOP, false, true)
-        when 'b'.ord
+        when 'b'
           self.move(win.begx, CDK::BOTTOM, false, true)
-        when 'l'.ord
+        when 'l'
           self.move(CDK::LEFT, win.begy, false, true)
-        when 'r'.ord
+        when 'r'
           self.move(CDK::RIGHT, win.begy, false, true)
-        when 'c'.ord
+        when 'c'
           self.move(CDK::CENTER, win.begy, false, true)
-        when 'C'.ord
+        when 'C'
           self.move(win.begx, CDK::CENTER, false, true)
         when CDK::REFRESH
           @screen.erase

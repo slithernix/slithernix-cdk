@@ -18,9 +18,9 @@ module CDK
         "UHMIXED"  => :UHMIXED,
         "LHMIXED"  => :LHMIXED,
         "VIEWONLY" => :VIEWONLY,
-        0          => :INVALID 
+        0          => :INVALID,
       }
- 
+
       if table.include?(string)
         table[string]
       else

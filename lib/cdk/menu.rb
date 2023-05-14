@@ -19,7 +19,7 @@ module CDK
       xpos = cdkscreen.window.begx
       ypos = cdkscreen.window.begy
       ymax = cdkscreen.window.maxy
-      
+
       # Start making a copy of the information.
       @screen = cdkscreen
       @box = false
@@ -240,7 +240,7 @@ module CDK
             self.acrossSubmenus(1)
           when Curses::KEY_UP
             self.withinSubmenu(-1)
-          when Curses::KEY_DOWN, ' '.ord
+          when Curses::KEY_DOWN, ' '
             self.withinSubmenu(1)
           when Curses::KEY_ENTER, CDK::KEY_RETURN
             self.cleanUpMenu
@@ -440,7 +440,7 @@ module CDK
       end
       return within
     end
-          
+
     def object_type
       :MENU
     end

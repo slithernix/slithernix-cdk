@@ -38,7 +38,7 @@ module CDK
 
       # Keep the box info, setting BorderOf()
       self.setBox(box)
-      
+
       padding = if mesg[-1] == ' ' then 0 else 1 end
 
       # Translate the string to a chtype array

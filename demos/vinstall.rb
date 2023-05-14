@@ -107,7 +107,7 @@ class Vinstall
     file_list.each do |file|
       file.strip!
     end
-    
+
     # Set up CDK
     curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)

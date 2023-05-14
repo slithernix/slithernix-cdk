@@ -33,7 +33,7 @@ module CDK
       # If the width is a negative value, the width will be COLS-width,
       # otherwise the width will be the given width
       box_width = CDK.setWidgetDimension(parent_width, width, 0)
-    
+
       box_width = self.setTitle(title, box_width)
 
       # Set the box height.
@@ -129,7 +129,7 @@ module CDK
       end
 
       cdkscreen.register(:SCROLL, self);
-      
+
       return self
     end
 
@@ -342,7 +342,7 @@ module CDK
           @toggle_pos = (@current_item * @step).floor
 
           # Make sure the toggle button doesn't go out of bounds.
-          
+
           if @toggle_pos >= @scrollbar_win.maxy
             @toggle_pos = @scrollbar_win.maxy - 1
           end
@@ -598,7 +598,7 @@ module CDK
         self.setPosition(@current_item)
       end
     end
-    
+
     def focus
       self.drawCurrent
       @list_win.refresh
@@ -850,64 +850,64 @@ module CDK
       # Let them move the widget around until they hit return
       while key != Curses::KEY_ENTER && key != CDK::KEY_RETURN
         key = self.getch([])
-        if key == Curses::KEY_UP || key == '8'.ord
+        if key == Curses::KEY_UP || key == '8'
           if @win.begy > 0
             self.move(0, -1, true, true)
           else
             CDK.Beep
           end
-        elsif key == Curses::KEY_DOWN || key == '2'.ord
+        elsif key == Curses::KEY_DOWN || key == '2'
           if @win.begy + @win.maxy < @screen.window.maxy - 1
             self.move(0, 1, true, true)
           else
             CDK.Beep
           end
-        elsif key == Curses::KEY_LEFT || key == '4'.ord
+        elsif key == Curses::KEY_LEFT || key == '4'
           if @win.begx > 0
             self.move(-1, 0, true, true)
           else
             CDK.Beep
           end
-        elsif key == Curses::KEY_RIGHT || key == '6'.ord
+        elsif key == Curses::KEY_RIGHT || key == '6'
           if @win.begx + @win.maxx < @screen.window.maxx - 1
             self.move(1, 0, true, true)
           else
             CDK.Beep
           end
-        elsif key == '7'.ord
+        elsif key == '7'
           if @win.begy > 0 && @win.begx > 0
             self.move(-1, -1, true, true)
           else
             CDK.Beep
           end
-        elsif key == '9'.ord
+        elsif key == '9'
           if @win.begx + @win.maxx < @screen.window.maxx - 1 &&
               @win.begy > 0
             self.move(1, -1, true, true)
           else
             CDK.Beep
           end
-        elsif key == '1'.ord
+        elsif key == '1'
           if @win.begx > 0 &&
               @win.begx + @win.maxx < @screen.window.maxx - 1
             self.move(-1, 1, true, true)
           else
             CDK.Beep
           end
-        elsif key == '3'.ord
+        elsif key == '3'
           if @win.begx + @win.maxx < @screen.window.maxx - 1 &&
               @win.begy + @win.maxy < @screen.window.maxy - 1
             self.move(1, 1, true, true)
           else
             CDK.Beep
           end
-        elsif key == '5'.ord
+        elsif key == '5'
           self.move(CDK::CENTER, CDK::CENTER, false, true)
-        elsif key == 't'.ord
+        elsif key == 't'
           self.move(@win.begx, CDK::TOP, false, true)
-        elsif key == 'b'.ord
+        elsif key == 'b'
           self.move(@win.begx, CDK::BOTTOM, false, true)
-        elsif key == 'l'.ord
+        elsif key == 'l'
           self.move(CDK::LEFT, @win.begy, false, true)
         elsif key == 'r'
           self.move(CDK::RIGHT, @win.begy, false, true)
@@ -954,7 +954,7 @@ module CDK
         when Curses::Error
           self.setExitType(input)
           complete = true
-        when ' '.ord, CDK::KEY_RETURN, Curses::KEY_ENTER
+        when ' ', CDK::KEY_RETURN, Curses::KEY_ENTER
           unless @callback.nil?
             @callback.call(self)
           end

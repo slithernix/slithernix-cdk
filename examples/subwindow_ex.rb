@@ -64,7 +64,7 @@ class SubwindowExample < CLIExample
 
     # Refresh the screen.
     cdkscreen.refresh
-    
+
     # Let the user play.
     pick = dow_list.activate('')
 

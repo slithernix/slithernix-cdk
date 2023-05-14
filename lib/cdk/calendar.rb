@@ -237,13 +237,13 @@ module CDK
             self.incrementCalendarMonth(1)
           when Curses::KEY_PPAGE
             self.decrementCalendarMonth(1)
-          when 'N'.ord
+          when 'N'
             self.incrementCalendarMonth(6)
-          when 'P'.ord
+          when 'P'
             self.decrementCalendarMonth(6)
-          when '-'.ord
+          when '-'
             self.decrementCalendarYear(1)
-          when '+'.ord
+          when '+'
             self.incrementCalendarYear(1)
           when Curses::KEY_HOME
             self.setDate(-1, -1, -1)
@@ -406,7 +406,7 @@ module CDK
       month << @month
       year << @year
     end
-    
+
     # This sets the attribute of the days in the calendar.
     def setDayAttribute(attribute)
       @day_attrib = attribute

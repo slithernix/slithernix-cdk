@@ -36,7 +36,7 @@ class TemplateExample < Example
       # Exit CDK.
       cdkscreen.destroy
       CDK::SCREEN.endCDK
-    
+
       puts 'Cannot create template. Is the window too small?'
       exit  # EXIT_FAILURE
     end
@@ -55,7 +55,7 @@ class TemplateExample < Example
     elsif phone_number.exit_type == :NORMAL
       # Mix the plate and the number.
       mixed = phone_number.mix
-      
+
       # Create the message to display.
       # FIXME magic numbers
       mesg = [

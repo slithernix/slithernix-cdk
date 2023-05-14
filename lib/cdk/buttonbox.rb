@@ -176,7 +176,7 @@ module CDK
             else
               @current_button -= @rows
             end
-          when Curses::KEY_RIGHT, CDK::KEY_TAB, ' '.ord
+          when Curses::KEY_RIGHT, CDK::KEY_TAB, ' '
             if @current_button + @rows > last_button
               @current_button = first_button
             else
@@ -216,7 +216,7 @@ module CDK
         end
 
       end
-        
+
       unless complete
         self.drawButtons
         self.setExitType(0)

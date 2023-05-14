@@ -79,7 +79,7 @@ class RadioExample < CLIExample
 
     # Loop until the user selects a file, or cancels
     while true
-    
+
       # Activate the radio widget.
       selection = radio.activate([])
 

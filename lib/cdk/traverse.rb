@@ -42,7 +42,7 @@ module CDK
       curobj = nil
       n = getFocusIndex(screen)
       first = n
-      
+
       while true
         n+= 1
         if n >= screen.object_count

@@ -366,8 +366,8 @@ module CDK
       # Draw the histogram bar.
       (hist_x...@box_height - 1).to_a.each do |x|
         (1..hist_y).each do |y|
-          battr = @win.mvwinch(x, y)
-          
+          battr = @win.mvinch(x, y)
+
           if battr == ' '.ord
             @win.mvwaddch(x, y, @filler)
           else

@@ -407,7 +407,7 @@ module CDK
     # Draw the template field
     def drawField
       field_color = 0
-      
+
       # Draw in the label and the template object.
       unless @label_win.nil?
         Draw.writeChtype(@label_win, 0, 0, @label, CDK::HORIZONTAL,
@@ -431,7 +431,7 @@ module CDK
             pos += 1
           end
         end
-        @field_win.move(0, @screen_pos)
+        #@field_win.move(0, @screen_pos)
       else
         self.adjustCursor(1)
       end
@@ -445,7 +445,7 @@ module CDK
         @plate_pos += direction
         @screen_pos += direction
       end
-      @field_win.move(0, @screen_pos)
+      #@field_win.move(0, @screen_pos)
       @field_win.refresh
     end
 

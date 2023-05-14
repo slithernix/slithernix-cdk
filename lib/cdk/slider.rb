@@ -176,8 +176,9 @@ module CDK
 
     # Move the cursor to the given edit-position.
     def moveToEditPosition(new_position)
-      return @field_win.move(0,
-          @field_width + self.formattedSize(@current) - new_position)
+      #return @field_win.move(0,
+      #    @field_width + self.formattedSize(@current) - new_position)
+      @field_win
     end
 
     # Check if the cursor is on a valid edit-position. This must be one of
@@ -189,7 +190,7 @@ module CDK
       if self.moveToEditPosition(new_position) == Curses::Error
         return false
       end
-      ch = @field_win.winch
+      ch = @field_win.inch
       if CDK.CharOf(ch) != ' '
         return true
       end
@@ -198,7 +199,7 @@ module CDK
         if self.moveToEditPosition(new_position - 1) == Curses::Error
           return false
         end
-        ch = @field_win.winch
+        ch = @field_win.inch
         return CDK.CharOf(ch) != ' '
       end
       return false
@@ -350,13 +351,13 @@ module CDK
               # The cursor is not within the editable text. Interpret
               # input as commands.
             case input
-            when 'd'.ord, '-'.ord
+            when 'd', '-'
               return self.inject(Curses::KEY_DOWN)
-            when '+'.ord
+            when '+'
               return self.inject(Curses::KEY_UP)
-            when 'D'.ord
+            when 'D'
               return self.inject(Curses::KEY_NPAGE)
-            when '0'.ord
+            when '0'
               return self.inject(Curses::KEY_HOME)
             else
               CDK.Beep

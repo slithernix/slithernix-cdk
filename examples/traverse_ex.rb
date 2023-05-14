@@ -398,7 +398,7 @@ class TraverseExample < Example
     end 
     return 1
   end
-  
+
   # This demonstrates the Cdk widget-traversal
   def TraverseExample.main
     menulist = [['Left'], ['Center'], ['Right']]
