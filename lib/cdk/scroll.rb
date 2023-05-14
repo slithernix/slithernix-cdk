@@ -147,7 +147,8 @@ module CDK
       ypos = self.SCREEN_YPOS(@current_item - @current_top)
       xpos = self.SCREEN_XPOS(0) + scrollbar_adj
 
-      @input_window.move(ypos, xpos)
+      # Another .move that breaks a bunch of stuff!, BIGLY!!!
+      #@input_window.move(ypos, xpos)
       @input_window.refresh
     end
 
@@ -848,6 +849,7 @@ module CDK
       key = 0
 
       # Let them move the widget around until they hit return
+      # SUSPECT FOR BUG
       while key != Curses::KEY_ENTER && key != CDK::KEY_RETURN
         key = self.getch([])
         if key == Curses::KEY_UP || key == '8'
