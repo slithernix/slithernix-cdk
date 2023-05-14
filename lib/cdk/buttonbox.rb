@@ -295,9 +295,10 @@ module CDK
         end
       end
 
-      if cur_row >= 0 && cur_col >= 0
-        @win.move(cur_row, cur_col)
-      end
+      # This seems to just cause the window display to be all messed up
+      #if cur_row >= 0 && cur_col >= 0
+      #  @win.move(cur_row, cur_col)
+      #end
       @win.refresh
     end
 

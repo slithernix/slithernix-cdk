@@ -322,7 +322,7 @@ module CDK
       obj = self.bindableObject(type)
       if key.ord < Curses::KEY_MAX && !(obj.nil?)
         if key.ord != 0
-          obj.binding_list[key.ord] = [function, data]
+          obj.binding_list[key] = [function, data]
         end
       end
     end
