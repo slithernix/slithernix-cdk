@@ -10,19 +10,19 @@ module CDK
     end
 
     def drawField
-      @field_win.werase
+      @field_win.erase
 
       # Draw the value in the field.
       digits = [@digits, 30].min
       format = '%%.%if' % [digits]
       temp = format % [@current]
-      
+
       Draw.writeCharAttrib(@field_win,
           @field_width - temp.size - 1, 0, temp, @field_attr,
           CDK::HORIZONTAL, 0, temp.size)
 
       self.moveToEditPosition(@field_edit)
-      @field_win.wrefresh
+      @field_win.refresh
     end
 
     def setDigits(digits)

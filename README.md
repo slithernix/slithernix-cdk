@@ -1,5 +1,9 @@
-tawny-cdk
+snix-cdk
 ========
+
+This is a fork of tawny-cdk, a CDK port that wasn't updated for about
+a decade. In that time, Ruby changed and so did the Ncurses library
+for it. Below is the original README.md.
 
 A Ruby version of Thomas Dickey version of the curses development kit.
 

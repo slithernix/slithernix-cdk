@@ -7,7 +7,7 @@ class Clock
     box_label = OptionParser.getopts('b')['b']
 
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -34,8 +34,8 @@ class Clock
       exit  # EXIT_FAILURE
     end
 
-    Ncurses.curs_set(0)
-    demo.screen.window.wtimeout(50)
+    Curses.curs_set(0)
+    demo.screen.window.timeout = 50
 
     # Do this for a while
     begin
@@ -53,8 +53,8 @@ class Clock
 
       # Draw the label and sleep
       demo.draw(demo.box)
-      Ncurses.napms(500)
-    end while (demo.screen.window.wgetch) == Ncurses::ERR
+      Curses.napms(500)
+    end while (demo.screen.window.getch) == Curses::Error
 
     # Clean up
     demo.destroy

@@ -44,7 +44,7 @@ class MatrixExample < Example
     params = parse(ARGV)
 
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -77,7 +77,7 @@ class MatrixExample < Example
       # Exit CDK.
       cdkscreen.destroy
       CDK::SCREEN.endCDK
-    
+
       puts 'Cannot create the matrix widget. Is the window too small?'
       exit  # EXIT_FAILURE
     end

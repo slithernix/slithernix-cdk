@@ -4,7 +4,7 @@ require_relative '../lib/cdk'
 class StopSign
   def StopSign.main
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -36,17 +36,17 @@ class StopSign
       stop_sign.draw(true)
 
       key = stop_sign.getch([])
-      if key == CDK::KEY_ESC || key == 'q'.ord || key == 'Q'.ord
+      if key == CDK::KEY_ESC || key == 'q' || key == 'Q'
         break
-      elsif key == 'r'.ord || key == 'R'.ord
+      elsif key == 'r' || key == 'R'
         sign[0] = ' </B/16><#DI> '
         sign[1] = ' o '
         sign[2] = ' o '
-      elsif key == 'y'.ord || key == 'Y'.ord
+      elsif key == 'y' || key == 'Y'
         sign[0] = ' o '
         sign[1] = ' </B/32><#DI> '
         sign[2] = ' o '
-      elsif key == 'g'.ord || key == 'G'.ord
+      elsif key == 'g' || key == 'G'
         sign[0] = ' o '
         sign[1] = ' o '
         sign[2] = ' </B/24><#DI> '

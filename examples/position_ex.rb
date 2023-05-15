@@ -24,7 +24,7 @@ class PositionExample < Example
     params = parse(ARGV)
 
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -32,7 +32,7 @@ class PositionExample < Example
 
     # Create the entry field widget.
     directory = CDK::ENTRY.new(cdkscreen, params.x_value, params.y_value,
-        '', label, Ncurses::A_NORMAL, '.', :MIXED, params.w_value, 0, 256,
+        '', label, Curses::A_NORMAL, '.', :MIXED, params.w_value, 0, 256,
         params.box, params.shadow)
 
     # Is the widget nil?

@@ -9,13 +9,13 @@ module CDK
     def initialize(cdkscreen, xplace, yplace, title, label, field_attr, filler,
         disp_type, f_width, min, max, box, shadow)
       super()
-      parent_width = cdkscreen.window.getmaxx
-      parent_height = cdkscreen.window.getmaxy
+      parent_width = cdkscreen.window.maxx
+      parent_height = cdkscreen.window.maxy
       field_width = f_width
       box_width = 0
       xpos = xplace
       ypos = yplace
-      
+
       self.setBox(box)
       box_height = @border_size * 2 + 1
 
@@ -108,7 +108,7 @@ module CDK
       @callbackfn = lambda do |entry, character|
         plainchar = Display.filterByDisplayType(entry, character)
 
-        if plainchar == Ncurses::ERR || entry.info.size >= entry.max
+        if plainchar == Curses::Error || entry.info.size >= entry.max
           CDK.Beep
         else
           # Update the screen and pointer
@@ -202,9 +202,9 @@ module CDK
 
       # Set the exit type
       self.setExitType(0)
-      
-      # Refresh the widget field.
-      self.drawField
+
+      # Refresh the widget field. This seems useless?
+      #self.drawField
 
       unless @pre_process_func.nil?
         pp_return = @pre_process_func.call(:ENTRY, self,
@@ -220,9 +220,9 @@ module CDK
           curr_pos = @screen_col + @left_char
 
           case input
-          when Ncurses::KEY_UP, Ncurses::KEY_DOWN
+          when Curses::KEY_UP, Curses::KEY_DOWN
             CDK.Beep
-          when Ncurses::KEY_HOME
+          when Curses::KEY_HOME
             @left_char = 0
             @screen_col = 0
             self.drawField
@@ -235,10 +235,10 @@ module CDK
               @info[curr_pos + 1] = holder
               self.drawField
             end
-          when Ncurses::KEY_END
+          when Curses::KEY_END
             self.setPositionToEnd
             self.drawField
-          when Ncurses::KEY_LEFT
+          when Curses::KEY_LEFT
             if curr_pos <= 0
               CDK.Beep
             elsif @screen_col == 0
@@ -247,9 +247,9 @@ module CDK
               self.drawField
             else
               @screen_col -= 1
-              @field_win.wmove(0, @screen_col)
+              #@field_win.move(0, @screen_col)
             end
-          when Ncurses::KEY_RIGHT
+          when Curses::KEY_RIGHT
             if curr_pos >= @info.size
               CDK.Beep
             elsif @screen_col == @field_width - 1
@@ -259,14 +259,14 @@ module CDK
             else
               # Move right.
               @screen_col += 1
-              @field_win.wmove(0, @screen_col)
+              #@field_win.move(0, @screen_col)
             end
-          when Ncurses::KEY_BACKSPACE, Ncurses::KEY_DC
+          when Curses::KEY_BACKSPACE, Curses::KEY_DC
             if @disp_type == :VIEWONLY
               CDK.Beep
             else
               success = false
-              if input == Ncurses::KEY_BACKSPACE
+              if input == Curses::KEY_BACKSPACE
                 curr_pos -= 1
               end
 
@@ -274,14 +274,14 @@ module CDK
                 if curr_pos < @info.size
                   @info = @info[0...curr_pos] + @info[curr_pos+1..-1]
                   success = true
-                elsif input == Ncurses::KEY_BACKSPACE
+                elsif input == Curses::KEY_BACKSPACE
                   @info = @info[0...-1]
                   success = true
                 end
               end
-              
+
               if success
-                if input == Ncurses::KEY_BACKSPACE
+                if input == Curses::KEY_BACKSPACE
                   if @screen_col > 0
                     @screen_col -= 1
                   else
@@ -322,7 +322,7 @@ module CDK
             else
               CDK.Beep
             end
-          when CDK::KEY_TAB, CDK::KEY_RETURN, Ncurses::KEY_ENTER
+          when CDK::KEY_TAB, CDK::KEY_RETURN, Curses::KEY_ENTER
             if @info.size >= @min
               self.setExitType(input)
               ret = @info
@@ -330,7 +330,7 @@ module CDK
             else
               CDK.Beep
             end
-          when Ncurses::ERR
+          when Curses::Error
             self.setExitType(input)
             complete = true
           when CDK::REFRESH
@@ -360,7 +360,7 @@ module CDK
       self.move_specific(xplace, yplace, relative, refresh_flag,
           windows, [])
     end
-    
+
     # This erases the information in the entry field and redraws
     # a clean and empty entry field.
     def clean
@@ -376,7 +376,7 @@ module CDK
       @left_char = 0
 
       # Refresh the entry field.
-      @field_win.wrefresh
+      @field_win.refresh
     end
 
     # This draws the entry field.
@@ -393,13 +393,13 @@ module CDK
 
       self.drawTitle(@win)
 
-      @win.wrefresh
+      @win.refresh
 
       # Draw in the label to the widget.
       unless @label_win.nil?
         Draw.writeChtype(@label_win, 0, 0, @label, CDK::HORIZONTAL, 0,
             @label_len)
-        @label_win.wrefresh
+        @label_win.refresh
       end
 
       self.drawField
@@ -421,10 +421,10 @@ module CDK
             @field_win.mvwaddch(0, x - @left_char, @info[x].ord | @field_attr)
           end
         end
-        @field_win.wmove(0, @screen_col)
+        #@field_win.move(0, @screen_col)
       end
 
-      @field_win.wrefresh
+      @field_win.refresh
     end
 
     # This erases an entry widget from the screen.
@@ -526,7 +526,7 @@ module CDK
     def setHighlight(highlight, cursor)
       @field_win.wbkgd(highlight)
       @field_attr = highlight
-      Ncurses.curs_set(cursor)
+      Curses.curs_set(cursor)
       # FIXME(original) - if (cursor) { move the cursor to this widget }
     end
 
@@ -536,13 +536,13 @@ module CDK
     end
 
     def focus
-      @field_win.wmove(0, @screen_col)
-      @field_win.wrefresh
+      #@field_win.move(0, @screen_col)
+      @field_win.refresh
     end
 
     def unfocus
       self.draw(box)
-      @field_win.wrefresh
+      @field_win.refresh
     end
 
     def position

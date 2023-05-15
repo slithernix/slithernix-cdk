@@ -5,22 +5,22 @@ module CDK
     def initialize(cdkscreen, xplace, yplace, splace, height, width, title,
         list, list_size, choice_char, def_item, highlight, box, shadow)
       super()
-      parent_width = cdkscreen.window.getmaxx
-      parent_height = cdkscreen.window.getmaxy
+      parent_width = cdkscreen.window.maxx
+      parent_height = cdkscreen.window.maxy
       box_width = width
       box_height = height
       widest_item = 0
 
       bindings = {
-        CDK::BACKCHAR => Ncurses::KEY_PPAGE,
-        CDK::FORCHAR  => Ncurses::KEY_NPAGE,
-        'g'           => Ncurses::KEY_HOME,
-        '1'           => Ncurses::KEY_HOME,
-        'G'           => Ncurses::KEY_END,
-        '<'           => Ncurses::KEY_HOME,
-        '>'           => Ncurses::KEY_END,
+        CDK::BACKCHAR => Curses::KEY_PPAGE,
+        CDK::FORCHAR  => Curses::KEY_NPAGE,
+        'g'           => Curses::KEY_HOME,
+        '1'           => Curses::KEY_HOME,
+        'G'           => Curses::KEY_END,
+        '<'           => Curses::KEY_HOME,
+        '>'           => Curses::KEY_END,
       }
-      
+
       self.setBox(box)
 
       # If the height is a negative value, height will be ROWS-height,
@@ -69,7 +69,7 @@ module CDK
       ypos = ytmp[0]
 
       # Make the radio window
-      @win = Ncurses::WINDOW.new(@box_height, @box_width, ypos, xpos)
+      @win = Curses::Window.new(@box_height, @box_width, ypos, xpos)
 
       # Is the window nil?
       if @win.nil?
@@ -111,7 +111,7 @@ module CDK
 
       # Do we need to create the shadow?
       if shadow
-        @shadow_win = Ncurses::WINDOW.new(box_height, box_width + 1,
+        @shadow_win = Curses::Window.new(box_height, box_width + 1,
             ypos + 1, xpos + 1)
       end
 
@@ -129,8 +129,8 @@ module CDK
       ypos = self.SCREEN_YPOS(@current_item - @current_top)
       xpos = self.SCREEN_XPOS(0) + scrollbar_adj
 
-      @input_window.wmove(ypos, xpos)
-      @input_window.wrefresh
+      #@input_window.move(ypos, xpos)
+      @input_window.refresh
     end
 
     # This actually manages the radio widget.
@@ -189,36 +189,36 @@ module CDK
           complete = true
         else
           case input
-          when Ncurses::KEY_UP
+          when Curses::KEY_UP
             self.KEY_UP
-          when Ncurses::KEY_DOWN
+          when Curses::KEY_DOWN
             self.KEY_DOWN
-          when Ncurses::KEY_RIGHT
+          when Curses::KEY_RIGHT
             self.KEY_RIGHT
-          when Ncurses::KEY_LEFT
+          when Curses::KEY_LEFT
             self.KEY_LEFT
-          when Ncurses::KEY_PPAGE
+          when Curses::KEY_PPAGE
             self.KEY_PPAGE
-          when Ncurses::KEY_NPAGE
+          when Curses::KEY_NPAGE
             self.KEY_NPAGE
-          when Ncurses::KEY_HOME
+          when Curses::KEY_HOME
             self.KEY_HOME
-          when Ncurses::KEY_END
+          when Curses::KEY_END
             self.KEY_END
-          when '$'.ord
+          when '$'
             @left_char = @max_left_char
-          when '|'.ord
+          when '|'
             @left_char = 0
-          when ' '.ord
+          when ' '
             @selected_item = @current_item
           when CDK::KEY_ESC
             self.setExitType(input)
             ret = -1
             complete = true
-          when Ncurses::ERR
+          when Curses::Error
             self.setExitType(input)
             complete = true
-          when CDK::KEY_TAB, CDK::KEY_RETURN, Ncurses::KEY_ENTER
+          when CDK::KEY_TAB, CDK::KEY_RETURN, Curses::KEY_ENTER
             self.setExitType(input)
             ret = @selected_item
             complete = true
@@ -315,11 +315,11 @@ module CDK
 
       if @scrollbar
         @toggle_pos = (@current_item * @step).floor
-        @toggle_pos = [@toggle_pos, @scrollbar_win.getmaxy - 1].min
+        @toggle_pos = [@toggle_pos, @scrollbar_win.maxy - 1].min
 
-        @scrollbar_win.mvwvline(0, 0, Ncurses::ACS_CKBOARD,
-            @scrollbar_win.getmaxy)
-        @scrollbar_win.mvwvline(@toggle_pos, 0, ' '.ord | Ncurses::A_REVERSE,
+        @scrollbar_win.mvwvline(0, 0, CDK::ACS_CKBOARD,
+            @scrollbar_win.maxy)
+        @scrollbar_win.mvwvline(@toggle_pos, 0, ' '.ord | Curses::A_REVERSE,
             @toggle_size)
       end
 

@@ -7,7 +7,7 @@ class ButtonboxExample < Example
     buttons = [" OK ", " Cancel "]
 
     # Set up CDK.
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Start color.
@@ -15,7 +15,7 @@ class ButtonboxExample < Example
 
     # Create the entry widget.
     entry = CDK::ENTRY.new(cdkscreen, CDK::CENTER, CDK::CENTER,
-        "<C>Enter a name", "Name ", Ncurses::A_NORMAL, '.', :MIXED,
+        "<C>Enter a name", "Name ", Curses::A_NORMAL, '.', :MIXED,
         40, 0, 256, true, false)
 
     if entry.nil?
@@ -28,8 +28,8 @@ class ButtonboxExample < Example
 
     # Create the button box widget.
     button_widget = CDK::BUTTONBOX.new(cdkscreen,
-        entry.win.getbegx, entry.win.getbegy + entry.box_height - 1,
-        1, entry.box_width - 1, '', 1, 2, buttons, 2, Ncurses::A_REVERSE,
+        entry.win.begx, entry.win.begy + entry.box_height - 1,
+        1, entry.box_width - 1, '', 1, 2, buttons, 2, Curses::A_REVERSE,
         true, false)
 
     if button_widget.nil?
@@ -41,10 +41,10 @@ class ButtonboxExample < Example
     end
 
     # Set the lower left and right characters of the box.
-    entry.setLLchar(Ncurses::ACS_LTEE)
-    entry.setLRchar(Ncurses::ACS_RTEE)
-    button_widget.setULchar(Ncurses::ACS_LTEE)
-    button_widget.setURchar(Ncurses::ACS_RTEE)
+    entry.setLLchar(CDK::ACS_LTEE)
+    entry.setLRchar(CDK::ACS_RTEE)
+    button_widget.setULchar(CDK::ACS_LTEE)
+    button_widget.setURchar(CDK::ACS_RTEE)
 
     # Bind the Tab key in the entry field to send a
     # Tab key to the button box widget.
@@ -54,7 +54,7 @@ class ButtonboxExample < Example
     end
 
     entry.bind(:ENTRY, CDK::KEY_TAB, entryCB, button_widget)
-    
+
     # Activate the entry field.
     button_widget.draw(true)
     info = entry.activate('')

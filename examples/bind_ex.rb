@@ -20,7 +20,7 @@ class BindExample < Example
     params = parse(ARGV)
 
     # Set up CDK.
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Start color.
@@ -37,7 +37,7 @@ class BindExample < Example
 
     # Create the dialog box
     question = CDK::DIALOG.new(cdkscreen, params.x_value, params.y_value,
-        message, 3, buttons, 4, Ncurses::A_REVERSE, true,
+        message, 3, buttons, 4, Curses::A_REVERSE, true,
         params.box, params.shadow)
 
     # Check if we got a nil value back.

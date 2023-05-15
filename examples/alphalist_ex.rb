@@ -76,7 +76,7 @@ class AlphalistExample < CLIExample
     @@my_user_list = user_list.clone
 
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -88,7 +88,7 @@ class AlphalistExample < CLIExample
         title, label,
         if params.c then nil else user_list end,
         if params.c then 0 else user_size end,
-        '_', Ncurses::A_REVERSE, params.box, params.shadow)
+        '_', Curses::A_REVERSE, params.box, params.shadow)
 
     if alpha_list.nil?
       cdkscreen.destroy

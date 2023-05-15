@@ -6,8 +6,8 @@ module CDK
 
     def initialize(cdkscreen, xplace, yplace, mesg, rows, box, shadow)
       super()
-      parent_width = cdkscreen::window.getmaxx
-      parent_height = cdkscreen::window.getmaxy
+      parent_width = cdkscreen::window.maxx
+      parent_height = cdkscreen::window.maxy
       box_width = -2**30  # -INFINITY
       box_height = 0
       xpos = [xplace]
@@ -57,7 +57,7 @@ module CDK
       CDK.alignxy(cdkscreen.window, xpos, ypos, box_width, box_height)
       @screen = cdkscreen
       @parent = cdkscreen.window
-      @win = Ncurses::WINDOW.new(box_height, box_width, ypos[0], xpos[0])
+      @win = Curses::Window.new(box_height, box_width, ypos[0], xpos[0])
       @shadow_win = nil
       @xpos = xpos[0]
       @ypos = ypos[0]
@@ -77,7 +77,7 @@ module CDK
 
       # If a shadow was requested, then create the shadow window.
       if shadow
-        @shadow_win = Ncurses::WINDOW.new(box_height, box_width,
+        @shadow_win = Curses::Window.new(box_height, box_width,
             ypos[0] + 1, xpos[0] + 1)
       end
 
@@ -163,7 +163,7 @@ module CDK
       end
 
       # Refresh the window
-      @win.wrefresh
+      @win.refresh
     end
 
     # This erases the label widget
@@ -196,7 +196,7 @@ module CDK
         # Only exit when a specific key is hit
         while true
           code = self.getch(function_key)
-          if code == key.ord
+          if code == key
             break
           end
         end

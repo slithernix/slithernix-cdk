@@ -28,7 +28,7 @@ class MenuExample < Example
     ]
 
     # Set up CDK.
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Start color.
@@ -66,7 +66,7 @@ class MenuExample < Example
 
     # Create the menu.
     menu = CDK::MENU.new(cdkscreen, menu_list, 3, submenusize, menuloc,
-        CDK::TOP, Ncurses::A_UNDERLINE, Ncurses::A_REVERSE)
+        CDK::TOP, Curses::A_UNDERLINE, Curses::A_REVERSE)
 
     # Create the post process function
     display_callback = lambda do |cdktype, menu, info_box, key|

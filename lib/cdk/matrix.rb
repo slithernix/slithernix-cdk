@@ -14,8 +14,8 @@ module CDK
         title, rowtitles, coltitles, colwidths, colvalues, rspace, cspace,
         filler, dominant, box, box_cell, shadow)
       super()
-      parent_width = cdkscreen.window.getmaxx
-      parent_height = cdkscreen.window.getmaxy
+      parent_width = cdkscreen.window.maxx
+      parent_height = cdkscreen.window.maxy
       box_height = 0
       box_width = 0
       max_row_title_width = 0
@@ -27,8 +27,8 @@ module CDK
       have_rowtitles = false
       have_coltitles = false
       bindings = {
-          CDK::FORCHAR  => Ncurses::KEY_NPAGE,
-          CDK::BACKCHAR => Ncurses::KEY_PPAGE,
+          CDK::FORCHAR  => Curses::KEY_NPAGE,
+          CDK::BACKCHAR => Curses::KEY_PPAGE,
       }
 
       self.setBox(box)
@@ -123,7 +123,7 @@ module CDK
       ypos = ytmp[0]
 
       # Make the pop-up window.
-      @win = Ncurses::WINDOW.new(box_height, box_width, ypos, xpos)
+      @win = Curses::Window.new(box_height, box_width, ypos, xpos)
 
       if @win.nil?
         self.destroy
@@ -224,27 +224,27 @@ module CDK
       @oldvcol = 1
       @box_cell = box_cell
       @shadow = shadow
-      @highlight = Ncurses::A_REVERSE
+      @highlight = Curses::A_REVERSE
       @shadow_win = nil
       @callbackfn = lambda do |matrix, input|
         disptype = matrix.colvalues[matrix.col]
         plainchar = Display.filterByDisplayType(disptype, input)
         charcount = matrix.info[matrix.row][matrix.col].size
 
-        if plainchar == Ncurses::ERR
+        if plainchar == Curses::Error
           CDK.Beep
         elsif charcount == matrix.colwidths[matrix.col]
           CDK.Beep
         else
           # Update the screen.
-          matrix.CurMatrixCell.wmove(1,
+          matrix.CurMatrixCell.move(1,
               matrix.info[matrix.row][matrix.col].size + 1)
-          matrix.CurMatrixCell.waddch(
+          matrix.CurMatrixCell.addch(
               if Display.isHiddenDisplayType(disptype)
               then matrix.filler
               else plainchar
               end)
-          matrix.CurMatrixCell.wrefresh
+          matrix.CurMatrixCell.refresh
 
           # Update the info string
           matrix.info[matrix.row][matrix.col] =
@@ -266,7 +266,7 @@ module CDK
 
       # Do we want a shadow?
       if shadow
-        @shadow_win = Ncurses::WINDOW.new(box_height, box_width,
+        @shadow_win = Curses::Window.new(box_height, box_width,
             ypos + 1, xpos + 1)
       end
 
@@ -324,9 +324,9 @@ module CDK
 
       # Move the cursor to the correct position within the cell.
       if @colwidths[@ccol] == 1
-        self.CurMatrixCell.wmove(1, 1)
+        self.CurMatrixCell.move(1, 1)
       else
-        self.CurMatrixCell.wmove(1, @info[@row][@col].size + 1)
+        self.CurMatrixCell.move(1, @info[@row][@col].size + 1)
       end
 
       # Put the focus on the current cell.
@@ -347,9 +347,9 @@ module CDK
         else
           case input
           when CDK::TRANSPOSE
-          when Ncurses::KEY_HOME
-          when Ncurses::KEY_END
-          when Ncurses::KEY_BACKSPACE, Ncurses::KEY_DC
+          when Curses::KEY_HOME
+          when Curses::KEY_END
+          when Curses::KEY_BACKSPACE, Curses::KEY_DC
             if @colvalues[@col] == :VIEWONLY || charcount <= 0
               CDK.Beep
             else
@@ -357,10 +357,10 @@ module CDK
               self.CurMatrixCell.mvwdelch(1, charcount + 1)
               self.CurMatrixCell.mvwinsch(1, charcount + 1, @filler)
 
-              self.CurMatrixCell.wrefresh
+              self.CurMatrixCell.refresh
               @info[@row][@col] = @info[@row][@col][0...charcount]
             end
-          when Ncurses::KEY_RIGHT, CDK::KEY_TAB
+          when Curses::KEY_RIGHT, CDK::KEY_TAB
             if @ccol != @vcols
               # We are moving to the right...
               @col += 1
@@ -403,7 +403,7 @@ module CDK
                 end
               end
             end
-          when Ncurses::KEY_LEFT, Ncurses::KEY_BTAB
+          when Curses::KEY_LEFT, Curses::KEY_BTAB
             if @ccol != 1
               # We are moving to the left...
               @col -= 1
@@ -445,7 +445,7 @@ module CDK
                 end
               end
             end
-          when Ncurses::KEY_UP
+          when Curses::KEY_UP
             if @crow != 1
               @row -= 1
               @crow -= 1
@@ -465,7 +465,7 @@ module CDK
                 CDK.Beep
               end
             end
-          when Ncurses::KEY_DOWN
+          when Curses::KEY_DOWN
             if @crow != @vrows
               @row += 1
               @crow += 1
@@ -485,7 +485,7 @@ module CDK
                 CDK.Beep
               end
             end
-          when Ncurses::KEY_NPAGE
+          when Curses::KEY_NPAGE
             if @rows > @vrows
               if @trow + (@vrows - 1) * 2 <= @rows
                 @trow += @vrows - 1
@@ -499,7 +499,7 @@ module CDK
             else
               CDK.Beep
             end
-          when Ncurses::KEY_PPAGE
+          when Curses::KEY_PPAGE
             if @rows > @vrows
               if @trow - (@vrows - 1) * 2 >= 1
                 @trow -= @vrows - 1
@@ -533,28 +533,28 @@ module CDK
           when CDK::ERASE
             self.cleanCell(@trow + @crow - 1, @lcol + @ccol - 1)
             self.drawCurCell
-          when Ncurses::KEY_ENTER, CDK::KEY_RETURN
+          when Curses::KEY_ENTER, CDK::KEY_RETURN
             if !@box_cell
               Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
-                  ' '.ord, ' '.ord, ' '.ord, ' '.ord, Ncurses::A_NORMAL)
+                  ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
             else
               self.drawOldCell
             end
-            self.CurMatrixCell.wrefresh
+            self.CurMatrixCell.refresh
             self.setExitType(input)
             ret = 1
             complete = true
-          when Ncurses::ERR
+          when Curses::Error
             self.setExitType(input)
             complete = true
           when CDK::KEY_ESC
             if !@box_cell
               Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
-                  ' '.ord, ' '.ord, ' '.ord, ' '.ord, Ncurses::A_NORMAL)
+                  ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
             else
               self.drawOldCell
             end
-            self.CurMatrixCell.wrefresh
+            self.CurMatrixCell.refresh
             self.setExitType(input)
             complete = true
           when CDK::REFRESH
@@ -571,11 +571,11 @@ module CDK
             # un-highlight the old box
             if !@box_cell
               Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
-                  ' '.ord, ' '.ord, ' '.ord, ' '.ord, Ncurses::A_NORMAL)
+                  ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
             else
               self.drawOldCell
             end
-            @cell[@oldcrow][@oldccol].wrefresh
+            @cell[@oldcrow][@oldccol].refresh
 
             self.focusCurrent
           end
@@ -589,11 +589,11 @@ module CDK
           # Move to the correct position in the cell.
           if refresh_cells || moved_cell
             if @colwidths[@ccol] == 1
-              self.CurMatrixCell.wmove(1, 1)
+              self.CurMatrixCell.move(1, 1)
             else
-              self.CurMatrixCell.wmove(1, self.CurMatrixInfo.size + 1)
+              self.CurMatrixCell.move(1, self.CurMatrixInfo.size + 1)
             end
-            self.CurMatrixCell.wrefresh
+            self.CurMatrixCell.refresh
           end
 
           # Should we call a post-process?
@@ -623,13 +623,13 @@ module CDK
       disptype = @colvalues[@col]
       highlight = @highlight
       infolen = @info[@row][@col].size
-      
+
       # Given the dominance of the color/attributes, we need to set the
       # current cell attribute.
       if @dominant == CDK::ROW
-        highlight = (@rowtitle[@crow][0] || 0) & Ncurses::A_ATTRIBUTES
+        highlight = (@rowtitle[@crow][0] || 0) & Curses::A_ATTRIBUTES
       elsif @dominant == CDK::COL
-        highlight = (@coltitle[@ccol][0] || 0) & Ncurses::A_ATTRIBUTES
+        highlight = (@coltitle[@ccol][0] || 0) & Curses::A_ATTRIBUTES
       end
 
       # If the column is only one char.
@@ -640,8 +640,8 @@ module CDK
              end
         self.CurMatrixCell.mvwaddch(1, x, ch.ord | highlight)
       end
-      self.CurMatrixCell.wmove(1, infolen + 1)
-      self.CurMatrixCell.wrefresh
+      self.CurMatrixCell.move(1, infolen + 1)
+      self.CurMatrixCell.refresh
     end
 
     # This moves the matrix field to the given location.
@@ -662,7 +662,7 @@ module CDK
     # This draws a cell within a matrix.
     def drawCell(row, col, vrow, vcol, attr, box)
       disptype = @colvalues[@col]
-      highlight = @filler & Ncurses::A_ATTRIBUTES
+      highlight = @filler & Curses::A_ATTRIBUTES
       rows = @vrows
       cols = @vcols
       infolen = @info[vrow][vcol].size
@@ -670,9 +670,9 @@ module CDK
       # Given the dominance of the colors/attributes, we need to set the
       # current cell attribute.
       if @dominant == CDK::ROW
-        highlight = (@rowtitle[row][0] || 0) & Ncurses::A_ATTRIBUTES
+        highlight = (@rowtitle[row][0] || 0) & Curses::A_ATTRIBUTES
       elsif @dominant == CDK::COL
-        highlight = (@coltitle[col][0] || 0) & Ncurses::A_ATTRIBUTES
+        highlight = (@coltitle[col][0] || 0) & Curses::A_ATTRIBUTES
       end
 
       # Draw in the cell info.
@@ -684,8 +684,8 @@ module CDK
         @cell[row][col].mvwaddch(1, x, ch.ord | highlight)
       end
 
-      @cell[row][col].wmove(1, infolen + 1)
-      @cell[row][col].wrefresh
+      @cell[row][col].move(1, infolen + 1)
+      @cell[row][col].refresh
 
       # Only draw the box iff the user asked for a box.
       if !box
@@ -695,46 +695,46 @@ module CDK
       # If the value of the column spacing is greater than 0 then these
       # are independent boxes
       if @col_space != 0 && @row_space != 0
-        Draw.attrbox(@cell[row][col], Ncurses::ACS_ULCORNER,
-            Ncurses::ACS_URCORNER, Ncurses::ACS_LLCORNER,
-            Ncurses::ACS_LRCORNER, Ncurses::ACS_HLINE,
-            Ncurses::ACS_VLINE, attr)
+        Draw.attrbox(@cell[row][col], CDK::ACS_ULCORNER,
+            CDK::ACS_URCORNER, CDK::ACS_LLCORNER,
+            CDK::ACS_LRCORNER, CDK::ACS_HLINE,
+            CDK::ACS_VLINE, attr)
         return
       end
       if @col_space != 0 && @row_space == 0
         if row == 1
-          Draw.attrbox(@cell[row][col], Ncurses::ACS_ULCORNER,
-              Ncurses::ACS_URCORNER, Ncurses::ACS_LTEE,
-              Ncurses::ACS_RTEE, Ncurses::ACS_HLINE,
-              Ncurses::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], CDK::ACS_ULCORNER,
+              CDK::ACS_URCORNER, CDK::ACS_LTEE,
+              CDK::ACS_RTEE, CDK::ACS_HLINE,
+              CDK::ACS_VLINE, attr)
           return
         elsif row > 1 && row < rows
-          Draw.attrbox(@cell[row][col], Ncurses::ACS_LTEE, Ncurses::ACS_RTEE,
-              Ncurses::ACS_LTEE, Ncurses::ACS_RTEE, Ncurses::ACS_HLINE,
-              Ncurses::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], CDK::ACS_LTEE, CDK::ACS_RTEE,
+              CDK::ACS_LTEE, CDK::ACS_RTEE, CDK::ACS_HLINE,
+              CDK::ACS_VLINE, attr)
           return
         elsif row == rows
-          Draw.attrbox(@cell[row][col], Ncurses::ACS_LTEE, Ncurses::ACS_RTEE,
-              Ncurses::ACS_LLCORNER, Ncurses::ACS_LRCORNER, Ncurses::ACS_HLINE,
-              Ncurses::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], CDK::ACS_LTEE, CDK::ACS_RTEE,
+              CDK::ACS_LLCORNER, CDK::ACS_LRCORNER, CDK::ACS_HLINE,
+              CDK::ACS_VLINE, attr)
           return
         end
       end
       if @col_space == 0 && @row_space != 0
         if col == 1
-          Draw.attrbox(@cell[row][col], Ncurses::ACS_ULCORNER,
-              Ncurses::ACS_TTEE, Ncurses::ACS_LLCORNER, Ncurses::ACS_BTEE,
-              Ncurses::ACS_HLINE, Ncurses::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], CDK::ACS_ULCORNER,
+              CDK::ACS_TTEE, CDK::ACS_LLCORNER, CDK::ACS_BTEE,
+              CDK::ACS_HLINE, CDK::ACS_VLINE, attr)
           return
         elsif col > 1 && col < cols
-          Draw.attrbox(@cell[row][col], Ncurses::ACS_TTEE, Ncurses::ACS_TTEE,
-              Ncurses::ACS_BTEE, Ncurses::ACS_BTEE, Ncurses::ACS_HLINE,
-              Ncurses::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], CDK::ACS_TTEE, CDK::ACS_TTEE,
+              CDK::ACS_BTEE, CDK::ACS_BTEE, CDK::ACS_HLINE,
+              CDK::ACS_VLINE, attr)
           return
         elsif col == cols
-          Draw.attrbox(@cell[row][col], Ncurses::ACS_TTEE,
-              Ncurses::ACS_URCORNER,Ncurses::ACS_BTEE, Ncurses::ACS_LRCORNER,
-              Ncurses::ACS_HLINE, Ncurses::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], CDK::ACS_TTEE,
+              CDK::ACS_URCORNER,CDK::ACS_BTEE, CDK::ACS_LRCORNER,
+              CDK::ACS_HLINE, CDK::ACS_VLINE, attr)
           return
         end
       end
@@ -743,53 +743,53 @@ module CDK
       if row == 1
         if col == 1
           # Draw the top left corner
-          Draw.attrbox(@cell[row][col], Ncurses::ACS_ULCORNER,
-              Ncurses::ACS_TTEE, Ncurses::ACS_LTEE, Ncurses::ACS_PLUS,
-              Ncurses::ACS_HLINE, Ncurses::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], CDK::ACS_ULCORNER,
+              CDK::ACS_TTEE, CDK::ACS_LTEE, CDK::ACS_PLUS,
+              CDK::ACS_HLINE, CDK::ACS_VLINE, attr)
         elsif col > 1 && col < cols
           # Draw the top middle box
-          Draw.attrbox(@cell[row][col], Ncurses::ACS_TTEE, Ncurses::ACS_TTEE,
-              Ncurses::ACS_PLUS, Ncurses::ACS_PLUS, Ncurses::ACS_HLINE,
-              Ncurses::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], CDK::ACS_TTEE, CDK::ACS_TTEE,
+              CDK::ACS_PLUS, CDK::ACS_PLUS, CDK::ACS_HLINE,
+              CDK::ACS_VLINE, attr)
         elsif col == cols
           # Draw the top right corner
-          Draw.attrbox(@cell[row][col], Ncurses::ACS_TTEE,
-              Ncurses::ACS_URCORNER, Ncurses::ACS_PLUS, Ncurses::ACS_RTEE,
-              Ncurses::ACS_HLINE, Ncurses::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], CDK::ACS_TTEE,
+              CDK::ACS_URCORNER, CDK::ACS_PLUS, CDK::ACS_RTEE,
+              CDK::ACS_HLINE, CDK::ACS_VLINE, attr)
         end
       elsif row > 1 && row < rows
         if col == 1
           # Draw the middle left box
-          Draw.attrbox(@cell[row][col], Ncurses::ACS_LTEE, Ncurses::ACS_PLUS,
-              Ncurses::ACS_LTEE, Ncurses::ACS_PLUS, Ncurses::ACS_HLINE,
-              Ncurses::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], CDK::ACS_LTEE, CDK::ACS_PLUS,
+              CDK::ACS_LTEE, CDK::ACS_PLUS, CDK::ACS_HLINE,
+              CDK::ACS_VLINE, attr)
         elsif col > 1 && col < cols
           # Draw the middle box
-          Draw.attrbox(@cell[row][col], Ncurses::ACS_PLUS, Ncurses::ACS_PLUS,
-              Ncurses::ACS_PLUS, Ncurses::ACS_PLUS, Ncurses::ACS_HLINE,
-              Ncurses::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], CDK::ACS_PLUS, CDK::ACS_PLUS,
+              CDK::ACS_PLUS, CDK::ACS_PLUS, CDK::ACS_HLINE,
+              CDK::ACS_VLINE, attr)
         elsif col == cols
           # Draw the middle right box
-          Draw.attrbox(@cell[row][col], Ncurses::ACS_PLUS, Ncurses::ACS_RTEE,
-              Ncurses::ACS_PLUS, Ncurses::ACS_RTEE, Ncurses::ACS_HLINE,
-              Ncurses::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], CDK::ACS_PLUS, CDK::ACS_RTEE,
+              CDK::ACS_PLUS, CDK::ACS_RTEE, CDK::ACS_HLINE,
+              CDK::ACS_VLINE, attr)
         end
       elsif row == rows
         if col == 1
           # Draw the bottom left corner
-          Draw.attrbox(@cell[row][col], Ncurses::ACS_LTEE, Ncurses::ACS_PLUS,
-              Ncurses::ACS_LLCORNER, Ncurses::ACS_BTEE, Ncurses::ACS_HLINE,
-              Ncurses::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], CDK::ACS_LTEE, CDK::ACS_PLUS,
+              CDK::ACS_LLCORNER, CDK::ACS_BTEE, CDK::ACS_HLINE,
+              CDK::ACS_VLINE, attr)
         elsif col > 1 && col < cols
           # Draw the bottom middle box
-          Draw.attrbox(@cell[row][col], Ncurses::ACS_PLUS, Ncurses::ACS_PLUS,
-              Ncurses::ACS_BTEE, Ncurses::ACS_BTEE, Ncurses::ACS_HLINE,
-              Ncurses::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], CDK::ACS_PLUS, CDK::ACS_PLUS,
+              CDK::ACS_BTEE, CDK::ACS_BTEE, CDK::ACS_HLINE,
+              CDK::ACS_VLINE, attr)
         elsif col == cols
           # Draw the bottom right corner
-          Draw.attrbox(@cell[row][col], Ncurses::ACS_PLUS, Ncurses::ACS_RTEE,
-              Ncurses::ACS_BTEE, Ncurses::ACS_LRCORNER, Ncurses::ACS_HLINE,
-              Ncurses::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], CDK::ACS_PLUS, CDK::ACS_RTEE,
+              CDK::ACS_BTEE, CDK::ACS_LRCORNER, CDK::ACS_HLINE,
+              CDK::ACS_VLINE, attr)
         end
       end
 
@@ -799,12 +799,12 @@ module CDK
     def drawEachColTitle
       (1..@vcols).each do |x|
         unless @cell[0][x].nil?
-          @cell[0][x].werase
+          @cell[0][x].erase
           Draw.writeChtype(@cell[0][x],
               @coltitle_pos[@lcol + x - 1], 0,
               @coltitle[@lcol + x - 1], CDK::HORIZONTAL, 0,
               @coltitle_len[@lcol + x - 1])
-          @cell[0][x].wrefresh
+          @cell[0][x].refresh
         end
       end
     end
@@ -812,12 +812,12 @@ module CDK
     def drawEachRowTitle
       (1..@vrows).each do |x|
         unless @cell[x][0].nil?
-          @cell[x][0].werase
+          @cell[x][0].erase
           Draw.writeChtype(@cell[x][0],
               @rowtitle_pos[@trow + x - 1], 1,
               @rowtitle[@trow + x - 1], CDK::HORIZONTAL, 0,
               @rowtitle_len[@trow + x - 1])
-          @cell[x][0].wrefresh
+          @cell[x][0].refresh
         end
       end
     end
@@ -827,18 +827,18 @@ module CDK
       (1..@vrows).each do |x|
         (1..@vcols).each do |y|
           self.drawCell(x, y, @trow + x - 1, @lcol + y - 1,
-              Ncurses::A_NORMAL, @box_cell)
+              Curses::A_NORMAL, @box_cell)
         end
       end
     end
 
     def drawCurCell
-      self.drawCell(@crow, @ccol, @row, @col, Ncurses::A_NORMAL, @box_cell)
+      self.drawCell(@crow, @ccol, @row, @col, Curses::A_NORMAL, @box_cell)
     end
 
     def drawOldCell
       self.drawCell(@oldcrow, @oldccol, @oldvrow, @oldvcol,
-          Ncurses::A_NORMAL, @box_cell)
+          Curses::A_NORMAL, @box_cell)
     end
 
     # This function draws the matrix widget.
@@ -855,7 +855,7 @@ module CDK
 
       self.drawTitle(@win)
 
-      @win.wrefresh
+      @win.refresh
 
       self.drawEachColTitle
       self.drawEachRowTitle
@@ -960,7 +960,7 @@ module CDK
       if (row == -1) || (row > @rows)
         # Create the row scale widget.
         scale = CDK::SCALE.new(@screen, CDK::CENTER, CDK::CENTER,
-            '<C>Jump to which row.', '</5/B>Row: ', Ncurses::A_NORMAL,
+            '<C>Jump to which row.', '</5/B>Row: ', Curses::A_NORMAL,
             5, 1, 1, @rows, 1, 1, true, false)
 
         # Activate the scale and get the row.
@@ -972,7 +972,7 @@ module CDK
       if (col == -1) || (col > @cols)
         # Create the column scale widget.
         scale = CDK::SCALE.new(@screen, CDK::CENTER, CDK::CENTER,
-            '<C>Jump to which column', '</5/B>Col: ', Ncurses::A_NORMAL,
+            '<C>Jump to which column', '</5/B>Col: ', Curses::A_NORMAL,
             5, 1, 1, @cols, 1, 1, true, false)
 
         # Activate the scale and get the column.
@@ -1130,11 +1130,11 @@ module CDK
     end
 
     def focusCurrent
-      Draw.attrbox(self.CurMatrixCell, Ncurses::ACS_ULCORNER,
-          Ncurses::ACS_URCORNER, Ncurses::ACS_LLCORNER,
-          Ncurses::ACS_LRCORNER, Ncurses::ACS_HLINE,
-          Ncurses::ACS_VLINE, Ncurses::A_BOLD)
-      self.CurMatrixCell.wrefresh
+      Draw.attrbox(self.CurMatrixCell, CDK::ACS_ULCORNER,
+          CDK::ACS_URCORNER, CDK::ACS_LLCORNER,
+          CDK::ACS_LRCORNER, CDK::ACS_HLINE,
+          CDK::ACS_VLINE, Curses::A_BOLD)
+      self.CurMatrixCell.refresh
       self.highlightCell
     end
 

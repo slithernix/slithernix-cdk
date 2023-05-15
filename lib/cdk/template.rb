@@ -5,8 +5,8 @@ module CDK
     def initialize(cdkscreen, xplace, yplace, title, label, plate,
         overlay, box, shadow)
       super()
-      parent_width = cdkscreen.window.getmaxx
-      parent_height = cdkscreen.window.getmaxy
+      parent_width = cdkscreen.window.maxx
+      parent_height = cdkscreen.window.maxy
       box_width = 0
       box_height = if box then 3 else 1 end
       plate_len = 0
@@ -36,11 +36,11 @@ module CDK
         overlay_len = []
         @overlay = CDK.char2Chtype(overlay, overlay_len, [])
         @overlay_len = overlay_len[0]
-        @field_attr = @overlay[0] & Ncurses::A_ATTRIBUTES
+        @field_attr = @overlay[0] & Curses::A_ATTRIBUTES
       else
         @overlay = []
         @overlay_len = 0
-        @field_attr = Ncurses::A_NORMAL
+        @field_attr = Curses::A_NORMAL
       end
 
       # Set the box width.
@@ -66,7 +66,7 @@ module CDK
       ypos = ytmp[0]
 
       # Make the template window
-      @win = Ncurses::WINDOW.new(box_height, box_width, ypos, xpos)
+      @win = Curses::Window.new(box_height, box_width, ypos, xpos)
 
       # Is the template window nil?
       if @win.nil?
@@ -116,14 +116,14 @@ module CDK
         mark = @info_pos
         have = @info.size
 
-        if input == Ncurses::KEY_LEFT
+        if input == Curses::KEY_LEFT
           if mark != 0
             moveby = true
             amount = -1
           else
             failed = true
           end
-        elsif input == Ncurses::KEY_RIGHT
+        elsif input == Curses::KEY_RIGHT
           if mark < @info.size
             moveby = true
             amount = 1
@@ -132,7 +132,7 @@ module CDK
           end
         else
           test = @info.clone
-          if input == Ncurses::KEY_BACKSPACE
+          if input == Curses::KEY_BACKSPACE
             if mark != 0
               front = @info[0...mark-1] || ''
               back = @info[mark..-1] || ''
@@ -142,7 +142,7 @@ module CDK
             else
               failed = true
             end
-          elsif input == Ncurses::KEY_DC
+          elsif input == Curses::KEY_DC
             if mark < @info.size
               front = @info[0...mark] || ''
               back = @info[mark+1..-1] || ''
@@ -183,7 +183,7 @@ module CDK
 
       # Do we need to create a shadow?
       if shadow
-        @shadow_win = Ncurses::WINDOW.new(box_height, box_width,
+        @shadow_win = Curses::Window.new(box_height, box_width,
             ypos + 1, xpos + 1)
       end
 
@@ -274,7 +274,7 @@ module CDK
             else
               CDK.Beep
             end
-          when CDK::KEY_TAB, CDK::KEY_RETURN, Ncurses::KEY_ENTER
+          when CDK::KEY_TAB, CDK::KEY_RETURN, Curses::KEY_ENTER
             if @info.size < @min
               CDK.Beep
             else
@@ -285,7 +285,7 @@ module CDK
           when CDK::KEY_ESC
             self.setExitType(input)
             complete = true
-          when Ncurses::ERR
+          when Curses::Error
             self.setExitType(input)
             complete = true
           when CDK::REFRESH
@@ -399,7 +399,7 @@ module CDK
 
       self.drawTitle(@win)
 
-      @win.wrefresh
+      @win.refresh
 
       self.drawField
     end
@@ -407,12 +407,12 @@ module CDK
     # Draw the template field
     def drawField
       field_color = 0
-      
+
       # Draw in the label and the template object.
       unless @label_win.nil?
         Draw.writeChtype(@label_win, 0, 0, @label, CDK::HORIZONTAL,
             0, @label_len)
-        @label_win.wrefresh
+        @label_win.refresh
       end
 
       # Draw in the template
@@ -426,16 +426,16 @@ module CDK
         pos = 0
         (0...[@field_width, @plate.size].min).each do |x|
           if CDK::TEMPLATE.isPlateChar(@plate[x]) && pos < @info.size
-            field_color = @overlay[x] & Ncurses::A_ATTRIBUTES
+            field_color = @overlay[x] & Curses::A_ATTRIBUTES
             @field_win.mvwaddch(0, x, @info[pos].ord | field_color)
             pos += 1
           end
         end
-        @field_win.wmove(0, @screen_pos)
+        #@field_win.move(0, @screen_pos)
       else
         self.adjustCursor(1)
       end
-      @field_win.wrefresh
+      @field_win.refresh
     end
 
     # Adjust the cursor for the template
@@ -445,8 +445,8 @@ module CDK
         @plate_pos += direction
         @screen_pos += direction
       end
-      @field_win.wmove(0, @screen_pos)
-      @field_win.wrefresh
+      #@field_win.move(0, @screen_pos)
+      @field_win.refresh
     end
 
     # Set the background attribute of the widget.

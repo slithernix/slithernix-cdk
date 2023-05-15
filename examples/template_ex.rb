@@ -22,7 +22,7 @@ class TemplateExample < Example
     params = parse(ARGV)
 
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -36,7 +36,7 @@ class TemplateExample < Example
       # Exit CDK.
       cdkscreen.destroy
       CDK::SCREEN.endCDK
-    
+
       puts 'Cannot create template. Is the window too small?'
       exit  # EXIT_FAILURE
     end
@@ -55,7 +55,7 @@ class TemplateExample < Example
     elsif phone_number.exit_type == :NORMAL
       # Mix the plate and the number.
       mixed = phone_number.mix
-      
+
       # Create the message to display.
       # FIXME magic numbers
       mesg = [

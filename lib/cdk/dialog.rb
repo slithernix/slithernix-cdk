@@ -65,7 +65,7 @@ module CDK
       # Set up the dialog box attributes.
       @screen = cdkscreen
       @parent = cdkscreen.window
-      @win = Ncurses::WINDOW.new(box_height, box_width, ypos, xpos)
+      @win = Curses::Window.new(box_height, box_width, ypos, xpos)
       @shadow_win = nil
       @button_count = button_count
       @current_button = 0
@@ -100,7 +100,7 @@ module CDK
 
       # Was there a shadow?
       if shadow
-        @shadow_win = Ncurses::WINDOW.new(box_height, box_width,
+        @shadow_win = Curses::Window.new(box_height, box_width,
             ypos + 1, xpos + 1)
       end
 
@@ -119,7 +119,7 @@ module CDK
       Draw.writeChtypeAttrib(@win, @button_pos[@current_button],
           @box_height - 1 - @border_size, @button_label[@current_button],
           @highlight, CDK::HORIZONTAL, 0, @button_len[@current_button])
-      @win.wrefresh
+      @win.refresh
 
       if actions.nil? || actions.size == 0
         while true
@@ -170,19 +170,19 @@ module CDK
           complete = true
         else
           case input
-          when Ncurses::KEY_LEFT, Ncurses::KEY_BTAB, Ncurses::KEY_BACKSPACE
+          when Curses::KEY_LEFT, Curses::KEY_BTAB, Curses::KEY_BACKSPACE
             if @current_button == first_button
               @current_button = last_button
             else
               @current_button -= 1
             end
-          when Ncurses::KEY_RIGHT, CDK::KEY_TAB, ' '.ord
+          when Curses::KEY_RIGHT, CDK::KEY_TAB, ' '.ord
             if @current_button == last_button
               @current_button = first_button
             else
               @current_button += 1
             end
-          when Ncurses::KEY_UP, Ncurses::KEY_DOWN
+          when Curses::KEY_UP, Curses::KEY_DOWN
             CDK.Beep
           when CDK::REFRESH
             @screen.erase
@@ -190,9 +190,9 @@ module CDK
           when CDK::KEY_ESC
             self.setExitType(input)
             complete = true
-          when Ncurses::ERR
+          when Curses::Error
             self.setExitType(input)
-          when Ncurses::KEY_ENTER, CDK::KEY_RETURN
+          when Curses::KEY_ENTER, CDK::KEY_RETURN
             self.setExitType(input)
             ret = @current_button
             complete = true
@@ -208,7 +208,7 @@ module CDK
 
       unless complete
         self.drawButtons
-        @win.wrefresh
+        @win.refresh
         self.setExitType(0)
       end
 
@@ -243,7 +243,7 @@ module CDK
       # Draw in the buttons.
       self.drawButtons
 
-      @win.wrefresh
+      @win.refresh
     end
 
     # This function destroys the dialog widget.
@@ -312,12 +312,12 @@ module CDK
 
         (1...@box_width).each do |x|
           @win.mvwaddch(@box_height - 2 - @border_size, x,
-              Ncurses::ACS_HLINE | boxattr)
+              CDK::ACS_HLINE | boxattr)
         end
         @win.mvwaddch(@box_height - 2 - @border_size, 0,
-            Ncurses::ACS_LTEE | boxattr)
-        @win.mvwaddch(@box_height - 2 - @border_size, @win.getmaxx - 1,
-            Ncurses::ACS_RTEE | boxattr)
+            CDK::ACS_LTEE | boxattr)
+        @win.mvwaddch(@box_height - 2 - @border_size, @win.maxx - 1,
+            CDK::ACS_RTEE | boxattr)
       end
       Draw.writeChtypeAttrib(@win, @button_pos[@current_button],
           @box_height - 1 - @border_size, @button_label[@current_button],
@@ -345,8 +345,8 @@ module CDK
     def initialize(cdkscreen, xplace, yplace, height, width,
         title, xtitle, ytitle)
       super()
-      parent_width = cdkscreen.window.getmaxx
-      parent_height = cdkscreen.window.getmaxy
+      parent_width = cdkscreen.window.maxx
+      parent_height = cdkscreen.window.maxy
 
       self.setBox(false)
 
@@ -367,7 +367,7 @@ module CDK
       # Create the widget pointer
       @screen = cdkscreen
       @parent = cdkscreen.window
-      @win = Ncurses::WINDOW.new(box_height, box_width, ypos, xpos)
+      @win = Curses::Window.new(box_height, box_width, ypos, xpos)
       @box_height = box_height
       @box_width = box_width
       @minx = 0
@@ -576,16 +576,16 @@ module CDK
 
     # Move the graph field to the given location.
     def move(xplace, yplace, relative, refresh_flag)
-      current_x = @win.getbegx
-      current_y = @win.getbegy
+      current_x = @win.begx
+      current_y = @win.begy
       xpos = xplace
       ypos = yplace
 
       # If this is a relative move, then we will adjust where we want
       # to move to
       if relative
-        xpos = @win.getbegx + xplace
-        ypos = @win.getbegy + yplace
+        xpos = @win.begx + xplace
+        ypos = @win.begy + yplace
       end
 
       # Adjust the window if we need to.
@@ -616,7 +616,7 @@ module CDK
     def draw(box)
       adj = 2 + (if @xtitle.nil? || @xtitle.size == 0 then 0 else 1 end)
       spacing = 0
-      attrib = ' '.ord | Ncurses::A_REVERSE
+      attrib = ' '.ord | Curses::A_REVERSE
 
       if box
         Draw.drawObjBox(@win, self)
@@ -624,11 +624,11 @@ module CDK
 
       # Draw in the vertical axis
       Draw.drawLine(@win, 2, @title_lines + 1, 2, @box_height - 3,
-          Ncurses::ACS_VLINE)
+          CDK::ACS_VLINE)
 
       # Draw in the horizontal axis
       Draw.drawLine(@win, 3, @box_height - 3, @box_width, @box_height - 3,
-          Ncurses::ACS_HLINE)
+          CDK::ACS_HLINE)
 
       self.drawTitle(@win)
 
@@ -636,7 +636,7 @@ module CDK
       if !(@xtitle.nil?) && @xtitle.size > 0
         Draw.writeChtype(@win, 0, @xtitle_pos, @xtitle, CDK::VERTICAL,
             0, @xtitle_len)
-        attrib = @xtitle[0] & Ncurses::A_ATTRIBUTES
+        attrib = @xtitle[0] & Curses::A_ATTRIBUTES
       end
 
       # Draw in the X axis high value
@@ -666,7 +666,7 @@ module CDK
 
       # If the count is zero then there aren't any points.
       if @count == 0
-        @win.wrefresh
+        @win.refresh
         return
       end
 
@@ -677,7 +677,7 @@ module CDK
         colheight = (@values[y] / @xscale) - 1
         # Add the marker on the Y axis.
         @win.mvwaddch(@box_height - 3, (y + 1) * spacing + adj,
-            Ncurses::ACS_TTEE)
+            CDK::ACS_TTEE)
 
         # If this is a plot graph, all we do is draw a dot.
         if @display_type == :PLOT
@@ -695,12 +695,12 @@ module CDK
       end
 
       # Draw in the axis corners.
-      @win.mvwaddch(@title_lines, 2, Ncurses::ACS_URCORNER)
-      @win.mvwaddch(@box_height - 3, 2, Ncurses::ACS_LLCORNER)
-      @win.mvwaddch(@box_height - 3, @box_width, Ncurses::ACS_URCORNER)
+      @win.mvwaddch(@title_lines, 2, CDK::ACS_URCORNER)
+      @win.mvwaddch(@box_height - 3, 2, CDK::ACS_LLCORNER)
+      @win.mvwaddch(@box_height - 3, @box_width, CDK::ACS_URCORNER)
 
       # Refresh and lets see it
-      @win.wrefresh
+      @win.refresh
     end
 
     def destroy

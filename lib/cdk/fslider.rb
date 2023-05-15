@@ -16,7 +16,7 @@ module CDK
       # Determine how many filler characters need to be drawn.
       filler_characters = (@current - @low) * step
 
-      @field_win.werase
+      @field_win.erase
 
       # Add the character to the window.
       (0...filler_characters).each do |x|
@@ -29,10 +29,10 @@ module CDK
       temp = format % [@current]
 
       Draw.writeCharAttrib(@field_win, @field_width, 0, temp,
-          Ncurses::A_NORMAL, CDK::HORIZONTAL, 0, temp.size)
+          Curses::A_NORMAL, CDK::HORIZONTAL, 0, temp.size)
 
       self.moveToEditPosition(@field_edit)
-      @field_win.wrefresh
+      @field_win.refresh
     end
 
     def formattedSize(value)

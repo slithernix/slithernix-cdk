@@ -68,7 +68,7 @@ class FselectExample < CLIExample
     ]
 
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -76,8 +76,8 @@ class FselectExample < CLIExample
 
     # Get the filename.
     fselect = CDK::FSELECT.new(cdkscreen, params.x_value, params.y_value,
-        params.h_value, params.w_value, title, label, Ncurses::A_NORMAL,
-        '_', Ncurses::A_REVERSE, "</5>", "</48>", "</N>", "</N>",
+        params.h_value, params.w_value, title, label, Curses::A_NORMAL,
+        '_', Curses::A_REVERSE, "</5>", "</48>", "</N>", "</N>",
         params.box, params.shadow)
 
     if fselect.nil?
@@ -187,7 +187,7 @@ class FselectExample < CLIExample
 
     # Set the starting directory. This is not necessary because when
     # the file selector starts it uses the present directory as a default.
-    fselect.set(params.dir, Ncurses::A_NORMAL, ' ', Ncurses::A_REVERSE,
+    fselect.set(params.dir, Curses::A_NORMAL, ' ', Curses::A_REVERSE,
         "</5>", "</48>", "</N>", "</N>", fselect.box)
     @@my_user_list = fselect.getContents([]).clone
     @@my_undo_list = []
@@ -213,7 +213,7 @@ class FselectExample < CLIExample
 
     # Create the file viewer to view the file selected.
     example = CDK::VIEWER.new(cdkscreen, CDK::CENTER, CDK::CENTER, 20, -2,
-        button, 2, Ncurses::A_REVERSE, true, false)
+        button, 2, Curses::A_REVERSE, true, false)
 
     # Could we create the viewer widget?
     if example.nil?
@@ -241,7 +241,7 @@ class FselectExample < CLIExample
 
     # Set up the viewer title and the contents to the widget.
     vtitle = "<C></B/21>Filename:<!21></22>%20s<!22!B>" % [filename]
-    example.set(vtitle, info, lines, Ncurses::A_REVERSE, true, true, true)
+    example.set(vtitle, info, lines, Curses::A_REVERSE, true, true, true)
 
     # Destroy the file selector widget.
     fselect.destroy

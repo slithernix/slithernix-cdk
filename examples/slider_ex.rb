@@ -40,7 +40,7 @@ class SliderExample < Example
     params = parse(ARGV)
 
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -49,7 +49,7 @@ class SliderExample < Example
     # Create the widget
     widget = CDK::SLIDER.new(cdkscreen, params.x_value, params.y_value,
         title, label,
-        Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(29) | ' '.ord,
+        Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord,
         params.width, params.low, params.low, params.high, params.inc,
         (params.inc * 2), params.box, params.shadow)
 

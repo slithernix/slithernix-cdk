@@ -5,17 +5,17 @@ module CDK
     def initialize(cdkscreen, xplace, yplace, title, label, field_attr,
         field_width, start, low, high, inc, fast_inc, box, shadow)
       super()
-      parent_width = cdkscreen.window.getmaxx
-      parent_height = cdkscreen.window.getmaxy
+      parent_width = cdkscreen.window.maxx
+      parent_height = cdkscreen.window.maxy
       bindings = {
-          'u'           => Ncurses::KEY_UP,
-          'U'           => Ncurses::KEY_PPAGE,
-          CDK::BACKCHAR => Ncurses::KEY_PPAGE,
-          CDK::FORCHAR  => Ncurses::KEY_NPAGE,
-          'g'           => Ncurses::KEY_HOME,
-          '^'           => Ncurses::KEY_HOME,
-          'G'           => Ncurses::KEY_END,
-          '$'           => Ncurses::KEY_END,
+          'u'           => Curses::KEY_UP,
+          'U'           => Curses::KEY_PPAGE,
+          CDK::BACKCHAR => Curses::KEY_PPAGE,
+          CDK::FORCHAR  => Curses::KEY_NPAGE,
+          'g'           => Curses::KEY_HOME,
+          '^'           => Curses::KEY_HOME,
+          'G'           => Curses::KEY_END,
+          '$'           => Curses::KEY_END,
       }
 
       self.setBox(box)
@@ -62,7 +62,7 @@ module CDK
       ypos = ytmp[0]
 
       # Make the widget's window.
-      @win = Ncurses::WINDOW.new(box_height, box_width, ypos, xpos)
+      @win = Curses::Window.new(box_height, box_width, ypos, xpos)
 
       # Is the main window nil?
       if @win.nil?
@@ -114,7 +114,7 @@ module CDK
 
       # Do we want a shadow?
       if shadow
-        @shadow_win = Ncurses::WINDOW.new(box_height, box_width,
+        @shadow_win = Curses::Window.new(box_height, box_width,
             ypos + 1, xpos + 1)
         if @shadow_win.nil?
           self.destroy
@@ -174,8 +174,12 @@ module CDK
     end
 
     # Move the cursor to the given edit-position
+    # Once again, I cannot figure out why this move method is called
+    # and removing the call fixes the widget.
     def moveToEditPosition(new_position)
-      return @field_win.wmove(0, @field_width - new_position - 1)
+      #return @field_win.move(0, @field_width - new_position - 1)
+      #return @field_win.move(24, @field_width - new_position - 1)
+      @field_win
     end
 
     # Check if the cursor is on a valid edit-position. This must be one of
@@ -184,19 +188,19 @@ module CDK
       if new_position <= 0 || new_position >= @field_width
         return false
       end
-      if self.moveToEditPosition(new_position) == Ncurses::ERR
+      if self.moveToEditPosition(new_position) == Curses::Error
         return false
       end
-      ch = @field_win.winch
+      ch = @field_win.inch
       if ch.chr != ' '
         return true
       end
       if new_position > 1
         # Don't use recursion - only one level is wanted
-        if self.moveToEditPosition(new_position - 1) == Ncurses::ERR
+        if self.moveToEditPosition(new_position - 1) == Curses::Error
           return false
         end
-        ch = @field_win.winch
+        ch = @field_win.inch
         return ch.chr != ' '
       end
       return false
@@ -241,15 +245,15 @@ module CDK
       temp = ''
       col = need - @field_edit - 1
 
-      @field_win.wmove(0, base)
+      @field_win.move(0, base)
       @field_win.winnstr(temp, need)
       temp << ' '
       if CDK.isChar(input)  # Replace the char at the cursor
         temp[col] = input.chr
-      elsif input == Ncurses::KEY_BACKSPACE
+      elsif input == Curses::KEY_BACKSPACE
         # delete the char before the cursor
         modify = CDK::SCALE.removeChar(temp, col - 1)
-      elsif input == Ncurses::KEY_DC
+      elsif input == Curses::KEY_DC
         # delete the char at the cursor
         modify = CDK::SCALE.removeChar(temp, col)
       else
@@ -308,30 +312,30 @@ module CDK
           complete = true
         else
           case input
-          when Ncurses::KEY_LEFT
+          when Curses::KEY_LEFT
             self.setEditPosition(@field_edit + 1)
-          when Ncurses::KEY_RIGHT
+          when Curses::KEY_RIGHT
             self.setEditPosition(@field_edit - 1)
-          when Ncurses::KEY_DOWN
+          when Curses::KEY_DOWN
             @current = CDK::SCALE.Decrement(@current, @inc)
-          when Ncurses::KEY_UP
+          when Curses::KEY_UP
             @current = CDK::SCALE.Increment(@current, @inc)
-          when Ncurses::KEY_PPAGE
+          when Curses::KEY_PPAGE
             @current = CDK::SCALE.Increment(@current, @fastinc)
-          when Ncurses::KEY_NPAGE
+          when Curses::KEY_NPAGE
             @current = CDK::SCALE.Decrement(@current, @fastinc)
-          when Ncurses::KEY_HOME
+          when Curses::KEY_HOME
             @current = @low
-          when Ncurses::KEY_END
+          when Curses::KEY_END
             @current = @high
-          when CDK::KEY_TAB, CDK::KEY_RETURN, Ncurses::KEY_ENTER
+          when CDK::KEY_TAB, CDK::KEY_RETURN, Curses::KEY_ENTER
             self.setExitType(input)
             ret = @current
             complete = true
           when CDK::KEY_ESC
             self.setExitType(input)
             complete = true
-          when Ncurses::ERR
+          when Curses::Error
             self.setExitType(input)
             complete = true
           when CDK::REFRESH
@@ -346,14 +350,14 @@ module CDK
               # The cursor is not within the editable text. Interpret
               # input as commands.
               case input
-              when 'd'.ord, '-'.ord
-                return self.inject(Ncurses::KEY_DOWN)
-              when '+'.ord
-                return self.inject(Ncurses::KEY_UP)
-              when 'D'.ord
-                return self.inject(Ncurses::KEY_NPAGE)
-              when '0'.ord
-                return self.inject(Ncurses::KEY_HOME)
+              when 'd', '-'
+                return self.inject(Curses::KEY_DOWN)
+              when '+'
+                return self.inject(Curses::KEY_UP)
+              when 'D'
+                return self.inject(Curses::KEY_NPAGE)
+              when '0'
+                return self.inject(Curses::KEY_HOME)
               else
                 CDK.Beep
               end
@@ -403,9 +407,9 @@ module CDK
       unless @label_win.nil?
         Draw.writeChtype(@label_win, 0, 0, @label, CDK::HORIZONTAL,
             0, @label_len)
-        @label_win.wrefresh
+        @label_win.refresh
       end
-      @win.wrefresh
+      @win.refresh
 
       # Draw the field window.
       self.drawField
@@ -413,7 +417,7 @@ module CDK
 
     # This draws the widget.
     def drawField
-      @field_win.werase
+      @field_win.erase
 
       # Draw the value in the field.
       temp = @current.to_s
@@ -422,7 +426,7 @@ module CDK
           CDK::HORIZONTAL, 0, temp.size)
 
       self.moveToEditPosition(@field_edit)
-      @field_win.wrefresh
+      @field_win.refresh
     end
 
     # This sets the background attribute of teh widget.
@@ -438,7 +442,7 @@ module CDK
     def destroy
       self.cleanTitle
       @label = []
-      
+
       # Clean up the windows.
       CDK.deleteCursesWindow(@field_win)
       CDK.deleteCursesWindow(@label_win)

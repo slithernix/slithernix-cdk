@@ -18,9 +18,9 @@ module CDK
         "UHMIXED"  => :UHMIXED,
         "LHMIXED"  => :LHMIXED,
         "VIEWONLY" => :VIEWONLY,
-        0          => :INVALID 
+        0          => :INVALID,
       }
- 
+
       if table.include?(string)
         table[string]
       else
@@ -44,11 +44,11 @@ module CDK
     def Display.filterByDisplayType(type, input)
       result = input
       if !CDK.isChar(input)
-        result = Ncurses::ERR
+        result = Curses::Error
       elsif [:INT, :HINT].include?(type) && !CDK.digit?(result.chr)
-        result = Ncurses::ERR
+        result = Curses::Error
       elsif [:CHAR, :UCHAR, :LCHAR, :UHCHAR, :LHCHAR].include?(type) && CDK.digit?(result.chr)
-        result = Ncurses::ERR
+        result = Curses::Error
       elsif type == :VIEWONLY
         result = ERR
       elsif [:UCHAR, :UHCHAR, :UMIXED, :UHMIXED].include?(type) && CDK.alpha?(result.chr)

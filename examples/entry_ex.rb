@@ -20,7 +20,7 @@ class EntryExample < Example
     params = parse(ARGV)
 
     # Set up CDK.
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Start color.
@@ -28,7 +28,7 @@ class EntryExample < Example
 
     # Create the entry field widget.
     directory = CDK::ENTRY.new(cdkscreen, params.x_value, params.y_value,
-        title, label, Ncurses::A_NORMAL, '.', :MIXED, 40, 0, 256,
+        title, label, Curses::A_NORMAL, '.', :MIXED, 40, 0, 256,
         params.box, params.shadow)
 
     xxxcb = lambda do |cdktype, object, client_data, key|

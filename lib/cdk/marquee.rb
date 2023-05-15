@@ -7,7 +7,7 @@ module CDK
 
       @screen = cdkscreen
       @parent = cdkscreen.window
-      @win = Ncurses::WINDOW.new(1, 1, ypos, xpos)
+      @win = Curses::Window.new(1, 1, ypos, xpos)
       @active = true
       @width = width
       @shadow = shadow
@@ -38,7 +38,7 @@ module CDK
 
       # Keep the box info, setting BorderOf()
       self.setBox(box)
-      
+
       padding = if mesg[-1] == ' ' then 0 else 1 end
 
       # Translate the string to a chtype array
@@ -49,7 +49,7 @@ module CDK
       view_limit = @width - (2 * @border_size)
 
       # Start doing the marquee thing...
-      oldcurs = Ncurses.curs_set(0)
+      oldcurs = Curses.curs_set(0)
       while @active
         if first_time
           first_char = 0
@@ -67,7 +67,7 @@ module CDK
           @win.mvwaddch(@border_size, x, ch)
           y += 1
         end
-        @win.wrefresh
+        @win.refresh
 
         # Set my variables
         if mesg_length[0] < view_limit
@@ -112,17 +112,17 @@ module CDK
 
           # Time to start over.
           @win.mvwaddch(@border_size, @border_size, ' '.ord)
-          @win.wrefresh
+          @win.refresh
           first_time = true
         end
 
         # Now sleep
-        Ncurses.napms(delay * 10)
+        Curses.napms(delay * 10)
       end
       if oldcurs < 0
         oldcurs = 1
       end
-      Ncurses.curs_set(oldcurs)
+      Curses.curs_set(oldcurs)
       return 0
     end
 
@@ -152,7 +152,7 @@ module CDK
       end
 
       # Refresh the window.
-      @win.wrefresh
+      @win.refresh
     end
 
     # This destroys the widget.
@@ -178,8 +178,8 @@ module CDK
 
     # This sets the widgets box attribute.
     def setBox(box)
-      xpos = if @win.nil? then 0 else @win.getbegx end
-      ypos = if @win.nil? then 0 else @win.getbegy end
+      xpos = if @win.nil? then 0 else @win.begx end
+      ypos = if @win.nil? then 0 else @win.begy end
 
       super
 
@@ -196,12 +196,12 @@ module CDK
 
     # This sets the background attribute of the widget.
     def setBKattr(attrib)
-      Ncurses.wbkgd(@win, attrib)
+      Curses.wbkgd(@win, attrib)
     end
 
     def layoutWidget(xpos, ypos)
       cdkscreen = @screen
-      parent_width = @screen.window.getmaxx
+      parent_width = @screen.window.maxx
 
       CDK::MARQUEE.discardWin(@win)
       CDK::MARQUEE.discardWin(@shadow_win)
@@ -213,7 +213,7 @@ module CDK
       xtmp = [xpos]
       ytmp = [ypos]
       CDK.alignxy(@screen.window, xtmp, ytmp, box_width, box_height)
-      window = Ncurses::WINDOW.new(box_height, box_width, ytmp[0], xtmp[0])
+      window = Curses::Window.new(box_height, box_width, ytmp[0], xtmp[0])
 
       unless window.nil?
         @win = window
@@ -232,9 +232,9 @@ module CDK
 
     def self.discardWin(winp)
       unless winp.nil?
-        winp.werase
-        winp.wrefresh
-        winp.delwin
+        winp.erase
+        winp.refresh
+        winp.close
       end
     end
   end

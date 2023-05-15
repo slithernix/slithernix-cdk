@@ -7,14 +7,14 @@ module CDK
     def initialize(cdkscreen, xplace, yplace, height, width, title, label,
         list, list_size, filler_char, highlight, box, shadow)
       super()
-      parent_width = cdkscreen.window.getmaxx
-      parent_height = cdkscreen.window.getmaxy
+      parent_width = cdkscreen.window.maxx
+      parent_height = cdkscreen.window.maxy
       box_width = width
       box_height = height
       label_len = 0
       bindings = {
-        CDK::BACKCHAR => Ncurses::KEY_PPAGE,
-        CDK::FORCHAR  => Ncurses::KEY_NPAGE,
+        CDK::BACKCHAR => Curses::KEY_PPAGE,
+        CDK::FORCHAR  => Curses::KEY_NPAGE,
       }
 
       if !self.createList(list, list_size)
@@ -47,7 +47,7 @@ module CDK
       ypos = ytmp[0]
 
       # Make the file selector window.
-      @win = Ncurses::WINDOW.new(box_height, box_width, ypos, xpos)
+      @win = Curses::Window.new(box_height, box_width, ypos, xpos)
 
       if @win.nil?
         self.destroy
@@ -67,7 +67,7 @@ module CDK
 
       # Do we want a shadow?
       if shadow
-        @shadow_win = Ncurses::WINDOW.new(box_height, box_width,
+        @shadow_win = Curses::Window.new(box_height, box_width,
             ypos + 1, xpos + 1)
       end
 
@@ -76,15 +76,15 @@ module CDK
                     then CDK::FULL
                     else box_width - 2 - label_len
                     end
-      @entry_field = CDK::ENTRY.new(cdkscreen, @win.getbegx, @win.getbegy,
-          title, label, Ncurses::A_NORMAL, filler_char, :MIXED, temp_width,
+      @entry_field = CDK::ENTRY.new(cdkscreen, @win.begx, @win.begy,
+          title, label, Curses::A_NORMAL, filler_char, :MIXED, temp_width,
           0, 512, box, false)
       if @entry_field.nil?
         self.destroy
         return nil
       end
-      @entry_field.setLLchar(Ncurses::ACS_LTEE)
-      @entry_field.setLRchar(Ncurses::ACS_RTEE)
+      @entry_field.setLLchar(CDK::ACS_LTEE)
+      @entry_field.setLRchar(CDK::ACS_RTEE)
 
       # Callback functions
       adjust_alphalist_cb = lambda do |object_type, object, alphalist, key|
@@ -116,7 +116,7 @@ module CDK
           CDK.Beep
           return true
         end
-        
+
         # Look for a unique word match.
         index = CDK.searchList(alphalist.list, alphalist.list.size, entry.info)
 
@@ -132,7 +132,6 @@ module CDK
           entry.draw(entry.box)
           return true
         end
-
 
         # Ok, we found a match, is the next item similar?
         len = [entry.info.size, alphalist.list[index + 1].size].min
@@ -157,7 +156,7 @@ module CDK
           scrollp = CDK::SCROLL.new(entry.screen,
               CDK::CENTER, CDK::CENTER, CDK::RIGHT, height, -30,
               "<C></B/5>Possible Matches.", alt_words, alt_words.size,
-              true, Ncurses::A_REVERSE, true, false)
+              true, Curses::A_REVERSE, true, false)
 
           # Allow them to select a close match.
           match = scrollp.activate([])
@@ -184,7 +183,7 @@ module CDK
 
           # Move the highlight bar down to the selected value.
           (0...selected).each do |x|
-            alphalist.injectMyScroller(Ncurses::KEY_DOWN)
+            alphalist.injectMyScroller(Curses::KEY_DOWN)
           end
 
           # Redraw the alphalist.
@@ -208,12 +207,12 @@ module CDK
           result = 1  # Don't try to use this key in editing
         elsif (CDK.isChar(input) &&
             input.chr.match(/^[[:alnum:][:punct:]]$/)) ||
-            [Ncurses::KEY_BACKSPACE, Ncurses::KEY_DC].include?(input)
+            [Curses::KEY_BACKSPACE, Curses::KEY_DC].include?(input)
           index = 0
           curr_pos = entry.screen_col + entry.left_char
           pattern = entry.info.clone
-          if [Ncurses::KEY_BACKSPACE, Ncurses::KEY_DC].include?(input)
-            if input == Ncurses::KEY_BACKSPACE
+          if [Curses::KEY_BACKSPACE, Curses::KEY_DC].include?(input)
+            if input == Curses::KEY_BACKSPACE
               curr_pos -= 1
             end
             if curr_pos >= 0
@@ -247,10 +246,10 @@ module CDK
       end
 
       # Set the key bindings for the entry field.
-      @entry_field.bind(:ENTRY, Ncurses::KEY_UP, adjust_alphalist_cb, self)
-      @entry_field.bind(:ENTRY, Ncurses::KEY_DOWN, adjust_alphalist_cb, self)
-      @entry_field.bind(:ENTRY, Ncurses::KEY_NPAGE, adjust_alphalist_cb, self)
-      @entry_field.bind(:ENTRY, Ncurses::KEY_PPAGE, adjust_alphalist_cb, self)
+      @entry_field.bind(:ENTRY, Curses::KEY_UP, adjust_alphalist_cb, self)
+      @entry_field.bind(:ENTRY, Curses::KEY_DOWN, adjust_alphalist_cb, self)
+      @entry_field.bind(:ENTRY, Curses::KEY_NPAGE, adjust_alphalist_cb, self)
+      @entry_field.bind(:ENTRY, Curses::KEY_PPAGE, adjust_alphalist_cb, self)
       @entry_field.bind(:ENTRY, CDK::KEY_TAB, complete_word_cb, self)
 
       # Set up the post-process function for the entry field.
@@ -258,17 +257,17 @@ module CDK
 
       # Create the scrolling list.  It overlaps the entry field by one line if
       # we are using box-borders.
-      temp_height = @entry_field.win.getmaxy - @border_size
+      temp_height = @entry_field.win.maxy - @border_size
       temp_width = if CDK::ALPHALIST.isFullWidth(width)
                    then CDK::FULL
                    else box_width - 1
                    end
-      @scroll_field = CDK::SCROLL.new(cdkscreen, @win.getbegx,
-          @entry_field.win.getbegy + temp_height, CDK::RIGHT,
+      @scroll_field = CDK::SCROLL.new(cdkscreen, @win.begx,
+          @entry_field.win.begy + temp_height, CDK::RIGHT,
           box_height - temp_height, temp_width, '', list, list_size,
-          false, Ncurses::A_REVERSE, box, false)
-      @scroll_field.setULchar(Ncurses::ACS_LTEE)
-      @scroll_field.setURchar(Ncurses::ACS_RTEE)
+          false, Curses::A_REVERSE, box, false)
+      @scroll_field.setULchar(CDK::ACS_LTEE)
+      @scroll_field.setURchar(CDK::ACS_RTEE)
 
       # Setup the key bindings.
       bindings.each do |from, to|
@@ -548,7 +547,7 @@ module CDK
     end
 
     def self.isFullWidth(width)
-      width == CDK::FULL || (Ncurses.COLS != 0 && width >= Ncurses.COLS)
+      width == CDK::FULL || (Curses.cols != 0 && width >= Curses.cols)
     end
 
     def position

@@ -14,12 +14,12 @@ module CDK
       super()
 
       right_count = menu_items - 1
-      rightloc = cdkscreen.window.getmaxx
+      rightloc = cdkscreen.window.maxx
       leftloc = 0
-      xpos = cdkscreen.window.getbegx
-      ypos = cdkscreen.window.getbegy
-      ymax = cdkscreen.window.getmaxy
-      
+      xpos = cdkscreen.window.begx
+      ypos = cdkscreen.window.begy
+      ymax = cdkscreen.window.maxy
+
       # Start making a copy of the information.
       @screen = cdkscreen
       @box = false
@@ -169,9 +169,9 @@ module CDK
           @subsize[@current_title])
 
       if next_item != @current_subtitle
-        ymax = @screen.window.getmaxy
+        ymax = @screen.window.maxy
 
-        if 1 + @pull_win[@current_title].getbegy + @subsize[@current_title] >=
+        if 1 + @pull_win[@current_title].begy + @subsize[@current_title] >=
             ymax
           @current_subtitle = next_item
           self.drawSubwin
@@ -185,7 +185,7 @@ module CDK
           # Draw the new sub-title.
           self.selectItem(@current_subtitle, 0)
 
-          @pull_win[@current_title].wrefresh
+          @pull_win[@current_title].refresh
         end
 
         @input_window = @title_win[@current_title]
@@ -234,15 +234,15 @@ module CDK
           complete = true
         else
           case input
-          when Ncurses::KEY_LEFT
+          when Curses::KEY_LEFT
             self.acrossSubmenus(-1)
-          when Ncurses::KEY_RIGHT, CDK::KEY_TAB
+          when Curses::KEY_RIGHT, CDK::KEY_TAB
             self.acrossSubmenus(1)
-          when Ncurses::KEY_UP
+          when Curses::KEY_UP
             self.withinSubmenu(-1)
-          when Ncurses::KEY_DOWN, ' '.ord
+          when Curses::KEY_DOWN, ' '
             self.withinSubmenu(1)
-          when Ncurses::KEY_ENTER, CDK::KEY_RETURN
+          when Curses::KEY_ENTER, CDK::KEY_RETURN
             self.cleanUpMenu
             self.setExitType(input)
             @last_selection = @current_title * 100 + @current_subtitle
@@ -254,7 +254,7 @@ module CDK
             @last_selection = -1
             ret = @last_selection
             complete = true
-          when Ncurses::ERR
+          when Curses::Error
             self.setExitType(input)
             complete = true
           when CDK::REFRESH
@@ -279,7 +279,7 @@ module CDK
 
     # Draw a menu item subwindow
     def drawSubwin
-      high = @pull_win[@current_title].getmaxy - 2
+      high = @pull_win[@current_title].maxy - 2
       x0 = 0
       x1 = @subsize[@current_title]
 
@@ -294,12 +294,12 @@ module CDK
 
       # Box the window
       @pull_win[@current_title]
-      @pull_win[@current_title].box(Ncurses::ACS_VLINE, Ncurses::ACS_HLINE)
+      @pull_win[@current_title].box(CDK::ACS_VLINE, CDK::ACS_HLINE)
       if @menu_pos == CDK::BOTTOM
         @pull_win[@current_title].mvwaddch(@subsize[@current_title] + 1,
-            0, Ncurses::ACS_LTEE)
+            0, CDK::ACS_LTEE)
       else
-        @pull_win[@current_title].mvwaddch(0, 0, Ncurses::ACS_LTEE)
+        @pull_win[@current_title].mvwaddch(0, 0, CDK::ACS_LTEE)
       end
 
       # Draw the items.
@@ -308,13 +308,13 @@ module CDK
       end
 
       self.selectItem(@current_subtitle, x0)
-      @pull_win[@current_title].wrefresh
+      @pull_win[@current_title].refresh
 
       # Highlight the title.
       Draw.writeChtypeAttrib(@title_win[@current_title], 0, 0,
           @title[@current_title], @title_attr, CDK::HORIZONTAL,
           0, @title_len[@current_title])
-      @title_win[@current_title].wrefresh
+      @title_win[@current_title].refresh
     end
 
     # Erase a menu item subwindow
@@ -323,7 +323,7 @@ module CDK
 
       # Redraw the sub-menu title.
       self.drawTitle(@current_title)
-      @title_win[@current_title].wrefresh
+      @title_win[@current_title].refresh
     end
 
     # Draw the menu.
@@ -331,7 +331,7 @@ module CDK
       # Draw in the menu titles.
       (0...@menu_items).each do |x|
         self.drawTitle(x)
-        @title_win[x].wrefresh
+        @title_win[x].refresh
       end
     end
 
@@ -372,10 +372,10 @@ module CDK
     def erase
       if self.validCDKObject
         (0...@menu_items).each do |x|
-          @title_win[x].werase
-          @title_win[x].wrefresh
-          @pull_win[x].werase
-          @pull_win[x].wrefresh
+          @title_win[x].erase
+          @title_win[x].refresh
+          @pull_win[x].erase
+          @pull_win[x].refresh
         end
       end
     end
@@ -420,7 +420,7 @@ module CDK
     def cleanUpMenu
       # Erase the sub-menu.
       self.eraseSubwin
-      @pull_win[@current_title].wrefresh
+      @pull_win[@current_title].refresh
 
       # Refresh the screen.
       @screen.refresh
@@ -440,7 +440,7 @@ module CDK
       end
       return within
     end
-          
+
     def object_type
       :MENU
     end

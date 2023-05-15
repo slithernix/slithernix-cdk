@@ -63,7 +63,7 @@ class SQLiteDemo
         '',
         '<C>Type </B>help<!B> to get help.',
     ]
-    
+
     # Display the message.
     screen.popupLabel(mesg, mesg.size)
   end
@@ -130,7 +130,7 @@ class SQLiteDemo
     end
 
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     @@gp_cdk_screen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -153,10 +153,10 @@ class SQLiteDemo
         true, false)
 
     # Create the entry field.
-    width = Ncurses.COLS - prompt.size - 1
+    width = Curses.cols - prompt.size - 1
     command_entry = CDK::ENTRY.new(@@gp_cdk_screen, CDK::CENTER, CDK::BOTTOM,
-        '', prompt, Ncurses::A_BOLD | Ncurses.COLOR_PAIR(8),
-        Ncurses.COLOR_PAIR(24) | '_'.ord, :MIXED, width, 1, 512, false, false)
+        '', prompt, Curses::A_BOLD | Curses.color_pair(8),
+        Curses.color_pair(24) | '_'.ord, :MIXED, width, 1, 512, false, false)
 
     # Create the key bindings.
 
@@ -219,7 +219,7 @@ class SQLiteDemo
       # Create the scrolling list of previous commands.
       scroll_list = CDK::SCROLL.new(entry.screen, CDK::CENTER, CDK::CENTER,
           CDK::RIGHT, height, -10, '<C></B/29>Command History',
-          history.cmd_history, history.count, true, Ncurses::A_REVERSE,
+          history.cmd_history, history.count, true, Curses::A_REVERSE,
           true, false)
 
       # Get the command to execute.
@@ -249,8 +249,8 @@ class SQLiteDemo
       return true
     end
 
-    command_entry.bind(:ENTRY, Ncurses::KEY_UP, history_up_cb, history)
-    command_entry.bind(:ENTRY, Ncurses::KEY_DOWN, history_down_cb, history)
+    command_entry.bind(:ENTRY, Curses::KEY_UP, history_up_cb, history)
+    command_entry.bind(:ENTRY, Curses::KEY_DOWN, history_down_cb, history)
     command_entry.bind(:ENTRY, CDK.CTRL('^'), list_history_cb, history)
     command_entry.bind(:ENTRY, CDK::KEY_TAB, view_history_cb, command_output)
     command_output.bind(:SWINDOW, '?', swindow_help_cb, command_entry)

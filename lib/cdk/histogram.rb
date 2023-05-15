@@ -5,8 +5,8 @@ module CDK
     def initialize(cdkscreen, xplace, yplace, height, width, orient,
         title, box, shadow)
       super()
-      parent_width = cdkscreen.window.getmaxx
-      parent_height = cdkscreen.window.getmaxy
+      parent_width = cdkscreen.window.maxx
+      parent_height = cdkscreen.window.maxy
 
       self.setBox(box)
 
@@ -41,7 +41,7 @@ module CDK
       # Set up the histogram data
       @screen = cdkscreen
       @parent = cdkscreen.window
-      @win = Ncurses::WINDOW.new(box_height, box_width, ypos, xpos)
+      @win = Curses::Window.new(box_height, box_width, ypos, xpos)
       @shadow_win = nil
       @box_width = box_width
       @box_height = box_height
@@ -59,8 +59,8 @@ module CDK
       @win.keypad(true)
 
       # Set up some default values.
-      @filler = '#'.ord | Ncurses::A_REVERSE
-      @stats_attr = Ncurses::A_NORMAL
+      @filler = '#'.ord | Curses::A_REVERSE
+      @stats_attr = Curses::A_NORMAL
       @stats_pos = CDK::TOP
       @view_type = :REAL
       @high = 0
@@ -78,7 +78,7 @@ module CDK
 
       # Do we want a shadow?
       if shadow
-        @shadow_win = Ncurses::WINDOW.new(box_height, box_width,
+        @shadow_win = Curses::Window.new(box_height, box_width,
             ypos + 1, xpos + 1)
       end
 
@@ -319,11 +319,11 @@ module CDK
     def draw(box)
       battr = 0
       bchar = 0
-      fattr = @filler & Ncurses::A_ATTRIBUTES
+      fattr = @filler & Curses::A_ATTRIBUTES
       hist_x = @title_lines + 1
       hist_y = @bar_size
 
-      @win.werase
+      @win.erase
 
       # Box the widget if asked.
       if box
@@ -366,8 +366,8 @@ module CDK
       # Draw the histogram bar.
       (hist_x...@box_height - 1).to_a.each do |x|
         (1..hist_y).each do |y|
-          battr = @win.mvwinch(x, y)
-          
+          battr = @win.mvinch(x, y)
+
           if battr == ' '.ord
             @win.mvwaddch(x, y, @filler)
           else
@@ -377,7 +377,7 @@ module CDK
       end
 
       # Refresh the window
-      @win.wrefresh
+      @win.refresh
     end
 
     # Destroy the widget.

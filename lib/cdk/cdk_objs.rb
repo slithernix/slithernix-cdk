@@ -13,13 +13,13 @@ module CDK
       CDK::ALL_OBJECTS << self
 
       # set default line-drawing characters
-      @ULChar = Ncurses::ACS_ULCORNER
-      @URChar = Ncurses::ACS_URCORNER
-      @LLChar = Ncurses::ACS_LLCORNER
-      @LRChar = Ncurses::ACS_LRCORNER
-      @HZChar = Ncurses::ACS_HLINE
-      @VTChar = Ncurses::ACS_VLINE
-      @BXAttr = Ncurses::A_NORMAL
+      @ULChar = CDK::ACS_ULCORNER
+      @URChar = CDK::ACS_URCORNER
+      @LLChar = CDK::ACS_LLCORNER
+      @LRChar = CDK::ACS_LRCORNER
+      @HZChar = CDK::ACS_HLINE
+      @VTChar = CDK::ACS_VLINE
+      @BXAttr = Curses::A_NORMAL
 
       # set default exit-types
       @exit_type = :NEVER_ACTIVATED
@@ -62,16 +62,16 @@ module CDK
 
     def move_specific(xplace, yplace, relative, refresh_flag,
         windows, subwidgets)
-      current_x = @win.getbegx
-      current_y = @win.getbegy
+      current_x = @win.begx
+      current_y = @win.begy
       xpos = xplace
       ypos = yplace
 
       # If this is a relative move, then we will adjust where we want
       # to move to.
       if relative
-        xpos = @win.getbegx + xplace
-        ypos = @win.getbegy + yplace
+        xpos = @win.begx + xplace
+        ypos = @win.begy + yplace
       end
 
       # Adjust the window if we need to
@@ -171,7 +171,7 @@ module CDK
 
       junk1 = []
       junk2 = []
-      
+
       # Convert the value of the environment variable to a chtype
       holder = CDK.char2Chtype(color, junk1, junk2)
 
@@ -184,7 +184,7 @@ module CDK
       if !title.nil? 
         temp = title.split("\n")
         @title_lines = temp.size
-        
+
         if box_width >= 0
           max_width = 0
           temp.each do |line|
@@ -240,17 +240,17 @@ module CDK
       @post_process_func = fn
       @post_process_data = data
     end
-    
+
     # Set the object's exit-type based on the input.
     # The .exitType field should have been part of the CDKOBJS struct, but it
     # is used too pervasively in older applications to move (yet).
     def setExitType(ch)
       case ch
-      when Ncurses::ERR
+      when Curses::Error
         @exit_type = :ERROR
       when CDK::KEY_ESC
         @exit_type = :ESCAPE_HIT
-      when CDK::KEY_TAB, Ncurses::KEY_ENTER, CDK::KEY_RETURN
+      when CDK::KEY_TAB, Curses::KEY_ENTER, CDK::KEY_RETURN
         @exit_type = :NORMAL
       when 0
         @exit_type = :EARLY_EXIT
@@ -268,34 +268,34 @@ module CDK
     def getc
       cdktype = self.object_type
       test = self.bindableObject(cdktype)
-      result = @input_window.wgetch
+      result = @input_window.getch
 
-      if result >= 0 && !(test.nil?) && test.binding_list.include?(result) &&
+      if result.ord >= 0 && !(test.nil?) && test.binding_list.include?(result) &&
           test.binding_list[result][0] == :getc
         result = test.binding_list[result][1]
       elsif test.nil? || !(test.binding_list.include?(result)) ||
           test.binding_list[result][0].nil?
         case result
-        when "\r".ord, "\n".ord
-          result = Ncurses::KEY_ENTER
-        when "\t".ord
+        when "\r", "\n"
+          result = Curses::KEY_ENTER
+        when "\t"
           result = CDK::KEY_TAB
         when CDK::DELETE
-          result = Ncurses::KEY_DC
-        when "\b".ord
-          result = Ncurses::KEY_BACKSPACE
+          result = Curses::KEY_DC
+        when "\b"
+          result = Curses::KEY_BACKSPACE
         when CDK::BEGOFLINE
-          result = Ncurses::KEY_HOME
+          result = Curses::KEY_HOME
         when CDK::ENDOFLINE
-          result = Ncurses::KEY_END
+          result = Curses::KEY_END
         when CDK::FORCHAR
-          result = Ncurses::KEY_RIGHT
+          result = Curses::KEY_RIGHT
         when CDK::BACKCHAR
-          result = Ncurses::KEY_LEFT
+          result = Curses::KEY_LEFT
         when CDK::NEXT
           result = CDK::KEY_TAB
         when CDK::PREV
-          result = Ncurses::KEY_BTAB
+          result = Curses::KEY_BTAB
         end
       end
 
@@ -304,7 +304,7 @@ module CDK
 
     def getch(function_key)
       key = self.getc
-      function_key << (key >= Ncurses::KEY_MIN && key <= Ncurses::KEY_MAX)
+      function_key << (key.ord >= Curses::KEY_MIN && key.ord <= Curses::KEY_MAX)
       return key
     end
 
@@ -320,9 +320,9 @@ module CDK
 
     def bind(type, key, function, data)
       obj = self.bindableObject(type)
-      if key.ord < Ncurses::KEY_MAX && !(obj.nil?)
+      if key.ord < Curses::KEY_MAX && !(obj.nil?)
         if key.ord != 0
-          obj.binding_list[key.ord] = [function, data]
+          obj.binding_list[key] = [function, data]
         end
       end
     end
@@ -375,80 +375,80 @@ module CDK
     # postion of the widget.
     def position(win)
       parent = @screen.window
-      orig_x = win.getbegx
-      orig_y = win.getbegy
-      beg_x = parent.getbegx
-      beg_y = parent.getbegy
-      end_x = beg_x + @screen.window.getmaxx
-      end_y = beg_y + @screen.window.getmaxy
+      orig_x = win.begx
+      orig_y = win.begy
+      beg_x = parent.begx
+      beg_y = parent.begy
+      end_x = beg_x + @screen.window.maxx
+      end_y = beg_y + @screen.window.maxy
 
       # Let them move the widget around until they hit return.
-      while !([CDK::KEY_RETURN, Ncurses::KEY_ENTER].include?(
+      while !([CDK::KEY_RETURN, Curses::KEY_ENTER].include?(
           key = self.getch([])))
         case key
-        when Ncurses::KEY_UP, '8'.ord
-          if win.getbegy > beg_y
+        when Curses::KEY_UP, '8'
+          if win.begy > beg_y
             self.move(0, -1, true, true)
           else
             CDK.Beep
           end
-        when Ncurses::KEY_DOWN, '2'.ord
-          if (win.getbegy + win.getmaxy) < end_y
+        when Curses::KEY_DOWN, '2'
+          if (win.begy + win.maxy) < end_y
             self.move(0, 1, true, true)
           else
             CDK.Beep
           end
-        when Ncurses::KEY_LEFT, '4'.ord
-          if win.getbegx > beg_x
+        when Curses::KEY_LEFT, '4'
+          if win.begx > beg_x
             self.move(-1, 0, true, true)
           else
             CDK.Beep
           end
-        when Ncurses::KEY_RIGHT, '6'.ord
-          if (win.getbegx + win.getmaxx) < end_x
+        when Curses::KEY_RIGHT, '6'
+          if (win.begx + win.maxx) < end_x
             self.move(1, 0, true, true)
           else
             CDK.Beep
           end
-        when '7'.ord
-          if win.getbegy > beg_y && win.getbegx > beg_x
+        when '7'
+          if win.begy > beg_y && win.begx > beg_x
             self.move(-1, -1, true, true)
           else
             CDK.Beep
           end
-        when '9'.ord
-          if (win.getbegx + win.getmaxx) < end_x && win.getbegy > beg_y
+        when '9'
+          if (win.begx + win.maxx) < end_x && win.begy > beg_y
             self.move(1, -1, true, true)
           else
             CDK.Beep
           end
-        when '1'.ord
-          if win.getbegx > beg_x && (win.getbegy + win.getmaxy) < end_y
+        when '1'
+          if win.begx > beg_x && (win.begy + win.maxy) < end_y
             self.move(-1, 1, true, true)
           else
             CDK.Beep
           end
-        when '3'.ord
-          if (win.getbegx + win.getmaxx) < end_x &&
-              (win.getbegy + win.getmaxy) < end_y
+        when '3'
+          if (win.begx + win.maxx) < end_x &&
+              (win.begy + win.maxy) < end_y
             self.move(1, 1, true, true)
           else
             CDK.Beep
           end
-        when '5'.ord
+        when '5'
           self.move(CDK::CENTER, CDK::CENTER, false, true)
-        when 't'.ord
-          self.move(win.getbegx, CDK::TOP, false, true)
-        when 'b'.ord
-          self.move(win.getbegx, CDK::BOTTOM, false, true)
-        when 'l'.ord
-          self.move(CDK::LEFT, win.getbegy, false, true)
-        when 'r'.ord
-          self.move(CDK::RIGHT, win.getbegy, false, true)
-        when 'c'.ord
-          self.move(CDK::CENTER, win.getbegy, false, true)
-        when 'C'.ord
-          self.move(win.getbegx, CDK::CENTER, false, true)
+        when 't'
+          self.move(win.begx, CDK::TOP, false, true)
+        when 'b'
+          self.move(win.begx, CDK::BOTTOM, false, true)
+        when 'l'
+          self.move(CDK::LEFT, win.begy, false, true)
+        when 'r'
+          self.move(CDK::RIGHT, win.begy, false, true)
+        when 'c'
+          self.move(CDK::CENTER, win.begy, false, true)
+        when 'C'
+          self.move(win.begx, CDK::CENTER, false, true)
         when CDK::REFRESH
           @screen.erase
           @screen.refresh

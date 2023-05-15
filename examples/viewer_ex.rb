@@ -56,7 +56,7 @@ class ViewerExample < CLIExample
     end
 
     # Start curses
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Start CDK colors.
@@ -65,8 +65,8 @@ class ViewerExample < CLIExample
     f_select = nil
     if params.filename == ''
       f_select = CDK::FSELECT.new(cdkscreen, params.x_value, params.y_value,
-          params.h_value, params.f_width, title, label, Ncurses::A_NORMAL,
-          '_', Ncurses::A_REVERSE, '</5>', '</48>', '</N>', '</N',
+          params.h_value, params.f_width, title, label, Curses::A_NORMAL,
+          '_', Curses::A_REVERSE, '</5>', '</48>', '</N>', '</N',
           params.box, params.shadow)
 
       if f_select.nil?
@@ -79,8 +79,8 @@ class ViewerExample < CLIExample
 
       # Set the starting directory. This is not necessary because when
       # the file selector starts it uses the present directory as a default.
-      f_select.set(params.directory, Ncurses::A_NORMAL, '.',
-          Ncurses::A_REVERSE, '</5>', '</48>', '</N>', '</N>', @box)
+      f_select.set(params.directory, Curses::A_NORMAL, '.',
+          Curses::A_REVERSE, '</5>', '</48>', '</N>', '</N>', @box)
 
       # Activate the file selector.
       params.filename = f_select.activate([])
@@ -105,7 +105,7 @@ class ViewerExample < CLIExample
 
     # Create the file viewer to view the file selected.
     example = CDK::VIEWER.new(cdkscreen, params.x_value, params.y_value,
-        params.h_value, params.v_width, button, 2, Ncurses::A_REVERSE,
+        params.h_value, params.v_width, button, 2, Curses::A_REVERSE,
         params.box, params.shadow)
 
     # Could we create the viewer widget?
@@ -125,7 +125,7 @@ class ViewerExample < CLIExample
       info = ['<F=%s>' % params.filename]
       params.interp = true
     else
-      example.set('reading...', 0, 0, Ncurses::A_REVERSE, true, true, true)
+      example.set('reading...', 0, 0, Curses::A_REVERSE, true, true, true)
       # Open the file and read the contents.
       lines = CDK.readFile(params.filename, info)
       if lines == -1
@@ -137,7 +137,7 @@ class ViewerExample < CLIExample
 
     # Set up the viewer title and the contents to the widget.
     v_title = '<C></B/21>Filename:<!21></22>%20s<!22!B>' % [params.filename]
-    example.set(v_title, info, lines, Ncurses::A_REVERSE, params.interp,
+    example.set(v_title, info, lines, Curses::A_REVERSE, params.interp,
         true, true)
 
     # Destroy the file selector widget.

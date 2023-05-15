@@ -5,20 +5,20 @@ module CDK
     def initialize(cdkscreen, xplace, yplace, height, width, title,
         save_lines, box, shadow)
       super()
-      parent_width = cdkscreen.window.getmaxx
-      parent_height = cdkscreen.window.getmaxy
+      parent_width = cdkscreen.window.maxx
+      parent_height = cdkscreen.window.maxy
       box_width = width
       box_height = height
       bindings = {
-        CDK::BACKCHAR => Ncurses::KEY_PPAGE,
-        'b'           => Ncurses::KEY_PPAGE,
-        'B'           => Ncurses::KEY_PPAGE,
-        CDK::FORCHAR  => Ncurses::KEY_NPAGE,
-        ' '           => Ncurses::KEY_NPAGE,
-        'f'           => Ncurses::KEY_NPAGE,
-        'F'           => Ncurses::KEY_NPAGE,
-        '|'           => Ncurses::KEY_HOME,
-        '$'           => Ncurses::KEY_END,
+        CDK::BACKCHAR => Curses::KEY_PPAGE,
+        'b'           => Curses::KEY_PPAGE,
+        'B'           => Curses::KEY_PPAGE,
+        CDK::FORCHAR  => Curses::KEY_NPAGE,
+        ' '           => Curses::KEY_NPAGE,
+        'f'           => Curses::KEY_NPAGE,
+        'F'           => Curses::KEY_NPAGE,
+        '|'           => Curses::KEY_HOME,
+        '$'           => Curses::KEY_END,
       }
 
       self.setBox(box)
@@ -50,7 +50,7 @@ module CDK
       ypos = ytmp[0]
 
       # Make the scrolling window.
-      @win = Ncurses::WINDOW.new(box_height, box_width, ypos, xpos)
+      @win = Curses::Window.new(box_height, box_width, ypos, xpos)
       if @win.nil?
         self.destroy
         return nil
@@ -87,7 +87,7 @@ module CDK
 
       # Do we need to create a shadow?
       if shadow
-        @shadow_win = Ncurses::WINDOW.new(box_height, box_width,
+        @shadow_win = Curses::Window.new(box_height, box_width,
             ypos + 1, xpos + 1)
       end
 
@@ -184,7 +184,7 @@ module CDK
         @list_pos += [0]
         @list_len += [0]
         self.setupLine(list, @list_size)
-        
+
         @max_left_char = @widest_line - (@box_width - 2)
 
         # Increment the item count and zero out the next row.
@@ -350,31 +350,31 @@ module CDK
           complete = true
         else
           case input
-          when Ncurses::KEY_UP
+          when Curses::KEY_UP
             if @current_top > 0
               @current_top -= 1
             else
               CDK.Beep
             end
-          when Ncurses::KEY_DOWN
+          when Curses::KEY_DOWN
             if @current_top >= 0 && @current_top < @max_top_line
               @current_top += 1
             else
               CDK.Beep
             end
-          when Ncurses::KEY_RIGHT
+          when Curses::KEY_RIGHT
             if @left_char < @max_left_char
               @left_char += 1
             else
               CDK.Beep
             end
-          when Ncurses::KEY_LEFT
+          when Curses::KEY_LEFT
             if @left_char > 0
               @left_char -= 1
             else
               CDK.Beep
             end
-          when Ncurses::KEY_PPAGE
+          when Curses::KEY_PPAGE
             if @current_top != 0
               if @current_top >= @view_size
                 @current_top = @current_top - (@view_size - 1)
@@ -384,7 +384,7 @@ module CDK
             else
               CDK.Beep
             end
-          when Ncurses::KEY_NPAGE
+          when Curses::KEY_NPAGE
             if @current_top != @max_top_line
               if @current_top + @view_size < @max_top_line
                 @current_top = @current_top + (@view_size - 1)
@@ -394,26 +394,26 @@ module CDK
             else
               CDK.Beep
             end
-          when Ncurses::KEY_HOME
+          when Curses::KEY_HOME
             @left_char = 0
-          when Ncurses::KEY_END
+          when Curses::KEY_END
             @left_char = @max_left_char + 1
-          when 'g'.ord, '1'.ord, '<'.ord
+          when 'g', '1', '<'
             @current_top = 0
-          when 'G'.ord, '>'.ord
+          when 'G', '>'
             @current_top = @max_top_line
-          when 'l'.ord, 'L'.ord
+          when 'l', 'L'
             self.loadInformation
-          when 's'.ord, 'S'.ord
+          when 's', 'S'
             self.saveInformation
-          when CDK::KEY_TAB, CDK::KEY_RETURN, Ncurses::KEY_ENTER
+          when CDK::KEY_TAB, CDK::KEY_RETURN, Curses::KEY_ENTER
             self.setExitType(input)
             ret = 1
             complete = true
           when CDK::KEY_ESC
             self.setExitType(input)
             complete = true
-          when Ncurses::ERR
+          when Curses::Error
             self.setExitType(input)
             complete = true
           when CDK::REFRESH
@@ -456,7 +456,7 @@ module CDK
 
       self.drawTitle(@win)
 
-      @win.wrefresh
+      @win.refresh
 
       # Draw in the list.
       self.drawList(box)
@@ -472,7 +472,7 @@ module CDK
       end
 
       # Erase the scrolling window.
-      @field_win.werase
+      @field_win.erase
 
       # Start drawing in each line.
       (0...last_line).each do |x|
@@ -490,7 +490,7 @@ module CDK
         end
       end
 
-      @field_win.wrefresh
+      @field_win.refresh
     end
 
     # This sets the background attribute of the widget.
@@ -535,7 +535,7 @@ module CDK
     # This execs a command and redirects the output to the scrolling window.
     def exec(command, insert_pos)
       count = -1
-      Ncurses.endwin
+      Curses.close_screen
 
       # Try to open the command.
       # XXX This especially needs exception handling given how Ruby
@@ -574,7 +574,7 @@ module CDK
       # Create the entry field to get the filename.
       entry = CDK::ENTRY.new(@screen, CDK::CENTER, CDK::CENTER,
           '<C></B/5>Enter the filename of the save file.',
-          'Filename: ', Ncurses::A_NORMAL, '_'.ord, :MIXED,
+          'Filename: ', Curses::A_NORMAL, '_'.ord, :MIXED,
           20, 1, 256, true, false)
 
       # Get the filename.
@@ -621,8 +621,8 @@ module CDK
     def loadInformation
       # Create the file selector to choose the file.
       fselect = CDK::FSELECT.new(@screen, CDK::CENTER, CDK::CENTER, 20, 55,
-          '<C>Load Which File', 'FIlename', Ncurses::A_NORMAL, '.',
-          Ncurses::A_REVERSE, '</5>', '</48>', '</N>', '</N>', true, false)
+          '<C>Load Which File', 'FIlename', Curses::A_NORMAL, '.',
+          Curses::A_REVERSE, '</5>', '</48>', '</N>', '</N>', true, false)
 
       # Get the filename to load.
       filename = fselect.activate([])
@@ -659,7 +659,7 @@ module CDK
 
         # Create the dialog widget.
         dialog = CDK::DIALOG.new(@screen, CDK::CENTER, CDK::CENTER,
-            mesg, 3, button, 2, Ncurses.COLOR_PAIR(2) | Ncurses::A_REVERSE,
+            mesg, 3, button, 2, Curses.color_pair(2) | Curses::A_REVERSE,
             true, true, false)
 
         # Activate the widet.

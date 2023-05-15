@@ -2,20 +2,20 @@ module CDK
   module Draw
     # This sets up a basic set of color pairs. These can be redefined if wanted
     def Draw.initCDKColor
-      color = [Ncurses::COLOR_WHITE, Ncurses::COLOR_RED, Ncurses::COLOR_GREEN,
-          Ncurses::COLOR_YELLOW, Ncurses::COLOR_BLUE, Ncurses::COLOR_MAGENTA,
-          Ncurses::COLOR_CYAN, Ncurses::COLOR_BLACK]
+      color = [Curses::COLOR_WHITE, Curses::COLOR_RED, Curses::COLOR_GREEN,
+          Curses::COLOR_YELLOW, Curses::COLOR_BLUE, Curses::COLOR_MAGENTA,
+          Curses::COLOR_CYAN, Curses::COLOR_BLACK]
       pair = 1
 
-      if Ncurses.has_colors?
+      if Curses.has_colors?
         # XXX: Only checks if terminal has colours not if colours are started
-        Ncurses.start_color
-        limit = if Ncurses.COLORS < 8 then Ncurses.COLORS else 8 end
+        Curses.start_color
+        limit = Curses.colors < 8 ? Curses.colors : 8
 
         # Create the color pairs
         (0...limit).each do |fg|
           (0...limit).each do |bg|
-            Ncurses.init_pair(pair, color[fg], color[bg])
+            Curses.init_pair(pair, color[fg], color[bg])
             pair += 1
           end
         end
@@ -26,23 +26,23 @@ module CDK
     def Draw.boxWindow(window, attr)
       tlx = 0
       tly = 0
-      brx = window.getmaxx - 1
-      bry = window.getmaxy - 1
+      brx = window.maxx - 1
+      bry = window.maxy - 1
 
       # Draw horizontal lines.
-      window.mvwhline(tly, 0, Ncurses::ACS_HLINE | attr, window.getmaxx)
-      window.mvwhline(bry, 0, Ncurses::ACS_HLINE | attr, window.getmaxx)
+      window.mvwhline(tly, 0, CDK::ACS_HLINE | attr, window.maxx)
+      window.mvwhline(bry, 0, CDK::ACS_HLINE | attr, window.maxx)
 
       # Draw horizontal lines.
-      window.mvwvline(0, tlx, Ncurses::ACS_VLINE | attr, window.getmaxy)
-      window.mvwvline(0, brx, Ncurses::ACS_VLINE | attr, window.getmaxy)
+      window.mvwvline(0, tlx, CDK::ACS_VLINE | attr, window.maxy)
+      window.mvwvline(0, brx, CDK::ACS_VLINE | attr, window.maxy)
 
       # Draw in the corners.
-      window.mvwaddch(tly, tlx, Ncurses::ACS_ULCORNER | attr)
-      window.mvwaddch(tly, brx, Ncurses::ACS_URCORNER | attr)
-      window.mvwaddch(bry, tlx, Ncurses::ACS_LLCORNER | attr)
-      window.mvwaddch(bry, brx, Ncurses::ACS_LRCORNER | attr)
-      window.wrefresh
+      window.mvwaddch(tly, tlx, CDK::ACS_ULCORNER | attr)
+      window.mvwaddch(tly, brx, CDK::ACS_URCORNER | attr)
+      window.mvwaddch(bry, tlx, CDK::ACS_LLCORNER | attr)
+      window.mvwaddch(bry, brx, CDK::ACS_LRCORNER | attr)
+      window.refresh
     end
 
     # This draws a box with attributes and lets the user define each
@@ -50,21 +50,21 @@ module CDK
     def Draw.attrbox(win, tlc, trc, blc, brc, horz, vert, attr)
       x1 = 0
       y1 = 0
-      y2 = win.getmaxy - 1
-      x2 = win.getmaxx - 1
+      y2 = win.maxy - 1
+      x2 = win.maxx - 1
       count = 0
 
       # Draw horizontal lines
       if horz != 0
-        win.mvwhline(y1, 0, horz | attr, win.getmaxx)
-        win.mvwhline(y2, 0, horz | attr, win.getmaxx)
+        win.mvwhline(y1, 0, horz | attr, win.maxx)
+        win.mvwhline(y2, 0, horz | attr, win.maxx)
         count += 1
       end
 
       # Draw vertical lines
       if vert != 0
-        win.mvwvline(0, x1, vert | attr, win.getmaxy)
-        win.mvwvline(0, x2, vert | attr, win.getmaxy)
+        win.mvwvline(0, x1, vert | attr, win.maxy)
+        win.mvwvline(0, x2, vert | attr, win.maxy)
         count += 1
       end
 
@@ -86,7 +86,7 @@ module CDK
         count += 1
       end
       if count != 0
-        win.wrefresh
+        win.refresh
       end
     end
 
@@ -150,19 +150,19 @@ module CDK
     # This draws a shadow around a window.
     def Draw.drawShadow(shadow_win)
       unless shadow_win.nil?
-        x_hi = shadow_win.getmaxx - 1
-        y_hi = shadow_win.getmaxy - 1
+        x_hi = shadow_win.maxx - 1
+        y_hi = shadow_win.maxy - 1
 
         # Draw the line on the bottom.
-        shadow_win.mvwhline(y_hi, 1, Ncurses::ACS_HLINE | Ncurses::A_DIM, x_hi)
-        
-        # Draw the line on teh right.
-        shadow_win.mvwvline(0, x_hi, Ncurses::ACS_VLINE | Ncurses::A_DIM, y_hi)
+        shadow_win.mvwhline(y_hi, 1, CDK::ACS_HLINE | Curses::A_DIM, x_hi)
 
-        shadow_win.mvwaddch(0, x_hi, Ncurses::ACS_URCORNER | Ncurses::A_DIM)
-        shadow_win.mvwaddch(y_hi, 0, Ncurses::ACS_LLCORNER | Ncurses::A_DIM)
-        shadow_win.mvwaddch(y_hi, x_hi, Ncurses::ACS_LRCORNER | Ncurses::A_DIM)
-        shadow_win.wrefresh
+        # Draw the line on the right.
+        shadow_win.mvwvline(0, x_hi, CDK::ACS_VLINE | Curses::A_DIM, y_hi)
+
+        shadow_win.mvwaddch(0, x_hi, CDK::ACS_URCORNER | Curses::A_DIM)
+        shadow_win.mvwaddch(y_hi, 0, CDK::ACS_LLCORNER | Curses::A_DIM)
+        shadow_win.mvwaddch(y_hi, x_hi, CDK::ACS_LRCORNER | Curses::A_DIM)
+        shadow_win.refresh
       end
     end
 
@@ -179,7 +179,7 @@ module CDK
 
     # This writes out a char string with no attributes
     def Draw.writeChar(window, xpos, ypos, string, align, start, endn)
-      Draw.writeCharAttrib(window, xpos, ypos, string, Ncurses::A_NORMAL,
+      Draw.writeCharAttrib(window, xpos, ypos, string, Curses::A_NORMAL,
           align, start, endn)
     end
 
@@ -190,13 +190,13 @@ module CDK
 
       if align == CDK::HORIZONTAL
         # Draw the message on a horizontal axis
-        display = [display, window.getmaxx - 1].min
+        display = [display, window.maxx - 1].min
         (0...display).each do |x|
           window.mvwaddch(ypos, xpos + x, string[x + start].ord | attr)
         end
       else
         # Draw the message on a vertical axis
-        display = [display, window.getmaxy - 1].min
+        display = [display, window.maxy - 1].min
         (0...display).each do |x|
           window.mvwaddch(ypos + x, xpos, string[x + start].ord | attr)
         end
@@ -205,7 +205,7 @@ module CDK
 
     # This writes out a chtype string
     def Draw.writeChtype (window, xpos, ypos, string, align, start, endn)
-      Draw.writeChtypeAttrib(window, xpos, ypos, string, Ncurses::A_NORMAL,
+      Draw.writeChtypeAttrib(window, xpos, ypos, string, Curses::A_NORMAL,
           align, start, endn)
     end
 
@@ -217,13 +217,13 @@ module CDK
       x = 0
       if align == CDK::HORIZONTAL
         # Draw the message on a horizontal axis.
-        display = [diff, window.getmaxx - xpos].min
+        display = [diff, window.maxx - xpos].min
         (0...display).each do |x|
           window.mvwaddch(ypos, xpos + x, string[x + start].ord | attr)
         end
       else
         # Draw the message on a vertical axis.
-        display = [diff, window.getmaxy - ypos].min
+        display = [diff, window.maxy - ypos].min
         (0...display).each do |x|
           window.mvwaddch(ypos + x, xpos, string[x + start].ord | attr)
         end

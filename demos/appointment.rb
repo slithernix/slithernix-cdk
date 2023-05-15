@@ -6,10 +6,10 @@ require_relative '../lib/cdk'
 class Appointment
   MAX_MARKERS = 2000
   GPAppointmentAttributes = [
-    Ncurses::A_BLINK,
-    Ncurses::A_BOLD,
-    Ncurses::A_REVERSE,
-    Ncurses::A_UNDERLINE,
+    Curses::A_BLINK,
+    Curses::A_BOLD,
+    Curses::A_REVERSE,
+    Curses::A_UNDERLINE,
   ]
 
   AppointmentType = [
@@ -123,9 +123,9 @@ class Appointment
 
     # Read the appointment book information.
     readAppointmentFile(filename, appointment_info)
-    
+
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -133,8 +133,8 @@ class Appointment
 
     # Create the calendar widget.
     calendar = CDK::CALENDAR.new(cdkscreen, CDK::CENTER, CDK::CENTER,
-        title, day, month, year, Ncurses::A_NORMAL, Ncurses::A_NORMAL,
-        Ncurses::A_NORMAL, Ncurses::A_REVERSE, true, false)
+        title, day, month, year, Curses::A_NORMAL, Curses::A_NORMAL,
+        Curses::A_NORMAL, Curses::A_REVERSE, true, false)
 
     # Is the widget nil?
     if calendar.nil?
@@ -177,7 +177,7 @@ class Appointment
       # Create the entry field for the description.
       entry = CDK::ENTRY.new(calendar.screen, CDK::CENTER, CDK::CENTER,
           '<C>Enter a description of the appointment.',
-          'Description: ', Ncurses::A_NORMAL, '.'.ord, :MIXED, 40, 1, 512,
+          'Description: ', Curses::A_NORMAL, '.'.ord, :MIXED, 40, 1, 512,
           true, false)
 
       # Get the description.

@@ -60,9 +60,9 @@ class Command
     if opts['t']
       title = opts['t']
     end
-    
+
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -76,12 +76,12 @@ class Command
     prompt_len = []
     convert = CDK.char2Chtype(prompt, prompt_len, [])
     prompt_len = prompt_len[0]
-    command_field_width = Ncurses.COLS - prompt_len - 4
+    command_field_width = Curses.cols - prompt_len - 4
 
     # Create the entry field.
     command_entry = CDK::ENTRY.new(cdkscreen, CDK::CENTER, CDK::BOTTOM,
-        '', prompt, Ncurses::A_BOLD | Ncurses.COLOR_PAIR(8),
-        Ncurses.COLOR_PAIR(24) | '_'.ord, :MIXED,
+        '', prompt, Curses::A_BOLD | Curses.color_pair(8),
+        Curses.color_pair(24) | '_'.ord, :MIXED,
         command_field_width, 1, 512, false, false)
 
     # Create the key bindings.
@@ -156,7 +156,7 @@ class Command
       # Create the scrolling list of previous commands.
       scroll_list = CDK::SCROLL.new(entry.screen, CDK::CENTER, CDK::CENTER,
           CDK::RIGHT, height, 20, '<C></B/29>Command History',
-          history.command, history.count, true, Ncurses::A_REVERSE,
+          history.command, history.count, true, Curses::A_REVERSE,
           true, false)
 
       # Get the command to execute.
@@ -178,7 +178,7 @@ class Command
     jump_window_cb = lambda do |cdktype, entry, swindow, key|
       # Ask them which line they want to jump to.
       scale = CDK::SCALE.new(entry.screen, CDK::CENTER, CDK::CENTER,
-          '<C>Jump To Which Line', 'Line', Ncurses::A_NORMAL, 5,
+          '<C>Jump To Which Line', 'Line', Curses::A_NORMAL, 5,
           0, 0, swindow.list_size, 1, 2, true, false)
 
       # Get the line.
@@ -195,8 +195,8 @@ class Command
       return false
     end
 
-    command_entry.bind(:ENTRY, Ncurses::KEY_UP, history_up_cb, history)
-    command_entry.bind(:ENTRY, Ncurses::KEY_DOWN, history_down_cb, history)
+    command_entry.bind(:ENTRY, Curses::KEY_UP, history_up_cb, history)
+    command_entry.bind(:ENTRY, Curses::KEY_DOWN, history_down_cb, history)
     command_entry.bind(:ENTRY, CDK::KEY_TAB, view_history_cb, command_output)
     command_entry.bind(:ENTRY, CDK.CTRL('^'), list_history_cb, history)
     command_entry.bind(:ENTRY, CDK.CTRL('G'), jump_window_cb, command_output)

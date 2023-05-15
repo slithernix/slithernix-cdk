@@ -29,7 +29,7 @@ class HistogramExample < CLIExample
     params = parse(ARGV)
 
     # Set up CDK
-    curses_win = Ncurses.initscr
+    curses_win = Curses.init_screen
     cdkscreen = CDK::SCREEN.new(curses_win)
 
     # Set up CDK colors
@@ -83,62 +83,62 @@ class HistogramExample < CLIExample
     end
 
     # Set the histogram values.
-    volume.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 6,
-        ' '.ord | Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(3), box)
-    bass.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 3,
-        ' '.ord | Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(3), box)
-    treble.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 7,
-        ' '.ord | Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(3), box)
+    volume.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 6,
+        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    bass.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 3,
+        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    treble.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 7,
+        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
     cdkscreen.refresh
     sleep(4)
 
     # Set the histogram values.
-    volume.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 8,
-        ' '.ord | Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(3), box)
-    bass.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 1,
-        ' '.ord | Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(3), box)
-    treble.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 9,
-        ' '.ord | Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(3), box)
+    volume.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 8,
+        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    bass.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 1,
+        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    treble.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 9,
+        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
     cdkscreen.refresh
     sleep(4)
 
     # Set the histogram values.
-    volume.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 10,
-        ' '.ord | Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(3), box)
-    bass.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 7,
-        ' '.ord | Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(3), box)
-    treble.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 10,
-        ' '.ord | Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(3), box)
+    volume.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 10,
+        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    bass.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 7,
+        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    treble.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 10,
+        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
     cdkscreen.refresh
     sleep(4)
 
     # Set the histogram values.
-    volume.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 1,
-        ' '.ord | Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(3), box)
-    bass.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 8,
-        ' '.ord | Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(3), box)
-    treble.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 3,
-        ' '.ord | Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(3), box)
+    volume.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 1,
+        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    bass.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 8,
+        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    treble.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 3,
+        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
     cdkscreen.refresh
     sleep(4)
 
     # Set the histogram values.
-    volume.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 3,
-        ' '.ord | Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(3), box)
-    bass.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 3,
-        ' '.ord | Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(3), box)
-    treble.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 3,
-        ' '.ord | Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(3), box)
+    volume.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 3,
+        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    bass.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 3,
+        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    treble.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 3,
+        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
     cdkscreen.refresh
     sleep(4)
 
     # Set the histogram values.
-    volume.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 10,
-        ' '.ord | Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(3), box)
-    bass.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 10,
-        ' '.ord | Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(3), box)
-    treble.set(:PERCENT, CDK::CENTER, Ncurses::A_BOLD, 0, 10, 10,
-        ' '.ord | Ncurses::A_REVERSE | Ncurses.COLOR_PAIR(3), box)
+    volume.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 10,
+        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    bass.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 10,
+        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    treble.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 10,
+        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
     cdkscreen.refresh
     sleep(4)
 
