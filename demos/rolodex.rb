@@ -1232,7 +1232,7 @@ class Rolodex
     end
 
     # Make the rolodex directory.
-    unless Dir.exists?(@@gdbm_dir)
+    unless Dir.exist?(@@gdbm_dir)
       Dir.mkdir(@@gdbm_dir, 0755)
     end
 

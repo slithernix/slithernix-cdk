@@ -19,8 +19,15 @@ class Clock
     ]
 
     # Declare the labels.
-    demo = CDK::LABEL.new(cdkscreen, CDK::CENTER, CDK::CENTER,
-        mesg, 1, box_label, false)
+    demo = CDK::LABEL.new(
+      cdkscreen,
+      CDK::CENTER,
+      CDK::CENTER,
+      mesg,
+      1,
+      box_label,
+      false,
+    )
 
     # Is the label nil?
     if demo.nil?
@@ -38,14 +45,17 @@ class Clock
     demo.screen.window.timeout = 50
 
     # Do this for a while
-    begin
+    loop do
       # Get the current time.
       current_time = Time.now.getlocal
 
       # Put the current time in a string.
       mesg = [
-          '<C></B/29>%02d:%02d:%02d' % [
-             current_time.hour, current_time.min, current_time.sec]
+        '<C></B/29>%02d:%02d:%02d' % [
+          current_time.hour,
+          current_time.min,
+          current_time.sec,
+        ]
       ]
 
       # Set the label contents
@@ -54,7 +64,10 @@ class Clock
       # Draw the label and sleep
       demo.draw(demo.box)
       Curses.napms(500)
-    end while (demo.screen.window.getch) == Curses::Error
+
+      # Break the loop if q is pressed
+      break if demo.screen.window.getch == 'q'
+    end
 
     # Clean up
     demo.destroy

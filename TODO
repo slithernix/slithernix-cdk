@@ -1,3 +1,30 @@
+SlitherNix CDK TODO List (You can find the original Tawny list below)
+
+* Fix matrix widget
+
+  This thing is just totally hosed. I am not really sure what it's supposed
+  to look like in the first place so I may have to check out the actual CDK
+  or maybe the python one if it is still maintained.
+
+* Fix selection widget
+
+  The selection widget appears to call .position or something because when
+  you use the arrows to move through the menu, the menu itself moves with
+  the arrow.
+
+* Traverse Example has broken widgets
+
+  I haven't looked into which widgets this thing uses but it has the issue
+  the selection widget has where if you move up/down in the menu it moves the
+  actual menu with the arrow direction. It's also not justified properly and
+  it appears the entry box is hosed as well. There's some kind of off-by-one
+  error in there.
+
+* Aesthetics
+
+  This code was written to sort of mirror the C library obviously, so a lot of
+  is downright ugly and not very Ruby-esque.
+
 Tawny-Cdk TODO List
 ------------------------------------------------------------------------------
 

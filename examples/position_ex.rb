@@ -31,9 +31,21 @@ class PositionExample < Example
     CDK::Draw.initCDKColor
 
     # Create the entry field widget.
-    directory = CDK::ENTRY.new(cdkscreen, params.x_value, params.y_value,
-        '', label, Curses::A_NORMAL, '.', :MIXED, params.w_value, 0, 256,
-        params.box, params.shadow)
+    directory = CDK::ENTRY.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value,
+      '',
+      label,
+      Curses::A_NORMAL,
+      '.',
+      :MIXED,
+      params.w_value,
+      0,
+      256,
+      params.box,
+      params.shadow,
+    )
 
     # Is the widget nil?
     if directory.nil?
@@ -55,22 +67,22 @@ class PositionExample < Example
     # Tell them what they typed.
     if directory.exit_type == :ESCAPE_HIT
       mesg = [
-          "<C>You hit escape. No information passed back.",
-          "",
-          "<C>Press any key to continue."
+        "<C>You hit escape. No information passed back.",
+        "",
+        "<C>Press any key to continue."
       ]
       cdkscreen.popupLabel(mesg, 3)
     elsif directory.exit_type == :NORMAL
       mesg = [
-          "<C>You typed in the following",
-          "<C>%.*s" % [236, info],  # FIXME magic number
-          "",
-          "<C>Press any key to continue."
+        "<C>You typed in the following",
+        "<C>%.*s" % [236, info],  # FIXME magic number
+        "",
+        "<C>Press any key to continue."
       ]
-          cdkscreen.popupLabel(mesg, 4)
+
+      cdkscreen.popupLabel(mesg, 4)
     end
 
-    # Clean up
     directory.destroy
     cdkscreen.destroy
     CDK::SCREEN.endCDK

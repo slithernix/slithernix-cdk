@@ -22,7 +22,7 @@ class Vinstall
         'Yes',
         'No',
     ]
-    if !(Dir.exists?(directory))
+    if !(Dir.exist?(directory))
       # Create the question.
       mesg = [
           '<C>The directory',
@@ -117,30 +117,58 @@ class Vinstall
 
     # Create the title label.
     title_mesg = [
-        '<C></32/B<#HL(30)>',
-        if title == ''
-        then '<C></32/B>CDK Installer'
-        else '<C></32/B>%.256s' % [title]
-        end,
-        '<C></32/B><#HL(30)>'
+      '<C></32/B<#HL(30)>',
+      title == '' ? '<C></32/B>CDK Installer' : '<C></32/B>%.256s' % [title],
+      '<C></32/B><#HL(30)>'
     ]
-    title_win = CDK::LABEL.new(cdkscreen, CDK::CENTER, CDK::TOP,
-        title_mesg, 3, false, false)
+    title_win = CDK::LABEL.new(
+      cdkscreen,
+      CDK::CENTER,
+      CDK::TOP,
+      title_mesg,
+      3,
+      false,
+      false,
+    )
 
     source_entry = nil
     dest_entry = nil
 
     # Allow them to change the install directory.
     if source_path == ''
-      source_entry = CDK::ENTRY.new(cdkscreen, CDK::CENTER, 8, '',
-          'Source Directory        :', Curses::A_NORMAL, '.'.ord,
-          :MIXED, 40, 0, 256, true, false)
+      source_entry = CDK::ENTRY.new(
+        cdkscreen,
+        CDK::CENTER,
+        8,
+        '',
+        'Source Directory        :',
+        Curses::A_NORMAL,
+        '.'.ord,
+        :MIXED,
+        40,
+        0,
+        256,
+        true,
+        false,
+      )
     end
 
     if dest_path == ''
-      dest_entry = CDK::ENTRY.new(cdkscreen, CDK::CENTER, 11, '',
-          'Destination Directory:', Curses::A_NORMAL, '.'.ord, :MIXED,
-          40, 0, 256, true, false)
+      dest_entry = CDK::ENTRY.new(
+        cdkscreen,
+        CDK::CENTER,
+        11,
+        '',
+        'Destination Directory:',
+        Curses::A_NORMAL,
+        '.'.ord,
+        :MIXED,
+        40,
+        0,
+        256,
+        true,
+        false,
+      )
     end
 
     # Get the source install path.
@@ -183,16 +211,33 @@ class Vinstall
     end
 
     # Create the histogram.
-    progress_bar = CDK::HISTOGRAM.new(cdkscreen, CDK::CENTER, 5, 3, 0,
-        CDK::HORIZONTAL, '<C></56/B>Install Progress', true, false)
+    progress_bar = CDK::HISTOGRAM.new(
+      cdkscreen,
+      CDK::CENTER,
+      5,
+      3,
+      0,
+      CDK::HORIZONTAL,
+      '<C></56/B>Install Progress',
+      true,
+      false,
+    )
 
     # Set the top left/right characters of the histogram.
     progress_bar.setLLchar(CDK::ACS_LTEE)
     progress_bar.setLRchar(CDK::ACS_RTEE)
 
     # Set the initial value fo the histgoram.
-    progress_bar.set(:PERCENT, CDK::TOP, Curses::A_BOLD, 1, count, 1,
-        Curses.color_pair(24) | Curses::A_REVERSE | ' '.ord, true)
+    progress_bar.set(
+      :PERCENT,
+      CDK::TOP,
+      Curses::A_BOLD,
+      1,
+      count,
+      1,
+      Curses.color_pair(24) | Curses::A_REVERSE | ' '.ord,
+      true,
+    )
 
     # Determine the height of the scrolling window.
     swndow_height = 3
@@ -201,8 +246,17 @@ class Vinstall
     end
 
     # Create the scrolling window.
-    install_output = CDK::SWINDOW.new(cdkscreen, CDK::CENTER, CDK::BOTTOM,
-        swindow_height, 0, '<C></56/B>Install Results', 2000, true, false)
+    install_output = CDK::SWINDOW.new(
+      cdkscreen,
+      CDK::CENTER,
+      CDK::BOTTOM,
+      swindow_height,
+      0,
+      '<C></56/B>Install Results',
+      2000,
+      true,
+      false
+    )
 
     # Set the top left/right characters of the scrolling window.
     install_output.setULchar(CDK::ACS_LTEE)

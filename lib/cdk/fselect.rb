@@ -182,7 +182,7 @@ module CDK
         end
 
         # Make sure we can change into the directory.
-        is_directory = Dir.exists?(filename)
+        is_directory = Dir.exist?(filename)
         # if (chdir (fselect->pwd) != 0)
         #    return FALSE;
         #Dir.chdir(fselect.pwd)
@@ -506,7 +506,7 @@ module CDK
       #end
 
       # If it's not a directory, return the filename.
-      if !Dir.exists?(filename)
+      if !Dir.exist?(filename)
         # It's a regular file, create the full path
         @pathname = filename.clone
 

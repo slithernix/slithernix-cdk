@@ -56,11 +56,18 @@ class ItemlistExample < Example
     ]
 
     # Create the itemlist widget.
-    monthlist = CDK::ITEMLIST.new(cdkscreen, params.x_value, params.y_value,
-        title, label,
-        if params.c then '' else info end,
-        if params.c then 0 else ItemlistExample::MONTHS end,
-        start_month, params.box, params.shadow)
+    monthlist = CDK::ITEMLIST.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value,
+      title,
+      label,
+      params.c ? '' : info,
+      params.c ? 0 : ItemlistExample::MONTHS,
+      start_month,
+      params.box,
+      params.shadow,
+    )
 
     # Is the widget nil?
     if monthlist.nil?
@@ -69,7 +76,7 @@ class ItemlistExample < Example
       CDK::SCREEN.endCDK
 
       puts "Cannot create the itemlist box. Is the window too small?"
-      exit  # EXIT_FAILURE
+      exit
     end
 
     if params.c
@@ -82,19 +89,28 @@ class ItemlistExample < Example
     # Check how they exited from the widget.
     if monthlist.exit_type == :ESCAPE_HIT
       mesg = [
-          "<C>You hit escape. No item selected.",
-          "",
-          "<C>Press any key to continue."
+        "<C>You hit escape. No item selected.",
+        "",
+        "<C>Press any key to continue."
       ]
       monthlist.screen.popupLabel(mesg, 3)
     elsif monthlist.exit_type == :NORMAL
+      human_count_choice = choice + 1
+      suffix = case human_count_choice % 10
+        when 1 then 'st'
+        when 2 then 'nd'
+        when 3 then 'rd'
+        else 'th'
+      end
+
       mesg = [
-          "<C>You selected the %dth item which is" % [choice],
-          info[choice],
-          "",
-          "<C>Press any key to continue."
+        "<C>You selected the %d%s item which is" % [human_count_choice, suffix],
+        info[choice],
+        "",
+        "<C>Press any key to continue."
       ]
-          monthlist.screen.popupLabel(mesg, 4)
+
+      monthlist.screen.popupLabel(mesg, 4)
     end
 
     # Clean up
