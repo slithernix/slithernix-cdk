@@ -34,8 +34,8 @@
 #trace.enable
 
 require 'curses'
-#require 'logger'
-require 'pry'
+
+require_relative 'cdk/version'
 require_relative 'cdk/draw'
 require_relative 'cdk/display'
 require_relative 'cdk/traverse'
@@ -130,14 +130,15 @@ end
 
 module CDK
   # some useful global values
+  # but these aren't global variables? -- snake 2024
 
   def CDK.CTRL(c)
     c.ord & 0x1f
   end
 
   VERSION_MAJOR = 0
-  VERSION_MINOR = 8
-  VERSION_PATCH = 0
+  VERSION_MINOR = 0
+  VERSION_PATCH = 1
 
   CDK_PATHMAX = 256
 
@@ -331,29 +332,23 @@ module CDK
   def CDK.encodeAttribute (string, from, mask)
     mask << 0
     case string[from + 1]
-    when 'B'
-      mask[0] = Curses::A_BOLD
-    when 'D'
-      mask[0] = Curses::A_DIM
-    when 'K'
-      mask[0] = Curses::A_BLINK
-    when 'R'
-      mask[0] = Curses::A_REVERSE
-    when 'S'
-      mask[0] = Curses::A_STANDOUT
-    when 'U'
-      mask[0] = Curses::A_UNDERLINE
+      when 'B' then mask[0] = Curses::A_BOLD
+      when 'D' then mask[0] = Curses::A_DIM
+      when 'K' then mask[0] = Curses::A_BLINK
+      when 'R' then mask[0] = Curses::A_REVERSE
+      when 'S' then mask[0] = Curses::A_STANDOUT
+      when 'U' then mask[0] = Curses::A_UNDERLINE
     end
 
     if mask[0] != 0
       from += 1
     elsif CDK.digit?(string[from+1]) and CDK.digit?(string[from + 2])
+      mask[0] = Curses.A_BOLD
+
       if Curses.has_colors?
         # XXX: Only checks if terminal has colours not if colours are started
         pair = string[from + 1..from + 2].to_i
         mask[0] = Curses.color_pair(pair)
-      else
-        mask[0] = Curses.A_BOLD
       end
 
       from += 2
@@ -879,8 +874,11 @@ module CDK
   end
 
   def CDK.Version
-    return "%d.%d - %d" %
-        [CDK::VERSION_MAJOR, CDK::VERSION_MINOR, CDK::VERSION_PATCH]
+    return "%d.%d - %d" % [
+      CDK::VERSION_MAJOR,
+      CDK::VERSION_MINOR,
+      CDK::VERSION_PATCH,
+    ]
   end
 
   def CDK.getString(screen, title, label, init_value)

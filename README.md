@@ -1,10 +1,13 @@
-snix-cdk
+slithernix-cdk
 ========
 
 This is a fork of tawny-cdk, a CDK port that wasn't updated for about
 a decade. In that time, Ruby changed and so did the Ncurses library
 for it. Below is the original README.md.
 
+AS OF JUNE 2024- This thing is NOT ready for real usage. Consider this a WIP.
+
+==============================================================================
 A Ruby version of Thomas Dickey version of the curses development kit.
 
 Why Tawny?  Because this is better than just a ruby port.  Or, rather, it
@@ -33,7 +36,7 @@ Currently implemented widgets:
  * Radio List
  * Scale
  * Scrolling List
- * Scrolling Window 
+ * Scrolling Window
  * Selection List
  * Slider
  * Template

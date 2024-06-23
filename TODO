@@ -25,6 +25,10 @@ SlitherNix CDK TODO List (You can find the original Tawny list below)
   This code was written to sort of mirror the C library obviously, so a lot of
   is downright ugly and not very Ruby-esque.
 
+* Testing
+
+  There are zero tests right now. D'oh!
+
 Tawny-Cdk TODO List
 ------------------------------------------------------------------------------
 
