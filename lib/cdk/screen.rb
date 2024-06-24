@@ -8,7 +8,7 @@ module CDK
     EXITCANCEL = 2
 
     def initialize (window)
-      Curses.curs_set(0)
+      window ||= Curses.init_screen
       # initialization for the first time
       if CDK::ALL_SCREENS.size == 0
         # Set up basic curses settings.
@@ -18,6 +18,7 @@ module CDK
 
         Curses.noecho
         Curses.cbreak
+        Curses.curs_set(0)
       end
 
       CDK::ALL_SCREENS << self

@@ -35,7 +35,6 @@
 
 require 'curses'
 
-require_relative 'cdk/version'
 require_relative 'cdk/draw'
 require_relative 'cdk/display'
 require_relative 'cdk/traverse'
@@ -343,7 +342,7 @@ module CDK
     if mask[0] != 0
       from += 1
     elsif CDK.digit?(string[from+1]) and CDK.digit?(string[from + 2])
-      mask[0] = Curses.A_BOLD
+      mask[0] = Curses::A_BOLD
 
       if Curses.has_colors?
         # XXX: Only checks if terminal has colours not if colours are started
@@ -704,8 +703,6 @@ module CDK
 
     return newstring
   end
-
-
 
   # This returns the length of the integer.
   #

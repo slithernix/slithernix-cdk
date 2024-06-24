@@ -31,8 +31,17 @@ class SwindowExample < CLIExample
     CDK::Draw.initCDKColor
 
     # Create the scrolling window.
-    swindow = CDK::SWINDOW.new(cdkscreen, params.x_value, params.y_value,
-        params.h_value, params.w_value, title, 100, params.box, params.shadow)
+    swindow = CDK::SWINDOW.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value,
+      params.h_value,
+      params.w_value,
+      title,
+      100,
+      params.box,
+      params.shadow,
+    )
 
     # Is the window nil.
     if swindow.nil?

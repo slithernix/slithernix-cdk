@@ -12,6 +12,10 @@ SlitherNix CDK TODO List (You can find the original Tawny list below)
   you use the arrows to move through the menu, the menu itself moves with
   the arrow.
 
+* Fix position widget
+
+  Have no idea what this widget is supposed to do but it is totally broken.
+
 * Traverse Example has broken widgets
 
   I haven't looked into which widgets this thing uses but it has the issue
