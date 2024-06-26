@@ -1,4 +1,4 @@
-require_relative 'cdk_objs'
+require_relative '../cdk_objs'
 
 module CDK
   class MENU < CDK::CDKOBJS
@@ -48,7 +48,7 @@ module CDK
       (0...menu_items).each do |x|
         x1 = if menu_location[x] == CDK::LEFT
              then x
-             else 
+             else
                rightcount -= 1
                rightcount + 1
              end

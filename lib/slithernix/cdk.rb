@@ -1,96 +1,40 @@
 require 'curses'
+require_relative 'cdk/monkey_patches'
 
 require_relative 'cdk/draw'
 require_relative 'cdk/display'
 require_relative 'cdk/traverse'
 
 require_relative 'cdk/screen'
+require_relative 'cdk/widgets'
 
-require_relative 'cdk/alphalist'
-require_relative 'cdk/buttonbox'
-require_relative 'cdk/calendar'
-require_relative 'cdk/dialog'
-require_relative 'cdk/dscale'
-require_relative 'cdk/entry'
-require_relative 'cdk/fscale'
-require_relative 'cdk/fslider'
-require_relative 'cdk/fselect'
-require_relative 'cdk/histogram'
-require_relative 'cdk/itemlist'
-require_relative 'cdk/label'
-require_relative 'cdk/marquee'
-require_relative 'cdk/matrix'
-require_relative 'cdk/mentry'
-require_relative 'cdk/menu'
-require_relative 'cdk/radio'
-require_relative 'cdk/scale'
-require_relative 'cdk/scroll'
-require_relative 'cdk/selection'
-require_relative 'cdk/slider'
-require_relative 'cdk/swindow'
-require_relative 'cdk/template'
-require_relative 'cdk/uscale'
-require_relative 'cdk/uslider'
-require_relative 'cdk/viewer'
+require_relative 'cdk/widgets/alphalist'
+require_relative 'cdk/widgets/buttonbox'
+require_relative 'cdk/widgets/calendar'
+require_relative 'cdk/widgets/dialog'
+require_relative 'cdk/widgets/dscale'
+require_relative 'cdk/widgets/entry'
+require_relative 'cdk/widgets/fscale'
+require_relative 'cdk/widgets/fslider'
+require_relative 'cdk/widgets/fselect'
+require_relative 'cdk/widgets/histogram'
+require_relative 'cdk/widgets/itemlist'
+require_relative 'cdk/widgets/label'
+require_relative 'cdk/widgets/marquee'
+require_relative 'cdk/widgets/matrix'
+require_relative 'cdk/widgets/mentry'
+require_relative 'cdk/widgets/menu'
+require_relative 'cdk/widgets/radio'
+require_relative 'cdk/widgets/scale'
+require_relative 'cdk/widgets/scroll'
+require_relative 'cdk/widgets/selection'
+require_relative 'cdk/widgets/slider'
+require_relative 'cdk/widgets/swindow'
+require_relative 'cdk/widgets/template'
+require_relative 'cdk/widgets/uscale'
+require_relative 'cdk/widgets/uslider'
+require_relative 'cdk/widgets/viewer'
 
-# I hate this but, whatever
-module Curses
-  def self.napms(ms)
-    sleep(ms / 1000.0)
-  end
-
-  def self.unctrl(ch)
-    raise Curses::Error, 'Input is not an Integer' unless ch.is_a?(Integer)
-    raise Curses::Error, 'Input is out of ASCII range' if ch < 0 || ch > 127
-
-    if (32..126).include?(ch)
-      ch.chr
-    elsif ch == 127
-      '^?'
-    else
-      "^#{(ch + 64).chr}"
-    end
-  rescue => e
-    raise Curses::Error, "Error in unctrl: #{e.message}"
-  end
-
-  class Window
-    def mvwvline(y, x, ch, n)
-      n.times do |i|
-        self.setpos(y + i, x)
-        self.addch(ch)
-      end
-    end
-
-    def mvwhline(y, x, ch, n)
-      self.setpos(y, x)
-
-      n.times do |i|
-        self.addch(ch)
-      end
-    end
-
-    def mvwaddch(y, x, ch)
-      self.setpos(y, x)
-      self.addch(ch)
-    end
-
-    def mvwdelch(y, x)
-      self.setpos(y, x)
-      self.delch()
-    end
-
-    def mvwinsch(y, x, ch)
-      self.setpos(y, x)
-      self.insch(ch)
-    end
-
-    def mvinch(y, x)
-      self.setpos(y, x)
-      self.inch
-    end
-  end
-end
 
 module CDK
   # some useful global values

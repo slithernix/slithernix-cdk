@@ -1,4 +1,4 @@
-require_relative 'cdk_objs'
+require_relative '../cdk_objs'
 
 module CDK
   class BUTTONBOX < CDK::CDKOBJS
@@ -40,7 +40,7 @@ module CDK
       # Translate the buttons string to a chtype array
       (0...button_count).each do |x|
         button_len = []
-        @button << CDK.char2Chtype(buttons[x], button_len ,[]) 
+        @button << CDK.char2Chtype(buttons[x], button_len ,[])
         @button_len << button_len[0]
       end
 
