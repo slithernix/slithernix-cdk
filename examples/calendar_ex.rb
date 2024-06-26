@@ -5,8 +5,8 @@ class CalendarExample < Example
   def CalendarExample.parse_opts(opts, param)
     opts.banner = 'Usage: calendar_ex.rb [options]'
 
-    param.x_value = CDK::CENTER
-    param.y_value = CDK::CENTER
+    param.x_value = Cdk::CENTER
+    param.y_value = Cdk::CENTER
     param.box = true
     param.shadow = false
     param.day = 0
@@ -60,24 +60,24 @@ class CalendarExample < Example
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     # Declare the calendar widget.
-    calendar = CDK::CALENDAR.new(cdkscreen, params.x_value, params.y_value,
-        params.title, params.day, params.month, params.year,
-        Curses.color_pair(16) | Curses::A_BOLD,
-        Curses.color_pair(24) | Curses::A_BOLD,
-        Curses.color_pair(32) | Curses::A_BOLD,
-        Curses.color_pair(40) | Curses::A_REVERSE,
-        params.box, params.shadow)
+    calendar = Cdk::CALENDAR.new(cdkscreen, params.x_value, params.y_value,
+                                 params.title, params.day, params.month, params.year,
+                                 Curses.color_pair(16) | Curses::A_BOLD,
+                                 Curses.color_pair(24) | Curses::A_BOLD,
+                                 Curses.color_pair(32) | Curses::A_BOLD,
+                                 Curses.color_pair(40) | Curses::A_REVERSE,
+                                 params.box, params.shadow)
 
     if calendar.nil?
       # Exit CDK.
       cdkscreen.destroy
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
 
       puts 'Cannot create the calendar. Is the window too small?'
       exit  # EXIT_FAILURE
@@ -129,7 +129,7 @@ class CalendarExample < Example
     # Clean up
     calendar.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     $stdout.flush
     puts 'Selected Time: %s' % ret_val.ctime
     #ExitProgram (EXIT_SUCCESS);

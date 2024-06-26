@@ -1,7 +1,7 @@
-require_relative '../cdk_objs'
+require_relative '../objects'
 
-module CDK
-  class LABEL < CDK::CDKOBJS
+module Cdk
+  class LABEL < Cdk::Objects
     attr_accessor :win
 
     def initialize(cdkscreen, xplace, yplace, mesg, rows, box, shadow)
@@ -30,7 +30,7 @@ module CDK
         #Translate the string to a chtype array
         info_len = []
         info_pos = []
-        @info << CDK.char2Chtype(mesg[x], info_len, info_pos)
+        @info << Cdk.char2Chtype(mesg[x], info_len, info_pos)
         @info_len << info_len[0]
         @info_pos << info_pos[0]
         box_width = [box_width, @info_len[x]].max
@@ -39,8 +39,8 @@ module CDK
 
       # Create the string alignments.
       (0...rows).each do |x|
-        @info_pos[x] = CDK.justifyString(box_width - 2 * @border_size,
-            @info_len[x], @info_pos[x])
+        @info_pos[x] = Cdk.justifyString(box_width - 2 * @border_size,
+                                         @info_len[x], @info_pos[x])
       end
 
       # Make sure we didn't extend beyond the dimensions of the window.
@@ -54,7 +54,7 @@ module CDK
                    end
 
       # Rejustify the x and y positions if we need to
-      CDK.alignxy(cdkscreen.window, xpos, ypos, box_width, box_height)
+      Cdk.alignxy(cdkscreen.window, xpos, ypos, box_width, box_height)
       @screen = cdkscreen
       @parent = cdkscreen.window
       @win = Curses::Window.new(box_height, box_width, ypos[0], xpos[0])
@@ -114,10 +114,10 @@ module CDK
       (0...@rows).each do |x|
         info_len = []
         info_pos = []
-        @info[x] = CDK.char2Chtype(info[x], info_len, info_pos)
+        @info[x] = Cdk.char2Chtype(info[x], info_len, info_pos)
         @info_len[x] = info_len[0]
-        @info_pos[x] = CDK.justifyString(@box_width - 2 * @border_size,
-            @info_len[x], info_pos[0])
+        @info_pos[x] = Cdk.justifyString(@box_width - 2 * @border_size,
+                                         @info_len[x], info_pos[0])
       end
 
       # Redraw the label widget.
@@ -158,8 +158,8 @@ module CDK
       # Draw in the message.
       (0...@rows).each do |x|
         Draw.writeChtype(@win,
-            @info_pos[x] + @border_size, x + @border_size,
-            @info[x], CDK::HORIZONTAL, 0, @info_len[x])
+                         @info_pos[x] + @border_size, x + @border_size,
+                         @info[x], Cdk::HORIZONTAL, 0, @info_len[x])
       end
 
       # Refresh the window
@@ -168,8 +168,8 @@ module CDK
 
     # This erases the label widget
     def erase
-      CDK.eraseCursesWindow(@win)
-      CDK.eraseCursesWindow(@shadow_win)
+      Cdk.eraseCursesWindow(@win)
+      Cdk.eraseCursesWindow(@shadow_win)
     end
 
     # This moves the label field to the given location
@@ -179,12 +179,12 @@ module CDK
 
     # This destroys the label object pointer.
     def destroy
-      CDK.deleteCursesWindow(@shadow_win)
-      CDK.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@win)
 
       self.cleanBindings(:LABEL)
 
-      CDK::SCREEN.unregister(:LABEL, self)
+      Cdk::Screen.unregister(:LABEL, self)
     end
 
     # This pauses until a user hits a key...

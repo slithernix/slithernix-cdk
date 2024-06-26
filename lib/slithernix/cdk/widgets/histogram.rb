@@ -1,7 +1,7 @@
-require_relative '../cdk_objs'
+require_relative '../objects'
 
-module CDK
-  class HISTOGRAM < CDK::CDKOBJS
+module Cdk
+  class HISTOGRAM < Cdk::Objects
     def initialize(cdkscreen, xplace, yplace, height, width, orient,
         title, box, shadow)
       super()
@@ -10,10 +10,10 @@ module CDK
 
       self.setBox(box)
 
-      box_height = CDK.setWidgetDimension(parent_height, height, 2)
+      box_height = Cdk.setWidgetDimension(parent_height, height, 2)
       old_height = box_height
 
-      box_width = CDK.setWidgetDimension(parent_width, width, 0)
+      box_width = Cdk.setWidgetDimension(parent_width, width, 0)
       old_width = box_width
 
       box_width = self.setTitle(title, -(box_width + 1))
@@ -34,7 +34,7 @@ module CDK
       # Rejustify the x and y positions if we need to.
       xtmp = [xplace]
       ytmp = [yplace]
-      CDK.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+      Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -61,7 +61,7 @@ module CDK
       # Set up some default values.
       @filler = '#'.ord | Curses::A_REVERSE
       @stats_attr = Curses::A_NORMAL
-      @stats_pos = CDK::TOP
+      @stats_pos = Cdk::TOP
       @view_type = :REAL
       @high = 0
       @low = 0
@@ -110,7 +110,7 @@ module CDK
       @percent = if @high == 0 then 0 else 1.0 * @value / @high end
 
       # Determine the size of the histogram bar.
-      if @orient == CDK::VERTICAL
+      if @orient == Cdk::VERTICAL
         @bar_size = @percent * @field_height
       else
         @bar_size = @percent * @field_width
@@ -120,8 +120,8 @@ module CDK
       # histogram.  We have to go through each one methodically, and set them
       # correctly.  This section does this.
       if @view_type != :NONE
-        if @orient == CDK::VERTICAL
-          if @stats_pos == CDK::LEFT || @stats_pos == CDK::BOTTOM
+        if @orient == Cdk::VERTICAL
+          if @stats_pos == Cdk::LEFT || @stats_pos == Cdk::BOTTOM
             # Set the low label attributes.
             @low_string = @low.to_s
             @lowx = 1
@@ -143,7 +143,7 @@ module CDK
             @cur_string = string
             @curx = 1
             @cury = (@field_height - string.size) / 2 + @title_lines + 1
-          elsif @stats_pos == CDK::CENTER
+          elsif @stats_pos == Cdk::CENTER
             # Set the lower label attributes
             @low_string = @low.to_s
             @lowx = @field_width / 2 + 1
@@ -165,7 +165,7 @@ module CDK
             @cur_string = string
             @curx = @field_width / 2 + 1
             @cury = (@field_height - string.size) / 2 + @title_lines + 1
-          elsif @stats_pos == CDK::RIGHT || @stats_pos == CDK::TOP
+          elsif @stats_pos == Cdk::RIGHT || @stats_pos == Cdk::TOP
             # Set the low label attributes.
             @low_string = @low.to_s
             @lowx = @field_width
@@ -189,7 +189,7 @@ module CDK
           end
         else
           # Alignment is HORIZONTAL
-          if @stats_pos == CDK::TOP || @stats_pos == CDK::RIGHT
+          if @stats_pos == Cdk::TOP || @stats_pos == Cdk::RIGHT
             # Set the low label attributes.
             @low_string = @low.to_s
             @lowx = 1
@@ -210,7 +210,7 @@ module CDK
             @cur_string = string
             @curx = (@field_width - @cur_string.size) / 2 + 1
             @cury = @title_lines + 1
-          elsif @stats_pos == CDK::CENTER
+          elsif @stats_pos == Cdk::CENTER
             # Set the low label attributes.
             @low_string = @low.to_s
             @lowx = 1
@@ -231,7 +231,7 @@ module CDK
             @cur_string = string
             @curx = (@field_width - @cur_string.size) / 2 + 1
             @cury = @field_height / 2 + @title_lines + 1
-          elsif @stats_pos == CDK::BOTTOM || @stats_pos == CDK::LEFT
+          elsif @stats_pos == Cdk::BOTTOM || @stats_pos == Cdk::LEFT
             # Set the low label attributes.
             @low_string = @low.to_s
             @lowx = 1
@@ -358,7 +358,7 @@ module CDK
         end
       end
 
-      if @orient == CDK::VERTICAL
+      if @orient == Cdk::VERTICAL
         hist_x = @box_height - @bar_size - 1
         hist_y = @field_width
       end
@@ -385,21 +385,21 @@ module CDK
       self.cleanTitle
 
       # Clean up the windows.
-      CDK.deleteCursesWindow(@shadow_win)
-      CDK.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@win)
 
       # Clean the key bindings.
       self.cleanBindings(:HISTOGRAM)
 
       # Unregister this object.
-      CDK::SCREEN.unregister(:HISTOGRAM, self)
+      Cdk::Screen.unregister(:HISTOGRAM, self)
     end
 
     # Erase the widget from the screen.
     def erase
       if self.validCDKObject
-        CDK.eraseCursesWindow(@win)
-        CDK.eraseCursesWindow(@shadow_win)
+        Cdk.eraseCursesWindow(@win)
+        Cdk.eraseCursesWindow(@shadow_win)
       end
     end
 

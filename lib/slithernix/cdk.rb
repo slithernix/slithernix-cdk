@@ -36,11 +36,11 @@ require_relative 'cdk/widgets/uslider'
 require_relative 'cdk/widgets/viewer'
 
 
-module CDK
+module Cdk
   # some useful global values
   # but these aren't global variables? -- snake 2024
 
-  def CDK.CTRL(c)
+  def Cdk.CTRL(c)
     c.ord & 0x1f
   end
 
@@ -70,18 +70,18 @@ module CDK
   MAX_ITEMS = 2000
   MAX_BUTTONS = 200
 
-  REFRESH = CDK.CTRL('L')
-  PASTE = CDK.CTRL('V')
-  COPY = CDK.CTRL('Y')
-  ERASE = CDK.CTRL('U')
-  CUT = CDK.CTRL('X')
-  BEGOFLINE = CDK.CTRL('A')
-  ENDOFLINE = CDK.CTRL('E')
-  BACKCHAR = CDK.CTRL('B')
-  FORCHAR = CDK.CTRL('F')
-  TRANSPOSE = CDK.CTRL('T')
-  NEXT = CDK.CTRL('N')
-  PREV = CDK.CTRL('P')
+  REFRESH = Cdk.CTRL('L')
+  PASTE = Cdk.CTRL('V')
+  COPY = Cdk.CTRL('Y')
+  ERASE = Cdk.CTRL('U')
+  CUT = Cdk.CTRL('X')
+  BEGOFLINE = Cdk.CTRL('A')
+  ENDOFLINE = Cdk.CTRL('E')
+  BACKCHAR = Cdk.CTRL('B')
+  FORCHAR = Cdk.CTRL('F')
+  TRANSPOSE = Cdk.CTRL('T')
+  NEXT = Cdk.CTRL('N')
+  PREV = Cdk.CTRL('P')
   DELETE = "\177".ord
   KEY_ESC = "\033".ord
   KEY_RETURN = "\012".ord
@@ -127,17 +127,17 @@ module CDK
   ACS_VLINE     = 0x78 | Curses::A_ALTCHARSET
 
   # This beeps then flushes the stdout stream
-  def CDK.Beep
+  def Cdk.Beep
     Curses.beep
     $stdout.flush
   end
 
   # This sets a blank string to be len of the given characer.
-  def CDK.cleanChar(s, len, character)
+  def Cdk.cleanChar(s, len, character)
     s << character * len
   end
 
-  def CDK.cleanChtype(s, len, character)
+  def Cdk.cleanChtype(s, len, character)
     s.concat(character * len)
   end
 
@@ -147,7 +147,7 @@ module CDK
   # window is an Curses::WINDOW object
   # xpos, ypos is an array with exactly one value, an integer
   # box_width, box_height is an integer
-  def CDK.alignxy (window, xpos, ypos, box_width, box_height)
+  def Cdk.alignxy (window, xpos, ypos, box_width, box_height)
     first = window.begx
     last = window.maxx
     if (gap = (last - box_width)) < 0
@@ -196,7 +196,7 @@ module CDK
   # This takes a string, a field width, and a justification type
   # and returns the adjustment to make, to fill the justification
   # requirement
-  def CDK.justifyString (box_width, mesg_length, justify)
+  def Cdk.justifyString (box_width, mesg_length, justify)
 
     # make sure the message isn't longer than the width
     # if it is, return 0
@@ -218,7 +218,7 @@ module CDK
   end
 
   # This reads a file and sticks it into the list provided.
-  def CDK.readFile(filename, array)
+  def Cdk.readFile(filename, array)
     begin
       fd = File.new(filename, "r")
     rescue
@@ -237,7 +237,7 @@ module CDK
     array.size
   end
 
-  def CDK.encodeAttribute (string, from, mask)
+  def Cdk.encodeAttribute (string, from, mask)
     mask << 0
     case string[from + 1]
       when 'B' then mask[0] = Curses::A_BOLD
@@ -250,7 +250,7 @@ module CDK
 
     if mask[0] != 0
       from += 1
-    elsif CDK.digit?(string[from+1]) and CDK.digit?(string[from + 2])
+    elsif Cdk.digit?(string[from+1]) and Cdk.digit?(string[from + 2])
       mask[0] = Curses::A_BOLD
 
       if Curses.has_colors?
@@ -260,7 +260,7 @@ module CDK
       end
 
       from += 2
-    elsif CDK.digit?(string[from + 1])
+    elsif Cdk.digit?(string[from + 1])
       if Curses.has_colors?
         # XXX: Only checks if terminal has colours not if colours are started
         pair = string[from + 1].to_i
@@ -280,7 +280,7 @@ module CDK
   # same string, we do not necessarily reconstruct them in the same order.
   # Also, alignment markers and tabs are lost.
 
-  def CDK.decodeAttribute (string, from, oldattr, newattr)
+  def Cdk.decodeAttribute (string, from, oldattr, newattr)
     table = {
       'B' => Curses::A_BOLD,
       'D' => Curses::A_DIM,
@@ -301,7 +301,7 @@ module CDK
         table.keys.each do |key|
           if (table[key] & tmpattr) != (table[key] & newattr)
             found = true
-            result << CDK::L_MARKER
+            result << Cdk::L_MARKER
             if (table[key] & tmpattr).nonzero?
               result << '!'
               tmpattr &= ~(table[key])
@@ -320,7 +320,7 @@ module CDK
             newpair = Curses.PAIR_NUMBER(newattr)
             if !found
               found = true
-              result << CDK::L_MARKER
+              result << Cdk::L_MARKER
             end
             if newpair.zero?
               result << '!'
@@ -335,7 +335,7 @@ module CDK
         end
 
         if found
-          result << CDK::R_MARKER
+          result << Cdk::R_MARKER
         else
           break
         end
@@ -348,7 +348,7 @@ module CDK
   # This function takes a string, full of format markers and translates
   # them into a chtype array.  This is better suited to curses because
   # curses uses chtype almost exclusively
-  def CDK.char2Chtype (string, to, align)
+  def Cdk.char2Chtype (string, to, align)
     to << 0
     align << LEFT
     result = []
@@ -394,7 +394,7 @@ module CDK
           x = 0
 
           while from < string.size && string[from] != Curses.R_MARKER
-            if CDK.digit?(string[from])
+            if Cdk.digit?(string[from])
               adjust = adjust * 10 + string[from].to_i
               x += 1
             end
@@ -446,61 +446,61 @@ module CDK
             when 'L'
               case string[from + 1]
               when 'L'
-                last_char = CDK::ACS_LLCORNER
+                last_char = Cdk::ACS_LLCORNER
               when 'U'
-                last_char = CDK::ACS_ULCORNER
+                last_char = Cdk::ACS_ULCORNER
               when 'H'
-                last_char = CDK::ACS_HLINE
+                last_char = Cdk::ACS_HLINE
               when 'V'
-                last_char = CDK::ACS_VLINE
+                last_char = Cdk::ACS_VLINE
               when 'P'
-                last_char = CDK::ACS_PLUS
+                last_char = Cdk::ACS_PLUS
               end
             when 'R'
               case string[from + 1]
               when 'L'
-                last_char = CDK::ACS_LRCORNER
+                last_char = Cdk::ACS_LRCORNER
               when 'U'
-                last_char = CDK::ACS_URCORNER
+                last_char = Cdk::ACS_URCORNER
               end
             when 'T'
               case string[from + 1]
               when 'T'
-                last_char = CDK::ACS_TTEE
+                last_char = Cdk::ACS_TTEE
               when 'R'
-                last_char = CDK::ACS_RTEE
+                last_char = Cdk::ACS_RTEE
               when 'L'
-                last_char = CDK::ACS_LTEE
+                last_char = Cdk::ACS_LTEE
               when 'B'
-                last_char = CDK::ACS_BTEE
+                last_char = Cdk::ACS_BTEE
               end
             when 'A'
               case string[from + 1]
               when 'L'
-                last_char = CDK::ACS_LARROW
+                last_char = Cdk::ACS_LARROW
               when 'R'
-                last_char = CDK::ACS_RARROW
+                last_char = Cdk::ACS_RARROW
               when 'U'
-                last_char = CDK::ACS_UARROW
+                last_char = Cdk::ACS_UARROW
               when 'D'
-                last_char = CDK::ACS_DARROW
+                last_char = Cdk::ACS_DARROW
               end
             else
               case [string[from + 1], string[from + 2]]
               when ['D', 'I']
-                last_char = CDK::ACS_DIAMOND
+                last_char = Cdk::ACS_DIAMOND
               when ['C', 'B']
-                last_char = CDK::ACS_CKBOARD
+                last_char = Cdk::ACS_CKBOARD
               when ['D', 'G']
-                last_char = CDK::ACS_DEGREE
+                last_char = Cdk::ACS_DEGREE
               when ['P', 'M']
-                last_char = CDK::ACS_PLMINUS
+                last_char = Cdk::ACS_PLMINUS
               when ['B', 'U']
-                last_char = CDK::ACS_BULLET
+                last_char = Cdk::ACS_BULLET
               when ['S', '1']
-                last_char = CDK::ACS_S1
+                last_char = Cdk::ACS_S1
               when ['S', '9']
-                last_char = CDK::ACS_S9
+                last_char = Cdk::ACS_S9
               end
             end
 
@@ -514,7 +514,7 @@ module CDK
                 adjust = 0
 
                 while from < string.size && string[from] != ')'
-                  if CDK.digit?(string[from])
+                  if Cdk.digit?(string[from])
                     adjust = (adjust * 10) + string[from].to_i
                   end
                   from += 1
@@ -527,11 +527,11 @@ module CDK
             end
           when '/'
             mask = []
-            from = CDK.encodeAttribute(string, from, mask)
+            from = Cdk.encodeAttribute(string, from, mask)
             attrib |= mask[0]
           when '!'
             mask = []
-            from = CDK.encodeAttribute(string, from, mask)
+            from = Cdk.encodeAttribute(string, from, mask)
             attrib &= ~(mask[0])
           end
         end
@@ -549,7 +549,7 @@ module CDK
   end
 
   # Compare a regular string to a chtype string
-  def CDK.cmpStrChstr (str, chstr)
+  def Cdk.cmpStrChstr (str, chstr)
     i = 0
     r = 0
 
@@ -579,18 +579,18 @@ module CDK
     end
   end
 
-  def CDK.CharOf(chtype)
+  def Cdk.CharOf(chtype)
     (chtype.ord & 255).chr
   end
 
   # This returns a string from a chtype array
   # Formatting codes are omitted.
-  def CDK.chtype2Char(string)
+  def Cdk.chtype2Char(string)
     newstring = ''
 
     unless string.nil?
       string.each do |char|
-        newstring << CDK.CharOf(char)
+        newstring << Cdk.CharOf(char)
       end
     end
 
@@ -599,12 +599,12 @@ module CDK
 
   # This returns a string from a chtype array
   # Formatting codes are embedded
-  def CDK.chtype2String(string)
+  def Cdk.chtype2String(string)
     newstring = ''
     unless string.nil?
       need = 0
       (0...string.size).each do |x|
-        need = CDK.decodeAttribute(newstring, need,
+        need = Cdk.decodeAttribute(newstring, need,
                                    x > 0 ? string[x - 1] : 0, string[x])
         newstring << string[x]
       end
@@ -616,12 +616,12 @@ module CDK
   # This returns the length of the integer.
   #
   # Currently a wrapper maintained for easy of porting.
-  def CDK.intlen (value)
+  def Cdk.intlen (value)
     value.to_str.size
   end
 
   # This opens the current directory and reads the contents.
-  def CDK.getDirectoryContents(directory, list)
+  def Cdk.getDirectoryContents(directory, list)
     counter = 0
 
     # Open the directory.
@@ -635,7 +635,7 @@ module CDK
   end
 
   # This looks for a subset of a word in the given list
-  def CDK.searchList(list, list_size, pattern)
+  def Cdk.searchList(list, list_size, pattern)
     index = -1
 
     if pattern.size > 0
@@ -663,7 +663,7 @@ module CDK
   end
 
   # This function checks to see if a link has been requested
-  def CDK.checkForLink (line, filename)
+  def Cdk.checkForLink (line, filename)
     f_pos = 0
     x = 3
     if line.nil?
@@ -690,7 +690,7 @@ module CDK
   # slash
   # For now this function is just a wrapper for File.basename kept for ease of
   # porting and will be completely replaced in the future
-  def CDK.baseName (pathname)
+  def Cdk.baseName (pathname)
     File.basename(pathname)
   end
 
@@ -698,14 +698,14 @@ module CDK
   # last slash
   # For now this function is just a wrapper for File.dirname kept for ease of
   # porting and will be completely replaced in the future
-  def CDK.dirName (pathname)
+  def Cdk.dirName (pathname)
     File.dirname(pathname)
   end
 
   # If the dimension is a negative value, the dimension will be the full
   # height/width of the parent window - the value of the dimension. Otherwise,
   # the dimension will be the given value.
-  def CDK.setWidgetDimension (parent_dim, proposed_dim, adjustment)
+  def Cdk.setWidgetDimension (parent_dim, proposed_dim, adjustment)
     # If the user passed in FULL, return the parents size
     if proposed_dim == FULL or proposed_dim == 0
       parent_dim
@@ -730,7 +730,7 @@ module CDK
   end
 
   # This safely erases a given window
-  def CDK.eraseCursesWindow (window)
+  def Cdk.eraseCursesWindow (window)
     return if window.nil?
 
     window.erase
@@ -738,16 +738,16 @@ module CDK
   end
 
   # This safely deletes a given window.
-  def CDK.deleteCursesWindow (window)
+  def Cdk.deleteCursesWindow (window)
     return if window.nil?
 
-    CDK.eraseCursesWindow(window)
+    Cdk.eraseCursesWindow(window)
     window.close
   end
 
   # This moves a given window (if we're able to set the window's beginning).
   # We do not use mvwin(), because it does not (usually) move subwindows.
-  def CDK.moveCursesWindow (window, xdiff, ydiff)
+  def Cdk.moveCursesWindow (window, xdiff, ydiff)
     return if window.nil?
 
     xpos = window.begx + xdiff
@@ -759,38 +759,38 @@ module CDK
       old_window.erase
       window
     rescue
-      CDK.Beep
+      Cdk.Beep
     end
   end
 
-  def CDK.digit?(character)
+  def Cdk.digit?(character)
     !(character.match(/^[[:digit:]]$/).nil?)
   end
 
-  def CDK.alpha?(character)
+  def Cdk.alpha?(character)
     !(character.match(/^[[:alpha:]]$/).nil?)
   end
 
-  def CDK.isChar(c)
+  def Cdk.isChar(c)
     c.ord >= 0 && c.ord < Curses::KEY_MIN
   end
 
-  def CDK.KEY_F(n)
+  def Cdk.KEY_F(n)
     264 + n
   end
 
-  def CDK.Version
+  def Cdk.Version
     return "%d.%d - %d" % [
-      CDK::VERSION_MAJOR,
-      CDK::VERSION_MINOR,
-      CDK::VERSION_PATCH,
+      Cdk::VERSION_MAJOR,
+      Cdk::VERSION_MINOR,
+      Cdk::VERSION_PATCH,
     ]
   end
 
-  def CDK.getString(screen, title, label, init_value)
+  def Cdk.getString(screen, title, label, init_value)
     # Create the widget.
-    widget = CDK::ENTRY.new(screen, CDK::CENTER, CDK::CENTER, title, label,
-        Curses::A_NORMAL, '.', :MIXED, 40, 0, 5000, true, false)
+    widget = Cdk::ENTRY.new(screen, Cdk::CENTER, Cdk::CENTER, title, label,
+                            Curses::A_NORMAL, '.', :MIXED, 40, 0, 5000, true, false)
 
     # Set the default value.
     widget.setValue(init_value)
@@ -811,11 +811,11 @@ module CDK
   end
 
   # This allows a person to select a file.
-  def CDK.selectFile(screen, title)
+  def Cdk.selectFile(screen, title)
     # Create the file selector.
-    fselect = CDK::FSELECT.new(screen, CDK::CENTER, CDK::CENTER, -4, -20,
-        title, 'File: ', Curses::A_NORMAL, '_', Curses::A_REVERSE,
-        '</5>', '</48>', '</N>', '</N>', true, false)
+    fselect = Cdk::FSELECT.new(screen, Cdk::CENTER, Cdk::CENTER, -4, -20,
+                               title, 'File: ', Curses::A_NORMAL, '_', Curses::A_REVERSE,
+                               '</5>', '</48>', '</N>', '</N>', true, false)
 
     # Let the user play.
     filename = fselect.activate([])
@@ -834,7 +834,7 @@ module CDK
   end
 
   # This returns a selected value in a list
-  def CDK.getListindex(screen, title, list, list_size, numbers)
+  def Cdk.getListindex(screen, title, list, list_size, numbers)
     selected = -1
     height = 10
     width = -1
@@ -854,9 +854,9 @@ module CDK
     width += 5
 
     # Create the scrolling list.
-    scrollp = CDK::SCROLL.new(screen, CDK::CENTER, CDK::CENTER, CDK::RIGHT,
-        height, width, title, list, list_size, numbers, Curses::A_REVERSE,
-        true, false)
+    scrollp = Cdk::SCROLL.new(screen, Cdk::CENTER, Cdk::CENTER, Cdk::RIGHT,
+                              height, width, title, list, list_size, numbers, Curses::A_REVERSE,
+                              true, false)
 
     # Check if we made the lsit.
     if scrollp.nil?
@@ -879,13 +879,13 @@ module CDK
   end
 
   # This allows the user to view information.
-  def CDK.viewInfo(screen, title, info, count, buttons, button_count,
-      interpret)
+  def Cdk.viewInfo(screen, title, info, count, buttons, button_count,
+                   interpret)
     selected = -1
 
     # Create the file viewer to view the file selected.
-    viewer = CDK::VIEWER.new(screen, CDK::CENTER, CDK::CENTER, -6, -16,
-        buttons, button_count, Curses::A_REVERSE, true, true)
+    viewer = Cdk::VIEWER.new(screen, Cdk::CENTER, Cdk::CENTER, -6, -16,
+                             buttons, button_count, Curses::A_REVERSE, true, true)
 
     # Set up the viewer title, and the contents to the widget.
     viewer.set(title, info, count, Curses::A_REVERSE, interpret, true, true)
@@ -905,19 +905,19 @@ module CDK
   end
 
   # This allows the user to view a file.
-  def CDK.viewFile(screen, title, filename, buttons, button_count)
+  def Cdk.viewFile(screen, title, filename, buttons, button_count)
     info = []
     result = 0
 
     # Open the file and read the contents.
-    lines = CDK.readFile(filename, info)
+    lines = Cdk.readFile(filename, info)
 
     # If we couldn't read the file, return an error.
     if lines == -1
       result = lines
     else
-      result = CDK.viewInfo(screen, title, info, lines, buttons,
-          button_count, true)
+      result = Cdk.viewInfo(screen, title, info, lines, buttons,
+                            button_count, true)
     end
     return result
   end

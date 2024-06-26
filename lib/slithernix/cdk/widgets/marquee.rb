@@ -1,7 +1,7 @@
-require_relative '../cdk_objs'
+require_relative '../objects'
 
-module CDK
-  class MARQUEE < CDK::CDKOBJS
+module Cdk
+  class MARQUEE < Cdk::Objects
     def initialize(cdkscreen, xpos, ypos, width, box, shadow)
       super()
 
@@ -42,7 +42,7 @@ module CDK
       padding = if mesg[-1] == ' ' then 0 else 1 end
 
       # Translate the string to a chtype array
-      message = CDK.char2Chtype(mesg, mesg_length, [])
+      message = Cdk.char2Chtype(mesg, mesg_length, [])
 
       # Draw in the widget.
       self.draw(@box)
@@ -158,21 +158,21 @@ module CDK
     # This destroys the widget.
     def destroy
       # Clean up the windows.
-      CDK.deleteCursesWindow(@shadow_win)
-      CDK.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@win)
 
       # Clean the key bindings.
       self.cleanBindings(:MARQUEE)
 
       # Unregister this object.
-      CDK::SCREEN.unregister(:MARQUEE, self)
+      Cdk::Screen.unregister(:MARQUEE, self)
     end
 
     # This erases the widget.
     def erase
       if self.validCDKObject
-        CDK.eraseCursesWindow(@win)
-        CDK.eraseCursesWindow(@shadow_win)
+        Cdk.eraseCursesWindow(@win)
+        Cdk.eraseCursesWindow(@shadow_win)
       end
     end
 
@@ -203,16 +203,16 @@ module CDK
       cdkscreen = @screen
       parent_width = @screen.window.maxx
 
-      CDK::MARQUEE.discardWin(@win)
-      CDK::MARQUEE.discardWin(@shadow_win)
+      Cdk::MARQUEE.discardWin(@win)
+      Cdk::MARQUEE.discardWin(@shadow_win)
 
-      box_width = CDK.setWidgetDimension(parent_width, @width, 0)
+      box_width = Cdk.setWidgetDimension(parent_width, @width, 0)
       box_height = (@border_size * 2) + 1
 
       # Rejustify the x and y positions if we need to.
       xtmp = [xpos]
       ytmp = [ypos]
-      CDK.alignxy(@screen.window, xtmp, ytmp, box_width, box_height)
+      Cdk.alignxy(@screen.window, xtmp, ytmp, box_width, box_height)
       window = Curses::Window.new(box_height, box_width, ytmp[0], xtmp[0])
 
       unless window.nil?

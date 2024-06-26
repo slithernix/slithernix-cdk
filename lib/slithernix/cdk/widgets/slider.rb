@@ -1,21 +1,21 @@
-require_relative '../cdk_objs'
+require_relative '../objects'
 
-module CDK
-  class SLIDER < CDK::CDKOBJS
+module Cdk
+  class SLIDER < Cdk::Objects
     def initialize(cdkscreen, xplace, yplace, title, label, filler,
         field_width, start, low, high, inc, fast_inc, box, shadow)
       super()
       parent_width = cdkscreen.window.maxx
       parent_height = cdkscreen.window.maxy
       bindings = {
-          'u'           => Curses::KEY_UP,
-          'U'           => Curses::KEY_PPAGE,
-          CDK::BACKCHAR => Curses::KEY_PPAGE,
-          CDK::FORCHAR  => Curses::KEY_NPAGE,
-          'g'           => Curses::KEY_HOME,
-          '^'           => Curses::KEY_HOME,
-          'G'           => Curses::KEY_END,
-          '$'           => Curses::KEY_END,
+        'u'           => Curses::KEY_UP,
+        'U'           => Curses::KEY_PPAGE,
+        Cdk::BACKCHAR => Curses::KEY_PPAGE,
+        Cdk::FORCHAR  => Curses::KEY_NPAGE,
+        'g'           => Curses::KEY_HOME,
+        '^'           => Curses::KEY_HOME,
+        'G'           => Curses::KEY_END,
+        '$'           => Curses::KEY_END,
       }
       self.setBox(box)
       box_height = @border_size * 2 + 1
@@ -28,12 +28,12 @@ module CDK
 
       # If the field_width is a negative will be COLS-field_width,
       # otherwise field_width will be the given width.
-      field_width = CDK.setWidgetDimension(parent_width, field_width, 0)
+      field_width = Cdk.setWidgetDimension(parent_width, field_width, 0)
 
       # Translate the label string to a chtype array.
       if !(label.nil?) && label.size > 0
         label_len = []
-        @label = CDK.char2Chtype(label, label_len, [])
+        @label = Cdk.char2Chtype(label, label_len, [])
         @label_len = label_len[0]
         box_width = @label_len + field_width +
             high_value_len + 2 * @border_size
@@ -56,7 +56,7 @@ module CDK
       # Rejustify the x and y positions if we need to.
       xtmp = [xplace]
       ytmp = [yplace]
-      CDK.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+      Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -167,10 +167,10 @@ module CDK
     def limitCurrentValue
       if @current < @low
         @current = @low
-        CDK.Beep
+        Cdk.Beep
       elsif @current > @high
         @current = @high
-        CDK.Beep
+        Cdk.Beep
       end
     end
 
@@ -191,7 +191,7 @@ module CDK
         return false
       end
       ch = @field_win.inch
-      if CDK.CharOf(ch) != ' '
+      if Cdk.CharOf(ch) != ' '
         return true
       end
       if new_position > 1
@@ -200,7 +200,7 @@ module CDK
           return false
         end
         ch = @field_win.inch
-        return CDK.CharOf(ch) != ' '
+        return Cdk.CharOf(ch) != ' '
       end
       return false
     end
@@ -210,13 +210,13 @@ module CDK
     # modify cells by typing in replacement characters for the field's value.
     def setEditPosition(new_position)
       if new_position < 0
-        CDK.Beep
+        Cdk.Beep
       elsif new_position == 0
         @field_edit = new_position
       elsif self.validEditPosition(new_position)
         @field_edit = new_position
       else
-        CDK.Beep
+        Cdk.Beep
       end
     end
 
@@ -251,14 +251,14 @@ module CDK
       @field_win.move(0, base)
       @field_win.winnstr(temp, need)
       temp << ' '
-      if CDK.isChar(input)  # Replace the char at the cursor
+      if Cdk.isChar(input)  # Replace the char at the cursor
         temp[col] = input.chr
       elsif input == Curses::KEY_BACKSPACE
         # delete the char before the cursor
-        modify = CDK::SLIDER.removeChar(temp, col - 1)
+        modify = Cdk::SLIDER.removeChar(temp, col - 1)
       elsif input == Curses::KEY_DC
         # delete the char at the cursor
-        modify = CDK::SLIDER.removeChar(temp, col)
+        modify = Cdk::SLIDER.removeChar(temp, col)
       else
         modify = false
       end
@@ -318,34 +318,34 @@ module CDK
           when Curses::KEY_RIGHT
             self.setEditPosition(@field_edit - 1)
           when Curses::KEY_DOWN
-            @current = CDK::SLIDER.Decrement(@current, @inc)
+            @current = Cdk::SLIDER.Decrement(@current, @inc)
           when Curses::KEY_UP
-            @current = CDK::SLIDER.Increment(@current, @inc)
+            @current = Cdk::SLIDER.Increment(@current, @inc)
           when Curses::KEY_PPAGE
-            @current = CDK::SLIDER.Increment(@current, @fastinc)
+            @current = Cdk::SLIDER.Increment(@current, @fastinc)
           when Curses::KEY_NPAGE
-            @current = CDK::SLIDER.Decrement(@current, @fastinc)
+            @current = Cdk::SLIDER.Decrement(@current, @fastinc)
           when Curses::KEY_HOME
             @current = @low
           when Curses::KEY_END
             @current = @high
-          when CDK::KEY_TAB, CDK::KEY_RETURN, Curses::KEY_ENTER
+          when Cdk::KEY_TAB, Cdk::KEY_RETURN, Curses::KEY_ENTER
             self.setExitType(input)
             ret = @current
             complete = true
-          when CDK::KEY_ESC
+          when Cdk::KEY_ESC
             self.setExitType(input)
             complete = true
           when Curses::Error
             self.setExitType(input)
             complete = true
-          when CDK::REFRESH
+          when Cdk::REFRESH
             @screen.erase
             @screen.refresh
           else
             if @field_edit != 0
               if !self.performEdit(input)
-                CDK.Beep
+                Cdk.Beep
               end
             else
               # The cursor is not within the editable text. Interpret
@@ -360,7 +360,7 @@ module CDK
             when '0'
               return self.inject(Curses::KEY_HOME)
             else
-              CDK.Beep
+              Cdk.Beep
             end
             end
           end
@@ -405,8 +405,8 @@ module CDK
 
       # Draw the label.
       unless @label_win.nil?
-        Draw.writeChtype(@label_win, 0, 0, @label, CDK::HORIZONTAL,
-            0, @label_len)
+        Draw.writeChtype(@label_win, 0, 0, @label, Cdk::HORIZONTAL,
+                         0, @label_len)
         @label_win.refresh
       end
       @win.refresh
@@ -431,7 +431,7 @@ module CDK
 
       # Draw the value in the field.
       Draw.writeCharAttrib(@field_win, @field_width, 0, @current.to_s,
-          Curses::A_NORMAL, CDK::HORIZONTAL, 0, @current.to_s.size)
+                           Curses::A_NORMAL, Cdk::HORIZONTAL, 0, @current.to_s.size)
 
       self.moveToEditPosition(@field_edit)
       @field_win.refresh
@@ -453,25 +453,25 @@ module CDK
       @label = []
 
       # Clean up the windows.
-      CDK.deleteCursesWindow(@field_win)
-      CDK.deleteCursesWindow(@label_win)
-      CDK.deleteCursesWindow(@shadow_win)
-      CDK.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@field_win)
+      Cdk.deleteCursesWindow(@label_win)
+      Cdk.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@win)
 
       # Clean the key bindings.
       self.cleanBindings(:SLIDER)
 
       # Unregister this object.
-      CDK::SCREEN.unregister(:SLIDER, self)
+      Cdk::Screen.unregister(:SLIDER, self)
     end
 
     # This function erases the widget from the screen.
     def erase
       if self.validCDKObject
-        CDK.eraseCursesWindow(@label_win)
-        CDK.eraseCursesWindow(@field_win)
-        CDK.eraseCursesWindow(@lwin)
-        CDK.eraseCursesWindow(@shadow_win)
+        Cdk.eraseCursesWindow(@label_win)
+        Cdk.eraseCursesWindow(@field_win)
+        Cdk.eraseCursesWindow(@lwin)
+        Cdk.eraseCursesWindow(@shadow_win)
       end
     end
 

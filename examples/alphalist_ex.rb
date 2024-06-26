@@ -41,8 +41,8 @@ class AlphalistExample < CLIExample
     # default values
     params.box = true
     params.shadow = false
-    params.x_value = CDK::CENTER
-    params.y_value = CDK::CENTER
+    params.x_value = Cdk::CENTER
+    params.y_value = Cdk::CENTER
     params.h_value = 0
     params.w_value = 0
     params.c = false
@@ -77,22 +77,22 @@ class AlphalistExample < CLIExample
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     # Create the alphalist list.
-    alpha_list = CDK::ALPHALIST.new(cdkscreen,
-        params.x_value, params.y_value, params.h_value, params.w_value,
-        title, label,
+    alpha_list = Cdk::ALPHALIST.new(cdkscreen,
+                                    params.x_value, params.y_value, params.h_value, params.w_value,
+                                    title, label,
         if params.c then nil else user_list end,
         if params.c then 0 else user_size end,
-        '_', Curses::A_REVERSE, params.box, params.shadow)
+                                    '_', Curses::A_REVERSE, params.box, params.shadow)
 
     if alpha_list.nil?
       cdkscreen.destroy
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
 
       $stderr.puts "Cannot create widget."
       exit #EXIT_FAILURE
@@ -189,11 +189,11 @@ class AlphalistExample < CLIExample
     end
 
     alpha_list.bind(:ALPHALIST, '?', do_help, nil)
-    alpha_list.bind(:ALPHALIST, CDK::KEY_F(1), do_help, nil)
-    alpha_list.bind(:ALPHALIST, CDK::KEY_F(2), do_delete, alpha_list)
-    alpha_list.bind(:ALPHALIST, CDK::KEY_F(3), do_delete1, alpha_list)
-    alpha_list.bind(:ALPHALIST, CDK::KEY_F(4), do_reload, alpha_list)
-    alpha_list.bind(:ALPHALIST, CDK::KEY_F(5), do_undo, alpha_list)
+    alpha_list.bind(:ALPHALIST, Cdk::KEY_F(1), do_help, nil)
+    alpha_list.bind(:ALPHALIST, Cdk::KEY_F(2), do_delete, alpha_list)
+    alpha_list.bind(:ALPHALIST, Cdk::KEY_F(3), do_delete1, alpha_list)
+    alpha_list.bind(:ALPHALIST, Cdk::KEY_F(4), do_reload, alpha_list)
+    alpha_list.bind(:ALPHALIST, Cdk::KEY_F(5), do_undo, alpha_list)
 
     if params.c
       alpha_list.setContents(user_list, user_size)
@@ -222,7 +222,7 @@ class AlphalistExample < CLIExample
     # Clean up.
     alpha_list.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     exit  # EXIT_SUCCESS
   end
 end

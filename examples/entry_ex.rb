@@ -5,8 +5,8 @@ class EntryExample < Example
   def EntryExample.parse_opts(opts, param)
     opts.banner = 'Usage: dialog_ex.rb [options]'
 
-    param.x_value = CDK::CENTER
-    param.y_value = CDK::CENTER
+    param.x_value = Cdk::CENTER
+    param.y_value = Cdk::CENTER
     param.box = true
     param.shadow = false
     super(opts, param)
@@ -21,15 +21,15 @@ class EntryExample < Example
 
     # Set up CDK.
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Start color.
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     # Create the entry field widget.
-    directory = CDK::ENTRY.new(cdkscreen, params.x_value, params.y_value,
-        title, label, Curses::A_NORMAL, '.', :MIXED, 40, 0, 256,
-        params.box, params.shadow)
+    directory = Cdk::ENTRY.new(cdkscreen, params.x_value, params.y_value,
+                               title, label, Curses::A_NORMAL, '.', :MIXED, 40, 0, 256,
+                               params.box, params.shadow)
 
     xxxcb = lambda do |cdktype, object, client_data, key|
       return true
@@ -41,7 +41,7 @@ class EntryExample < Example
     if directory.nil?
       # Clean p
       cdkscreen.destroy
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
 
       puts "Cannot create the entry box. Is the window too small?"
       exit # EXIT_FAILURE
@@ -85,7 +85,7 @@ class EntryExample < Example
 
     # Clean up and exit.
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     exit  # EXIT_SUCCESS
   end
 end

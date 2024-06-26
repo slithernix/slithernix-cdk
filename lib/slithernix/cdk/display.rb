@@ -1,4 +1,4 @@
-module CDK
+module Cdk
   module Display
     # Given a string, returns the equivalent display type
     def Display.char2DisplayType(string)
@@ -43,17 +43,17 @@ module CDK
     # and return the character to apply to the display, or ERR if not
     def Display.filterByDisplayType(type, input)
       result = input
-      if !CDK.isChar(input)
+      if !Cdk.isChar(input)
         result = Curses::Error
-      elsif [:INT, :HINT].include?(type) && !CDK.digit?(result.chr)
+      elsif [:INT, :HINT].include?(type) && !Cdk.digit?(result.chr)
         result = Curses::Error
-      elsif [:CHAR, :UCHAR, :LCHAR, :UHCHAR, :LHCHAR].include?(type) && CDK.digit?(result.chr)
+      elsif [:CHAR, :UCHAR, :LCHAR, :UHCHAR, :LHCHAR].include?(type) && Cdk.digit?(result.chr)
         result = Curses::Error
       elsif type == :VIEWONLY
         result = ERR
-      elsif [:UCHAR, :UHCHAR, :UMIXED, :UHMIXED].include?(type) && CDK.alpha?(result.chr)
+      elsif [:UCHAR, :UHCHAR, :UMIXED, :UHMIXED].include?(type) && Cdk.alpha?(result.chr)
         result = result.chr.upcase.ord
-      elsif [:LCHAR, :LHCHAR, :LMIXED, :LHMIXED].include?(type) && CDK.alpha?(result.chr)
+      elsif [:LCHAR, :LHCHAR, :LMIXED, :LHMIXED].include?(type) && Cdk.alpha?(result.chr)
         result = result.chr.downcase.ord
       end
 

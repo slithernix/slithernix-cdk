@@ -8,10 +8,10 @@ class Clock
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     # Set the labels up.
     mesg = [
@@ -19,10 +19,10 @@ class Clock
     ]
 
     # Declare the labels.
-    demo = CDK::LABEL.new(
+    demo = Cdk::LABEL.new(
       cdkscreen,
-      CDK::CENTER,
-      CDK::CENTER,
+      Cdk::CENTER,
+      Cdk::CENTER,
       mesg,
       1,
       box_label,
@@ -35,7 +35,7 @@ class Clock
       cdkscreen.destroy
 
       # End curses...
-      CDK.endCDK
+      Cdk.endCDK
 
       puts "Cannot create the label. Is the window too small?"
       exit  # EXIT_FAILURE
@@ -63,7 +63,7 @@ class Clock
 
       # Draw the label and sleep
       demo.draw(demo.box)
-      Curses.napms(50)
+      Curses.napms(10)
 
       # Break the loop if q is pressed
       break if demo.screen.window.getch == 'q'
@@ -72,7 +72,7 @@ class Clock
     # Clean up
     demo.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     #ExitProgram (EXIT_SUCCESS);
   end
 end

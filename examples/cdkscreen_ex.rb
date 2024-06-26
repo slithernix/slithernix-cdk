@@ -11,11 +11,11 @@ class CDKScreenExample < Example
     curses_win = Curses.init_screen
 
     # Create the screens
-    cdkscreen1 = CDK::SCREEN.new(curses_win)
-    cdkscreen2 = CDK::SCREEN.new(curses_win)
-    cdkscreen3 = CDK::SCREEN.new(curses_win)
-    cdkscreen4 = CDK::SCREEN.new(curses_win)
-    cdkscreen5 = CDK::SCREEN.new(curses_win)
+    cdkscreen1 = Cdk::Screen.new(curses_win)
+    cdkscreen2 = Cdk::Screen.new(curses_win)
+    cdkscreen3 = Cdk::Screen.new(curses_win)
+    cdkscreen4 = Cdk::Screen.new(curses_win)
+    cdkscreen5 = Cdk::Screen.new(curses_win)
 
     # Create the first screen.
     title1_mesg = [
@@ -24,8 +24,8 @@ class CDKScreenExample < Example
         "<C>Hit space to go to the next screen",
         "<C><#HL(30)>"
     ]
-    label1 = CDK::LABEL.new(cdkscreen1, CDK::CENTER, CDK::TOP, title1_mesg,
-        4, false, false)
+    label1 = Cdk::LABEL.new(cdkscreen1, Cdk::CENTER, Cdk::TOP, title1_mesg,
+                            4, false, false)
 
     # Create the second screen.
     title2_mesg = [
@@ -34,8 +34,8 @@ class CDKScreenExample < Example
         "<C>Hit space to go to the next screen",
         "<C><#HL(30)>"
     ]
-    label2 = CDK::LABEL.new(cdkscreen2, CDK::RIGHT, CDK::CENTER, title2_mesg,
-        4, false, false)
+    label2 = Cdk::LABEL.new(cdkscreen2, Cdk::RIGHT, Cdk::CENTER, title2_mesg,
+                            4, false, false)
 
     # Create the third screen.
     title3_mesg = [
@@ -44,8 +44,8 @@ class CDKScreenExample < Example
         "<C>Hit space to go to the next screen",
         "<C><#HL(30)>"
     ]
-    label3 = CDK::LABEL.new(cdkscreen3, CDK::CENTER, CDK::BOTTOM, title3_mesg,
-        4, false, false)
+    label3 = Cdk::LABEL.new(cdkscreen3, Cdk::CENTER, Cdk::BOTTOM, title3_mesg,
+                            4, false, false)
 
     # Create the fourth screen.
     title4_mesg = [
@@ -54,8 +54,8 @@ class CDKScreenExample < Example
         "<C>Hit space to go to the next screen",
         "<C><#HL(30)>"
     ]
-    label4 = CDK::LABEL.new(cdkscreen4, CDK::LEFT, CDK::CENTER, title4_mesg,
-        4, false, false)
+    label4 = Cdk::LABEL.new(cdkscreen4, Cdk::LEFT, Cdk::CENTER, title4_mesg,
+                            4, false, false)
 
     # Create the fifth screen.
     dialog_mesg = [
@@ -66,8 +66,8 @@ class CDKScreenExample < Example
         "<C>Otherwise press the 'Exit' button",
         "<C><#HL(30)>"
     ]
-    dialog = CDK::DIALOG.new(cdkscreen5, CDK::CENTER, CDK::CENTER, dialog_mesg,
-        6, buttons, 2, Curses::A_REVERSE, true, true, false)
+    dialog = Cdk::DIALOG.new(cdkscreen5, Cdk::CENTER, Cdk::CENTER, dialog_mesg,
+                             6, buttons, 2, Curses::A_REVERSE, true, true, false)
 
     # Do this forever... (almost)
     while true
@@ -107,7 +107,7 @@ class CDKScreenExample < Example
         cdkscreen3.destroy
         cdkscreen4.destroy
         cdkscreen5.destroy
-        CDK::SCREEN.endCDK
+        Cdk::Screen.endCDK
         exit  # EXIT__SUCCESS
       end
     end

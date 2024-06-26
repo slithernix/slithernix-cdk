@@ -45,28 +45,28 @@ class TraverseExample < Example
   @@all_objects = [nil] * MY_MAX
 
   def self.make_alphalist(cdkscreen, x, y)
-    return CDK::ALPHALIST.new(cdkscreen, x, y, 10, 15, 'AlphaList', '->',
-        TraverseExample::MONTHS, TraverseExample::MONTHS.size,
-        '_'.ord, Curses::A_REVERSE, true, false)
+    return Cdk::ALPHALIST.new(cdkscreen, x, y, 10, 15, 'AlphaList', '->',
+                              TraverseExample::MONTHS, TraverseExample::MONTHS.size,
+                              '_'.ord, Curses::A_REVERSE, true, false)
   end
 
   def self.make_button(cdkscreen, x, y)
-    return CDK::BUTTON.new(cdkscreen, x, y, 'A Button!', nil, true, false)
+    return Cdk::BUTTON.new(cdkscreen, x, y, 'A Button!', nil, true, false)
   end
 
   def self.make_buttonbox(cdkscreen, x, y)
-    return CDK::BUTTONBOX.new(cdkscreen, x, y, 10, 16, 'ButtonBox', 6, 2,
-        TraverseExample::MONTHS, TraverseExample::MONTHS.size,
-        Curses::A_REVERSE, true, false)
+    return Cdk::BUTTONBOX.new(cdkscreen, x, y, 10, 16, 'ButtonBox', 6, 2,
+                              TraverseExample::MONTHS, TraverseExample::MONTHS.size,
+                              Curses::A_REVERSE, true, false)
   end
 
   def self.make_calendar(cdkscreen, x, y)
-    return CDK::CALENDAR.new(cdkscreen, x, y, 'Calendar', 25, 1, 2000,
-        Curses.color_pair(16) | Curses::A_BOLD,
-        Curses.color_pair(24) | Curses::A_BOLD,
-        Curses.color_pair(32) | Curses::A_BOLD,
-        Curses.color_pair(40) | Curses::A_REVERSE,
-        true, false)
+    return Cdk::CALENDAR.new(cdkscreen, x, y, 'Calendar', 25, 1, 2000,
+                             Curses.color_pair(16) | Curses::A_BOLD,
+                             Curses.color_pair(24) | Curses::A_BOLD,
+                             Curses.color_pair(32) | Curses::A_BOLD,
+                             Curses.color_pair(40) | Curses::A_REVERSE,
+                             true, false)
   end
 
   def self.make_dialog(cdkscreen, x, y)
@@ -75,64 +75,64 @@ class TraverseExample < Example
         'Is it simple enough?',
     ]
 
-    return CDK::DIALOG.new(cdkscreen, x,y, mesg, mesg.size,
-        TraverseExample::YES_NO, TraverseExample::YES_NO.size,
-        Curses.color_pair(2) | Curses::A_REVERSE,
-        true, true, false)
+    return Cdk::DIALOG.new(cdkscreen, x, y, mesg, mesg.size,
+                           TraverseExample::YES_NO, TraverseExample::YES_NO.size,
+                           Curses.color_pair(2) | Curses::A_REVERSE,
+                           true, true, false)
   end
 
   def self.make_dscale(cdkscreen, x, y)
-    return CDK::DSCALE.new(cdkscreen, x, y, 'DScale', 'Value',
-        Curses::A_NORMAL, 15, 0.0, 0.0, 100.0, 1.0, (1.0 * 2.0), 1,
-        true, false)
+    return Cdk::DSCALE.new(cdkscreen, x, y, 'DScale', 'Value',
+                           Curses::A_NORMAL, 15, 0.0, 0.0, 100.0, 1.0, (1.0 * 2.0), 1,
+                           true, false)
   end
 
   def self.make_entry(cdkscreen, x, y)
-    return CDK::ENTRY.new(cdkscreen, x, y, '', 'Entry:', Curses::A_NORMAL,
-        '.'.ord, :MIXED, 40, 0, 256, true, false)
+    return Cdk::ENTRY.new(cdkscreen, x, y, '', 'Entry:', Curses::A_NORMAL,
+                          '.'.ord, :MIXED, 40, 0, 256, true, false)
   end
 
   def self.make_fscale(cdkscreen, x, y)
-    return CDK::FSCALE.new(cdkscreen, x, y, 'FScale', 'Value',
-        Curses::A_NORMAL, 15, 0.0, 0.0, 100.0, 1.0, (1.0 * 2.0), 1,
-        true, false)
+    return Cdk::FSCALE.new(cdkscreen, x, y, 'FScale', 'Value',
+                           Curses::A_NORMAL, 15, 0.0, 0.0, 100.0, 1.0, (1.0 * 2.0), 1,
+                           true, false)
   end
 
   def self.make_fslider(cdkscreen, x, y)
     low = -32.0
     high = 64.0
     inc = 0.1
-    return CDK::FSLIDER.new(cdkscreen, x, y, 'FSlider', 'Label',
-        Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord,
-        20, low, low, high, inc, (inc * 2), 3, true, false)
+    return Cdk::FSLIDER.new(cdkscreen, x, y, 'FSlider', 'Label',
+                            Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord,
+                            20, low, low, high, inc, (inc * 2), 3, true, false)
   end
 
   def self.make_fselect(cdkscreen, x, y)
-    return CDK::FSELECT.new(cdkscreen, x, y, 15, 25, 'FSelect', '->',
-        Curses::A_NORMAL, '_'.ord, Curses::A_REVERSE, '</5>', '</48>',
-        '</N>', '</N>', true, false)
+    return Cdk::FSELECT.new(cdkscreen, x, y, 15, 25, 'FSelect', '->',
+                            Curses::A_NORMAL, '_'.ord, Curses::A_REVERSE, '</5>', '</48>',
+                            '</N>', '</N>', true, false)
   end
 
   def self.make_graph(cdkscreen, x, y)
     values = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
     graph_chars = '0123456789'
-    widget = CDK::GRAPH.new(cdkscreen, x, y, 10, 25, 'title', 'X-axis',
-        'Y-axis')
+    widget = Cdk::GRAPH.new(cdkscreen, x, y, 10, 25, 'title', 'X-axis',
+                            'Y-axis')
     widget.set(values, values.size, graph_chars, true, :PLOT)
     return widget
   end
 
   def self.make_histogram(cdkscreen, x, y)
-    widget = CDK::HISTOGRAM.new(cdkscreen, x, y, 1, 20, CDK::HORIZONTAL,
-        'Histogram', true, false)
-    widget.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 6,
-        ' '.ord | Curses::A_REVERSE, true)
+    widget = Cdk::HISTOGRAM.new(cdkscreen, x, y, 1, 20, Cdk::HORIZONTAL,
+                                'Histogram', true, false)
+    widget.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 6,
+               ' '.ord | Curses::A_REVERSE, true)
     return widget
   end
 
   def self.make_itemlist(cdkscreen, x, y)
-    return CDK::ITEMLIST.new(cdkscreen, x, y, '', 'Month',
-        TraverseExample::MONTHS, TraverseExample::MONTHS.size, 1, true, false)
+    return Cdk::ITEMLIST.new(cdkscreen, x, y, '', 'Month',
+                             TraverseExample::MONTHS, TraverseExample::MONTHS.size, 1, true, false)
   end
 
   def self.make_label(cdkscreen, x, y)
@@ -140,11 +140,11 @@ class TraverseExample < Example
         'This is a simple label.',
         'Is it simple enough?',
     ]
-    return CDK::LABEL.new(cdkscreen, x, y, mesg, mesg.size, true, true)
+    return Cdk::LABEL.new(cdkscreen, x, y, mesg, mesg.size, true, true)
   end
 
   def self.make_marquee(cdkscreen, x, y)
-    widget = CDK::MARQUEE.new(cdkscreen, x, y, 30, true, true)
+    widget = Cdk::MARQUEE.new(cdkscreen, x, y, 30, true, true)
     widget.activate('This is a message', 5, 3, true)
     widget.destroy
     return nil
@@ -176,57 +176,57 @@ class TraverseExample < Example
       end
     end
 
-    return CDK::MATRIX.new(cdkscreen, x, y, rows, cols, vrows, vcols,
-        'Matrix', rowtitle, coltitle, colwidth, coltypes, -1, -1, '.'.ord,
-        CDK::COL, true, true, false)
+    return Cdk::MATRIX.new(cdkscreen, x, y, rows, cols, vrows, vcols,
+                           'Matrix', rowtitle, coltitle, colwidth, coltypes, -1, -1, '.'.ord,
+                           Cdk::COL, true, true, false)
   end
 
   def self.make_mentry(cdkscreen, x, y)
-    return CDK::MENTRY.new(cdkscreen, x, y, 'MEntry', 'Label',
-        Curses::A_BOLD, '.', :MIXED, 20, 5, 20, 0, true, false)
+    return Cdk::MENTRY.new(cdkscreen, x, y, 'MEntry', 'Label',
+                           Curses::A_BOLD, '.', :MIXED, 20, 5, 20, 0, true, false)
   end
 
   def self.make_radio(cdkscreen, x, y)
-    return CDK::RADIO.new(cdkscreen, x, y, CDK::RIGHT, 10, 20, 'Radio',
-        TraverseExample::MONTHS, TraverseExample::MONTHS.size,
-        '#'.ord | Curses::A_REVERSE, 1, Curses::A_REVERSE, true, false)
+    return Cdk::RADIO.new(cdkscreen, x, y, Cdk::RIGHT, 10, 20, 'Radio',
+                          TraverseExample::MONTHS, TraverseExample::MONTHS.size,
+                          '#'.ord | Curses::A_REVERSE, 1, Curses::A_REVERSE, true, false)
   end
 
   def self.make_scale(cdkscreen, x, y)
     low = 2
     high = 25
     inc = 2
-    return CDK::SCALE.new(cdkscreen, x, y, 'Scale', 'Label',
-        Curses::A_NORMAL, 5, low, low, high, inc, (inc * 2), true, false)
+    return Cdk::SCALE.new(cdkscreen, x, y, 'Scale', 'Label',
+                          Curses::A_NORMAL, 5, low, low, high, inc, (inc * 2), true, false)
   end
 
   def self.make_scroll(cdkscreen, x, y)
-    return CDK::SCROLL.new(cdkscreen, x, y, CDK::RIGHT, 10, 20, 'Scroll',
-        TraverseExample::MONTHS, TraverseExample::MONTHS.size,
-        true, Curses::A_REVERSE, true, false)
+    return Cdk::SCROLL.new(cdkscreen, x, y, Cdk::RIGHT, 10, 20, 'Scroll',
+                           TraverseExample::MONTHS, TraverseExample::MONTHS.size,
+                           true, Curses::A_REVERSE, true, false)
   end
 
   def self.make_slider(cdkscreen, x, y)
     low = 2
     high = 25
     inc = 1
-    return CDK::SLIDER.new(cdkscreen, x, y, 'Slider', 'Label',
-        Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord,
-        20, low, low, high, inc, (inc * 2), true, false)
+    return Cdk::SLIDER.new(cdkscreen, x, y, 'Slider', 'Label',
+                           Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord,
+                           20, low, low, high, inc, (inc * 2), true, false)
   end
 
   def self.make_selection(cdkscreen, x, y)
-    return CDK::SELECTION.new(cdkscreen, x, y, CDK::NONE, 8, 20,
-        'Selection', TraverseExample::MONTHS, TraverseExample::MONTHS.size,
-        TraverseExample::CHOICES, TraverseExample::CHOICES.size,
-        Curses::A_REVERSE, true, false)
+    return Cdk::SELECTION.new(cdkscreen, x, y, Cdk::NONE, 8, 20,
+                              'Selection', TraverseExample::MONTHS, TraverseExample::MONTHS.size,
+                              TraverseExample::CHOICES, TraverseExample::CHOICES.size,
+                              Curses::A_REVERSE, true, false)
   end
 
   def self.make_swindow(cdkscreen, x, y)
-    widget = CDK::SWINDOW.new(cdkscreen, x, y, 6, 25,
-        'SWindow', 100, true, false)
+    widget = Cdk::SWINDOW.new(cdkscreen, x, y, 6, 25,
+                              'SWindow', 100, true, false)
     (0...30).each do |n|
-      widget.add('Line %d' % [n], CDK::BOTTOM)
+      widget.add('Line %d' % [n], Cdk::BOTTOM)
     end
     widget.activate([])
     return widget
@@ -235,8 +235,8 @@ class TraverseExample < Example
   def self.make_template(cdkscreen, x, y)
     overlay = '</B/6>(___)<!6> </5>___-____'
     plate = '(###) ###-####'
-    widget = CDK::TEMPLATE.new(cdkscreen, x, y, 'Template', 'Label',
-        plate, overlay, true, false)
+    widget = Cdk::TEMPLATE.new(cdkscreen, x, y, 'Template', 'Label',
+                               plate, overlay, true, false)
     widget.activate([])
     return widget
   end
@@ -245,23 +245,23 @@ class TraverseExample < Example
     low = 0
     high = 65535
     inc = 1
-    return CDK::USCALE.new(cdkscreen, x, y, 'UScale', 'Label',
-        Curses::A_NORMAL, 5, low, low, high, inc, (inc * 32), true, false)
+    return Cdk::USCALE.new(cdkscreen, x, y, 'UScale', 'Label',
+                           Curses::A_NORMAL, 5, low, low, high, inc, (inc * 32), true, false)
   end
 
   def self.make_uslider(cdkscreen, x, y)
     low = 0
     high = 65535
     inc = 1
-    return CDK::USLIDER.new(cdkscreen, x, y, 'USlider', 'Label',
-        Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord, 20,
-        low, low, high, inc, (inc * 32), true, false)
+    return Cdk::USLIDER.new(cdkscreen, x, y, 'USlider', 'Label',
+                            Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord, 20,
+                            low, low, high, inc, (inc * 32), true, false)
   end
 
   def self.make_viewer(cdkscreen, x, y)
     button = ['Ok']
-    widget = CDK::VIEWER.new(cdkscreen, x, y, 10, 20, button, 1,
-        Curses::A_REVERSE, true, false)
+    widget = Cdk::VIEWER.new(cdkscreen, x, y, 10, 20, button, 1,
+                             Curses::A_REVERSE, true, false)
 
     widget.set('Viewer', TraverseExample::MONTHS, TraverseExample::MONTHS.size,
         Curses::A_REVERSE, false, true, true)
@@ -270,7 +270,7 @@ class TraverseExample < Example
   end
 
   def self.rebind_esc(obj)
-    obj.bind(obj.object_type, CDK::KEY_F(1), :getc, CDK::KEY_ESC)
+    obj.bind(obj.object_type, Cdk::KEY_F(1), :getc, Cdk::KEY_ESC)
   end
 
   def self.make_any(cdkscreen, menu, type)
@@ -278,16 +278,16 @@ class TraverseExample < Example
     # setup positions, staggered a little
     case menu
     when 0
-      x = CDK::LEFT
+      x = Cdk::LEFT
       y = 2
     when 1
-      x = CDK::CENTER
+      x = Cdk::CENTER
       y = 4
     when 2
-      x = CDK::RIGHT
+      x = Cdk::RIGHT
       y = 2
     else
-      CDK.Beep
+      Cdk.Beep
       return
     end
 
@@ -348,7 +348,7 @@ class TraverseExample < Example
     when :VIEWER
       func = :make_viewer
     when :MENU, :TRAVERSE, :NULL
-      CDK.Beep
+      Cdk.Beep
       return
     end
 
@@ -361,7 +361,7 @@ class TraverseExample < Example
 
     # Create the new widget
     if func.nil?
-      CDK.Beep
+      Cdk.Beep
     else
       widget = self.send(func, cdkscreen, x, y)
       if widget.nil?
@@ -379,7 +379,7 @@ class TraverseExample < Example
     window = nil
 
     case input
-    when Curses::KEY_ENTER, CDK::KEY_RETURN
+    when Curses::KEY_ENTER, Cdk::KEY_RETURN
       mtmp = []
       stmp = []
       object.getCurrentItem(mtmp, stmp)
@@ -395,7 +395,7 @@ class TraverseExample < Example
       if sp >= 0 && sp < TraverseExample::MENU_TABLE.size
         self.make_any(screen, mp, TraverseExample::MENU_TABLE[sp][1])
       end
-    end 
+    end
     return 1
   end
 
@@ -403,7 +403,7 @@ class TraverseExample < Example
   def TraverseExample.main
     menulist = [['Left'], ['Center'], ['Right']]
     submenusize = [TraverseExample::MENU_TABLE.size + 1] * 3
-    menuloc = [CDK::LEFT, CDK::LEFT, CDK::RIGHT]
+    menuloc = [Cdk::LEFT, Cdk::LEFT, Cdk::RIGHT]
 
     (0...TraverseExample::MY_MAX).each do |j|
       (0...TraverseExample::MENU_TABLE.size).each do |k|
@@ -413,18 +413,18 @@ class TraverseExample < Example
 
     # Create the curses window.
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Start CDK colours.
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
-    menu = CDK::MENU.new(cdkscreen, menulist, TraverseExample::MY_MAX,
-        submenusize, menuloc, CDK::TOP, Curses::A_UNDERLINE,
-        Curses::A_REVERSE)
+    menu = Cdk::MENU.new(cdkscreen, menulist, TraverseExample::MY_MAX,
+                         submenusize, menuloc, Cdk::TOP, Curses::A_UNDERLINE,
+                         Curses::A_REVERSE)
 
     if menu.nil?
       cdkscreen.destroy
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
 
       puts '? Cannot create menus'
       exit  # EXIT_FAILURE
@@ -450,7 +450,7 @@ class TraverseExample < Example
     cdkscreen.refresh
 
     # Traverse the screen
-    CDK::Traverse.traverseCDKScreen(cdkscreen)
+    Cdk::Traverse.traverseCDKScreen(cdkscreen)
 
     mesg = [
         'Done',
@@ -467,7 +467,7 @@ class TraverseExample < Example
     end
     menu.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
 
     exit  # EXIT_SUCCESS
   end

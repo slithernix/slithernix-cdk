@@ -1,7 +1,7 @@
 require_relative 'scroller'
 
-module CDK
-  class SELECTION < CDK::SCROLLER
+module Cdk
+  class SELECTION < Cdk::SCROLLER
     attr_reader :selections
 
     def initialize(cdkscreen, xplace, yplace, splace, height, width, title,
@@ -12,8 +12,8 @@ module CDK
       parent_height = cdkscreen.window.maxy
       box_width = width
       bindings = {
-        CDK::BACKCHAR => Curses::KEY_PPAGE,
-        CDK::FORCHAR  => Curses::KEY_NPAGE,
+        Cdk::BACKCHAR => Curses::KEY_PPAGE,
+        Cdk::FORCHAR  => Curses::KEY_NPAGE,
         'g'           => Curses::KEY_HOME,
         '1'           => Curses::KEY_HOME,
         'G'           => Curses::KEY_END,
@@ -33,11 +33,11 @@ module CDK
 
       # If the height is a negative value, the height will be ROWS-height,
       # otherwise the height will be the given height.
-      box_height = CDK.setWidgetDimension(parent_height, height, 0)
+      box_height = Cdk.setWidgetDimension(parent_height, height, 0)
 
       # If the width is a negative value, the width will be COLS-width,
       # otherwise the width will be the given width
-      box_width = CDK.setWidgetDimension(parent_width, width, 0)
+      box_width = Cdk.setWidgetDimension(parent_width, width, 0)
       box_width = self.setTitle(title, box_width)
 
       # Set the box height.
@@ -48,7 +48,7 @@ module CDK
       @maxchoicelen = 0
 
       # Adjust the box width if there is a scroll bar.
-      if splace == CDK::LEFT || splace == CDK::RIGHT
+      if splace == Cdk::LEFT || splace == Cdk::RIGHT
         box_width += 1
         @scrollbar = true
       else
@@ -64,7 +64,7 @@ module CDK
       # Rejustify the x and y positions if we need to.
       xtmp = [xplace]
       ytmp = [yplace]
-      CDK.alignxy(cdkscreen.window, xtmp, ytmp, @box_width, @box_height)
+      Cdk.alignxy(cdkscreen.window, xtmp, ytmp, @box_width, @box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -81,10 +81,10 @@ module CDK
       @win.keypad(true)
 
       # Create the scrollbar window.
-      if splace == CDK::RIGHT
+      if splace == Cdk::RIGHT
         @scrollbar_win = @win.subwin(self.maxViewSize, 1,
             self.SCREEN_YPOS(ypos), xpos + @box_width - @border_size - 1)
-      elsif splace == CDK::LEFT
+      elsif splace == Cdk::LEFT
         @scrollbar_win = @win.subwin(self.maxViewSize, 1,
             self.SCREEN_YPOS(ypos), self.SCREEN_XPOS(ypos))
       else
@@ -108,7 +108,7 @@ module CDK
       # Each choice has to be converted from string to chtype array
       (0...choice_count).each do |j|
         choicelen = []
-        @choice << CDK.char2Chtype(choices[j], choicelen, [])
+        @choice << Cdk.char2Chtype(choices[j], choicelen, [])
         @choicelen << choicelen[0]
         @maxchoicelen = [@maxchoicelen, choicelen[0]].max
       end
@@ -139,7 +139,7 @@ module CDK
 
     # Put the cursor on the currently-selected item.
     def fixCursorPosition
-      scrollbar_adj = if @scrollbar_placement == CDK::LEFT
+      scrollbar_adj = if @scrollbar_placement == Cdk::LEFT
                       then 1
                       else 0
                       end
@@ -234,19 +234,19 @@ module CDK
                 @selections[@current_item] += 1
               end
             else
-              CDK.Beep
+              Cdk.Beep
             end
-          when CDK::KEY_ESC
+          when Cdk::KEY_ESC
             self.setExitType(input)
             complete = true
           when Curses::Error
             self.setExitType(input)
             complete = true
-          when Curses::KEY_ENTER, CDK::KEY_TAB, CDK::KEY_RETURN
+          when Curses::KEY_ENTER, Cdk::KEY_TAB, Cdk::KEY_RETURN
             self.setExitType(input)
             ret = 1
             complete = true
-          when CDK::REFRESH
+          when Cdk::REFRESH
             @screen.erase
             @screen.refresh
           end
@@ -309,21 +309,21 @@ module CDK
           xpos = self.SCREEN_XPOS(0)
 
           # Draw the empty line.
-          Draw.writeBlanks(@win, xpos, ypos, CDK::HORIZONTAL, 0, @win.maxx)
+          Draw.writeBlanks(@win, xpos, ypos, Cdk::HORIZONTAL, 0, @win.maxx)
 
           # Draw the selection item.
           Draw.writeChtypeAttrib(@win,
               if screen_pos >= 0 then screen_pos else 1 end,
-              ypos, @item[k],
+                                 ypos, @item[k],
               if k == sel_item then @highlight else Curses::A_NORMAL end,
-              CDK::HORIZONTAL,
+                                 Cdk::HORIZONTAL,
               if screen_pos >= 0 then 0 else 1 - screen_pos end,
-              @item_len[k])
+                                 @item_len[k])
 
           # Draw the choice value
           Draw.writeChtype(@win, xpos + scrollbar_adj, ypos,
-            @choice[@selections[k]], CDK::HORIZONTAL, 0,
-            @choicelen[@selections[k]])
+                           @choice[@selections[k]], Cdk::HORIZONTAL, 0,
+                           @choicelen[@selections[k]])
         end
         j += 1
       end
@@ -333,8 +333,8 @@ module CDK
         @toggle_pos = (@current_item * @step).floor
         @toggle_pos = [@toggle_pos, @scrollbar_win.maxy - 1].min
 
-        @scrollbar_win.mvwvline(0, 0, CDK::ACS_CKBOARD,
-            @scrollbar_win.maxy)
+        @scrollbar_win.mvwvline(0, 0, Cdk::ACS_CKBOARD,
+                                @scrollbar_win.maxy)
         @scrollbar_win.mvwvline(@toggle_pos, 0,
             ' '.ord | Curses::A_REVERSE, @toggle_size)
       end
@@ -365,22 +365,22 @@ module CDK
       self.destroyInfo
 
       # Clean up the windows.
-      CDK.deleteCursesWindow(@scrollbar_win)
-      CDK.deleteCursesWindow(@shadow_win)
-      CDK.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@scrollbar_win)
+      Cdk.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@win)
 
       # Clean up the key bindings
       self.cleanBindings(:SELECTION)
 
       # Unregister this object.
-      CDK::SCREEN.unregister(:SELECTION, self)
+      Cdk::Screen.unregister(:SELECTION, self)
     end
 
     # This function erases the selection list from the screen.
     def erase
       if self.validCDKObject
-        CDK.eraseCursesWindow(@win)
-        CDK.eraseCursesWindow(@shadow_win)
+        Cdk.eraseCursesWindow(@win)
+        Cdk.eraseCursesWindow(@shadow_win)
       end
     end
 
@@ -401,7 +401,7 @@ module CDK
       # Clean up the display
       (0...@view_size).each do |j|
         Draw.writeBlanks(@win, self.SCREEN_XPOS(0), self.SCREEN_YPOS(j),
-            CDK::HORIZONTAL, 0, @win.maxx)
+                         Cdk::HORIZONTAL, 0, @win.maxx)
       end
 
       self.setViewSize(list_size)
@@ -412,7 +412,7 @@ module CDK
 
     def getItems(list)
       @item.each do |item|
-        list << CDK.chtype2Char(item)
+        list << Cdk.chtype2Char(item)
       end
       return @list_size
     end
@@ -429,7 +429,7 @@ module CDK
     end
 
     def getTitle
-      return CDK.chtype2Char(@title)
+      return Cdk.chtype2Char(@title)
     end
 
     # This sets the highlight bar.
@@ -558,7 +558,7 @@ module CDK
         (0...list_size).each do |j|
           lentmp = []
           postmp = []
-          new_list << CDK.char2Chtype(list[j], lentmp, postmp)
+          new_list << Cdk.char2Chtype(list[j], lentmp, postmp)
           new_len << lentmp[0]
           new_pos << postmp[0]
           #if new_list[j].size == 0
@@ -567,7 +567,7 @@ module CDK
             break
           end
           new_pos[j] =
-              CDK.justifyString(box_width, new_len[j], new_pos[j]) + adjust
+              Cdk.justifyString(box_width, new_len[j], new_pos[j]) + adjust
           widest_item = [widest_item, new_len[j]].max
         end
 

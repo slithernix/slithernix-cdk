@@ -1,15 +1,15 @@
-module CDK
+module Cdk
   module Traverse
     def Traverse.resetCDKScreen(screen)
       refreshDataCDKScreen(screen)
     end
 
     def Traverse.exitOKCDKScreen(screen)
-      screen.exit_status = CDK::SCREEN::EXITOK
+      screen.exit_status = Cdk::Screen::EXITOK
     end
 
     def Traverse.exitCancelCDKScreen(screen)
-      screen.exit_status = CDK::SCREEN::EXITCANCEL
+      screen.exit_status = Cdk::Screen::EXITCANCEL
     end
 
     def Traverse.exitOKCDKScreenOf(obj)
@@ -132,18 +132,18 @@ module CDK
       case key_code
       when Curses::KEY_BTAB
         switchFocus(setCDKFocusPrevious(screen), curobj)
-      when CDK::KEY_TAB
+      when Cdk::KEY_TAB
         switchFocus(setCDKFocusNext(screen), curobj)
-      when CDK.KEY_F(10)
+      when Cdk.KEY_F(10)
         # save data and exit
         exitOKCDKScreen(screen)
-      when CDK.CTRL('X')
+      when Cdk.CTRL('X')
         exitCancelCDKScreen(screen)
-      when CDK.CTRL('R')
+      when Cdk.CTRL('R')
         # reset data to defaults
         resetCDKScreen(screen)
         setFocus(curobj)
-      when CDK::REFRESH
+      when Cdk::REFRESH
         # redraw screen
         screen.refresh
         setFocus(curobj)
@@ -171,10 +171,10 @@ module CDK
       unless curobj.nil?
         refreshDataCDKScreen(screen)
 
-        screen.exit_status = CDK::SCREEN::NOEXIT
+        screen.exit_status = Cdk::Screen::NOEXIT
 
         while !((curobj = getCDKFocusCurrent(screen)).nil?) &&
-            screen.exit_status == CDK::SCREEN::NOEXIT
+            screen.exit_status == Cdk::Screen::NOEXIT
           function = []
           key = curobj.getch(function)
 
@@ -188,7 +188,7 @@ module CDK
               function[0], check_menu_key)
         end
 
-        if screen.exit_status == CDK::SCREEN::EXITOK
+        if screen.exit_status == Cdk::Screen::EXITOK
           saveDataCDKScreen(screen)
           result = 1
         end
@@ -239,7 +239,7 @@ module CDK
     end
 
     def Traverse.checkMenuKey(key_code, function_key)
-      key_code == CDK::KEY_ESC && !function_key
+      key_code == Cdk::KEY_ESC && !function_key
     end
 
     def Traverse.handleMenu(screen, menu, oldobj)
@@ -250,9 +250,9 @@ module CDK
         key = menu.getch([])
 
         case key
-        when CDK::KEY_TAB
+        when Cdk::KEY_TAB
           done = true
-        when CDK::KEY_ESC
+        when Cdk::KEY_ESC
           # cleanup the menu
           menu.inject(key)
           done = true

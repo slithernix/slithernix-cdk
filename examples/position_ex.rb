@@ -5,8 +5,8 @@ class PositionExample < Example
   def PositionExample.parse_opts(opts, param)
     opts.banner = 'Usage: position_ex.rb [options]'
 
-    param.x_value = CDK::CENTER
-    param.y_value = CDK::CENTER
+    param.x_value = Cdk::CENTER
+    param.y_value = Cdk::CENTER
     param.box = true
     param.shadow = false
     param.w_value = 40
@@ -25,13 +25,13 @@ class PositionExample < Example
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     # Create the entry field widget.
-    directory = CDK::ENTRY.new(
+    directory = Cdk::ENTRY.new(
       cdkscreen,
       params.x_value,
       params.y_value,
@@ -51,7 +51,7 @@ class PositionExample < Example
     if directory.nil?
       # Clean up.
       cdkscreen.destroy
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
 
       puts "Cannot create the entry box. Is the window too small?"
       exit  # EXIT_FAILURE
@@ -85,7 +85,7 @@ class PositionExample < Example
 
     directory.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     #ExitProgram (EXIT_SUCCESS);
   end
 end

@@ -1,5 +1,5 @@
-module CDK
-  class SCREEN
+module Cdk
+  class Screen
     attr_accessor :object_focus, :object_count, :object_limit, :object, :window
     attr_accessor :exit_status
 
@@ -10,7 +10,7 @@ module CDK
     def initialize (window)
       window ||= Curses.init_screen
       # initialization for the first time
-      if CDK::ALL_SCREENS.size == 0
+      if Cdk::ALL_SCREENS.size == 0
         # Set up basic curses settings.
         # #ifdef HAVE_SETLOCALE
         # setlocale (LC_ALL, "");
@@ -18,10 +18,9 @@ module CDK
 
         Curses.noecho
         Curses.cbreak
-        Curses.curs_set(0)
       end
 
-      CDK::ALL_SCREENS << self
+      Cdk::ALL_SCREENS << self
       @object_count = 0
       @object_limit = 2
       @object = Array.new(@object_limit, nil)
@@ -121,7 +120,7 @@ module CDK
     # This pops up a message.
     def popupLabel(mesg, count)
       #Create the label.
-      popup = CDK::LABEL.new(self, CENTER, CENTER, mesg, count, true, false)
+      popup = Cdk::LABEL.new(self, CENTER, CENTER, mesg, count, true, false)
 
       old_state = Curses.curs_set(0)
       #Draw it on the screen
@@ -143,7 +142,7 @@ module CDK
     # This pops up a message
     def popupLabelAttrib(mesg, count, attrib)
       # Create the label.
-      popup = CDK::LABEL.new(self, CENTER, CENTER, mesg, count, true, false)
+      popup = Cdk::LABEL.new(self, CENTER, CENTER, mesg, count, true, false)
       popup.setBackgroundAttrib
 
       old_state = Curses.curs_set(0)
@@ -166,9 +165,9 @@ module CDK
     # This pops up a dialog box.
     def popupDialog(mesg, mesg_count, buttons, button_count)
       # Create the dialog box.
-      popup = CDK::DIALOG.new(self, CDK::CENTER, CDK::CENTER,
-          mesg, mesg_count, buttons, button_count, Curses::A_REVERSE,
-          true, true, false)
+      popup = Cdk::DIALOG.new(self, Cdk::CENTER, Cdk::CENTER,
+                              mesg, mesg_count, buttons, button_count, Curses::A_REVERSE,
+                              true, true, false)
 
       # Activate the dialog box
       popup.draw(true)
@@ -195,7 +194,7 @@ module CDK
     # FIXME(original): this should be rewritten to use the panel library, so
     # it would not be necessary to touch the window to ensure that it covers
     # other windows.
-    def SCREEN.refreshCDKWindow(win)
+    def Screen.refreshCDKWindow(win)
       win.touch
       win.refresh
     end
@@ -205,7 +204,7 @@ module CDK
       focused = -1
       visible = -1
 
-      CDK::SCREEN.refreshCDKWindow(@window)
+      Cdk::Screen.refreshCDKWindow(@window)
 
       # We erase all the invisible objects, then only draw it all back, so
       # that the objects can overlap, and the visible ones will always be
@@ -269,7 +268,7 @@ module CDK
 
     # This destroys a CDK screen.
     def destroy
-      CDK::ALL_SCREENS.delete(self)
+      Cdk::ALL_SCREENS.delete(self)
     end
 
     # This is added to remain consistent

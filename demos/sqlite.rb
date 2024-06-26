@@ -48,7 +48,7 @@ class SQLiteDemo
     history.current = 0
 
     # Read the file.
-    if (history.count = CDK.readFile(filename, history.cmd_history)) != -1
+    if (history.count = Cdk.readFile(filename, history.cmd_history)) != -1
       history.current = history.count
     end
   end
@@ -131,10 +131,10 @@ class SQLiteDemo
 
     # Set up CDK
     curses_win = Curses.init_screen
-    @@gp_cdk_screen = CDK::SCREEN.new(curses_win)
+    @@gp_cdk_screen = Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     begin
       sqlitedb = SQLite3::Database.new(dbfile)
@@ -148,22 +148,22 @@ class SQLiteDemo
     SQLiteDemo.loadHistory(history)
 
     # Create the scrolling window.
-    command_output = CDK::SWINDOW.new(@@gp_cdk_screen, CDK::CENTER, CDK::TOP,
-        -8, -2, '<C></B/5>Command Output Window', SQLiteDemo::MAXWIDTH,
-        true, false)
+    command_output = Cdk::SWINDOW.new(@@gp_cdk_screen, Cdk::CENTER, Cdk::TOP,
+                                      -8, -2, '<C></B/5>Command Output Window', SQLiteDemo::MAXWIDTH,
+                                      true, false)
 
     # Create the entry field.
     width = Curses.cols - prompt.size - 1
-    command_entry = CDK::ENTRY.new(@@gp_cdk_screen, CDK::CENTER, CDK::BOTTOM,
-        '', prompt, Curses::A_BOLD | Curses.color_pair(8),
-        Curses.color_pair(24) | '_'.ord, :MIXED, width, 1, 512, false, false)
+    command_entry = Cdk::ENTRY.new(@@gp_cdk_screen, Cdk::CENTER, Cdk::BOTTOM,
+                                   '', prompt, Curses::A_BOLD | Curses.color_pair(8),
+                                   Curses.color_pair(24) | '_'.ord, :MIXED, width, 1, 512, false, false)
 
     # Create the key bindings.
 
     history_up_cb = lambda do |cdktype, entry, history, key|
       # Make sure we don't go out of bounds
       if history.current == 0
-        CDK.Beep
+        Cdk.Beep
         return true
       end
 
@@ -179,7 +179,7 @@ class SQLiteDemo
     history_down_cb = lambda do |cdktype, entry, history, key|
       # Make sure we don't go out of bounds.
       if history.current == history.count
-        CDK.Beep
+        Cdk.Beep
         return true
       end
 
@@ -217,10 +217,10 @@ class SQLiteDemo
       end
 
       # Create the scrolling list of previous commands.
-      scroll_list = CDK::SCROLL.new(entry.screen, CDK::CENTER, CDK::CENTER,
-          CDK::RIGHT, height, -10, '<C></B/29>Command History',
-          history.cmd_history, history.count, true, Curses::A_REVERSE,
-          true, false)
+      scroll_list = Cdk::SCROLL.new(entry.screen, Cdk::CENTER, Cdk::CENTER,
+                                    Cdk::RIGHT, height, -10, '<C></B/29>Command History',
+                                    history.cmd_history, history.count, true, Curses::A_REVERSE,
+                                    true, false)
 
       # Get the command to execute.
       selection = scroll_list.activate([])
@@ -251,8 +251,8 @@ class SQLiteDemo
 
     command_entry.bind(:ENTRY, Curses::KEY_UP, history_up_cb, history)
     command_entry.bind(:ENTRY, Curses::KEY_DOWN, history_down_cb, history)
-    command_entry.bind(:ENTRY, CDK.CTRL('^'), list_history_cb, history)
-    command_entry.bind(:ENTRY, CDK::KEY_TAB, view_history_cb, command_output)
+    command_entry.bind(:ENTRY, Cdk.CTRL('^'), list_history_cb, history)
+    command_entry.bind(:ENTRY, Cdk::KEY_TAB, view_history_cb, command_output)
     command_output.bind(:SWINDOW, '?', swindow_help_cb, command_entry)
 
     # Draw the screen.
@@ -280,7 +280,7 @@ class SQLiteDemo
         # All done.
         command_entry.destroy
         command_output.destroy
-        CDK::SCREEN.endCDK
+        Cdk::Screen.endCDK
         exit  # EXIT_SUCCESS
       elsif command == 'clear'
         # Clear the scrolling window.
@@ -290,25 +290,25 @@ class SQLiteDemo
         next
       elsif command == 'tables'
         command = "SELECT * FROM sqlite_master WHERE type='table';"
-        command_output.add('</R>%d<!R> %s' % [count + 1, command], CDK::BOTTOM)
+        command_output.add('</R>%d<!R> %s' % [count + 1, command], Cdk::BOTTOM)
         count += 1
         sqlitedb.execute(command) do |row|
           if row.size >= 3
-            command_output.add(row[2], CDK::BOTTOM)
+            command_output.add(row[2], Cdk::BOTTOM)
           end
         end
       elsif command == 'help'
         # Display the help.
         SQLiteDemo.help(command_entry)
       else
-        command_output.add('</R>%d<!R> %s' % [count + 1, command], CDK::BOTTOM)
+        command_output.add('</R>%d<!R> %s' % [count + 1, command], Cdk::BOTTOM)
         count += 1
         begin
           sqlitedb.execute(command) do |row|
-            command_output.add(row.join(' '), CDK::BOTTOM)
+            command_output.add(row.join(' '), Cdk::BOTTOM)
           end
         rescue Exception => e
-          command_output.add('Error: %s' % [e.message], CDK::BOTTOM)
+          command_output.add('Error: %s' % [e.message], Cdk::BOTTOM)
         end
       end
 
@@ -324,7 +324,7 @@ class SQLiteDemo
 
     # Clean up
     @@gp_cdk_screen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     exit  # EXIT_SUCCESS
   end
 end

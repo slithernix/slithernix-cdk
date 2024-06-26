@@ -5,8 +5,8 @@ class DialogExample < Example
   def DialogExample.parse_opts(opts, param)
     opts.banner = 'Usage: dialog_ex.rb [options]'
 
-    param.x_value = CDK::CENTER
-    param.y_value = CDK::CENTER
+    param.x_value = Cdk::CENTER
+    param.y_value = Cdk::CENTER
     param.box = true
     param.shadow = false
     super(opts, param)
@@ -19,10 +19,10 @@ class DialogExample < Example
 
     # Set up CDK.
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Start color.
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     # Create the message within the dialog box.
     message = [
@@ -36,15 +36,15 @@ class DialogExample < Example
     ]
 
     # Create the dialog box.
-    question = CDK::DIALOG.new(cdkscreen, params.x_value, params.y_value,
-        message, 7, buttons, 2, Curses.color_pair(2) | Curses::A_REVERSE,
-        true, params.box, params.shadow)
+    question = Cdk::DIALOG.new(cdkscreen, params.x_value, params.y_value,
+                               message, 7, buttons, 2, Curses.color_pair(2) | Curses::A_REVERSE,
+                               true, params.box, params.shadow)
 
     # Check if we got a nil value back
     if question.nil?
       # Shut down Cdk.
       cdkscreen.destroy
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
 
       puts "Cannot create the dialog box. Is the window too small?"
       exit # EXIT_FAILURE
@@ -73,7 +73,7 @@ class DialogExample < Example
     # Clean up.
     question.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     exit # EXIT_SUCCESS
   end
 end

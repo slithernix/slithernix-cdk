@@ -8,11 +8,11 @@ class SubwindowExample < CLIExample
     # default values
     params.box = true
     params.shadow = false
-    params.x_value = CDK::CENTER
-    params.y_value = CDK::CENTER
+    params.x_value = Cdk::CENTER
+    params.y_value = Cdk::CENTER
     params.h_value = 10
     params.w_value = 15
-    params.spos = CDK::RIGHT
+    params.spos = Cdk::RIGHT
 
     super(opts, params)
 
@@ -41,17 +41,17 @@ class SubwindowExample < CLIExample
         Curses.lines - 5, Curses.lines - 10, 2, 5)
 
     # Start Cdk.
-    cdkscreen = CDK::SCREEN.new(sub_window)
+    cdkscreen = Cdk::Screen.new(sub_window)
 
     # Box our window.
-    sub_window.box(CDK::ACS_VLINE, CDK::ACS_HLINE)
+    sub_window.box(Cdk::ACS_VLINE, Cdk::ACS_HLINE)
     sub_window.refresh
 
     # Create a basic scrolling list inside the window.
-    dow_list = CDK::SCROLL.new(cdkscreen,
-        params.x_value, params.y_value, params.spos,
-        params.h_value, params.w_value, "<C></U>Pick a Day",
-        dow, 7, false, Curses::A_REVERSE, params.box, params.shadow)
+    dow_list = Cdk::SCROLL.new(cdkscreen,
+                               params.x_value, params.y_value, params.spos,
+                               params.h_value, params.w_value, "<C></U>Pick a Day",
+                               dow, 7, false, Curses::A_REVERSE, params.box, params.shadow)
 
     # Put a title within the window.
     mesg = [
@@ -60,7 +60,7 @@ class SubwindowExample < CLIExample
         "<C>inside a curses window.",
         "<C><#HL(30)>"
     ]
-    title = CDK::LABEL.new(cdkscreen, CDK::CENTER, 0, mesg, 4, false, false)
+    title = Cdk::LABEL.new(cdkscreen, Cdk::CENTER, 0, mesg, 4, false, false)
 
     # Refresh the screen.
     cdkscreen.refresh
@@ -71,9 +71,9 @@ class SubwindowExample < CLIExample
     # Clean up.
     dow_list.destroy
     title.destroy
-    CDK.eraseCursesWindow(sub_window)
+    Cdk.eraseCursesWindow(sub_window)
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
 
     # Tell them what they picked.
     puts "You picked %s" % [dow[pick]]

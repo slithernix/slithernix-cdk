@@ -5,10 +5,10 @@ class StopSign
   def StopSign.main
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     # Set the labels up.
     mesg = [
@@ -25,10 +25,10 @@ class StopSign
     ]
 
     # Declare the labels.
-    title = CDK::LABEL.new(cdkscreen, CDK::CENTER, CDK::TOP,
-        mesg, 5, false, false)
-    stop_sign = CDK::LABEL.new(cdkscreen, CDK::CENTER, CDK::CENTER,
-        sign, 3, true, true)
+    title = Cdk::LABEL.new(cdkscreen, Cdk::CENTER, Cdk::TOP,
+                           mesg, 5, false, false)
+    stop_sign = Cdk::LABEL.new(cdkscreen, Cdk::CENTER, Cdk::CENTER,
+                               sign, 3, true, true)
 
     # Do this until they hit q or escape.
     while true
@@ -36,7 +36,7 @@ class StopSign
       stop_sign.draw(true)
 
       key = stop_sign.getch([])
-      if key == CDK::KEY_ESC || key == 'q' || key == 'Q'
+      if key == Cdk::KEY_ESC || key == 'q' || key == 'Q'
         break
       elsif key == 'r' || key == 'R'
         sign[0] = ' </B/16><#DI> '
@@ -60,7 +60,7 @@ class StopSign
     title.destroy
     stop_sign.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     #ExitProgram (EXIT_SUCCESS);
   end
 end

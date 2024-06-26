@@ -30,10 +30,10 @@ class HistogramExample < CLIExample
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     # Create the histogram objects.
     volume_title = "<C></5>Volume<!5>"
@@ -41,104 +41,104 @@ class HistogramExample < CLIExample
     treble_title = "<C></5>Treble<!5>"
     box = params.box
 
-    volume = CDK::HISTOGRAM.new(cdkscreen, params.x_value, params.y_vol,
-        params.h_value, params.w_value, CDK::HORIZONTAL, volume_title,
-        box, params.shadow)
+    volume = Cdk::HISTOGRAM.new(cdkscreen, params.x_value, params.y_vol,
+                                params.h_value, params.w_value, Cdk::HORIZONTAL, volume_title,
+                                box, params.shadow)
 
     # Is the volume null?
     if volume.nil?
       cdkscreen.destroy
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
 
       puts "Cannot make volume histogram.  Is the window big enough?"
       exit #EXIT_FAILURE
     end
 
-    bass = CDK::HISTOGRAM.new(cdkscreen, params.x_value, params.y_bass,
-        params.h_value, params.w_value, CDK::HORIZONTAL, bass_title,
-        box, params.shadow)
+    bass = Cdk::HISTOGRAM.new(cdkscreen, params.x_value, params.y_bass,
+                              params.h_value, params.w_value, Cdk::HORIZONTAL, bass_title,
+                              box, params.shadow)
 
     if bass.nil?
       volume.destroy
       cdkscreen.destroy
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
 
       puts "Cannot make bass histogram.  Is the window big enough?"
       exit  # EXIT_FAILURE
     end
 
 
-    treble = CDK::HISTOGRAM.new(cdkscreen, params.x_value, params.y_treb,
-        params.h_value, params.w_value, CDK::HORIZONTAL, treble_title,
-        box, params.shadow)
+    treble = Cdk::HISTOGRAM.new(cdkscreen, params.x_value, params.y_treb,
+                                params.h_value, params.w_value, Cdk::HORIZONTAL, treble_title,
+                                box, params.shadow)
 
     if treble.nil?
       volume.destroy
       bass.destroy
       cdkscreen.destroy
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
 
       puts "Cannot make treble histogram.  Is the window big enough?"
       exit  # EXIT_FAILURE
     end
 
     # Set the histogram values.
-    volume.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 6,
-        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
-    bass.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 3,
-        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
-    treble.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 7,
-        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    volume.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 6,
+               ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    bass.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 3,
+             ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    treble.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 7,
+               ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
     cdkscreen.refresh
     sleep(4)
 
     # Set the histogram values.
-    volume.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 8,
-        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
-    bass.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 1,
-        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
-    treble.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 9,
-        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    volume.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 8,
+               ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    bass.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 1,
+             ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    treble.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 9,
+               ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
     cdkscreen.refresh
     sleep(4)
 
     # Set the histogram values.
-    volume.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 10,
-        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
-    bass.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 7,
-        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
-    treble.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 10,
-        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    volume.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 10,
+               ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    bass.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 7,
+             ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    treble.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 10,
+               ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
     cdkscreen.refresh
     sleep(4)
 
     # Set the histogram values.
-    volume.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 1,
-        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
-    bass.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 8,
-        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
-    treble.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 3,
-        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    volume.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 1,
+               ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    bass.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 8,
+             ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    treble.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 3,
+               ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
     cdkscreen.refresh
     sleep(4)
 
     # Set the histogram values.
-    volume.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 3,
-        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
-    bass.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 3,
-        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
-    treble.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 3,
-        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    volume.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 3,
+               ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    bass.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 3,
+             ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    treble.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 3,
+               ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
     cdkscreen.refresh
     sleep(4)
 
     # Set the histogram values.
-    volume.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 10,
-        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
-    bass.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 10,
-        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
-    treble.set(:PERCENT, CDK::CENTER, Curses::A_BOLD, 0, 10, 10,
-        ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    volume.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 10,
+               ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    bass.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 10,
+             ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
+    treble.set(:PERCENT, Cdk::CENTER, Curses::A_BOLD, 0, 10, 10,
+               ' '.ord | Curses::A_REVERSE | Curses.color_pair(3), box)
     cdkscreen.refresh
     sleep(4)
 
@@ -147,7 +147,7 @@ class HistogramExample < CLIExample
     bass.destroy
     treble.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     exit  # EXIT_SUCCESS
   end
 end

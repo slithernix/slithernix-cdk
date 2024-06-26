@@ -1,7 +1,7 @@
-require_relative '../cdk_objs'
+require_relative '../objects'
 
-module CDK
-  class CALENDAR < CDK::CDKOBJS
+module Cdk
+  class CALENDAR < Cdk::Objects
     attr_accessor :week_base
     attr_reader :day, :month, :year
 
@@ -44,15 +44,15 @@ module CDK
     CALENDAR_LIMIT = MAX_DAYS * MAX_MONTHS * MAX_YEARS
 
     def self.CALENDAR_INDEX(d, m, y)
-      (y * CDK::CALENDAR::MAX_MONTHS + m) * CDK::CALENDAR::MAX_DAYS + d
+      (y * Cdk::CALENDAR::MAX_MONTHS + m) * Cdk::CALENDAR::MAX_DAYS + d
     end
 
     def setCalendarCell(d, m, y, value)
-      @marker[CDK::CALENDAR.CALENDAR_INDEX(d, m, y)] = value
+      @marker[Cdk::CALENDAR.CALENDAR_INDEX(d, m, y)] = value
     end
 
     def getCalendarCell(d, m, y)
-      @marker[CDK::CALENDAR.CALENDAR_INDEX(d, m, y)]
+      @marker[Cdk::CALENDAR.CALENDAR_INDEX(d, m, y)]
     end
 
     def initialize(cdkscreen, xplace, yplace, title, day, month, year,
@@ -64,12 +64,12 @@ module CDK
       box_height = 11
       dayname = 'Su Mo Tu We Th Fr Sa '
       bindings = {
-          'T'           => Curses::KEY_HOME,
-          't'           => Curses::KEY_HOME,
-          'n'           => Curses::KEY_NPAGE,
-          CDK::FORCHAR  => Curses::KEY_NPAGE,
-          'p'           => Curses::KEY_PPAGE,
-          CDK::BACKCHAR => Curses::KEY_PPAGE,
+        'T'           => Curses::KEY_HOME,
+        't'           => Curses::KEY_HOME,
+        'n'           => Curses::KEY_NPAGE,
+        Cdk::FORCHAR  => Curses::KEY_NPAGE,
+        'p'           => Curses::KEY_PPAGE,
+        Cdk::BACKCHAR => Curses::KEY_PPAGE,
       }
 
       self.setBox(box)
@@ -84,7 +84,7 @@ module CDK
       # Rejustify the x and y positions if we need to.
       xtmp = [xplace]
       ytmp = [yplace]
-      CDK.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+      Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -103,7 +103,7 @@ module CDK
       @field_width = box_width - 2 * (1 + @border_size)
 
       # Set months and day names
-      @month_name = CDK::CALENDAR::MONTHS_OF_THE_YEAR.clone
+      @month_name = Cdk::CALENDAR::MONTHS_OF_THE_YEAR.clone
       @day_name = dayname
 
       # Set the rest of the widget values.
@@ -141,7 +141,7 @@ module CDK
       end
       self.setBox(box)
 
-      @marker = [0] * CDK::CALENDAR::CALENDAR_LIMIT
+      @marker = [0] * Cdk::CALENDAR::CALENDAR_LIMIT
 
       # If the day/month/year values were 0, then use today's date.
       if @day == 0 && @month == 0 && @year == 0
@@ -155,7 +155,7 @@ module CDK
       self.verifyCalendarDate
 
       # Determine which day the month starts on.
-      @week_day = CDK::CALENDAR.getMonthStartWeekday(@year, @month)
+      @week_day = Cdk::CALENDAR.getMonthStartWeekday(@year, @month)
 
       # If a shadow was requested, then create the shadow window.
       if shadow
@@ -247,17 +247,17 @@ module CDK
             self.incrementCalendarYear(1)
           when Curses::KEY_HOME
             self.setDate(-1, -1, -1)
-          when CDK::KEY_ESC
+          when Cdk::KEY_ESC
             self.setExitType(input)
             complete = true
           when Curses::Error
             self.setExitType(input)
             complete = true
-          when CDK::KEY_TAB, CDK::KEY_RETURN, Curses::KEY_ENTER
+          when Cdk::KEY_TAB, Cdk::KEY_RETURN, Curses::KEY_ENTER
             self.setExitType(input)
             ret = self.getCurrentTime
             complete = true
-          when CDK::REFRESH
+          when Cdk::REFRESH
             @screen.erase
             @screen.refresh
           end
@@ -306,7 +306,7 @@ module CDK
         src = col_len * ((col + (@week_base % 7)) % 7)
         dst = col_len * col
         Draw.writeChar(@win, @x_offset + dst, @title_lines + 2,
-            @day_name[src..-1], CDK::HORIZONTAL, 0, col_len)
+                       @day_name[src..-1], Cdk::HORIZONTAL, 0, col_len)
       end
 
       @win.refresh
@@ -316,8 +316,8 @@ module CDK
     # This draws the month field.
     def drawField
       month_name = @month_name[@month]
-      month_length = CDK::CALENDAR.getMonthLength(@year, @month)
-      year_index = CDK::CALENDAR.YEAR2INDEX(@year)
+      month_length = Cdk::CALENDAR.getMonthLength(@year, @month)
+      year_index = Cdk::CALENDAR.YEAR2INDEX(@year)
       year_len = 0
       save_y = -1
       save_x = -1
@@ -344,7 +344,7 @@ module CDK
               marker |= self.getMarker(day, @month, year_index)
             end
             Draw.writeCharAttrib(@field_win, xpos, ypos, temp, marker,
-                CDK::HORIZONTAL, 0, 2)
+                                 Cdk::HORIZONTAL, 0, 2)
           end
           day += 1
         end
@@ -354,14 +354,14 @@ module CDK
       # Draw the month in.
       if !(@label_win.nil?)
         temp = '%s %d,' % [month_name, @day]
-        Draw.writeChar(@label_win, 0, 0, temp, CDK::HORIZONTAL, 0, temp.size)
+        Draw.writeChar(@label_win, 0, 0, temp, Cdk::HORIZONTAL, 0, temp.size)
         @label_win.clrtoeol
 
         # Draw the year in.
         temp = '%d' % [@year]
         year_len = temp.size
         Draw.writeChar(@label_win, @field_width - year_len, 0, temp,
-            CDK::HORIZONTAL, 0, year_len)
+                       Cdk::HORIZONTAL, 0, year_len)
 
         @label_win.move(0, 0)
         @label_win.refresh
@@ -397,7 +397,7 @@ module CDK
       self.verifyCalendarDate
 
       # Get the start of the current month.
-      @week_day = CDK::CALENDAR.getMonthStartWeekday(@year, @month)
+      @week_day = Cdk::CALENDAR.getMonthStartWeekday(@year, @month)
     end
 
     # This returns the current date on the calendar.
@@ -455,10 +455,10 @@ module CDK
     # This erases the calendar widget.
     def erase
       if self.validCDKObject
-        CDK.eraseCursesWindow(@label_win)
-        CDK.eraseCursesWindow(@field_win)
-        CDK.eraseCursesWindow(@win)
-        CDK.eraseCursesWindow(@shadow_win)
+        Cdk.eraseCursesWindow(@label_win)
+        Cdk.eraseCursesWindow(@field_win)
+        Cdk.eraseCursesWindow(@win)
+        Cdk.eraseCursesWindow(@shadow_win)
       end
     end
 
@@ -466,21 +466,21 @@ module CDK
     def destroy
       self.cleanTitle
 
-      CDK.deleteCursesWindow(@label_win)
-      CDK.deleteCursesWindow(@field_win)
-      CDK.deleteCursesWindow(@shadow_win)
-      CDK.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@label_win)
+      Cdk.deleteCursesWindow(@field_win)
+      Cdk.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@win)
 
       # Clean the key bindings.
       self.cleanBindings(:CALENDAR)
 
       # Unregister the object.
-      CDK::SCREEN.unregister(:CALENDAR, self)
+      Cdk::Screen.unregister(:CALENDAR, self)
     end
 
     # This sets a marker on the calendar.
     def setMarker(day, month, year, marker)
-      year_index = CDK::CALENDAR.YEAR2INDEX(year)
+      year_index = Cdk::CALENDAR.YEAR2INDEX(year)
       oldmarker = self.getMarker(day, month, year)
 
       # Check to see if a marker has not already been set
@@ -494,7 +494,7 @@ module CDK
 
     def getMarker(day, month, year)
       result = 0
-      year = CDK::CALENDAR.YEAR2INDEX(year)
+      year = Cdk::CALENDAR.YEAR2INDEX(year)
       if @marker != 0
         result = self.getCalendarCell(day, month, year)
       end
@@ -503,7 +503,7 @@ module CDK
 
     # This sets a marker on the calendar.
     def removeMarker(day, month, year)
-      year_index = CDK::CALENDAR.YEAR2INDEX(year)
+      year_index = Cdk::CALENDAR.YEAR2INDEX(year)
       self.setCalendarCell(day, month, year_index, 0)
     end
 
@@ -535,7 +535,7 @@ module CDK
       end
 
       # Make sure the day given is within range of the month.
-      month_length = CDK::CALENDAR.getMonthLength(@year, @month)
+      month_length = Cdk::CALENDAR.getMonthLength(@year, @month)
       if @day < 1
         @day = 1
       end
@@ -566,7 +566,7 @@ module CDK
 
     # This increments the current day by the given value.
     def incrementCalendarDay(adjust)
-      month_length = CDK::CALENDAR.getMonthLength(@year, @month)
+      month_length = Cdk::CALENDAR.getMonthLength(@year, @month)
 
       # Make sure we adjust the day correctly.
       if adjust + @day > month_length
@@ -591,13 +591,13 @@ module CDK
                 '<C></U>Error',
                 'Can not go past the year 1900'
             ]
-            CDK.Beep
+            Cdk.Beep
             @screen.popupLabel(mesg, 2)
             return
           end
-          month_length = CDK::CALENDAR.getMonthLength(@year - 1, 12)
+          month_length = Cdk::CALENDAR.getMonthLength(@year - 1, 12)
         else
-          month_length = CDK::CALENDAR.getMonthLength(@year, @month - 1)
+          month_length = Cdk::CALENDAR.getMonthLength(@year, @month - 1)
         end
 
         @day = month_length - (adjust - @day)
@@ -621,13 +621,13 @@ module CDK
       end
 
       # Get the length of the current month.
-      month_length = CDK::CALENDAR.getMonthLength(@year, @month)
+      month_length = Cdk::CALENDAR.getMonthLength(@year, @month)
       if @day > month_length
         @day = month_length
       end
 
       # Get the start of the current month.
-      @week_day = CDK::CALENDAR.getMonthStartWeekday(@year, @month)
+      @week_day = Cdk::CALENDAR.getMonthStartWeekday(@year, @month)
 
       # Redraw the calendar.
       self.erase
@@ -643,7 +643,7 @@ module CDK
               '<C></U>Error',
               'Can not go past the year 1900',
           ]
-          CDK.Beep
+          Cdk.Beep
           @screen.popupLabel(mesg, 2)
           return
         else
@@ -655,13 +655,13 @@ module CDK
       end
 
       # Get the length of the current month.
-      month_length = CDK::CALENDAR.getMonthLength(@year, @month)
+      month_length = Cdk::CALENDAR.getMonthLength(@year, @month)
       if @day > month_length
         @day = month_length
       end
 
       # Get the start o the current month.
-      @week_day = CDK::CALENDAR.getMonthStartWeekday(@year, @month)
+      @week_day = Cdk::CALENDAR.getMonthStartWeekday(@year, @month)
 
       # Redraw the calendar.
       self.erase
@@ -675,14 +675,14 @@ module CDK
 
       # If we are in Feb make sure we don't trip into voidness.
       if @month == 2
-        month_length = CDK::CALENDAR.getMonthLength(@year, @month)
+        month_length = Cdk::CALENDAR.getMonthLength(@year, @month)
         if @day > month_length
           @day = month_length
         end
       end
 
       # Get the start of the current month.
-      @week_day = CDK::CALENDAR.getMonthStartWeekday(@year, @month)
+      @week_day = Cdk::CALENDAR.getMonthStartWeekday(@year, @month)
 
       # Redraw the calendar.
       self.erase
@@ -697,7 +697,7 @@ module CDK
             '<C></U>Error',
             'Can not go past the year 1900',
         ]
-        CDK.Beep
+        Cdk.Beep
         @screen.popupLabel(mesg, 2)
         return
       end
@@ -707,14 +707,14 @@ module CDK
 
       # If we are in Feb make sure we don't trip into voidness.
       if @month == 2
-        month_length = CDK::CALENDAR.getMonthLength(@year, @month)
+        month_length = Cdk::CALENDAR.getMonthLength(@year, @month)
         if @day > month_length
           @day = month_length
         end
       end
 
       # Get the start of the current month.
-      @week_day = CDK::CALENDAR.getMonthStartWeekday(@year, @month)
+      @week_day = Cdk::CALENDAR.getMonthStartWeekday(@year, @month)
 
       # Redraw the calendar.
       self.erase
@@ -726,7 +726,7 @@ module CDK
       month_length = DAYS_OF_THE_MONTH[month]
 
       if month == 2
-        month_length += if CDK::CALENDAR.isLeapYear(year)
+        month_length += if Cdk::CALENDAR.isLeapYear(year)
                         then 1
                         else 0
                         end

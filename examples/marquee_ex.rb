@@ -8,8 +8,8 @@ class MarqueeExample < Example
     # default values
     params.box = false
     params.shadow = true
-    params.x_value = CDK::CENTER
-    params.y_value = CDK::TOP
+    params.x_value = Cdk::CENTER
+    params.y_value = Cdk::TOP
 
     params.message = ''
     params.repeat_count = 3
@@ -84,21 +84,21 @@ class MarqueeExample < Example
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
     Curses.curs_set(0)
 
     # Set up CDK colors
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
-    scroll_message = CDK::MARQUEE.new(cdkscreen,
-        params.x_value, params.y_value, params.width,
-        params.box, params.shadow)
+    scroll_message = Cdk::MARQUEE.new(cdkscreen,
+                                      params.x_value, params.y_value, params.width,
+                                      params.box, params.shadow)
 
     # Check if the marquee is nil.
     if scroll_message.nil?
       # Exit Cdk.
       cdkscreen.destroy
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
 
       puts "Cannot create the marquee window.  Is the window too small?"
       exit # EXIT_FAILURE
@@ -134,7 +134,7 @@ class MarqueeExample < Example
     # Clean up.
     scroll_message.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     exit # EXIT_SUCCESS
   end
 end

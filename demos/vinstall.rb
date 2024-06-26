@@ -98,7 +98,7 @@ class Vinstall
 
     file_list = []
     # Open the file list file and read it in.
-    count = CDK.readFile(filename, file_list)
+    count = Cdk.readFile(filename, file_list)
     if count == 0
       $stderr.puts '%s: Input filename <%s> is empty.' % [ARGV[0], filename]
     end
@@ -110,10 +110,10 @@ class Vinstall
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     # Create the title label.
     title_mesg = [
@@ -121,10 +121,10 @@ class Vinstall
       title == '' ? '<C></32/B>CDK Installer' : '<C></32/B>%.256s' % [title],
       '<C></32/B><#HL(30)>'
     ]
-    title_win = CDK::LABEL.new(
+    title_win = Cdk::LABEL.new(
       cdkscreen,
-      CDK::CENTER,
-      CDK::TOP,
+      Cdk::CENTER,
+      Cdk::TOP,
       title_mesg,
       3,
       false,
@@ -136,9 +136,9 @@ class Vinstall
 
     # Allow them to change the install directory.
     if source_path == ''
-      source_entry = CDK::ENTRY.new(
+      source_entry = Cdk::ENTRY.new(
         cdkscreen,
-        CDK::CENTER,
+        Cdk::CENTER,
         8,
         '',
         'Source Directory        :',
@@ -154,9 +154,9 @@ class Vinstall
     end
 
     if dest_path == ''
-      dest_entry = CDK::ENTRY.new(
+      dest_entry = Cdk::ENTRY.new(
         cdkscreen,
-        CDK::CENTER,
+        Cdk::CENTER,
         11,
         '',
         'Destination Directory:',
@@ -198,7 +198,7 @@ class Vinstall
       # Clean up and leave.
       title_win.destroy
       cdkscreen.destroy
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
       exit  # EXIT_FAILURE
     end
 
@@ -206,31 +206,31 @@ class Vinstall
     if Vinstall.verifyDirectory(cdkscreen, dest_dir) != 0
       title_win.destroy
       cdkscreen.destroy
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
       exit  # EXIT_FAILURE
     end
 
     # Create the histogram.
-    progress_bar = CDK::HISTOGRAM.new(
+    progress_bar = Cdk::HISTOGRAM.new(
       cdkscreen,
-      CDK::CENTER,
+      Cdk::CENTER,
       5,
       3,
       0,
-      CDK::HORIZONTAL,
+      Cdk::HORIZONTAL,
       '<C></56/B>Install Progress',
       true,
       false,
     )
 
     # Set the top left/right characters of the histogram.
-    progress_bar.setLLchar(CDK::ACS_LTEE)
-    progress_bar.setLRchar(CDK::ACS_RTEE)
+    progress_bar.setLLchar(Cdk::ACS_LTEE)
+    progress_bar.setLRchar(Cdk::ACS_RTEE)
 
     # Set the initial value fo the histgoram.
     progress_bar.set(
       :PERCENT,
-      CDK::TOP,
+      Cdk::TOP,
       Curses::A_BOLD,
       1,
       count,
@@ -246,10 +246,10 @@ class Vinstall
     end
 
     # Create the scrolling window.
-    install_output = CDK::SWINDOW.new(
+    install_output = Cdk::SWINDOW.new(
       cdkscreen,
-      CDK::CENTER,
-      CDK::BOTTOM,
+      Cdk::CENTER,
+      Cdk::BOTTOM,
       swindow_height,
       0,
       '<C></56/B>Install Results',
@@ -259,8 +259,8 @@ class Vinstall
     )
 
     # Set the top left/right characters of the scrolling window.
-    install_output.setULchar(CDK::ACS_LTEE)
-    install_output.setURchar(CDK::ACS_RTEE)
+    install_output.setULchar(Cdk::ACS_LTEE)
+    install_output.setURchar(Cdk::ACS_RTEE)
 
     # Draw the screen.
     cdkscreen.draw
@@ -295,12 +295,12 @@ class Vinstall
       end
 
       # Add the message to the scrolling window.
-      install_output.add(temp, CDK::BOTTOM)
+      install_output.add(temp, Cdk::BOTTOM)
       install_output.draw(install_output.box)
 
       # Update the histogram.
-      progress_bar.set(:PERCENT, CDK::TOP, Curses::A_BOLD, 1, count,
-          x + 1, Curses.color_pair(24) | Curses::A_REVERSE | ' '.ord, true)
+      progress_bar.set(:PERCENT, Cdk::TOP, Curses::A_BOLD, 1, count,
+                       x + 1, Curses.color_pair(24) | Curses::A_REVERSE | ' '.ord, true)
 
       # Update the screen.
       progress_bar.draw(true)
@@ -363,7 +363,7 @@ class Vinstall
     progress_bar.destroy
     install_output.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     exit  # EXIT_SUCCESS
   end
 end

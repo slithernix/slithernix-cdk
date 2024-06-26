@@ -1,7 +1,7 @@
-require_relative '../cdk_objs'
+require_relative '../objects'
 
-module CDK
-  class DIALOG < CDK::CDKOBJS
+module Cdk
+  class DIALOG < Cdk::Objects
     attr_reader :current_button
     MIN_DIALOG_WIDTH = 10
 
@@ -35,7 +35,7 @@ module CDK
       (0...rows).each do |x|
         info_len = []
         info_pos = []
-        @info << CDK.char2Chtype(mesg[x], info_len, info_pos)
+        @info << Cdk.char2Chtype(mesg[x], info_len, info_pos)
         @info_len << info_len[0]
         @info_pos << info_pos[0]
         max_message_width = [max_message_width, info_len[0]].max
@@ -44,7 +44,7 @@ module CDK
       # Translate the button label string to a chtype array
       (0...button_count).each do |x|
         button_len = []
-        @button_label << CDK.char2Chtype(button_label[x], button_len, [])
+        @button_label << Cdk.char2Chtype(button_label[x], button_len, [])
         @button_len << button_len[0]
         button_width += button_len[0] + 1
       end
@@ -58,7 +58,7 @@ module CDK
       # Now we have to readjust the x and y positions.
       xtmp = [xpos]
       ytmp = [ypos]
-      CDK.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+      Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -94,8 +94,8 @@ module CDK
 
       # Create the string alignments.
       (0...rows).each do |x|
-        @info_pos[x] = CDK.justifyString(box_width - 2 * @border_size,
-            @info_len[x], @info_pos[x])
+        @info_pos[x] = Cdk.justifyString(box_width - 2 * @border_size,
+                                         @info_len[x], @info_pos[x])
       end
 
       # Was there a shadow?
@@ -117,8 +117,8 @@ module CDK
 
       # Lets move to the first button.
       Draw.writeChtypeAttrib(@win, @button_pos[@current_button],
-          @box_height - 1 - @border_size, @button_label[@current_button],
-          @highlight, CDK::HORIZONTAL, 0, @button_len[@current_button])
+                             @box_height - 1 - @border_size, @button_label[@current_button],
+                             @highlight, Cdk::HORIZONTAL, 0, @button_len[@current_button])
       @win.refresh
 
       if actions.nil? || actions.size == 0
@@ -176,23 +176,23 @@ module CDK
             else
               @current_button -= 1
             end
-          when Curses::KEY_RIGHT, CDK::KEY_TAB, ' '.ord
+          when Curses::KEY_RIGHT, Cdk::KEY_TAB, ' '.ord
             if @current_button == last_button
               @current_button = first_button
             else
               @current_button += 1
             end
           when Curses::KEY_UP, Curses::KEY_DOWN
-            CDK.Beep
-          when CDK::REFRESH
+            Cdk.Beep
+          when Cdk::REFRESH
             @screen.erase
             @screen.refresh
-          when CDK::KEY_ESC
+          when Cdk::KEY_ESC
             self.setExitType(input)
             complete = true
           when Curses::Error
             self.setExitType(input)
-          when Curses::KEY_ENTER, CDK::KEY_RETURN
+          when Curses::KEY_ENTER, Cdk::KEY_RETURN
             self.setExitType(input)
             ret = @current_button
             complete = true
@@ -236,8 +236,8 @@ module CDK
       # Draw in the message.
       (0...@message_rows).each do |x|
         Draw.writeChtype(@win,
-            @info_pos[x] + @border_size, x + @border_size, @info[x],
-            CDK::HORIZONTAL, 0, @info_len[x])
+                         @info_pos[x] + @border_size, x + @border_size, @info[x],
+                         Cdk::HORIZONTAL, 0, @info_len[x])
       end
 
       # Draw in the buttons.
@@ -249,21 +249,21 @@ module CDK
     # This function destroys the dialog widget.
     def destroy
       # Clean up the windows.
-      CDK.deleteCursesWindow(@win)
-      CDK.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@shadow_win)
 
       # Clean the key bindings
       self.cleanBindings(:DIALOG)
 
       # Unregister this object
-      CDK::SCREEN.unregister(:DIALOG, self)
+      Cdk::Screen.unregister(:DIALOG, self)
     end
 
     # This function erases the dialog widget from the screen.
     def erase
       if self.validCDKObject
-        CDK.eraseCursesWindow(@win)
-        CDK.eraseCursesWindow(@shadow_win)
+        Cdk.eraseCursesWindow(@win)
+        Cdk.eraseCursesWindow(@shadow_win)
       end
     end
 
@@ -301,9 +301,9 @@ module CDK
     def drawButtons
       (0...@button_count).each do |x|
         Draw.writeChtype(@win, @button_pos[x],
-            @box_height -1 - @border_size,
-            @button_label[x], CDK::HORIZONTAL, 0,
-            @button_len[x])
+                         @box_height -1 - @border_size,
+                         @button_label[x], Cdk::HORIZONTAL, 0,
+                         @button_len[x])
       end
 
       # Draw the separation line.
@@ -312,16 +312,16 @@ module CDK
 
         (1...@box_width).each do |x|
           @win.mvwaddch(@box_height - 2 - @border_size, x,
-              CDK::ACS_HLINE | boxattr)
+                        Cdk::ACS_HLINE | boxattr)
         end
         @win.mvwaddch(@box_height - 2 - @border_size, 0,
-            CDK::ACS_LTEE | boxattr)
+                      Cdk::ACS_LTEE | boxattr)
         @win.mvwaddch(@box_height - 2 - @border_size, @win.maxx - 1,
-            CDK::ACS_RTEE | boxattr)
+                      Cdk::ACS_RTEE | boxattr)
       end
       Draw.writeChtypeAttrib(@win, @button_pos[@current_button],
-          @box_height - 1 - @border_size, @button_label[@current_button],
-          @highlight, CDK::HORIZONTAL, 0, @button_len[@current_button])
+                             @box_height - 1 - @border_size, @button_label[@current_button],
+                             @highlight, Cdk::HORIZONTAL, 0, @button_len[@current_button])
     end
 
     def focus
@@ -341,7 +341,7 @@ module CDK
     end
   end
 
-  class GRAPH < CDK::CDKOBJS
+  class GRAPH < Cdk::Objects
     def initialize(cdkscreen, xplace, yplace, height, width,
         title, xtitle, ytitle)
       super()
@@ -350,8 +350,8 @@ module CDK
 
       self.setBox(false)
 
-      box_height = CDK.setWidgetDimension(parent_height, height, 3)
-      box_width = CDK.setWidgetDimension(parent_width, width, 0)
+      box_height = Cdk.setWidgetDimension(parent_height, height, 3)
+      box_width = Cdk.setWidgetDimension(parent_width, width, 0)
       box_width = self.setTitle(title, box_width)
       box_height += @title_lines
       box_width = [parent_width, box_width].min
@@ -360,7 +360,7 @@ module CDK
       # Rejustify the x and y positions if we need to
       xtmp = [xplace]
       ytmp = [yplace]
-      CDK.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+      Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -387,32 +387,32 @@ module CDK
       if !(xtitle.nil?) && xtitle.size > 0
         xtitle_len = []
         xtitle_pos = []
-        @xtitle = CDK.char2Chtype(xtitle, xtitle_len, xtitle_pos)
+        @xtitle = Cdk.char2Chtype(xtitle, xtitle_len, xtitle_pos)
         @xtitle_len = xtitle_len[0]
-        @xtitle_pos = CDK.justifyString(@box_height,
-            @xtitle_len, xtitle_pos[0])
+        @xtitle_pos = Cdk.justifyString(@box_height,
+                                        @xtitle_len, xtitle_pos[0])
       else
         xtitle_len = []
         xtitle_pos = []
-        @xtitle = CDK.char2Chtype("<C></5>X Axis", xtitle_len, xtitle_pos)
+        @xtitle = Cdk.char2Chtype("<C></5>X Axis", xtitle_len, xtitle_pos)
         @xtitle_len = title_len[0]
-        @xtitle_pos = CDK.justifyString(@box_height,
-            @xtitle_len, xtitle_pos[0])
+        @xtitle_pos = Cdk.justifyString(@box_height,
+                                        @xtitle_len, xtitle_pos[0])
       end
 
       # Translate the Y Axis title string to a chtype array
       if !(ytitle.nil?) && ytitle.size > 0
         ytitle_len = []
         ytitle_pos = []
-        @ytitle = CDK.char2Chtype(ytitle, ytitle_len, ytitle_pos)
+        @ytitle = Cdk.char2Chtype(ytitle, ytitle_len, ytitle_pos)
         @ytitle_len = ytitle_len[0]
-        @ytitle_pos = CDK.justifyString(@box_width, @ytitle_len, ytitle_pos[0])
+        @ytitle_pos = Cdk.justifyString(@box_width, @ytitle_len, ytitle_pos[0])
       else
         ytitle_len = []
         ytitle_pos = []
-        @ytitle = CDK.char2Chtype("<C></5>Y Axis", ytitle_len, ytitle_pos)
+        @ytitle = Cdk.char2Chtype("<C></5>Y Axis", ytitle_len, ytitle_pos)
         @ytitle_len = ytitle_len[0]
-        @ytitle_pos = CDK.justifyString(@box_width, @ytitle_len, ytitle_pos[0])
+        @ytitle_pos = Cdk.justifyString(@box_width, @ytitle_len, ytitle_pos[0])
       end
 
       @graph_char = 0
@@ -520,7 +520,7 @@ module CDK
     # Set the characters of the graph widget.
     def setCharacters(characters)
       char_count = []
-      new_tokens = CDK.char2Chtype(characters, char_count, [])
+      new_tokens = Cdk.char2Chtype(characters, char_count, [])
 
       if char_count[0] != @count
         return false
@@ -543,7 +543,7 @@ module CDK
 
       # Convert the string given to us
       char_count = []
-      new_tokens = CDK.char2Chtype(character, char_count, [])
+      new_tokens = Cdk.char2Chtype(character, char_count, [])
 
       # Check if the number of characters back is the same as the number
       # of elements in the list.
@@ -591,7 +591,7 @@ module CDK
       # Adjust the window if we need to.
       xtmp = [xpos]
       tymp = [ypos]
-      CDK.alignxy(@screen.window, xtmp, ytmp, @box_width, @box_height)
+      Cdk.alignxy(@screen.window, xtmp, ytmp, @box_width, @box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -600,11 +600,11 @@ module CDK
       ydiff = current_y - ypos
 
       # Move the window to the new location.
-      CDK.moveCursesWindow(@win, -xdiff, -ydiff)
-      CDK.moveCursesWindow(@shadow_win, -xdiff, -ydiff)
+      Cdk.moveCursesWindow(@win, -xdiff, -ydiff)
+      Cdk.moveCursesWindow(@shadow_win, -xdiff, -ydiff)
 
       # Touch the windows so they 'move'.
-      CDK::SCREEN.refreshCDKWindow(@screen.window)
+      Cdk::Screen.refreshCDKWindow(@screen.window)
 
       # Reraw the windowk if they asked for it
       if refresh_flag
@@ -624,45 +624,45 @@ module CDK
 
       # Draw in the vertical axis
       Draw.drawLine(@win, 2, @title_lines + 1, 2, @box_height - 3,
-          CDK::ACS_VLINE)
+                    Cdk::ACS_VLINE)
 
       # Draw in the horizontal axis
       Draw.drawLine(@win, 3, @box_height - 3, @box_width, @box_height - 3,
-          CDK::ACS_HLINE)
+                    Cdk::ACS_HLINE)
 
       self.drawTitle(@win)
 
       # Draw in the X axis title.
       if !(@xtitle.nil?) && @xtitle.size > 0
-        Draw.writeChtype(@win, 0, @xtitle_pos, @xtitle, CDK::VERTICAL,
-            0, @xtitle_len)
+        Draw.writeChtype(@win, 0, @xtitle_pos, @xtitle, Cdk::VERTICAL,
+                         0, @xtitle_len)
         attrib = @xtitle[0] & Curses::A_ATTRIBUTES
       end
 
       # Draw in the X axis high value
       temp = "%d" % [@maxx]
       Draw.writeCharAttrib(@win, 1, @title_lines + 1, temp, attrib,
-          CDK::VERTICAL, 0, temp.size)
+                           Cdk::VERTICAL, 0, temp.size)
 
       # Draw in the X axis low value.
       temp = "%d" % [@minx]
       Draw.writeCharAttrib(@win, 1, @box_height - 2 - temp.size, temp, attrib,
-          CDK::VERTICAL, 0, temp.size)
+                           Cdk::VERTICAL, 0, temp.size)
 
       # Draw in the Y axis title
       if !(@ytitle.nil?) && @ytitle.size > 0
         Draw.writeChtype(@win, @ytitle_pos, @box_height - 1, @ytitle,
-            CDK::HORIZONTAL, 0, @ytitle_len)
+                         Cdk::HORIZONTAL, 0, @ytitle_len)
       end
 
       # Draw in the Y axis high value.
       temp = "%d" % [@count]
       Draw.writeCharAttrib(@win, @box_width - temp.size - adj,
-          @box_height - 2, temp, attrib, CDK::HORIZONTAL, 0, temp.size)
+                           @box_height - 2, temp, attrib, Cdk::HORIZONTAL, 0, temp.size)
 
       # Draw in the Y axis low value.
       Draw.writeCharAttrib(@win, 3, @box_height - 2, "0", attrib,
-          CDK::HORIZONTAL, 0, "0".size)
+                           Cdk::HORIZONTAL, 0, "0".size)
 
       # If the count is zero then there aren't any points.
       if @count == 0
@@ -677,7 +677,7 @@ module CDK
         colheight = (@values[y] / @xscale) - 1
         # Add the marker on the Y axis.
         @win.mvwaddch(@box_height - 3, (y + 1) * spacing + adj,
-            CDK::ACS_TTEE)
+                      Cdk::ACS_TTEE)
 
         # If this is a plot graph, all we do is draw a dot.
         if @display_type == :PLOT
@@ -695,9 +695,9 @@ module CDK
       end
 
       # Draw in the axis corners.
-      @win.mvwaddch(@title_lines, 2, CDK::ACS_URCORNER)
-      @win.mvwaddch(@box_height - 3, 2, CDK::ACS_LLCORNER)
-      @win.mvwaddch(@box_height - 3, @box_width, CDK::ACS_URCORNER)
+      @win.mvwaddch(@title_lines, 2, Cdk::ACS_URCORNER)
+      @win.mvwaddch(@box_height - 3, 2, Cdk::ACS_LLCORNER)
+      @win.mvwaddch(@box_height - 3, @box_width, Cdk::ACS_URCORNER)
 
       # Refresh and lets see it
       @win.refresh
@@ -706,13 +706,13 @@ module CDK
     def destroy
       self.cleanTitle
       self.cleanBindings(:GRAPH)
-      CDK::SCREEN.unregister(:GRAPH, self)
-      CDK.deleteCursesWindow(@win)
+      Cdk::Screen.unregister(:GRAPH, self)
+      Cdk.deleteCursesWindow(@win)
     end
 
     def erase
       if self.validCDKObject
-        CDK.eraseCursesWindow(@win)
+        Cdk.eraseCursesWindow(@win)
       end
     end
 

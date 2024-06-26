@@ -4,8 +4,8 @@ require_relative 'example'
 class MenuExample < Example
   # This program demonstrates the Cdk menu widget.
   def MenuExample.main
-    menu_list = (0...CDK::MENU::MAX_MENU_ITEMS).map {
-        [nil] * CDK::MENU::MAX_SUB_ITEMS}.compact
+    menu_list = (0...Cdk::MENU::MAX_MENU_ITEMS).map {
+        [nil] * Cdk::MENU::MAX_SUB_ITEMS}.compact
     menu_info = [
         [
             "",
@@ -29,10 +29,10 @@ class MenuExample < Example
 
     # Set up CDK.
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Start color.
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     # Set up the menu.
     menu_list[0][0] = "</B>File<!B>"
@@ -51,7 +51,7 @@ class MenuExample < Example
 
     submenusize = [3, 4, 4]
 
-    menuloc = [CDK::LEFT, CDK::LEFT, CDK::RIGHT]
+    menuloc = [Cdk::LEFT, Cdk::LEFT, Cdk::RIGHT]
 
     # Create the label window.
     mesg = [
@@ -61,12 +61,12 @@ class MenuExample < Example
         "                                          "
     ]
 
-    info_box = CDK::LABEL.new(cdkscreen, CDK::CENTER, CDK::CENTER,
-        mesg, 4, true, true)
+    info_box = Cdk::LABEL.new(cdkscreen, Cdk::CENTER, Cdk::CENTER,
+                              mesg, 4, true, true)
 
     # Create the menu.
-    menu = CDK::MENU.new(cdkscreen, menu_list, 3, submenusize, menuloc,
-        CDK::TOP, Curses::A_UNDERLINE, Curses::A_REVERSE)
+    menu = Cdk::MENU.new(cdkscreen, menu_list, 3, submenusize, menuloc,
+                         Cdk::TOP, Curses::A_UNDERLINE, Curses::A_REVERSE)
 
     # Create the post process function
     display_callback = lambda do |cdktype, menu, info_box, key|
@@ -119,7 +119,7 @@ class MenuExample < Example
     menu.destroy
     info_box.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
 
     exit # EXIT_SUCCESS
   end

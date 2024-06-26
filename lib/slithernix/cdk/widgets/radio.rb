@@ -1,7 +1,7 @@
 require_relative 'scroller'
 
-module CDK
-  class RADIO < CDK::SCROLLER
+module Cdk
+  class RADIO < Cdk::SCROLLER
     def initialize(cdkscreen, xplace, yplace, splace, height, width, title,
         list, list_size, choice_char, def_item, highlight, box, shadow)
       super()
@@ -12,8 +12,8 @@ module CDK
       widest_item = 0
 
       bindings = {
-        CDK::BACKCHAR => Curses::KEY_PPAGE,
-        CDK::FORCHAR  => Curses::KEY_NPAGE,
+        Cdk::BACKCHAR => Curses::KEY_PPAGE,
+        Cdk::FORCHAR  => Curses::KEY_NPAGE,
         'g'           => Curses::KEY_HOME,
         '1'           => Curses::KEY_HOME,
         'G'           => Curses::KEY_END,
@@ -25,11 +25,11 @@ module CDK
 
       # If the height is a negative value, height will be ROWS-height,
       # otherwise the height will be the given height.
-      box_height = CDK.setWidgetDimension(parent_height, height, 0)
+      box_height = Cdk.setWidgetDimension(parent_height, height, 0)
 
       # If the width is a negative value, the width will be COLS-width,
       # otherwise the width will be the given width.
-      box_width = CDK.setWidgetDimension(parent_width, width, 5)
+      box_width = Cdk.setWidgetDimension(parent_width, width, 5)
 
       box_width = self.setTitle(title, box_width)
 
@@ -39,7 +39,7 @@ module CDK
       end
 
       # Adjust the box width if there is a scroll bar.
-      if splace == CDK::LEFT || splace == CDK::RIGHT
+      if splace == Cdk::LEFT || splace == Cdk::RIGHT
         box_width += 1
         @scrollbar = true
       else
@@ -64,7 +64,7 @@ module CDK
       # Rejustify the x and y positions if we need to.
       xtmp = [xplace]
       ytmp = [yplace]
-      CDK.alignxy(cdkscreen.window, xtmp, ytmp, @box_width, @box_height)
+      Cdk.alignxy(cdkscreen.window, xtmp, ytmp, @box_width, @box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -81,10 +81,10 @@ module CDK
       @win.keypad(true)
 
       # Create the scrollbar window.
-      if splace == CDK::RIGHT
+      if splace == Cdk::RIGHT
         @scrollbar_win = @win.subwin(self.maxViewSize, 1,
             self.SCREEN_YPOS(ypos), xpos + @box_width - @border_size - 1)
-      elsif splace == CDK::LEFT
+      elsif splace == Cdk::LEFT
         @scrollbar_win = @win.subwin(self.maxViewSize, 1,
             self.SCREEN_YPOS(ypos), self.SCREEN_XPOS(xpos))
       else
@@ -125,7 +125,7 @@ module CDK
 
     # Put the cursor on the currently-selected item.
     def fixCursorPosition
-      scrollbar_adj = if @scrollbar_placement == CDK::LEFT then 1 else 0 end
+      scrollbar_adj = if @scrollbar_placement == Cdk::LEFT then 1 else 0 end
       ypos = self.SCREEN_YPOS(@current_item - @current_top)
       xpos = self.SCREEN_XPOS(0) + scrollbar_adj
 
@@ -211,18 +211,18 @@ module CDK
             @left_char = 0
           when ' '
             @selected_item = @current_item
-          when CDK::KEY_ESC
+          when Cdk::KEY_ESC
             self.setExitType(input)
             ret = -1
             complete = true
           when Curses::Error
             self.setExitType(input)
             complete = true
-          when CDK::KEY_TAB, CDK::KEY_RETURN, Curses::KEY_ENTER
+          when Cdk::KEY_TAB, Cdk::KEY_RETURN, Curses::KEY_ENTER
             self.setExitType(input)
             ret = @selected_item
             complete = true
-          when CDK::REFRESH
+          when Cdk::REFRESH
             @screen.erase
             @screen.refresh
           end
@@ -266,7 +266,7 @@ module CDK
 
     # This redraws the radio list.
     def drawList(box)
-      scrollbar_adj = if @scrollbar_placement == CDK::LEFT then 1 else 0 end
+      scrollbar_adj = if @scrollbar_placement == Cdk::LEFT then 1 else 0 end
       screen_pos = 0
 
       # Draw the list
@@ -279,15 +279,15 @@ module CDK
           screen_pos = self.SCREENPOS(k, scrollbar_adj)
 
           # Draw the empty string.
-          Draw.writeBlanks(@win, xpos, ypos, CDK::HORIZONTAL, 0,
-              @box_width - @border_size)
+          Draw.writeBlanks(@win, xpos, ypos, Cdk::HORIZONTAL, 0,
+                           @box_width - @border_size)
 
           # Draw the line.
           Draw.writeChtype(@win,
               if screen_pos >= 0 then screen_pos else 1 end,
-              ypos, @item[k], CDK::HORIZONTAL,
+                           ypos, @item[k], Cdk::HORIZONTAL,
               if screen_pos >= 0 then 0 else 1 - screen_pos end,
-              @item_len[k])
+                           @item_len[k])
 
           # Draw the selected choice
           xpos += scrollbar_adj
@@ -307,9 +307,9 @@ module CDK
 
           Draw.writeChtypeAttrib(@win,
               if screen_pos >= 0 then screen_pos else 1 + scrollbar_adj end,
-              ypos, @item[k], @highlight, CDK::HORIZONTAL,
+                                 ypos, @item[k], @highlight, Cdk::HORIZONTAL,
               if screen_pos >= 0 then 0 else 1 - screen_pos end,
-              @item_len[k])
+                                 @item_len[k])
         end
       end
 
@@ -317,8 +317,8 @@ module CDK
         @toggle_pos = (@current_item * @step).floor
         @toggle_pos = [@toggle_pos, @scrollbar_win.maxy - 1].min
 
-        @scrollbar_win.mvwvline(0, 0, CDK::ACS_CKBOARD,
-            @scrollbar_win.maxy)
+        @scrollbar_win.mvwvline(0, 0, Cdk::ACS_CKBOARD,
+                                @scrollbar_win.maxy)
         @scrollbar_win.mvwvline(@toggle_pos, 0, ' '.ord | Curses::A_REVERSE,
             @toggle_size)
       end
@@ -349,22 +349,22 @@ module CDK
       self.destroyInfo
 
       # Clean up the windows.
-      CDK.deleteCursesWindow(@scrollbar_win)
-      CDK.deleteCursesWindow(@shadow_win)
-      CDK.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@scrollbar_win)
+      Cdk.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@win)
 
       # Clean up the key bindings.
       self.cleanBindings(:RADIO)
 
       # Unregister this object.
-      CDK::SCREEN.unregister(:RADIO, self)
+      Cdk::Screen.unregister(:RADIO, self)
     end
 
     # This function erases the radio widget
     def erase
       if self.validCDKObject
-        CDK.eraseCursesWindow(@win)
-        CDK.eraseCursesWindow(@shadow_win)
+        Cdk.eraseCursesWindow(@win)
+        Cdk.eraseCursesWindow(@shadow_win)
       end
     end
 
@@ -385,7 +385,7 @@ module CDK
       # Clean up the display.
       (0...@view_size).each do |j|
         Draw.writeBlanks(@win, self.SCREEN_XPOS(0), self.SCREEN_YPOS(j),
-            CDK::HORIZONTAL, 0, @box_width - @border_size)
+                         Cdk::HORIZONTAL, 0, @box_width - @border_size)
       end
 
       self.setViewSize(list_size)
@@ -399,7 +399,7 @@ module CDK
 
     def getItems(list)
       (0...@list_size).each do |j|
-        list << CDK.chtype2Char(@item[j])
+        list << Cdk.chtype2Char(@item[j])
       end
       return @list_size
     end
@@ -484,14 +484,14 @@ module CDK
         (0...list_size).each do |j|
           lentmp = []
           postmp = []
-          new_list << CDK.char2Chtype(list[j], lentmp, postmp)
+          new_list << Cdk.char2Chtype(list[j], lentmp, postmp)
           new_len << lentmp[0]
           new_pos << postmp[0]
           if new_list[j].nil? || new_list[j].size == 0
             status = false
             break
           end
-          new_pos[j] = CDK.justifyString(box_width, new_len[j], new_pos[j]) + 3
+          new_pos[j] = Cdk.justifyString(box_width, new_len[j], new_pos[j]) + 3
           widest_item = [widest_item, new_len[j]].max
         end
         if status

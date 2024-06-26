@@ -26,7 +26,7 @@ class Appointment
     lines = []
 
     # Read the appointment file.
-    lines_read = CDK.readFile(filename, lines)
+    lines_read = Cdk.readFile(filename, lines)
     if lines_read == -1
       app_info.count = 0
       return
@@ -34,7 +34,7 @@ class Appointment
 
     # Split each line up and create an appointment.
     (0...lines_read).each do |x|
-      temp = lines[x].split(CDK.CTRL('V').chr)
+      temp = lines[x].split(Cdk.CTRL('V').chr)
       segments =  temp.size
 
       # A valid line has 5 elements:
@@ -65,11 +65,11 @@ class Appointment
     app_info.appointment.each do |appointment|
       if appointment.description != ''
         fd.puts '%d%c%d%c%d%c%d%c%s' % [
-            appointment.day, CDK.CTRL('V').chr,
-            appointment.month, CDK.CTRL('V').chr,
-            appointment.year, CDK.CTRL('V').chr,
-            Appointment::AppointmentType.index(appointment.type),
-            CDK.CTRL('V').chr, appointment.description]
+          appointment.day, Cdk.CTRL('V').chr,
+          appointment.month, Cdk.CTRL('V').chr,
+          appointment.year, Cdk.CTRL('V').chr,
+          Appointment::AppointmentType.index(appointment.type),
+          Cdk.CTRL('V').chr, appointment.description]
       end
     end
     fd.close
@@ -126,20 +126,20 @@ class Appointment
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     # Create the calendar widget.
-    calendar = CDK::CALENDAR.new(cdkscreen, CDK::CENTER, CDK::CENTER,
-        title, day, month, year, Curses::A_NORMAL, Curses::A_NORMAL,
-        Curses::A_NORMAL, Curses::A_REVERSE, true, false)
+    calendar = Cdk::CALENDAR.new(cdkscreen, Cdk::CENTER, Cdk::CENTER,
+                                 title, day, month, year, Curses::A_NORMAL, Curses::A_NORMAL,
+                                 Curses::A_NORMAL, Curses::A_REVERSE, true, false)
 
     # Is the widget nil?
     if calendar.nil?
       cdkscreen.destroy
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
 
       puts "Cannot create the calendar. Is the window too small?"
       exit  # EXIT_FAILURE
@@ -155,9 +155,9 @@ class Appointment
       ]
 
       # Create the itemlist widget.
-      itemlist = CDK::ITEMLIST.new(calendar.screen,
-          CDK::CENTER, CDK::CENTER, '', 'Select Appointment Type: ',
-          items, items.size, 0, true, false)
+      itemlist = Cdk::ITEMLIST.new(calendar.screen,
+                                   Cdk::CENTER, Cdk::CENTER, '', 'Select Appointment Type: ',
+                                   items, items.size, 0, true, false)
 
       # Get the appointment type from the user.
       selection = itemlist.activate([])
@@ -175,10 +175,10 @@ class Appointment
       marker = Appointment::GPAppointmentAttributes[selection]
 
       # Create the entry field for the description.
-      entry = CDK::ENTRY.new(calendar.screen, CDK::CENTER, CDK::CENTER,
-          '<C>Enter a description of the appointment.',
-          'Description: ', Curses::A_NORMAL, '.'.ord, :MIXED, 40, 1, 512,
-          true, false)
+      entry = Cdk::ENTRY.new(calendar.screen, Cdk::CENTER, Cdk::CENTER,
+                             '<C>Enter a description of the appointment.',
+                             'Description: ', Curses::A_NORMAL, '.'.ord, :MIXED, 40, 1, 512,
+                             true, false)
 
       # Get the description.
       description = entry.activate([])
@@ -284,8 +284,8 @@ class Appointment
       end
 
       # Create the label widget
-      label = CDK::LABEL.new(calendar.screen, CDK::CENTER, CDK::CENTER,
-          mesg, mesg.size, true, false)
+      label = Cdk::LABEL.new(calendar.screen, Cdk::CENTER, Cdk::CENTER,
+                             mesg, mesg.size, true, false)
       label.draw(label.box)
       label.wait(' ')
       label.destroy
@@ -330,7 +330,7 @@ class Appointment
     # Clean up.
     calendar.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     exit  # EXIT_SUCCESS
   end
 end

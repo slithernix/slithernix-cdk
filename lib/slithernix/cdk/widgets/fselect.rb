@@ -1,7 +1,7 @@
-require_relative '../cdk_objs'
+require_relative '../objects'
 
-module CDK
-  class FSELECT < CDK::CDKOBJS
+module Cdk
+  class FSELECT < Cdk::Objects
     attr_reader :scroll_field, :entry_field
     attr_reader :dir_attribute, :file_attribute, :link_attribute, :highlight
     attr_reader :sock_attribute, :field_attribute, :filler_character
@@ -14,24 +14,24 @@ module CDK
       parent_width = cdkscreen.window.maxx
       parent_height = cdkscreen.window.maxy
       bindings = {
-          CDK::BACKCHAR => Curses::KEY_PPAGE,
-          CDK::FORCHAR  => Curses::KEY_NPAGE,
+        Cdk::BACKCHAR => Curses::KEY_PPAGE,
+        Cdk::FORCHAR  => Curses::KEY_NPAGE,
       }
 
       self.setBox(box)
 
       # If the height is a negative value the height will be ROWS-height,
       # otherwise the height will be the given height
-      box_height = CDK.setWidgetDimension(parent_height, height, 0)
+      box_height = Cdk.setWidgetDimension(parent_height, height, 0)
 
       # If the width is a negative value, the width will be COLS-width,
       # otherwise the width will be the given width.
-      box_width = CDK.setWidgetDimension(parent_width, width, 0)
+      box_width = Cdk.setWidgetDimension(parent_width, width, 0)
 
       # Rejustify the x and y positions if we need to.
       xtmp = [xplace]
       ytmp = [yplace]
-      CDK.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+      Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -76,16 +76,16 @@ module CDK
 
       # Create the entry field in the selector
       label_len = []
-      CDK.char2Chtype(label, label_len, [])
+      Cdk.char2Chtype(label, label_len, [])
       label_len = label_len[0]
 
-      temp_width = if CDK::FSELECT.isFullWidth(width)
-                   then CDK::FULL
+      temp_width = if Cdk::FSELECT.isFullWidth(width)
+                   then Cdk::FULL
                    else box_width - 2 - label_len
                    end
-      @entry_field = CDK::ENTRY.new(cdkscreen, @win.begx, @win.begy,
-          title, label, field_attribute, filler_char, :MIXED, temp_width,
-          0, 512, box, false)
+      @entry_field = Cdk::ENTRY.new(cdkscreen, @win.begx, @win.begy,
+                                    title, label, field_attribute, filler_char, :MIXED, temp_width,
+                                    0, 512, box, false)
 
       # Make sure the widget was created.
       if @entry_field.nil?
@@ -94,8 +94,8 @@ module CDK
       end
 
       # Set the lower left/right characters of the entry field.
-      @entry_field.setLLchar(CDK::ACS_LTEE)
-      @entry_field.setLRchar(CDK::ACS_RTEE)
+      @entry_field.setLLchar(Cdk::ACS_LTEE)
+      @entry_field.setLRchar(Cdk::ACS_RTEE)
 
       # This is a callback to the scrolling list which displays information
       # about the current file.  (and the whole directory as well)
@@ -148,8 +148,8 @@ module CDK
         ]
 
         # Create the pop up label.
-        info_label = CDK::LABEL.new(entry.screen, CDK::CENTER, CDK::CENTER,
-            mesg, 9, true, false)
+        info_label = Cdk::LABEL.new(entry.screen, Cdk::CENTER, Cdk::CENTER,
+                                    mesg, 9, true, false)
         info_label.draw(true)
         info_label.getch([])
 
@@ -165,17 +165,17 @@ module CDK
         scrollp = fselect.scroll_field
         entry = fselect.entry_field
         filename = entry.info.clone
-        mydirname = CDK.dirName(filename)
+        mydirname = Cdk.dirName(filename)
         current_index = 0
 
         # Make sure the filename is not nil/empty.
         if filename.nil? || filename.size == 0
-          CDK.Beep
+          Cdk.Beep
           return true
         end
 
         # Try to expand the filename if it starts with a ~
-        unless (new_filename = CDK::FSELECT.expandTilde(filename)).nil?
+        unless (new_filename = Cdk::FSELECT.expandTilde(filename)).nil?
           filename = new_filename
           entry.setValue(filename)
           entry.draw(entry.box)
@@ -207,11 +207,11 @@ module CDK
         end
 
         # Look for a unique filename match.
-        index = CDK.searchList(list, fselect.file_counter, filename)
+        index = Cdk.searchList(list, fselect.file_counter, filename)
 
         # If the index is less than zero, return we didn't find a match.
         if index < 0
-          CDK.Beep
+          Cdk.Beep
         else
           # Move to the current item in the scrolling list.
           # difference = Index - scrollp->currentItem;
@@ -262,7 +262,7 @@ module CDK
               end
 
               if secondary_matches != matches
-                CDK.Beep
+                Cdk.Beep
                 break
               end
 
@@ -285,7 +285,7 @@ module CDK
         buttons = ['No', 'Yes']
 
         # Get the filename which is to be deleted.
-        filename = CDK.chtype2Char(fscroll.item[fscroll.current_item])
+        filename = Cdk.chtype2Char(fscroll.item[fscroll.current_item])
         filename = filename[0...-1]
 
         # Create the dialog message.
@@ -295,8 +295,8 @@ module CDK
         ]
 
         # Create the dialog box.
-        question = CDK::DIALOG.new(fselect.screen, CDK::CENTER, CDK::CENTER,
-            mesg, 2, buttons, 2, Curses::A_REVERSE, true, true, false)
+        question = Cdk::DIALOG.new(fselect.screen, Cdk::CENTER, Cdk::CENTER,
+                                   mesg, 2, buttons, 2, Curses::A_REVERSE, true, true, false)
 
         # If the said yes then try to nuke it.
         if question.activate([]) == 1
@@ -334,11 +334,11 @@ module CDK
           fselect.injectMyScroller(key)
 
           # Get the currently highlighted filename.
-          current = CDK.chtype2Char(scrollp.item[scrollp.current_item])
+          current = Cdk.chtype2Char(scrollp.item[scrollp.current_item])
           #current = CDK.chtype2String(scrollp.item[scrollp.current_item])
           current = current[0...-1]
 
-          temp = CDK::FSELECT.make_pathname(fselect.pwd, current)
+          temp = Cdk::FSELECT.make_pathname(fselect.pwd, current)
 
           # Set the value in the entry field.
           entry.setValue(temp)
@@ -346,7 +346,7 @@ module CDK
 
           return true
         end
-        CDK.Beep
+        Cdk.Beep
         return false
       end
 
@@ -355,26 +355,26 @@ module CDK
       @entry_field.bind(:ENTRY, Curses::KEY_PPAGE, adjust_scroll_cb, self)
       @entry_field.bind(:ENTRY, Curses::KEY_DOWN, adjust_scroll_cb, self)
       @entry_field.bind(:ENTRY, Curses::KEY_NPAGE, adjust_scroll_cb, self)
-      @entry_field.bind(:ENTRY, CDK::KEY_TAB, complete_filename_cb, self)
-      @entry_field.bind(:ENTRY, CDK.CTRL('^'), display_file_info_cb, self)
+      @entry_field.bind(:ENTRY, Cdk::KEY_TAB, complete_filename_cb, self)
+      @entry_field.bind(:ENTRY, Cdk.CTRL('^'), display_file_info_cb, self)
 
       # Put the current working directory in the entry field.
       @entry_field.setValue(@pwd)
 
       # Create the scrolling list in the selector.
       temp_height = @entry_field.win.maxy - @border_size
-      temp_width = if CDK::FSELECT.isFullWidth(width)
-                   then CDK::FULL
+      temp_width = if Cdk::FSELECT.isFullWidth(width)
+                   then Cdk::FULL
                    else box_width - 1
                    end
-      @scroll_field = CDK::SCROLL.new(cdkscreen,
-          @win.begx, @win.begy + temp_height, CDK::RIGHT,
-          box_height - temp_height, temp_width, '', @dir_contents,
-          @file_counter, false, @highlight, box, false)
+      @scroll_field = Cdk::SCROLL.new(cdkscreen,
+                                      @win.begx, @win.begy + temp_height, Cdk::RIGHT,
+                                      box_height - temp_height, temp_width, '', @dir_contents,
+                                      @file_counter, false, @highlight, box, false)
 
       # Set the lower left/right characters of the entry field.
-      @scroll_field.setULchar(CDK::ACS_LTEE)
-      @scroll_field.setURchar(CDK::ACS_RTEE)
+      @scroll_field.setULchar(Cdk::ACS_LTEE)
+      @scroll_field.setURchar(Cdk::ACS_RTEE)
 
       # Do we want a shadow?
       if shadow
@@ -395,7 +395,7 @@ module CDK
       if self.validCDKObject
         @scroll_field.erase
         @entry_field.erase
-        CDK.eraseCursesWindow(@win)
+        Cdk.eraseCursesWindow(@win)
       end
     end
 
@@ -550,7 +550,7 @@ module CDK
       # Only do the directory stuff if the directory is not nil.
       if !(directory.nil?) && directory.size > 0
         # Try to expand the directory if it starts with a ~
-        if (temp_dir = CDK::FSELECT.expandTilde(directory)).size > 0
+        if (temp_dir = Cdk::FSELECT.expandTilde(directory)).size > 0
           new_directory = temp_dir
         else
           new_directory = directory.clone
@@ -558,7 +558,7 @@ module CDK
 
         # Change directories.
         if Dir.chdir(new_directory) != 0
-          CDK.Beep
+          Cdk.Beep
 
           # Could not get into the directory, pop up a little message.
           mesg = [
@@ -595,7 +595,7 @@ module CDK
 
       # Get the directory contents.
       unless self.setDirContents
-        CDK.Beep
+        Cdk.Beep
         return
       end
 
@@ -608,7 +608,7 @@ module CDK
       dir_list = []
 
       # Get the directory contents
-      file_count = CDK.getDirectoryContents(@pwd, dir_list)
+      file_count = Cdk.getDirectoryContents(@pwd, dir_list)
       if file_count <= 0
         # We couldn't read the directory. Return.
         return false
@@ -849,12 +849,12 @@ module CDK
       @entry_field.destroy
 
       # Free up the windows
-      CDK.deleteCursesWindow(@shadow_win)
-      CDK.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@win)
 
       # Clean the key bindings.
       # Unregister the object.
-      CDK::SCREEN.unregister(:FSELECT, self)
+      Cdk::Screen.unregister(:FSELECT, self)
     end
 
     # Currently a wrapper for File.expand_path
@@ -869,12 +869,12 @@ module CDK
     # Return the plain string that corresponds to an item in dir_contents
     def contentToPath(content)
       # XXX direct translation of original but might be redundant
-      temp_chtype = CDK.char2Chtype(content, [], [])
-      temp_char = CDK.chtype2Char(temp_chtype)
+      temp_chtype = Cdk.char2Chtype(content, [], [])
+      temp_char = Cdk.chtype2Char(temp_chtype)
       temp_char = temp_char[0..-1]
 
       # Create the pathname.
-      result = CDK::FSELECT.make_pathname(@pwd, temp_char)
+      result = Cdk::FSELECT.make_pathname(@pwd, temp_char)
 
       return result
     end
@@ -926,7 +926,7 @@ module CDK
     end
 
     def self.isFullWidth(width)
-      width == CDK::FULL || (Curses.cols != 0 && width >= Curses.cols)
+      width == Cdk::FULL || (Curses.cols != 0 && width >= Curses.cols)
     end
 
     def position

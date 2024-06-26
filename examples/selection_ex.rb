@@ -13,13 +13,13 @@ class SelectionExample < CLIExample
     params.header =  ''
     params.footer = ''
 
-    params.x_value = CDK::CENTER
+    params.x_value = Cdk::CENTER
     params.y_value = nil
     params.h_value = 10
     params.w_value = 50
     params.box = true
     params.c = false
-    params.spos = CDK::RIGHT
+    params.spos = Cdk::RIGHT
     params.title = "<C></5>Pick one or more accounts."
     params.shadow = false
 
@@ -72,16 +72,16 @@ class SelectionExample < CLIExample
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     if params.header != ''
       list = [params.header]
-      header = CDK::LABEL.new(cdkscreen, params.x_value,
-          if params.y_value.nil? then CDK::TOP else params.y_value end,
-          list, 1, params.box, !params.shadow)
+      header = Cdk::LABEL.new(cdkscreen, params.x_value,
+                              if params.y_value.nil? then Cdk::TOP else params.y_value end,
+                              list, 1, params.box, !params.shadow)
       unless header.nil?
         header.activate([])
       end
@@ -89,26 +89,26 @@ class SelectionExample < CLIExample
 
     if params.footer != ''
       list = [params.footer]
-      footer = CDK::LABEL.new(cdkscreen, params.x_value,
-          if params.y_value.nil? then CDK::BOTTOM else params.y_value end,
-          list, 1, params.box, !params.shadow)
+      footer = Cdk::LABEL.new(cdkscreen, params.x_value,
+                              if params.y_value.nil? then Cdk::BOTTOM else params.y_value end,
+                              list, 1, params.box, !params.shadow)
       unless footer.nil?
         footer.activate([])
       end
     end
 
     # Create the selection list.
-    selection = CDK::SELECTION.new(cdkscreen, params.x_value,
-        if params.y_value.nil? then CDK::CENTER else params.y_value end,
-        params.spos, params.h_value, params.w_value,
-        params.title,
+    selection = Cdk::SELECTION.new(cdkscreen, params.x_value,
+                                   if params.y_value.nil? then Cdk::CENTER else params.y_value end,
+                                   params.spos, params.h_value, params.w_value,
+                                   params.title,
         if params.c then [] else item end,
         if params.c then 0 else item.size end,
-        choices, 2, Curses::A_REVERSE, params.box, params.shadow)
+                                   choices, 2, Curses::A_REVERSE, params.box, params.shadow)
 
     if selection.nil?
       cdkscreen.destroyCDKScreen
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
 
       puts "Cannot make selection list.  Is the window too small?"
       exit #EXIT_FAILURE
@@ -145,7 +145,7 @@ class SelectionExample < CLIExample
     # Clean up.
     selection.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     exit #EXIT_SUCCESS
   end
 end

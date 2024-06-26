@@ -1,6 +1,6 @@
-require_relative '../cdk_objs'
-module CDK
-  class SCROLLER < CDK::CDKOBJS
+require_relative '../objects'
+module Cdk
+  class SCROLLER < Cdk::Objects
     def initialize
       super()
     end
@@ -13,17 +13,17 @@ module CDK
               @current_top -= 1
               @current_item -= 1
             else
-              CDK.Beep
+              Cdk.Beep
             end
           else
             @current_item -= 1
             @current_high -= 1
           end
         else
-          CDK.Beep
+          Cdk.Beep
         end
       else
-        CDK.Beep
+        Cdk.Beep
       end
     end
 
@@ -35,41 +35,41 @@ module CDK
               @current_top += 1
               @current_item += 1
             else
-              CDK.Beep
+              Cdk.Beep
             end
           else
             @current_item += 1
             @current_high += 1
           end
         else
-          CDK.Beep
+          Cdk.Beep
         end
       else
-        CDK.Beep
+        Cdk.Beep
       end
     end
 
     def KEY_LEFT
       if @list_size > 0
         if @left_char == 0
-          CDK.Beep
+          Cdk.Beep
         else
           @left_char -= 1
         end
       else
-        CDK.Beep
+        Cdk.Beep
       end
     end
 
     def KEY_RIGHT
       if @list_size > 0
         if @left_char >= @max_left_char
-          CDK.Beep
+          Cdk.Beep
         else
           @left_char += 1
         end
       else
-        CDK.Beep
+        Cdk.Beep
       end
     end
 
@@ -83,10 +83,10 @@ module CDK
             self.KEY_HOME
           end
         else
-          CDK.Beep
+          Cdk.Beep
         end
       else
-        CDK.Beep
+        Cdk.Beep
       end
     end
 
@@ -102,10 +102,10 @@ module CDK
             @current_high = @view_size - 1
           end
         else
-          CDK.Beep
+          Cdk.Beep
         end
       else
-        CDK.Beep
+        Cdk.Beep
       end
     end
 

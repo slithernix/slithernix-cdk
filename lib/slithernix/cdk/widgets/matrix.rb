@@ -1,7 +1,7 @@
-require_relative '../cdk_objs'
+require_relative '../objects'
 
-module CDK
-  class MATRIX < CDK::CDKOBJS
+module Cdk
+  class MATRIX < Cdk::Objects
     attr_accessor :info
     attr_reader :colvalues, :row, :col, :colwidths, :filler
     attr_reader :crow, :ccol
@@ -27,8 +27,8 @@ module CDK
       have_rowtitles = false
       have_coltitles = false
       bindings = {
-          CDK::FORCHAR  => Curses::KEY_NPAGE,
-          CDK::BACKCHAR => Curses::KEY_PPAGE,
+        Cdk::FORCHAR  => Curses::KEY_NPAGE,
+        Cdk::BACKCHAR => Curses::KEY_PPAGE,
       }
 
       self.setBox(box)
@@ -82,8 +82,8 @@ module CDK
         end
         rowtitle_len = []
         rowtitle_pos = []
-        @rowtitle[x] = CDK.char2Chtype((rowtitles[x] || ''),
-            rowtitle_len, rowtitle_pos)
+        @rowtitle[x] = Cdk.char2Chtype((rowtitles[x] || ''),
+                                       rowtitle_len, rowtitle_pos)
         @rowtitle_len[x] = rowtitle_len[0]
         @rowtitle_pos[x] = rowtitle_pos[0]
         max_row_title_width = [max_row_title_width, @rowtitle_len[x]].max
@@ -94,8 +94,8 @@ module CDK
 
         # We need to rejustify the row title cell info.
         (1..rows).each do |x|
-          @rowtitle_pos[x] = CDK.justifyString(@maxrt,
-              @rowtitle_len[x], @rowtitle_pos[x])
+          @rowtitle_pos[x] = Cdk.justifyString(@maxrt,
+                                               @rowtitle_len[x], @rowtitle_pos[x])
         end
       else
         @maxrt = 0
@@ -118,7 +118,7 @@ module CDK
       # Rejustify the x and y positions if we need to.
       xtmp = [xplace]
       ytmp = [yplace]
-      CDK.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+      Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -146,10 +146,10 @@ module CDK
         end
         coltitle_len = []
         coltitle_pos = []
-        @coltitle[x] = CDK.char2Chtype(coltitles[x] || '',
-            coltitle_len, coltitle_pos)
+        @coltitle[x] = Cdk.char2Chtype(coltitles[x] || '',
+                                       coltitle_len, coltitle_pos)
         @coltitle_len[x] = coltitle_len[0]
-        @coltitle_pos[x] = @border_size + CDK.justifyString(
+        @coltitle_pos[x] = @border_size + Cdk.justifyString(
             colwidths[x], @coltitle_len[x], coltitle_pos[0])
         @colwidths[x] = colwidths[x]
       end
@@ -232,9 +232,9 @@ module CDK
         charcount = matrix.info[matrix.row][matrix.col].size
 
         if plainchar == Curses::Error
-          CDK.Beep
+          Cdk.Beep
         elsif charcount == matrix.colwidths[matrix.col]
-          CDK.Beep
+          Cdk.Beep
         else
           # Update the screen.
           matrix.CurMatrixCell.move(1,
@@ -346,12 +346,12 @@ module CDK
           complete = true
         else
           case input
-          when CDK::TRANSPOSE
+          when Cdk::TRANSPOSE
           when Curses::KEY_HOME
           when Curses::KEY_END
           when Curses::KEY_BACKSPACE, Curses::KEY_DC
             if @colvalues[@col] == :VIEWONLY || charcount <= 0
-              CDK.Beep
+              Cdk.Beep
             else
               charcount -= 1
               self.CurMatrixCell.mvwdelch(1, charcount + 1)
@@ -360,7 +360,7 @@ module CDK
               self.CurMatrixCell.refresh
               @info[@row][@col] = @info[@row][@col][0...charcount]
             end
-          when Curses::KEY_RIGHT, CDK::KEY_TAB
+          when Curses::KEY_RIGHT, Cdk::KEY_TAB
             if @ccol != @vcols
               # We are moving to the right...
               @col += 1
@@ -382,7 +382,7 @@ module CDK
                 # We are at the far right column, we need to shift
                 # down one row, if we can.
                 if @row == @rows
-                  CDK.Beep
+                  Cdk.Beep
                 else
                   # Set up the columns info.
                   @col = 1
@@ -424,7 +424,7 @@ module CDK
               else
                 # Shift up one line if we can...
                 if @row == 1
-                  CDK.Beep
+                  Cdk.Beep
                 else
                   # Set up the columns info.
                   @col = @cols
@@ -462,7 +462,7 @@ module CDK
                 refresh_cells = true
                 moved_cell = true
               else
-                CDK.Beep
+                Cdk.Beep
               end
             end
           when Curses::KEY_DOWN
@@ -482,7 +482,7 @@ module CDK
                 refresh_cells = true
                 moved_cell = true
               else
-                CDK.Beep
+                Cdk.Beep
               end
             end
           when Curses::KEY_NPAGE
@@ -494,10 +494,10 @@ module CDK
                 refresh_cells = true
                 moved_cell = true
               else
-                CDK.Beep
+                Cdk.Beep
               end
             else
-              CDK.Beep
+              Cdk.Beep
             end
           when Curses::KEY_PPAGE
             if @rows > @vrows
@@ -508,32 +508,32 @@ module CDK
                 refresh_cells = true
                 moved_cell = true
               else
-                CDK.Beep
+                Cdk.Beep
               end
             else
-              CDK.Beep
+              Cdk.Beep
             end
-          when CDK.CTRL('G')
+          when Cdk.CTRL('G')
             self.jumpToCell(-1, -1)
             self.draw(@box)
-          when CDK::PASTE
+          when Cdk::PASTE
             if @@g_paste_buffer.size == 0 ||
                 @@g_paste_buffer.size > @colwidths[@ccol]
-              CDK.Beep
+              Cdk.Beep
             else
               self.CurMatrixInfo = @@g_paste_buffer.clone
               self.drawCurCell
             end
-          when CDK::COPY
+          when Cdk::COPY
             @@g_paste_buffer = self.CurMatrixInfo.clone
-          when CDK::CUT
+          when Cdk::CUT
             @@g_paste_buffer = self.CurMatrixInfo.clone
             self.cleanCell(@trow + @crow - 1, @lcol + @ccol - 1)
             self.drawCurCell
-          when CDK::ERASE
+          when Cdk::ERASE
             self.cleanCell(@trow + @crow - 1, @lcol + @ccol - 1)
             self.drawCurCell
-          when Curses::KEY_ENTER, CDK::KEY_RETURN
+          when Curses::KEY_ENTER, Cdk::KEY_RETURN
             if !@box_cell
               Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
                   ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
@@ -547,7 +547,7 @@ module CDK
           when Curses::Error
             self.setExitType(input)
             complete = true
-          when CDK::KEY_ESC
+          when Cdk::KEY_ESC
             if !@box_cell
               Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
                   ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
@@ -557,7 +557,7 @@ module CDK
             self.CurMatrixCell.refresh
             self.setExitType(input)
             complete = true
-          when CDK::REFRESH
+          when Cdk::REFRESH
             @screen.erase
             @screen.refresh
           else
@@ -626,16 +626,16 @@ module CDK
 
       # Given the dominance of the color/attributes, we need to set the
       # current cell attribute.
-      if @dominant == CDK::ROW
+      if @dominant == Cdk::ROW
         highlight = (@rowtitle[@crow][0] || 0) & Curses::A_ATTRIBUTES
-      elsif @dominant == CDK::COL
+      elsif @dominant == Cdk::COL
         highlight = (@coltitle[@ccol][0] || 0) & Curses::A_ATTRIBUTES
       end
 
       # If the column is only one char.
       (1..@colwidths[@ccol]).each do |x|
         ch = if x <= infolen && !Display.isHiddenDisplayType(disptype)
-             then CDK.CharOf(@info[@row][@col][x - 1])
+             then Cdk.CharOf(@info[@row][@col][x - 1])
              else @filler
              end
         self.CurMatrixCell.mvwaddch(1, x, ch.ord | highlight)
@@ -669,16 +669,16 @@ module CDK
 
       # Given the dominance of the colors/attributes, we need to set the
       # current cell attribute.
-      if @dominant == CDK::ROW
+      if @dominant == Cdk::ROW
         highlight = (@rowtitle[row][0] || 0) & Curses::A_ATTRIBUTES
-      elsif @dominant == CDK::COL
+      elsif @dominant == Cdk::COL
         highlight = (@coltitle[col][0] || 0) & Curses::A_ATTRIBUTES
       end
 
       # Draw in the cell info.
       (1..@colwidths[col]).each do |x|
         ch = if x <= infolen && !Display.isHiddenDisplayType(disptype)
-             then CDK.CharOf(@info[vrow][vcol][x-1]).ord | highlight
+             then Cdk.CharOf(@info[vrow][vcol][x-1]).ord | highlight
              else @filler
              end
         @cell[row][col].mvwaddch(1, x, ch.ord | highlight)
@@ -695,46 +695,46 @@ module CDK
       # If the value of the column spacing is greater than 0 then these
       # are independent boxes
       if @col_space != 0 && @row_space != 0
-        Draw.attrbox(@cell[row][col], CDK::ACS_ULCORNER,
-            CDK::ACS_URCORNER, CDK::ACS_LLCORNER,
-            CDK::ACS_LRCORNER, CDK::ACS_HLINE,
-            CDK::ACS_VLINE, attr)
+        Draw.attrbox(@cell[row][col], Cdk::ACS_ULCORNER,
+                     Cdk::ACS_URCORNER, Cdk::ACS_LLCORNER,
+                     Cdk::ACS_LRCORNER, Cdk::ACS_HLINE,
+                     Cdk::ACS_VLINE, attr)
         return
       end
       if @col_space != 0 && @row_space == 0
         if row == 1
-          Draw.attrbox(@cell[row][col], CDK::ACS_ULCORNER,
-              CDK::ACS_URCORNER, CDK::ACS_LTEE,
-              CDK::ACS_RTEE, CDK::ACS_HLINE,
-              CDK::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], Cdk::ACS_ULCORNER,
+                       Cdk::ACS_URCORNER, Cdk::ACS_LTEE,
+                       Cdk::ACS_RTEE, Cdk::ACS_HLINE,
+                       Cdk::ACS_VLINE, attr)
           return
         elsif row > 1 && row < rows
-          Draw.attrbox(@cell[row][col], CDK::ACS_LTEE, CDK::ACS_RTEE,
-              CDK::ACS_LTEE, CDK::ACS_RTEE, CDK::ACS_HLINE,
-              CDK::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], Cdk::ACS_LTEE, Cdk::ACS_RTEE,
+                       Cdk::ACS_LTEE, Cdk::ACS_RTEE, Cdk::ACS_HLINE,
+                       Cdk::ACS_VLINE, attr)
           return
         elsif row == rows
-          Draw.attrbox(@cell[row][col], CDK::ACS_LTEE, CDK::ACS_RTEE,
-              CDK::ACS_LLCORNER, CDK::ACS_LRCORNER, CDK::ACS_HLINE,
-              CDK::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], Cdk::ACS_LTEE, Cdk::ACS_RTEE,
+                       Cdk::ACS_LLCORNER, Cdk::ACS_LRCORNER, Cdk::ACS_HLINE,
+                       Cdk::ACS_VLINE, attr)
           return
         end
       end
       if @col_space == 0 && @row_space != 0
         if col == 1
-          Draw.attrbox(@cell[row][col], CDK::ACS_ULCORNER,
-              CDK::ACS_TTEE, CDK::ACS_LLCORNER, CDK::ACS_BTEE,
-              CDK::ACS_HLINE, CDK::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], Cdk::ACS_ULCORNER,
+                       Cdk::ACS_TTEE, Cdk::ACS_LLCORNER, Cdk::ACS_BTEE,
+                       Cdk::ACS_HLINE, Cdk::ACS_VLINE, attr)
           return
         elsif col > 1 && col < cols
-          Draw.attrbox(@cell[row][col], CDK::ACS_TTEE, CDK::ACS_TTEE,
-              CDK::ACS_BTEE, CDK::ACS_BTEE, CDK::ACS_HLINE,
-              CDK::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], Cdk::ACS_TTEE, Cdk::ACS_TTEE,
+                       Cdk::ACS_BTEE, Cdk::ACS_BTEE, Cdk::ACS_HLINE,
+                       Cdk::ACS_VLINE, attr)
           return
         elsif col == cols
-          Draw.attrbox(@cell[row][col], CDK::ACS_TTEE,
-              CDK::ACS_URCORNER,CDK::ACS_BTEE, CDK::ACS_LRCORNER,
-              CDK::ACS_HLINE, CDK::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], Cdk::ACS_TTEE,
+                       Cdk::ACS_URCORNER, Cdk::ACS_BTEE, Cdk::ACS_LRCORNER,
+                       Cdk::ACS_HLINE, Cdk::ACS_VLINE, attr)
           return
         end
       end
@@ -743,53 +743,53 @@ module CDK
       if row == 1
         if col == 1
           # Draw the top left corner
-          Draw.attrbox(@cell[row][col], CDK::ACS_ULCORNER,
-              CDK::ACS_TTEE, CDK::ACS_LTEE, CDK::ACS_PLUS,
-              CDK::ACS_HLINE, CDK::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], Cdk::ACS_ULCORNER,
+                       Cdk::ACS_TTEE, Cdk::ACS_LTEE, Cdk::ACS_PLUS,
+                       Cdk::ACS_HLINE, Cdk::ACS_VLINE, attr)
         elsif col > 1 && col < cols
           # Draw the top middle box
-          Draw.attrbox(@cell[row][col], CDK::ACS_TTEE, CDK::ACS_TTEE,
-              CDK::ACS_PLUS, CDK::ACS_PLUS, CDK::ACS_HLINE,
-              CDK::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], Cdk::ACS_TTEE, Cdk::ACS_TTEE,
+                       Cdk::ACS_PLUS, Cdk::ACS_PLUS, Cdk::ACS_HLINE,
+                       Cdk::ACS_VLINE, attr)
         elsif col == cols
           # Draw the top right corner
-          Draw.attrbox(@cell[row][col], CDK::ACS_TTEE,
-              CDK::ACS_URCORNER, CDK::ACS_PLUS, CDK::ACS_RTEE,
-              CDK::ACS_HLINE, CDK::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], Cdk::ACS_TTEE,
+                       Cdk::ACS_URCORNER, Cdk::ACS_PLUS, Cdk::ACS_RTEE,
+                       Cdk::ACS_HLINE, Cdk::ACS_VLINE, attr)
         end
       elsif row > 1 && row < rows
         if col == 1
           # Draw the middle left box
-          Draw.attrbox(@cell[row][col], CDK::ACS_LTEE, CDK::ACS_PLUS,
-              CDK::ACS_LTEE, CDK::ACS_PLUS, CDK::ACS_HLINE,
-              CDK::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], Cdk::ACS_LTEE, Cdk::ACS_PLUS,
+                       Cdk::ACS_LTEE, Cdk::ACS_PLUS, Cdk::ACS_HLINE,
+                       Cdk::ACS_VLINE, attr)
         elsif col > 1 && col < cols
           # Draw the middle box
-          Draw.attrbox(@cell[row][col], CDK::ACS_PLUS, CDK::ACS_PLUS,
-              CDK::ACS_PLUS, CDK::ACS_PLUS, CDK::ACS_HLINE,
-              CDK::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], Cdk::ACS_PLUS, Cdk::ACS_PLUS,
+                       Cdk::ACS_PLUS, Cdk::ACS_PLUS, Cdk::ACS_HLINE,
+                       Cdk::ACS_VLINE, attr)
         elsif col == cols
           # Draw the middle right box
-          Draw.attrbox(@cell[row][col], CDK::ACS_PLUS, CDK::ACS_RTEE,
-              CDK::ACS_PLUS, CDK::ACS_RTEE, CDK::ACS_HLINE,
-              CDK::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], Cdk::ACS_PLUS, Cdk::ACS_RTEE,
+                       Cdk::ACS_PLUS, Cdk::ACS_RTEE, Cdk::ACS_HLINE,
+                       Cdk::ACS_VLINE, attr)
         end
       elsif row == rows
         if col == 1
           # Draw the bottom left corner
-          Draw.attrbox(@cell[row][col], CDK::ACS_LTEE, CDK::ACS_PLUS,
-              CDK::ACS_LLCORNER, CDK::ACS_BTEE, CDK::ACS_HLINE,
-              CDK::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], Cdk::ACS_LTEE, Cdk::ACS_PLUS,
+                       Cdk::ACS_LLCORNER, Cdk::ACS_BTEE, Cdk::ACS_HLINE,
+                       Cdk::ACS_VLINE, attr)
         elsif col > 1 && col < cols
           # Draw the bottom middle box
-          Draw.attrbox(@cell[row][col], CDK::ACS_PLUS, CDK::ACS_PLUS,
-              CDK::ACS_BTEE, CDK::ACS_BTEE, CDK::ACS_HLINE,
-              CDK::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], Cdk::ACS_PLUS, Cdk::ACS_PLUS,
+                       Cdk::ACS_BTEE, Cdk::ACS_BTEE, Cdk::ACS_HLINE,
+                       Cdk::ACS_VLINE, attr)
         elsif col == cols
           # Draw the bottom right corner
-          Draw.attrbox(@cell[row][col], CDK::ACS_PLUS, CDK::ACS_RTEE,
-              CDK::ACS_BTEE, CDK::ACS_LRCORNER, CDK::ACS_HLINE,
-              CDK::ACS_VLINE, attr)
+          Draw.attrbox(@cell[row][col], Cdk::ACS_PLUS, Cdk::ACS_RTEE,
+                       Cdk::ACS_BTEE, Cdk::ACS_LRCORNER, Cdk::ACS_HLINE,
+                       Cdk::ACS_VLINE, attr)
         end
       end
 
@@ -801,9 +801,9 @@ module CDK
         unless @cell[0][x].nil?
           @cell[0][x].erase
           Draw.writeChtype(@cell[0][x],
-              @coltitle_pos[@lcol + x - 1], 0,
-              @coltitle[@lcol + x - 1], CDK::HORIZONTAL, 0,
-              @coltitle_len[@lcol + x - 1])
+                           @coltitle_pos[@lcol + x - 1], 0,
+                           @coltitle[@lcol + x - 1], Cdk::HORIZONTAL, 0,
+                           @coltitle_len[@lcol + x - 1])
           @cell[0][x].refresh
         end
       end
@@ -814,9 +814,9 @@ module CDK
         unless @cell[x][0].nil?
           @cell[x][0].erase
           Draw.writeChtype(@cell[x][0],
-              @rowtitle_pos[@trow + x - 1], 1,
-              @rowtitle[@trow + x - 1], CDK::HORIZONTAL, 0,
-              @rowtitle_len[@trow + x - 1])
+                           @rowtitle_pos[@trow + x - 1], 1,
+                           @rowtitle[@trow + x - 1], Cdk::HORIZONTAL, 0,
+                           @rowtitle_len[@trow + x - 1])
           @cell[x][0].refresh
         end
       end
@@ -868,47 +868,47 @@ module CDK
       self.cleanTitle
 
       # Clear the matrix windows.
-      CDK.deleteCursesWindow(@cell[0][0])
+      Cdk.deleteCursesWindow(@cell[0][0])
       (1..@vrows).each do |x|
-        CDK.deleteCursesWindow(@cell[x][0])
+        Cdk.deleteCursesWindow(@cell[x][0])
       end
       (1..@vcols).each do |x|
-        CDK.deleteCursesWindow(@cell[0][x])
+        Cdk.deleteCursesWindow(@cell[0][x])
       end
       (1..@vrows).each do |x|
         (1..@vcols).each do |y|
-          CDK.deleteCursesWindow(@cell[x][y])
+          Cdk.deleteCursesWindow(@cell[x][y])
         end
       end
 
-      CDK.deleteCursesWindow(@shadow_win)
-      CDK.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@win)
 
       # Clean the key bindings.
       self.cleanBindings(:MATRIX)
 
       # Unregister this object.
-      CDK::SCREEN.unregister(:MATRIX, self)
+      Cdk::Screen.unregister(:MATRIX, self)
     end
 
     # This function erases the matrix widget from the screen.
     def erase
       if self.validCDKObject
         # Clear the matrix cells.
-        CDK.eraseCursesWindow(@cell[0][0])
+        Cdk.eraseCursesWindow(@cell[0][0])
         (1..@vrows).each do |x|
-          CDK.eraseCursesWindow(@cell[x][0])
+          Cdk.eraseCursesWindow(@cell[x][0])
         end
         (1..@vcols).each do |x|
-          CDK.eraseCursesWindow(@cell[0][x])
+          Cdk.eraseCursesWindow(@cell[0][x])
         end
         (1..@vrows).each do |x|
           (1..@vcols).each do |y|
-            CDK.eraseCursesWindow(@cell[x][y])
+            Cdk.eraseCursesWindow(@cell[x][y])
           end
         end
-        CDK.eraseCursesWindow(@shadow_win)
-        CDK.eraseCursesWindow(@win)
+        Cdk.eraseCursesWindow(@shadow_win)
+        Cdk.eraseCursesWindow(@win)
       end
     end
 
@@ -959,9 +959,9 @@ module CDK
       # Only create the row scale if needed.
       if (row == -1) || (row > @rows)
         # Create the row scale widget.
-        scale = CDK::SCALE.new(@screen, CDK::CENTER, CDK::CENTER,
-            '<C>Jump to which row.', '</5/B>Row: ', Curses::A_NORMAL,
-            5, 1, 1, @rows, 1, 1, true, false)
+        scale = Cdk::SCALE.new(@screen, Cdk::CENTER, Cdk::CENTER,
+                               '<C>Jump to which row.', '</5/B>Row: ', Curses::A_NORMAL,
+                               5, 1, 1, @rows, 1, 1, true, false)
 
         # Activate the scale and get the row.
         new_row = scale.activate([])
@@ -971,9 +971,9 @@ module CDK
       # Only create the column scale if needed.
       if (col == -1) || (col > @cols)
         # Create the column scale widget.
-        scale = CDK::SCALE.new(@screen, CDK::CENTER, CDK::CENTER,
-            '<C>Jump to which column', '</5/B>Col: ', Curses::A_NORMAL,
-            5, 1, 1, @cols, 1, 1, true, false)
+        scale = Cdk::SCALE.new(@screen, Cdk::CENTER, Cdk::CENTER,
+                               '<C>Jump to which column', '</5/B>Col: ', Curses::A_NORMAL,
+                               5, 1, 1, @cols, 1, 1, true, false)
 
         # Activate the scale and get the column.
         new_col = scale.activate([])
@@ -1130,10 +1130,10 @@ module CDK
     end
 
     def focusCurrent
-      Draw.attrbox(self.CurMatrixCell, CDK::ACS_ULCORNER,
-          CDK::ACS_URCORNER, CDK::ACS_LLCORNER,
-          CDK::ACS_LRCORNER, CDK::ACS_HLINE,
-          CDK::ACS_VLINE, Curses::A_BOLD)
+      Draw.attrbox(self.CurMatrixCell, Cdk::ACS_ULCORNER,
+                   Cdk::ACS_URCORNER, Cdk::ACS_LLCORNER,
+                   Cdk::ACS_LRCORNER, Cdk::ACS_HLINE,
+                   Cdk::ACS_VLINE, Curses::A_BOLD)
       self.CurMatrixCell.refresh
       self.highlightCell
     end

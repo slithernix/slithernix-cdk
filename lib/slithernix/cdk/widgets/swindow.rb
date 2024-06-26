@@ -1,7 +1,7 @@
-require_relative '../cdk_objs'
+require_relative '../objects'
 
-module CDK
-  class SWINDOW < CDK::CDKOBJS
+module Cdk
+  class SWINDOW < Cdk::Objects
     def initialize(cdkscreen, xplace, yplace, height, width, title,
         save_lines, box, shadow)
       super()
@@ -10,10 +10,10 @@ module CDK
       box_width = width
       box_height = height
       bindings = {
-        CDK::BACKCHAR => Curses::KEY_PPAGE,
+        Cdk::BACKCHAR => Curses::KEY_PPAGE,
         'b'           => Curses::KEY_PPAGE,
         'B'           => Curses::KEY_PPAGE,
-        CDK::FORCHAR  => Curses::KEY_NPAGE,
+        Cdk::FORCHAR  => Curses::KEY_NPAGE,
         ' '           => Curses::KEY_NPAGE,
         'f'           => Curses::KEY_NPAGE,
         'F'           => Curses::KEY_NPAGE,
@@ -25,11 +25,11 @@ module CDK
 
       # If the height is a negative value, the height will be
       # ROWS-height, otherwise the height will be the given height.
-      box_height = CDK.setWidgetDimension(parent_height, height, 0)
+      box_height = Cdk.setWidgetDimension(parent_height, height, 0)
 
       # If the width is a negative value, the width will be
       # COLS-width, otherwise the widget will be the given width.
-      box_width = CDK.setWidgetDimension(parent_width, width, 0)
+      box_width = Cdk.setWidgetDimension(parent_width, width, 0)
       box_width = self.setTitle(title, box_width)
 
       # Set the box height.
@@ -45,7 +45,7 @@ module CDK
       # Rejustify the x and y positions if we need to.
       xtmp = [xplace]
       ytmp = [yplace]
-      CDK.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+      Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -109,9 +109,9 @@ module CDK
     def setupLine(list, x)
       list_len = []
       list_pos = []
-      @list[x] = CDK.char2Chtype(list, list_len, list_pos)
+      @list[x] = Cdk.char2Chtype(list, list_len, list_pos)
       @list_len[x] = list_len[0]
-      @list_pos[x] = CDK.justifyString(@box_width, list_len[0], list_pos[0])
+      @list_pos[x] = Cdk.justifyString(@box_width, list_len[0], list_pos[0])
       @widest_line = [@widest_line, @list_len[x]].max
     end
 
@@ -158,7 +158,7 @@ module CDK
       end
 
       # Determine where the line is being added.
-      if insert_pos == CDK::TOP
+      if insert_pos == Cdk::TOP
         # We need to 'bump' everything down one line...
         @list = [@list[0]] + @list
         @list_pos = [@list_pos[0]] + @list_pos
@@ -210,7 +210,7 @@ module CDK
     # This jumps to a given line.
     def jumpToLine(line)
       # Make sure the line is in bounds.
-      if line == CDK::BOTTOM || line >= @list_size
+      if line == Cdk::BOTTOM || line >= @list_size
         # We are moving to the last page.
         @current_top = @list_size - @view_size
       elsif line == TOP || line <= 0
@@ -354,25 +354,25 @@ module CDK
             if @current_top > 0
               @current_top -= 1
             else
-              CDK.Beep
+              Cdk.Beep
             end
           when Curses::KEY_DOWN
             if @current_top >= 0 && @current_top < @max_top_line
               @current_top += 1
             else
-              CDK.Beep
+              Cdk.Beep
             end
           when Curses::KEY_RIGHT
             if @left_char < @max_left_char
               @left_char += 1
             else
-              CDK.Beep
+              Cdk.Beep
             end
           when Curses::KEY_LEFT
             if @left_char > 0
               @left_char -= 1
             else
-              CDK.Beep
+              Cdk.Beep
             end
           when Curses::KEY_PPAGE
             if @current_top != 0
@@ -382,7 +382,7 @@ module CDK
                 @current_top = 0
               end
             else
-              CDK.Beep
+              Cdk.Beep
             end
           when Curses::KEY_NPAGE
             if @current_top != @max_top_line
@@ -392,7 +392,7 @@ module CDK
                 @current_top = @max_top_line
               end
             else
-              CDK.Beep
+              Cdk.Beep
             end
           when Curses::KEY_HOME
             @left_char = 0
@@ -406,17 +406,17 @@ module CDK
             self.loadInformation
           when 's', 'S'
             self.saveInformation
-          when CDK::KEY_TAB, CDK::KEY_RETURN, Curses::KEY_ENTER
+          when Cdk::KEY_TAB, Cdk::KEY_RETURN, Curses::KEY_ENTER
             self.setExitType(input)
             ret = 1
             complete = true
-          when CDK::KEY_ESC
+          when Cdk::KEY_ESC
             self.setExitType(input)
             complete = true
           when Curses::Error
             self.setExitType(input)
             complete = true
-          when CDK::REFRESH
+          when Cdk::REFRESH
             @screen.erase
             @screen.refresh
           end
@@ -481,12 +481,12 @@ module CDK
         # Write in the correct line.
         if screen_pos >= 0
           Draw.writeChtype(@field_win, screen_pos, x,
-              @list[x + @current_top], CDK::HORIZONTAL, 0,
-              @list_len[x + @current_top])
+                           @list[x + @current_top], Cdk::HORIZONTAL, 0,
+                           @list_len[x + @current_top])
         else
           Draw.writeChtype(@field_win, 0, x, @list[x + @current_top],
-              CDK::HORIZONTAL, @left_char - @list_pos[x + @current_top],
-              @list_len[x + @current_top])
+                           Cdk::HORIZONTAL, @left_char - @list_pos[x + @current_top],
+                           @list_len[x + @current_top])
         end
       end
 
@@ -513,22 +513,22 @@ module CDK
       self.cleanTitle
 
       # Delete the windows.
-      CDK.deleteCursesWindow(@shadow_win)
-      CDK.deleteCursesWindow(@field_win)
-      CDK.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@field_win)
+      Cdk.deleteCursesWindow(@win)
 
       # Clean the key bindings.
       self.cleanBindings(:SWINDOW)
 
       # Unregister this object.
-      CDK::SCREEN.unregister(:SWINDOW, self)
+      Cdk::Screen.unregister(:SWINDOW, self)
     end
 
     # This function erases the scrolling window widget.
     def erase
       if self.validCDKObject
-        CDK.eraseCursesWindow(@win)
-        CDK.eraseCursesWindow(@shadow_win)
+        Cdk.eraseCursesWindow(@win)
+        Cdk.eraseCursesWindow(@shadow_win)
       end
     end
 
@@ -575,10 +575,10 @@ module CDK
     # scrolling window to a file.
     def saveInformation
       # Create the entry field to get the filename.
-      entry = CDK::ENTRY.new(@screen, CDK::CENTER, CDK::CENTER,
-          '<C></B/5>Enter the filename of the save file.',
-          'Filename: ', Curses::A_NORMAL, '_'.ord, :MIXED,
-          20, 1, 256, true, false)
+      entry = Cdk::ENTRY.new(@screen, Cdk::CENTER, Cdk::CENTER,
+                             '<C></B/5>Enter the filename of the save file.',
+                             'Filename: ', Curses::A_NORMAL, '_'.ord, :MIXED,
+                             20, 1, 256, true, false)
 
       # Get the filename.
       filename = entry.activate([])
@@ -623,9 +623,9 @@ module CDK
     # window.
     def loadInformation
       # Create the file selector to choose the file.
-      fselect = CDK::FSELECT.new(@screen, CDK::CENTER, CDK::CENTER, 20, 55,
-          '<C>Load Which File', 'FIlename', Curses::A_NORMAL, '.',
-          Curses::A_REVERSE, '</5>', '</48>', '</N>', '</N>', true, false)
+      fselect = Cdk::FSELECT.new(@screen, Cdk::CENTER, Cdk::CENTER, 20, 55,
+                                 '<C>Load Which File', 'FIlename', Curses::A_NORMAL, '.',
+                                 Curses::A_REVERSE, '</5>', '</48>', '</N>', '</N>', true, false)
 
       # Get the filename to load.
       filename = fselect.activate([])
@@ -661,9 +661,9 @@ module CDK
         button = ['(Yes)', '(No)']
 
         # Create the dialog widget.
-        dialog = CDK::DIALOG.new(@screen, CDK::CENTER, CDK::CENTER,
-            mesg, 3, button, 2, Curses.color_pair(2) | Curses::A_REVERSE,
-            true, true, false)
+        dialog = Cdk::DIALOG.new(@screen, Cdk::CENTER, Cdk::CENTER,
+                                 mesg, 3, button, 2, Curses.color_pair(2) | Curses::A_REVERSE,
+                                 true, true, false)
 
         # Activate the widet.
         answer = dialog.activate([])
@@ -716,7 +716,7 @@ module CDK
 
       # Start writing out the file.
       @list.each do |item|
-        raw_line = CDK.chtype2Char(item)
+        raw_line = Cdk.chtype2Char(item)
         output_file << "%s\n" % raw_line
       end
 

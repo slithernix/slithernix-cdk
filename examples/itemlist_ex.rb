@@ -7,8 +7,8 @@ class ItemlistExample < Example
   def ItemlistExample.parse_opts(opts, param)
     opts.banner = 'Usage: itemlist_ex.rb [options]'
 
-    param.x_value = CDK::CENTER
-    param.y_value = CDK::CENTER
+    param.x_value = Cdk::CENTER
+    param.y_value = Cdk::CENTER
     param.box = true
     param.shadow = false
     param.c = false
@@ -34,10 +34,10 @@ class ItemlistExample < Example
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     # Create the choice list.
     info = [
@@ -56,7 +56,7 @@ class ItemlistExample < Example
     ]
 
     # Create the itemlist widget.
-    monthlist = CDK::ITEMLIST.new(
+    monthlist = Cdk::ITEMLIST.new(
       cdkscreen,
       params.x_value,
       params.y_value,
@@ -73,7 +73,7 @@ class ItemlistExample < Example
     if monthlist.nil?
       # Clean up.
       cdkscreen.destroy
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
 
       puts "Cannot create the itemlist box. Is the window too small?"
       exit
@@ -116,7 +116,7 @@ class ItemlistExample < Example
     # Clean up
     monthlist.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     #ExitProgram (EXIT_SUCCESS);
   end
 end

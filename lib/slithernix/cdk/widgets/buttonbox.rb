@@ -1,7 +1,7 @@
-require_relative '../cdk_objs'
+require_relative '../objects'
 
-module CDK
-  class BUTTONBOX < CDK::CDKOBJS
+module Cdk
+  class BUTTONBOX < Cdk::Objects
     attr_reader :current_button
 
     def initialize(cdkscreen, x_pos, y_pos, height, width, title, rows, cols,
@@ -29,18 +29,18 @@ module CDK
 
       # If the height is a negative value, the height will be
       # ROWS-height, otherwise the height will be the given height.
-      box_height = CDK.setWidgetDimension(parent_height, height, rows + 1)
+      box_height = Cdk.setWidgetDimension(parent_height, height, rows + 1)
 
       # If the width is a negative value, the width will be
       # COLS-width, otherwise the width will be the given width.
-      box_width = CDK.setWidgetDimension(parent_width, width, 0)
+      box_width = Cdk.setWidgetDimension(parent_width, width, 0)
 
       box_width = self.setTitle(title, box_width)
 
       # Translate the buttons string to a chtype array
       (0...button_count).each do |x|
         button_len = []
-        @button << CDK.char2Chtype(buttons[x], button_len ,[])
+        @button << Cdk.char2Chtype(buttons[x], button_len , [])
         @button_len << button_len[0]
       end
 
@@ -69,7 +69,7 @@ module CDK
       # Now we have to readjust the x and y positions
       xtmp = [x_pos]
       ytmp = [y_pos]
-      CDK.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+      Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -176,7 +176,7 @@ module CDK
             else
               @current_button -= @rows
             end
-          when Curses::KEY_RIGHT, CDK::KEY_TAB, ' '
+          when Curses::KEY_RIGHT, Cdk::KEY_TAB, ' '
             if @current_button + @rows > last_button
               @current_button = first_button
             else
@@ -194,16 +194,16 @@ module CDK
             else
               @current_button += 1
             end
-          when CDK::REFRESH
+          when Cdk::REFRESH
             @screen.erase
             @screen.refresh
-          when CDK::KEY_ESC
+          when Cdk::KEY_ESC
             self.setExitType(input)
             complete = true
           when Curses::Error
             self.setExitType(input)
             complete = true
-          when CDK::KEY_RETURN, Curses::KEY_ENTER
+          when Cdk::KEY_RETURN, Curses::KEY_ENTER
             self.setExitType(input)
             ret = @current_button
             complete = true
@@ -286,8 +286,8 @@ module CDK
               cur_col = col
             end
             Draw.writeChtypeAttrib(@win, col, row,
-                @button[current_button], attr, CDK::HORIZONTAL, 0,
-                @button_len[current_button])
+                                   @button[current_button], attr, Cdk::HORIZONTAL, 0,
+                                   @button_len[current_button])
             row += (1 + @row_adjust)
             current_button += 1
           end
@@ -305,8 +305,8 @@ module CDK
     # This erases the buttonbox box from the screen.
     def erase
       if self.validCDKObject
-        CDK.eraseCursesWindow(@win)
-        CDK.eraseCursesWindow(@shadow_win)
+        Cdk.eraseCursesWindow(@win)
+        Cdk.eraseCursesWindow(@shadow_win)
       end
     end
 
@@ -314,12 +314,12 @@ module CDK
     def destroy
       self.cleanTitle
 
-      CDK.deleteCursesWindow(@shadow_win)
-      CDK.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@win)
 
       self.cleanBindings(:BUTTONBOX)
 
-      CDK::SCREEN.unregister(:BUTTONBOX, self)
+      Cdk::Screen.unregister(:BUTTONBOX, self)
     end
 
     def setCurrentButton(button)

@@ -1,7 +1,7 @@
 require_relative 'scroller'
 
-module CDK
-  class SCROLL < CDK::SCROLLER
+module Cdk
+  class SCROLL < Cdk::SCROLLER
     attr_reader :item, :list_size, :current_item, :highlight
 
     def initialize (cdkscreen, xplace, yplace, splace, height, width, title,
@@ -15,8 +15,8 @@ module CDK
       ypos = yplace
       scroll_adjust = 0
       bindings = {
-        CDK::BACKCHAR => Curses::KEY_PPAGE,
-        CDK::FORCHAR  => Curses::KEY_NPAGE,
+        Cdk::BACKCHAR => Curses::KEY_PPAGE,
+        Cdk::FORCHAR  => Curses::KEY_NPAGE,
         'g'           => Curses::KEY_HOME,
         '1'           => Curses::KEY_HOME,
         'G'           => Curses::KEY_END,
@@ -28,11 +28,11 @@ module CDK
 
       # If the height is a negative value, the height will be ROWS-height,
       # otherwise the height will be the given height
-      box_height = CDK.setWidgetDimension(parent_height, height, 0)
+      box_height = Cdk.setWidgetDimension(parent_height, height, 0)
 
       # If the width is a negative value, the width will be COLS-width,
       # otherwise the width will be the given width
-      box_width = CDK.setWidgetDimension(parent_width, width, 0)
+      box_width = Cdk.setWidgetDimension(parent_width, width, 0)
 
       box_width = self.setTitle(title, box_width)
 
@@ -42,7 +42,7 @@ module CDK
       end
 
       # Adjust the box width if there is a scroll bar
-      if splace == CDK::LEFT || splace == CDK::RIGHT
+      if splace == Cdk::LEFT || splace == Cdk::RIGHT
         @scrollbar = true
         box_width += 1
       else
@@ -50,9 +50,9 @@ module CDK
       end
 
       # Make sure we didn't extend beyond the dimensions of the window.
-      @box_width = if box_width > parent_width 
-                   then parent_width - scroll_adjust 
-                   else box_width 
+      @box_width = if box_width > parent_width
+                   then parent_width - scroll_adjust
+                   else box_width
                    end
       @box_height = if box_height > parent_height
                     then parent_height
@@ -63,8 +63,8 @@ module CDK
 
       # Rejustify the x and y positions if we need to.
       xtmp = [xpos]
-      ytmp = [ypos] 
-      CDK.alignxy(cdkscreen.window, xtmp, ytmp, @box_width, @box_height)
+      ytmp = [ypos]
+      Cdk.alignxy(cdkscreen.window, xtmp, ytmp, @box_width, @box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -80,10 +80,10 @@ module CDK
       @win.keypad(true)
 
       # Create the scrollbar window.
-      if splace == CDK::RIGHT
+      if splace == Cdk::RIGHT
         @scrollbar_win = @win.subwin(self.maxViewSize, 1,
             self.SCREEN_YPOS(ypos), xpos + box_width - @border_size - 1)
-      elsif splace == CDK::LEFT
+      elsif splace == Cdk::LEFT
         @scrollbar_win = @win.subwin(self.maxViewSize, 1,
             self.SCREEN_YPOS(ypos), self.SCREEN_XPOS(xpos))
       else
@@ -94,7 +94,7 @@ module CDK
       @list_win = @win.subwin(self.maxViewSize,
           box_width - (2 * @border_size) - scroll_adjust,
           self.SCREEN_YPOS(ypos),
-          self.SCREEN_XPOS(xpos) + (if splace == CDK::LEFT then 1 else 0 end))
+          self.SCREEN_XPOS(xpos) + (if splace == Cdk::LEFT then 1 else 0 end))
 
       # Set the rest of the variables
       @screen = cdkscreen
@@ -229,16 +229,16 @@ module CDK
             @left_char = @max_left_char
           when '|'
             @left_char = 0
-          when CDK::KEY_ESC
+          when Cdk::KEY_ESC
             self.setExitType(input)
             complete = true
           when Curses::Error
             self.setExitType(input)
             complete = true
-          when CDK::REFRESH
+          when Cdk::REFRESH
             @screen.erase
             @screen.refresh
-          when CDK::KEY_TAB, Curses::KEY_ENTER, CDK::KEY_RETURN
+          when Cdk::KEY_TAB, Curses::KEY_ENTER, Cdk::KEY_RETURN
             self.setExitType(input)
             ret = @current_item
             complete = true
@@ -307,9 +307,9 @@ module CDK
 
       Draw.writeChtypeAttrib(@list_win,
           if screen_pos >= 0 then screen_pos else 0 end,
-          @current_high, @item[@current_item], highlight, CDK::HORIZONTAL,
+                             @current_high, @item[@current_item], highlight, Cdk::HORIZONTAL,
           if screen_pos >= 0 then 0 else 1 - screen_pos end,
-          @item_len[@current_item])
+                             @item_len[@current_item])
     end
 
     def drawList(box)
@@ -319,8 +319,8 @@ module CDK
         (0...@view_size).each do |j|
           k = j + @current_top
 
-          Draw.writeBlanks(@list_win, 0, j, CDK::HORIZONTAL, 0,
-            @box_width - (2 * @border_size))
+          Draw.writeBlanks(@list_win, 0, j, Cdk::HORIZONTAL, 0,
+                           @box_width - (2 * @border_size))
 
           # Draw the elements in the scrolling list.
           if k < @list_size
@@ -330,9 +330,9 @@ module CDK
             # Write in the correct line.
             Draw.writeChtype(@list_win,
                 if screen_pos >= 0 then screen_pos else 1 end,
-                ypos, @item[k], CDK::HORIZONTAL,
+                             ypos, @item[k], Cdk::HORIZONTAL,
                 if screen_pos >= 0 then 0 else 1 - screen_pos end,
-                @item_len[k])
+                             @item_len[k])
           end
         end
 
@@ -349,8 +349,8 @@ module CDK
           end
 
           # Draw the scrollbar
-          @scrollbar_win.mvwvline(0, 0, CDK::ACS_CKBOARD,
-              @scrollbar_win.maxy)
+          @scrollbar_win.mvwvline(0, 0, Cdk::ACS_CKBOARD,
+                                  @scrollbar_win.maxy)
           @scrollbar_win.mvwvline(@toggle_pos, 0, ' '.ord | Curses::A_REVERSE,
               @toggle_size)
         end
@@ -379,22 +379,22 @@ module CDK
       self.cleanTitle
 
       # Clean up the windows.
-      CDK.deleteCursesWindow(@scrollbar_win)
-      CDK.deleteCursesWindow(@shadow_win)
-      CDK.deleteCursesWindow(@list_win)
-      CDK.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@scrollbar_win)
+      Cdk.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@list_win)
+      Cdk.deleteCursesWindow(@win)
 
       # Clean the key bindings.
       self.cleanBindings(:SCROLL)
 
       # Unregister this object
-      CDK::SCREEN.unregister(:SCROLL, self)
+      Cdk::Screen.unregister(:SCROLL, self)
     end
 
     # This function erases the scrolling list from the screen.
     def erase
-      CDK.eraseCursesWindow(@win)
-      CDK.eraseCursesWindow(@shadow_win)
+      Cdk.eraseCursesWindow(@win)
+      Cdk.eraseCursesWindow(@shadow_win)
     end
 
     def allocListArrays(old_size, new_size)
@@ -423,12 +423,12 @@ module CDK
 
       item_len = []
       item_pos = []
-      @item[which] = CDK.char2Chtype(value, item_len, item_pos)
+      @item[which] = Cdk.char2Chtype(value, item_len, item_pos)
       @item_len[which] = item_len[0]
       @item_pos[which] = item_pos[0]
 
-      @item_pos[which] = CDK.justifyString(@box_width,
-          @item_len[which], @item_pos[which])
+      @item_pos[which] = Cdk.justifyString(@box_width,
+                                           @item_len[which], @item_pos[which])
       return true
     end
 
@@ -483,7 +483,7 @@ module CDK
 
       # Clean up the display.
       (0...@view_size).each do |x|
-        Draw.writeBlanks(@win, 1, x, CDK::HORIZONTAL, 0, @box_width - 2);
+        Draw.writeBlanks(@win, 1, x, Cdk::HORIZONTAL, 0, @box_width - 2);
       end
 
       self.setViewSize(list_size)
@@ -493,7 +493,7 @@ module CDK
 
     def getItems(list)
       (0...@list_size).each do |x|
-        list << CDK.chtype2Char(@item[x])
+        list << Cdk.chtype2Char(@item[x])
       end
 
       return @list_size
@@ -626,7 +626,7 @@ module CDK
     end
   end
 
-  class BUTTON < CDK::CDKOBJS
+  class BUTTON < Cdk::Objects
     def initialize(cdkscreen, xplace, yplace, text, callback, box, shadow)
       super()
       parent_width = cdkscreen.window.maxx
@@ -641,14 +641,14 @@ module CDK
       # Translate the string to a chtype array.
       info_len = []
       info_pos = []
-      @info = CDK.char2Chtype(text, info_len, info_pos)
+      @info = Cdk.char2Chtype(text, info_len, info_pos)
       @info_len = info_len[0]
       @info_pos = info_pos[0]
       box_width = [box_width, @info_len].max + 2 * @border_size
 
       # Create the string alignments.
-      @info_pos = CDK.justifyString(box_width - 2 * @border_size,
-          @info_len, @info_pos)
+      @info_pos = Cdk.justifyString(box_width - 2 * @border_size,
+                                    @info_len, @info_pos)
 
       # Make sure we didn't extend beyond the dimensions of the window.
       box_width = if box_width > parent_width
@@ -663,7 +663,7 @@ module CDK
       # Rejustify the x and y positions if we need to.
       xtmp = [xpos]
       ytmp = [ypos]
-      CDK.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+      Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -739,10 +739,10 @@ module CDK
     def setMessage(info)
       info_len = []
       info_pos = []
-      @info = CDK.char2Chtype(info, info_len, info_pos)
+      @info = Cdk.char2Chtype(info, info_len, info_pos)
       @info_len = info_len[0]
-      @info_pos = CDK.justifyString(@box_width - 2 * @border_size,
-          info_pos[0])
+      @info_pos = Cdk.justifyString(@box_width - 2 * @border_size,
+                                    info_pos[0])
 
       # Redraw the button widget.
       self.erase
@@ -797,8 +797,8 @@ module CDK
     # This erases the button widget.
     def erase
       if self.validCDKObject
-        CDK.eraseCursesWindow(@win)
-        CDK.eraseCursesWindow(@shadow_win)
+        Cdk.eraseCursesWindow(@win)
+        Cdk.eraseCursesWindow(@shadow_win)
       end
     end
 
@@ -819,7 +819,7 @@ module CDK
       # Adjust the window if we need to.
       xtmp = [xpos]
       ytmp = [ypos]
-      CDK.alignxy(@screen.window, xtmp, ytmp, @box_width, @box_height)
+      Cdk.alignxy(@screen.window, xtmp, ytmp, @box_width, @box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -828,11 +828,11 @@ module CDK
       ydiff = current_y - ypos
 
       # Move the window to the new location.
-      CDK.moveCursesWindow(@win, -xdiff, -ydiff)
-      CDK.moveCursesWindow(@shadow_win, -xdiff, -ydiff)
+      Cdk.moveCursesWindow(@win, -xdiff, -ydiff)
+      Cdk.moveCursesWindow(@shadow_win, -xdiff, -ydiff)
 
       # Thouch the windows so they 'move'.
-      CDK::SCREEN.refreshCDKWindow(@screen.window)
+      Cdk::Screen.refreshCDKWindow(@screen.window)
 
       # Redraw the window, if they asked for it.
       if refresh_flag
@@ -850,92 +850,92 @@ module CDK
 
       # Let them move the widget around until they hit return
       # SUSPECT FOR BUG
-      while key != Curses::KEY_ENTER && key != CDK::KEY_RETURN
+      while key != Curses::KEY_ENTER && key != Cdk::KEY_RETURN
         key = self.getch([])
         if key == Curses::KEY_UP || key == '8'
           if @win.begy > 0
             self.move(0, -1, true, true)
           else
-            CDK.Beep
+            Cdk.Beep
           end
         elsif key == Curses::KEY_DOWN || key == '2'
           if @win.begy + @win.maxy < @screen.window.maxy - 1
             self.move(0, 1, true, true)
           else
-            CDK.Beep
+            Cdk.Beep
           end
         elsif key == Curses::KEY_LEFT || key == '4'
           if @win.begx > 0
             self.move(-1, 0, true, true)
           else
-            CDK.Beep
+            Cdk.Beep
           end
         elsif key == Curses::KEY_RIGHT || key == '6'
           if @win.begx + @win.maxx < @screen.window.maxx - 1
             self.move(1, 0, true, true)
           else
-            CDK.Beep
+            Cdk.Beep
           end
         elsif key == '7'
           if @win.begy > 0 && @win.begx > 0
             self.move(-1, -1, true, true)
           else
-            CDK.Beep
+            Cdk.Beep
           end
         elsif key == '9'
           if @win.begx + @win.maxx < @screen.window.maxx - 1 &&
               @win.begy > 0
             self.move(1, -1, true, true)
           else
-            CDK.Beep
+            Cdk.Beep
           end
         elsif key == '1'
           if @win.begx > 0 &&
               @win.begx + @win.maxx < @screen.window.maxx - 1
             self.move(-1, 1, true, true)
           else
-            CDK.Beep
+            Cdk.Beep
           end
         elsif key == '3'
           if @win.begx + @win.maxx < @screen.window.maxx - 1 &&
               @win.begy + @win.maxy < @screen.window.maxy - 1
             self.move(1, 1, true, true)
           else
-            CDK.Beep
+            Cdk.Beep
           end
         elsif key == '5'
-          self.move(CDK::CENTER, CDK::CENTER, false, true)
+          self.move(Cdk::CENTER, Cdk::CENTER, false, true)
         elsif key == 't'
-          self.move(@win.begx, CDK::TOP, false, true)
+          self.move(@win.begx, Cdk::TOP, false, true)
         elsif key == 'b'
-          self.move(@win.begx, CDK::BOTTOM, false, true)
+          self.move(@win.begx, Cdk::BOTTOM, false, true)
         elsif key == 'l'
-          self.move(CDK::LEFT, @win.begy, false, true)
+          self.move(Cdk::LEFT, @win.begy, false, true)
         elsif key == 'r'
-          self.move(CDK::RIGHT, @win.begy, false, true)
+          self.move(Cdk::RIGHT, @win.begy, false, true)
         elsif key == 'c'
-          self.move(CDK::CENTER, @win.begy, false, true)
+          self.move(Cdk::CENTER, @win.begy, false, true)
         elsif key == 'C'
-          self.move(@win.begx, CDK::CENTER, false, true)
-        elsif key == CDK::REFRESH
+          self.move(@win.begx, Cdk::CENTER, false, true)
+        elsif key == Cdk::REFRESH
           @screen.erase
           @screen.refresh
-        elsif key == CDK::KEY_ESC
+        elsif key == Cdk::KEY_ESC
           self.move(orig_x, orig_y, false, true)
-        elsif key != CDK::KEY_RETURN && key != Curses::KEY_ENTER
-          CDK.Beep
+        elsif key != Cdk::KEY_RETURN && key != Curses::KEY_ENTER
+          Cdk.Beep
         end
       end
     end
 
     # This destroys the button object pointer.
     def destroy
-      CDK.deleteCursesWindow(@shadow_win)
-      CDK.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@win)
 
       self.cleanBindings(:BUTTON)
 
-      CDK::SCREEN.unregister(:BUTTON, self)
+      Cdk::Screen.unregister(:BUTTON, self)
     end
 
     # This injects a single character into the widget.
@@ -950,24 +950,24 @@ module CDK
         complete = true
       else
         case input
-        when CDK::KEY_ESC
+        when Cdk::KEY_ESC
           self.setExitType(input)
           complete = true
         when Curses::Error
           self.setExitType(input)
           complete = true
-        when ' ', CDK::KEY_RETURN, Curses::KEY_ENTER
+        when ' ', Cdk::KEY_RETURN, Curses::KEY_ENTER
           unless @callback.nil?
             @callback.call(self)
           end
           self.setExitType(Curses::KEY_ENTER)
           ret = 0
           complete = true
-        when CDK::REFRESH
+        when Cdk::REFRESH
           @screen.erase
           @screen.refresh
         else
-          CDK.Beep
+          Cdk.Beep
         end
       end
 

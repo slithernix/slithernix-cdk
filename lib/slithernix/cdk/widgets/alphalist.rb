@@ -1,7 +1,7 @@
-require_relative '../cdk_objs'
+require_relative '../objects'
 
-module CDK
-  class ALPHALIST < CDK::CDKOBJS
+module Cdk
+  class ALPHALIST < Cdk::Objects
     attr_reader :scroll_field, :entry_field, :list
 
     def initialize(cdkscreen, xplace, yplace, height, width, title, label,
@@ -13,8 +13,8 @@ module CDK
       box_height = height
       label_len = 0
       bindings = {
-        CDK::BACKCHAR => Curses::KEY_PPAGE,
-        CDK::FORCHAR  => Curses::KEY_NPAGE,
+        Cdk::BACKCHAR => Curses::KEY_PPAGE,
+        Cdk::FORCHAR  => Curses::KEY_NPAGE,
       }
 
       if !self.createList(list, list_size)
@@ -26,23 +26,23 @@ module CDK
 
       # If the height is a negative value, the height will be ROWS-height,
       # otherwise the height will be the given height.
-      box_height = CDK.setWidgetDimension(parent_height, height, 0)
+      box_height = Cdk.setWidgetDimension(parent_height, height, 0)
 
       # If the width is a negative value, the width will be COLS-width,
       # otherwise the width will be the given width.
-      box_width = CDK.setWidgetDimension(parent_width, width, 0)
+      box_width = Cdk.setWidgetDimension(parent_width, width, 0)
 
       # Translate the label string to a chtype array
       if label.size > 0
         lentmp = []
-        chtype_label = CDK.char2Chtype(label, lentmp, [])
+        chtype_label = Cdk.char2Chtype(label, lentmp, [])
         label_len = lentmp[0]
       end
 
       # Rejustify the x and y positions if we need to.
       xtmp = [xplace]
       ytmp = [yplace]
-      CDK.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+      Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -72,19 +72,19 @@ module CDK
       end
 
       # Create the entry field.
-      temp_width =  if CDK::ALPHALIST.isFullWidth(width)
-                    then CDK::FULL
+      temp_width =  if Cdk::ALPHALIST.isFullWidth(width)
+                    then Cdk::FULL
                     else box_width - 2 - label_len
                     end
-      @entry_field = CDK::ENTRY.new(cdkscreen, @win.begx, @win.begy,
-          title, label, Curses::A_NORMAL, filler_char, :MIXED, temp_width,
-          0, 512, box, false)
+      @entry_field = Cdk::ENTRY.new(cdkscreen, @win.begx, @win.begy,
+                                    title, label, Curses::A_NORMAL, filler_char, :MIXED, temp_width,
+                                    0, 512, box, false)
       if @entry_field.nil?
         self.destroy
         return nil
       end
-      @entry_field.setLLchar(CDK::ACS_LTEE)
-      @entry_field.setLRchar(CDK::ACS_RTEE)
+      @entry_field.setLLchar(Cdk::ACS_LTEE)
+      @entry_field.setLRchar(Cdk::ACS_RTEE)
 
       # Callback functions
       adjust_alphalist_cb = lambda do |object_type, object, alphalist, key|
@@ -96,12 +96,12 @@ module CDK
           alphalist.injectMyScroller(key)
 
           # Set the value in the entry field.
-          current = CDK.chtype2Char(scrollp.item[scrollp.current_item])
+          current = Cdk.chtype2Char(scrollp.item[scrollp.current_item])
           entry.setValue(current)
           entry.draw(entry.box)
           return true
         end
-        CDK.Beep
+        Cdk.Beep
         return false
       end
 
@@ -113,16 +113,16 @@ module CDK
         alt_words = []
 
         if entry.info.size == 0
-          CDK.Beep
+          Cdk.Beep
           return true
         end
 
         # Look for a unique word match.
-        index = CDK.searchList(alphalist.list, alphalist.list.size, entry.info)
+        index = Cdk.searchList(alphalist.list, alphalist.list.size, entry.info)
 
         # if the index is less than zero, return we didn't find a match
         if index < 0
-          CDK.Beep
+          Cdk.Beep
           return true
         end
 
@@ -153,10 +153,10 @@ module CDK
           height = if alt_words.size < 8 then alt_words.size + 3 else 11 end
 
           # Create a scrolling list of close matches.
-          scrollp = CDK::SCROLL.new(entry.screen,
-              CDK::CENTER, CDK::CENTER, CDK::RIGHT, height, -30,
-              "<C></B/5>Possible Matches.", alt_words, alt_words.size,
-              true, Curses::A_REVERSE, true, false)
+          scrollp = Cdk::SCROLL.new(entry.screen,
+                                    Cdk::CENTER, Cdk::CENTER, Cdk::RIGHT, height, -30,
+                                    "<C></B/5>Possible Matches.", alt_words, alt_words.size,
+                                    true, Curses::A_REVERSE, true, false)
 
           # Allow them to select a close match.
           match = scrollp.activate([])
@@ -168,7 +168,7 @@ module CDK
             scrollp.destroy
 
             # Beep at the user.
-            CDK.Beep
+            Cdk.Beep
 
             # Redraw the alphalist and return.
             alphalist.draw(alphalist.box)
@@ -205,7 +205,7 @@ module CDK
 
         if alphalist.isBind(:ALPHALIST, input)
           result = 1  # Don't try to use this key in editing
-        elsif (CDK.isChar(input) &&
+        elsif (Cdk.isChar(input) &&
             input.chr.match(/^[[:alnum:][:punct:]]$/)) ||
             [Curses::KEY_BACKSPACE, Curses::KEY_DC].include?(input)
           index = 0
@@ -226,13 +226,13 @@ module CDK
 
           if pattern.size == 0
             empty = true
-          elsif (index = CDK.searchList(alphalist.list,
-              alphalist.list.size, pattern)) >= 0
+          elsif (index = Cdk.searchList(alphalist.list,
+                                        alphalist.list.size, pattern)) >= 0
             # XXX: original uses n scroll downs/ups for <10 positions change
               scrollp.setPosition(index)
             alphalist.drawMyScroller
           else
-            CDK.Beep
+            Cdk.Beep
             result = 0
           end
         end
@@ -250,7 +250,7 @@ module CDK
       @entry_field.bind(:ENTRY, Curses::KEY_DOWN, adjust_alphalist_cb, self)
       @entry_field.bind(:ENTRY, Curses::KEY_NPAGE, adjust_alphalist_cb, self)
       @entry_field.bind(:ENTRY, Curses::KEY_PPAGE, adjust_alphalist_cb, self)
-      @entry_field.bind(:ENTRY, CDK::KEY_TAB, complete_word_cb, self)
+      @entry_field.bind(:ENTRY, Cdk::KEY_TAB, complete_word_cb, self)
 
       # Set up the post-process function for the entry field.
       @entry_field.setPreProcess(pre_process_entry_field, self)
@@ -258,16 +258,16 @@ module CDK
       # Create the scrolling list.  It overlaps the entry field by one line if
       # we are using box-borders.
       temp_height = @entry_field.win.maxy - @border_size
-      temp_width = if CDK::ALPHALIST.isFullWidth(width)
-                   then CDK::FULL
+      temp_width = if Cdk::ALPHALIST.isFullWidth(width)
+                   then Cdk::FULL
                    else box_width - 1
                    end
-      @scroll_field = CDK::SCROLL.new(cdkscreen, @win.begx,
-          @entry_field.win.begy + temp_height, CDK::RIGHT,
-          box_height - temp_height, temp_width, '', list, list_size,
-          false, Curses::A_REVERSE, box, false)
-      @scroll_field.setULchar(CDK::ACS_LTEE)
-      @scroll_field.setURchar(CDK::ACS_RTEE)
+      @scroll_field = Cdk::SCROLL.new(cdkscreen, @win.begx,
+                                      @entry_field.win.begy + temp_height, Cdk::RIGHT,
+                                      box_height - temp_height, temp_width, '', list, list_size,
+                                      false, Curses::A_REVERSE, box, false)
+      @scroll_field.setULchar(Cdk::ACS_LTEE)
+      @scroll_field.setURchar(Cdk::ACS_RTEE)
 
       # Setup the key bindings.
       bindings.each do |from, to|
@@ -283,8 +283,8 @@ module CDK
         @scroll_field.erase
         @entry_field.erase
 
-        CDK.eraseCursesWindow(@shadow_win)
-        CDK.eraseCursesWindow(@win)
+        Cdk.eraseCursesWindow(@shadow_win)
+        Cdk.eraseCursesWindow(@win)
       end
     end
 
@@ -495,11 +495,11 @@ module CDK
       @scroll_field.destroy
 
       # Free up the window pointers.
-      CDK.deleteCursesWindow(@shadow_win)
-      CDK.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@win)
 
       # Unregister the object.
-      CDK::SCREEN.unregister(:ALPHALIST, self)
+      Cdk::Screen.unregister(:ALPHALIST, self)
     end
 
     # This function sets the pre-process function.
@@ -547,7 +547,7 @@ module CDK
     end
 
     def self.isFullWidth(width)
-      width == CDK::FULL || (Curses.cols != 0 && width >= Curses.cols)
+      width == Cdk::FULL || (Curses.cols != 0 && width >= Curses.cols)
     end
 
     def position

@@ -1,5 +1,5 @@
-module CDK
-  class CDKOBJS
+module Cdk
+  class Objects
     attr_accessor :screen_index, :screen, :has_focus, :is_visible, :box
     attr_accessor :ULChar, :URChar, :LLChar, :LRChar, :HZChar, :VTChar, :BXAttr
     attr_reader :binding_list, :accepts_focus, :exit_type, :border_size
@@ -10,15 +10,15 @@ module CDK
       @has_focus = true
       @is_visible = true
 
-      CDK::ALL_OBJECTS << self
+      Cdk::ALL_OBJECTS << self
 
       # set default line-drawing characters
-      @ULChar = CDK::ACS_ULCORNER
-      @URChar = CDK::ACS_URCORNER
-      @LLChar = CDK::ACS_LLCORNER
-      @LRChar = CDK::ACS_LRCORNER
-      @HZChar = CDK::ACS_HLINE
-      @VTChar = CDK::ACS_VLINE
+      @ULChar = Cdk::ACS_ULCORNER
+      @URChar = Cdk::ACS_URCORNER
+      @LLChar = Cdk::ACS_LLCORNER
+      @LRChar = Cdk::ACS_LRCORNER
+      @HZChar = Cdk::ACS_HLINE
+      @VTChar = Cdk::ACS_VLINE
       @BXAttr = Curses::A_NORMAL
 
       # set default exit-types
@@ -77,7 +77,7 @@ module CDK
       # Adjust the window if we need to
       xtmp = [xpos]
       ytmp = [ypos]
-      CDK.alignxy(@screen.window, xtmp, ytmp, @box_width, @box_height)
+      Cdk.alignxy(@screen.window, xtmp, ytmp, @box_width, @box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -87,7 +87,7 @@ module CDK
 
       # Move the window to the new location.
       windows.each do |window|
-        CDK.moveCursesWindow(window, -xdiff, -ydiff)
+        Cdk.moveCursesWindow(window, -xdiff, -ydiff)
       end
 
       subwidgets.each do |subwidget|
@@ -95,7 +95,7 @@ module CDK
       end
 
       # Touch the windows so they 'move'
-      CDK::SCREEN.refreshCDKWindow(@screen.window)
+      Cdk::Screen.refreshCDKWindow(@screen.window)
 
       # Redraw the window, if they asked for it
       if refresh_flag
@@ -173,7 +173,7 @@ module CDK
       junk2 = []
 
       # Convert the value of the environment variable to a chtype
-      holder = CDK.char2Chtype(color, junk1, junk2)
+      holder = Cdk.char2Chtype(color, junk1, junk2)
 
       # Set the widget's background color
       self.SetBackAttrObj(holder[0])
@@ -181,7 +181,7 @@ module CDK
 
     # Set the widget's title.
     def setTitle (title, box_width)
-      if !title.nil? 
+      if !title.nil?
         temp = title.split("\n")
         @title_lines = temp.size
 
@@ -190,7 +190,7 @@ module CDK
           temp.each do |line|
             len = []
             align = []
-            holder = CDK.char2Chtype(line, len, align)
+            holder = Cdk.char2Chtype(line, len, align)
             max_width = [len[0], max_width].max
           end
           box_width = [box_width, max_width + 2 * @border_size].max
@@ -206,9 +206,9 @@ module CDK
         (0...@title_lines).each do |x|
           len_x = []
           pos_x = []
-          @title << CDK.char2Chtype(temp[x], len_x, pos_x)
+          @title << Cdk.char2Chtype(temp[x], len_x, pos_x)
           @title_len.concat(len_x)
-          @title_pos << CDK.justifyString(title_width, len_x[0], pos_x[0])
+          @title_pos << Cdk.justifyString(title_width, len_x[0], pos_x[0])
         end
       end
 
@@ -219,8 +219,8 @@ module CDK
     def drawTitle(win)
       (0...@title_lines).each do |x|
         Draw.writeChtype(@win, @title_pos[x] + @border_size,
-            x + @border_size, @title[x], CDK::HORIZONTAL, 0,
-            @title_len[x])
+                         x + @border_size, @title[x], Cdk::HORIZONTAL, 0,
+                         @title_len[x])
       end
     end
 
@@ -248,9 +248,9 @@ module CDK
       case ch
       when Curses::Error
         @exit_type = :ERROR
-      when CDK::KEY_ESC
+      when Cdk::KEY_ESC
         @exit_type = :ESCAPE_HIT
-      when CDK::KEY_TAB, Curses::KEY_ENTER, CDK::KEY_RETURN
+      when Cdk::KEY_TAB, Curses::KEY_ENTER, Cdk::KEY_RETURN
         @exit_type = :NORMAL
       when 0
         @exit_type = :EARLY_EXIT
@@ -259,7 +259,7 @@ module CDK
 
     def validCDKObject
       result = false
-      if CDK::ALL_OBJECTS.include?(self)
+      if Cdk::ALL_OBJECTS.include?(self)
         result = self.validObjType(self.object_type)
       end
       return result
@@ -279,22 +279,22 @@ module CDK
         when "\r", "\n"
           result = Curses::KEY_ENTER
         when "\t"
-          result = CDK::KEY_TAB
-        when CDK::DELETE
+          result = Cdk::KEY_TAB
+        when Cdk::DELETE
           result = Curses::KEY_DC
         when "\b"
           result = Curses::KEY_BACKSPACE
-        when CDK::BEGOFLINE
+        when Cdk::BEGOFLINE
           result = Curses::KEY_HOME
-        when CDK::ENDOFLINE
+        when Cdk::ENDOFLINE
           result = Curses::KEY_END
-        when CDK::FORCHAR
+        when Cdk::FORCHAR
           result = Curses::KEY_RIGHT
-        when CDK::BACKCHAR
+        when Cdk::BACKCHAR
           result = Curses::KEY_LEFT
-        when CDK::NEXT
-          result = CDK::KEY_TAB
-        when CDK::PREV
+        when Cdk::NEXT
+          result = Cdk::KEY_TAB
+        when Cdk::PREV
           result = Curses::KEY_BTAB
         end
       end
@@ -383,79 +383,79 @@ module CDK
       end_y = beg_y + @screen.window.maxy
 
       # Let them move the widget around until they hit return.
-      while !([CDK::KEY_RETURN, Curses::KEY_ENTER].include?(
+      while !([Cdk::KEY_RETURN, Curses::KEY_ENTER].include?(
           key = self.getch([])))
         case key
         when Curses::KEY_UP, '8'
           if win.begy > beg_y
             self.move(0, -1, true, true)
           else
-            CDK.Beep
+            Cdk.Beep
           end
         when Curses::KEY_DOWN, '2'
           if (win.begy + win.maxy) < end_y
             self.move(0, 1, true, true)
           else
-            CDK.Beep
+            Cdk.Beep
           end
         when Curses::KEY_LEFT, '4'
           if win.begx > beg_x
             self.move(-1, 0, true, true)
           else
-            CDK.Beep
+            Cdk.Beep
           end
         when Curses::KEY_RIGHT, '6'
           if (win.begx + win.maxx) < end_x
             self.move(1, 0, true, true)
           else
-            CDK.Beep
+            Cdk.Beep
           end
         when '7'
           if win.begy > beg_y && win.begx > beg_x
             self.move(-1, -1, true, true)
           else
-            CDK.Beep
+            Cdk.Beep
           end
         when '9'
           if (win.begx + win.maxx) < end_x && win.begy > beg_y
             self.move(1, -1, true, true)
           else
-            CDK.Beep
+            Cdk.Beep
           end
         when '1'
           if win.begx > beg_x && (win.begy + win.maxy) < end_y
             self.move(-1, 1, true, true)
           else
-            CDK.Beep
+            Cdk.Beep
           end
         when '3'
           if (win.begx + win.maxx) < end_x &&
               (win.begy + win.maxy) < end_y
             self.move(1, 1, true, true)
           else
-            CDK.Beep
+            Cdk.Beep
           end
         when '5'
-          self.move(CDK::CENTER, CDK::CENTER, false, true)
+          self.move(Cdk::CENTER, Cdk::CENTER, false, true)
         when 't'
-          self.move(win.begx, CDK::TOP, false, true)
+          self.move(win.begx, Cdk::TOP, false, true)
         when 'b'
-          self.move(win.begx, CDK::BOTTOM, false, true)
+          self.move(win.begx, Cdk::BOTTOM, false, true)
         when 'l'
-          self.move(CDK::LEFT, win.begy, false, true)
+          self.move(Cdk::LEFT, win.begy, false, true)
         when 'r'
-          self.move(CDK::RIGHT, win.begy, false, true)
+          self.move(Cdk::RIGHT, win.begy, false, true)
         when 'c'
-          self.move(CDK::CENTER, win.begy, false, true)
+          self.move(Cdk::CENTER, win.begy, false, true)
         when 'C'
-          self.move(win.begx, CDK::CENTER, false, true)
-        when CDK::REFRESH
+          self.move(win.begx, Cdk::CENTER, false, true)
+        when Cdk::REFRESH
           @screen.erase
           @screen.refresh
-        when CDK::KEY_ESC
+        when Cdk::KEY_ESC
           self.move(orig_x, orig_y, false, true)
         else
-          CDK.Beep
+          Cdk.Beep
         end
       end
     end

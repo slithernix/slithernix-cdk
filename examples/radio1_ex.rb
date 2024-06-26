@@ -8,11 +8,11 @@ class Radio1Example < CLIExample
     # default values
     params.box = true
     params.shadow = false
-    params.x_value = CDK::CENTER
-    params.y_value = CDK::CENTER
+    params.x_value = Cdk::CENTER
+    params.y_value = Cdk::CENTER
     params.h_value = 5
     params.w_value = 20
-    params.spos = CDK::NONE
+    params.spos = Cdk::NONE
     params.title = ""
 
     super(opts, params)
@@ -44,21 +44,21 @@ class Radio1Example < CLIExample
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     # Create the radio list.
-    radio = CDK::RADIO.new(cdkscreen,
-        params.x_value, params.y_value, params.spos,
-        params.h_value, params.w_value, params.title,
-        item, 3, '#'.ord | Curses::A_REVERSE, true,
-        Curses::A_REVERSE, params.box, params.shadow)
+    radio = Cdk::RADIO.new(cdkscreen,
+                           params.x_value, params.y_value, params.spos,
+                           params.h_value, params.w_value, params.title,
+                           item, 3, '#'.ord | Curses::A_REVERSE, true,
+                           Curses::A_REVERSE, params.box, params.shadow)
 
     if radio.nil?
       cdkscreen.destroyCDKScreen
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
 
       puts "Cannot make radio widget.  Is the window too small?"
       exit #EXIT_FAILURE
@@ -88,7 +88,7 @@ class Radio1Example < CLIExample
     # Clean up.
     radio.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     exit #EXIT_SUCCESS
   end
 end

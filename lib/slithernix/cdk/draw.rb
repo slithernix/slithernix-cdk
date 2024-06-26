@@ -1,4 +1,4 @@
-module CDK
+module Cdk
   module Draw
     # This sets up a basic set of color pairs. These can be redefined if wanted
     def Draw.initCDKColor
@@ -30,18 +30,18 @@ module CDK
       bry = window.maxy - 1
 
       # Draw horizontal lines.
-      window.mvwhline(tly, 0, CDK::ACS_HLINE | attr, window.maxx)
-      window.mvwhline(bry, 0, CDK::ACS_HLINE | attr, window.maxx)
+      window.mvwhline(tly, 0, Cdk::ACS_HLINE | attr, window.maxx)
+      window.mvwhline(bry, 0, Cdk::ACS_HLINE | attr, window.maxx)
 
       # Draw horizontal lines.
-      window.mvwvline(0, tlx, CDK::ACS_VLINE | attr, window.maxy)
-      window.mvwvline(0, brx, CDK::ACS_VLINE | attr, window.maxy)
+      window.mvwvline(0, tlx, Cdk::ACS_VLINE | attr, window.maxy)
+      window.mvwvline(0, brx, Cdk::ACS_VLINE | attr, window.maxy)
 
       # Draw in the corners.
-      window.mvwaddch(tly, tlx, CDK::ACS_ULCORNER | attr)
-      window.mvwaddch(tly, brx, CDK::ACS_URCORNER | attr)
-      window.mvwaddch(bry, tlx, CDK::ACS_LLCORNER | attr)
-      window.mvwaddch(bry, brx, CDK::ACS_LRCORNER | attr)
+      window.mvwaddch(tly, tlx, Cdk::ACS_ULCORNER | attr)
+      window.mvwaddch(tly, brx, Cdk::ACS_URCORNER | attr)
+      window.mvwaddch(bry, tlx, Cdk::ACS_LLCORNER | attr)
+      window.mvwaddch(bry, brx, Cdk::ACS_LRCORNER | attr)
       window.refresh
     end
 
@@ -154,14 +154,14 @@ module CDK
         y_hi = shadow_win.maxy - 1
 
         # Draw the line on the bottom.
-        shadow_win.mvwhline(y_hi, 1, CDK::ACS_HLINE | Curses::A_DIM, x_hi)
+        shadow_win.mvwhline(y_hi, 1, Cdk::ACS_HLINE | Curses::A_DIM, x_hi)
 
         # Draw the line on the right.
-        shadow_win.mvwvline(0, x_hi, CDK::ACS_VLINE | Curses::A_DIM, y_hi)
+        shadow_win.mvwvline(0, x_hi, Cdk::ACS_VLINE | Curses::A_DIM, y_hi)
 
-        shadow_win.mvwaddch(0, x_hi, CDK::ACS_URCORNER | Curses::A_DIM)
-        shadow_win.mvwaddch(y_hi, 0, CDK::ACS_LLCORNER | Curses::A_DIM)
-        shadow_win.mvwaddch(y_hi, x_hi, CDK::ACS_LRCORNER | Curses::A_DIM)
+        shadow_win.mvwaddch(0, x_hi, Cdk::ACS_URCORNER | Curses::A_DIM)
+        shadow_win.mvwaddch(y_hi, 0, Cdk::ACS_LLCORNER | Curses::A_DIM)
+        shadow_win.mvwaddch(y_hi, x_hi, Cdk::ACS_LRCORNER | Curses::A_DIM)
         shadow_win.refresh
       end
     end
@@ -172,7 +172,7 @@ module CDK
         want = (endn - start) + 1000
         blanks = ''
 
-        CDK.cleanChar(blanks, want - 1, ' ')
+        Cdk.cleanChar(blanks, want - 1, ' ')
         Draw.writeChar(window, xpos, ypos, blanks, align, start, endn)
       end
     end
@@ -188,7 +188,7 @@ module CDK
         start, endn)
       display = endn - start
 
-      if align == CDK::HORIZONTAL
+      if align == Cdk::HORIZONTAL
         # Draw the message on a horizontal axis
         display = [display, window.maxx - 1].min
         (0...display).each do |x|
@@ -215,7 +215,7 @@ module CDK
       diff = endn - start
       display = 0
       x = 0
-      if align == CDK::HORIZONTAL
+      if align == Cdk::HORIZONTAL
         # Draw the message on a horizontal axis.
         display = [diff, window.maxx - xpos].min
         (0...display).each do |x|

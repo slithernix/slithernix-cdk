@@ -1,7 +1,7 @@
-require_relative '../cdk_objs'
+require_relative '../objects'
 
-module CDK
-  class ITEMLIST < CDK::CDKOBJS
+module Cdk
+  class ITEMLIST < Cdk::Objects
     def initialize(cdkscreen, xplace, yplace, title, label, item, count,
         default_item, box, shadow)
       super()
@@ -25,7 +25,7 @@ module CDK
       # Translate the label string to a chtype array
       if !(label.nil?) && label.size > 0
         label_len = []
-        @label = CDK.char2Chtype(label, label_len, [])
+        @label = Cdk.char2Chtype(label, label_len, [])
         @label_len = label_len[0]
       end
 
@@ -43,7 +43,7 @@ module CDK
       # Rejustify the x and y positions if we need to.
       xtmp = [xplace]
       ytmp = [yplace]
-      CDK.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+      Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -184,21 +184,21 @@ module CDK
             @current_item = 0
           when '$'
             @current_item = @list_size - 1
-          when CDK::KEY_ESC
+          when Cdk::KEY_ESC
             self.setExitType(input)
             complete = true
           when Curses::Error
             self.setExitType(input)
             complete = true
-          when CDK::KEY_TAB, CDK::KEY_RETURN, Curses::KEY_ENTER
+          when Cdk::KEY_TAB, Cdk::KEY_RETURN, Curses::KEY_ENTER
             self.setExitType(input)
             ret = @current_item
             complete = true
-          when CDK::REFRESH
+          when Cdk::REFRESH
             @screen.erase
             @screen.refresh
           else
-            CDK.Beep
+            Cdk.Beep
           end
         end
 
@@ -235,8 +235,8 @@ module CDK
 
       # Draw in the label to the widget.
       unless @label_win.nil?
-        Draw.writeChtype(@label_win, 0, 0, @label, CDK::HORIZONTAL,
-            0, @label.size)
+        Draw.writeChtype(@label_win, 0, 0, @label, Cdk::HORIZONTAL,
+                         0, @label.size)
       end
 
       # Box the widget if asked.
@@ -288,10 +288,10 @@ module CDK
     # This function removes the widget from the screen.
     def erase
       if self.validCDKObject
-        CDK.eraseCursesWindow(@field_win)
-        CDK.eraseCursesWindow(@label_win)
-        CDK.eraseCursesWindow(@win)
-        CDK.eraseCursesWindow(@shadow_win)
+        Cdk.eraseCursesWindow(@field_win)
+        Cdk.eraseCursesWindow(@label_win)
+        Cdk.eraseCursesWindow(@win)
+        Cdk.eraseCursesWindow(@shadow_win)
       end
     end
 
@@ -306,15 +306,15 @@ module CDK
       self.destroyInfo
 
       # Delete the windows
-      CDK.deleteCursesWindow(@field_win)
-      CDK.deleteCursesWindow(@label_win)
-      CDK.deleteCursesWindow(@shadow_win)
-      CDK.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@field_win)
+      Cdk.deleteCursesWindow(@label_win)
+      Cdk.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@win)
 
       # Clean the key bindings.
       self.cleanBindings(:ITEMLIST)
 
-      CDK::SCREEN.unregister(:ITEMLIST, self)
+      Cdk::Screen.unregister(:ITEMLIST, self)
     end
 
     # This sets multiple attributes of the widget.
@@ -402,7 +402,7 @@ module CDK
           # Copy the item to the list.
           lentmp = []
           postmp = []
-          new_items << CDK.char2Chtype(item[x], lentmp, postmp)
+          new_items << Cdk.char2Chtype(item[x], lentmp, postmp)
           new_len << lentmp[0]
           new_pos << postmp[0]
           if new_items[0] == 0
@@ -414,8 +414,8 @@ module CDK
 
         # Now we need to justify the strings.
         (0...count).each do |x|
-          new_pos[x] = CDK.justifyString(field_width + 1,
-              new_len[x], new_pos[x])
+          new_pos[x] = Cdk.justifyString(field_width + 1,
+                                         new_len[x], new_pos[x])
         end
 
         if status

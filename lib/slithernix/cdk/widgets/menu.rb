@@ -1,7 +1,7 @@
-require_relative '../cdk_objs'
+require_relative '../objects'
 
-module CDK
-  class MENU < CDK::CDKOBJS
+module Cdk
+  class MENU < Cdk::Objects
     TITLELINES = 1
     MAX_MENU_ITEMS = 30
     MAX_SUB_ITEMS = 98
@@ -46,47 +46,47 @@ module CDK
 
       # Create the pull down menus.
       (0...menu_items).each do |x|
-        x1 = if menu_location[x] == CDK::LEFT
+        x1 = if menu_location[x] == Cdk::LEFT
              then x
              else
                rightcount -= 1
                rightcount + 1
              end
         x2 = 0
-        y1 = if menu_pos == CDK::BOTTOM then ymax - 1 else 0 end
-        y2 = if menu_pos == CDK::BOTTOM
+        y1 = if menu_pos == Cdk::BOTTOM then ymax - 1 else 0 end
+        y2 = if menu_pos == Cdk::BOTTOM
              then ymax - subsize[x] - 2
-             else CDK::MENU::TITLELINES
+             else Cdk::MENU::TITLELINES
              end
-        high = subsize[x] + CDK::MENU::TITLELINES
+        high = subsize[x] + Cdk::MENU::TITLELINES
 
         # Limit the menu height to fit on the screen.
         if high + y2 > ymax
-          high = ymax - CDK::MENU::TITLELINES
+          high = ymax - Cdk::MENU::TITLELINES
         end
 
         max = -1
-        (CDK::MENU::TITLELINES...subsize[x]).to_a.each do |y|
-          y0 = y - CDK::MENU::TITLELINES
+        (Cdk::MENU::TITLELINES...subsize[x]).to_a.each do |y|
+          y0 = y - Cdk::MENU::TITLELINES
           sublist_len = []
-          @sublist[x1][y0] = CDK.char2Chtype(menu_list[x][y],
-              sublist_len, [])
+          @sublist[x1][y0] = Cdk.char2Chtype(menu_list[x][y],
+                                             sublist_len, [])
           @sublist_len[x1][y0] = sublist_len[0]
           max = [max, sublist_len[0]].max
         end
 
-        if menu_location[x] == CDK::LEFT
+        if menu_location[x] == Cdk::LEFT
           x2 = leftloc
         else
           x2 = (rightloc -= max + 2)
         end
 
         title_len = []
-        @title[x1] = CDK.char2Chtype(menu_list[x][0], title_len, [])
+        @title[x1] = Cdk.char2Chtype(menu_list[x][0], title_len, [])
         @title_len[x1] = title_len[0]
-        @subsize[x1] = subsize[x] - CDK::MENU::TITLELINES
-        @title_win[x1] = cdkscreen.window.subwin(CDK::MENU::TITLELINES,
-            @title_len[x1] + 2, ypos + y1, xpos + x2)
+        @subsize[x1] = subsize[x] - Cdk::MENU::TITLELINES
+        @title_win[x1] = cdkscreen.window.subwin(Cdk::MENU::TITLELINES,
+                                                 @title_len[x1] + 2, ypos + y1, xpos + x2)
         @pull_win[x1] = cdkscreen.window.subwin(high, max + 2,
             ypos + y2, xpos + x2)
         if @title_win[x1].nil? || @pull_win[x1].nil?
@@ -146,27 +146,27 @@ module CDK
 
     def drawTitle(item)
       Draw.writeChtype(@title_win[item], 0, 0, @title[item],
-          CDK::HORIZONTAL, 0, @title_len[item])
+                       Cdk::HORIZONTAL, 0, @title_len[item])
     end
 
     def drawItem(item, offset)
       Draw.writeChtype(@pull_win[@current_title], 1,
-          item + CDK::MENU::TITLELINES - offset,
-          @sublist[@current_title][item],
-          CDK::HORIZONTAL, 0, @sublist_len[@current_title][item])
+                       item + Cdk::MENU::TITLELINES - offset,
+                       @sublist[@current_title][item],
+                       Cdk::HORIZONTAL, 0, @sublist_len[@current_title][item])
     end
 
     # Highlight the current sub-menu item
     def selectItem(item, offset)
       Draw.writeChtypeAttrib(@pull_win[@current_title], 1,
-          item + CDK::MENU::TITLELINES - offset,
-          @sublist[@current_title][item], @subtitle_attr,
-          CDK::HORIZONTAL, 0, @sublist_len[@current_title][item])
+                             item + Cdk::MENU::TITLELINES - offset,
+                             @sublist[@current_title][item], @subtitle_attr,
+                             Cdk::HORIZONTAL, 0, @sublist_len[@current_title][item])
     end
 
     def withinSubmenu(step)
-      next_item = CDK::MENU.wrapped(@current_subtitle + step,
-          @subsize[@current_title])
+      next_item = Cdk::MENU.wrapped(@current_subtitle + step,
+                                    @subsize[@current_title])
 
       if next_item != @current_subtitle
         ymax = @screen.window.maxy
@@ -193,7 +193,7 @@ module CDK
     end
 
     def acrossSubmenus(step)
-      next_item = CDK::MENU.wrapped(@current_title + step, @menu_items)
+      next_item = Cdk::MENU.wrapped(@current_title + step, @menu_items)
 
       if next_item != @current_title
         # Erase the menu sub-window.
@@ -236,19 +236,19 @@ module CDK
           case input
           when Curses::KEY_LEFT
             self.acrossSubmenus(-1)
-          when Curses::KEY_RIGHT, CDK::KEY_TAB
+          when Curses::KEY_RIGHT, Cdk::KEY_TAB
             self.acrossSubmenus(1)
           when Curses::KEY_UP
             self.withinSubmenu(-1)
           when Curses::KEY_DOWN, ' '
             self.withinSubmenu(1)
-          when Curses::KEY_ENTER, CDK::KEY_RETURN
+          when Curses::KEY_ENTER, Cdk::KEY_RETURN
             self.cleanUpMenu
             self.setExitType(input)
             @last_selection = @current_title * 100 + @current_subtitle
             ret = @last_selection
             complete = true
-          when CDK::KEY_ESC
+          when Cdk::KEY_ESC
             self.cleanUpMenu
             self.setExitType(input)
             @last_selection = -1
@@ -257,7 +257,7 @@ module CDK
           when Curses::Error
             self.setExitType(input)
             complete = true
-          when CDK::REFRESH
+          when Cdk::REFRESH
             self.erase
             self.refresh
           end
@@ -294,12 +294,12 @@ module CDK
 
       # Box the window
       @pull_win[@current_title]
-      @pull_win[@current_title].box(CDK::ACS_VLINE, CDK::ACS_HLINE)
-      if @menu_pos == CDK::BOTTOM
+      @pull_win[@current_title].box(Cdk::ACS_VLINE, Cdk::ACS_HLINE)
+      if @menu_pos == Cdk::BOTTOM
         @pull_win[@current_title].mvwaddch(@subsize[@current_title] + 1,
-            0, CDK::ACS_LTEE)
+                                           0, Cdk::ACS_LTEE)
       else
-        @pull_win[@current_title].mvwaddch(0, 0, CDK::ACS_LTEE)
+        @pull_win[@current_title].mvwaddch(0, 0, Cdk::ACS_LTEE)
       end
 
       # Draw the items.
@@ -312,14 +312,14 @@ module CDK
 
       # Highlight the title.
       Draw.writeChtypeAttrib(@title_win[@current_title], 0, 0,
-          @title[@current_title], @title_attr, CDK::HORIZONTAL,
-          0, @title_len[@current_title])
+                             @title[@current_title], @title_attr, Cdk::HORIZONTAL,
+                             0, @title_len[@current_title])
       @title_win[@current_title].refresh
     end
 
     # Erase a menu item subwindow
     def eraseSubwin
-      CDK.eraseCursesWindow(@pull_win[@current_title])
+      Cdk.eraseCursesWindow(@pull_win[@current_title])
 
       # Redraw the sub-menu title.
       self.drawTitle(@current_title)
@@ -357,15 +357,15 @@ module CDK
     def destroy
       # Clean up the windows
       (0...@menu_items).each do |x|
-        CDK.deleteCursesWindow(@title_win[x])
-        CDK.deleteCursesWindow(@pull_win[x])
+        Cdk.deleteCursesWindow(@title_win[x])
+        Cdk.deleteCursesWindow(@pull_win[x])
       end
 
       # Clean the key bindings.
       self.cleanBindings(:MENU)
 
       # Unregister the object
-      CDK::SCREEN.unregister(:MENU, self)
+      Cdk::Screen.unregister(:MENU, self)
     end
 
     # Erase the menu widget from the screen.
@@ -388,8 +388,8 @@ module CDK
 
     # Set the current menu item to highlight.
     def setCurrentItem(menuitem, submenuitem)
-      @current_title = CDK::MENU.wrapped(menuitem, @menu_items)
-      @current_subtitle = CDK::MENU.wrapped(
+      @current_title = Cdk::MENU.wrapped(menuitem, @menu_items)
+      @current_subtitle = Cdk::MENU.wrapped(
           submenuitem, @subsize[@current_title])
     end
 

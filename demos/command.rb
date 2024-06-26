@@ -63,32 +63,32 @@ class Command
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     # Create the scrolling window.
-    command_output = CDK::SWINDOW.new(cdkscreen, CDK::CENTER, CDK::TOP,
-        -8, -2, title, 1000, true, false)
+    command_output = Cdk::SWINDOW.new(cdkscreen, Cdk::CENTER, Cdk::TOP,
+                                      -8, -2, title, 1000, true, false)
 
     # Convert the prompt to a chtype and determine its length
     prompt_len = []
-    convert = CDK.char2Chtype(prompt, prompt_len, [])
+    convert = Cdk.char2Chtype(prompt, prompt_len, [])
     prompt_len = prompt_len[0]
     command_field_width = Curses.cols - prompt_len - 4
 
     # Create the entry field.
-    command_entry = CDK::ENTRY.new(cdkscreen, CDK::CENTER, CDK::BOTTOM,
-        '', prompt, Curses::A_BOLD | Curses.color_pair(8),
-        Curses.color_pair(24) | '_'.ord, :MIXED,
-        command_field_width, 1, 512, false, false)
+    command_entry = Cdk::ENTRY.new(cdkscreen, Cdk::CENTER, Cdk::BOTTOM,
+                                   '', prompt, Curses::A_BOLD | Curses.color_pair(8),
+                                   Curses.color_pair(24) | '_'.ord, :MIXED,
+                                   command_field_width, 1, 512, false, false)
 
     # Create the key bindings.
     history_up_cb = lambda do |cdktype, entry, history, key|
       # Make sure we don't go out of bounds
       if history.current == 0
-        CDK.Beep
+        Cdk.Beep
         return false
       end
 
@@ -104,7 +104,7 @@ class Command
     history_down_cb = lambda do |cdktype, entry, history, key|
       # Make sure we don't go out of bounds
       if history.current == @count
-        CDK.Beep
+        Cdk.Beep
         return false
       end
 
@@ -154,10 +154,10 @@ class Command
       end
 
       # Create the scrolling list of previous commands.
-      scroll_list = CDK::SCROLL.new(entry.screen, CDK::CENTER, CDK::CENTER,
-          CDK::RIGHT, height, 20, '<C></B/29>Command History',
-          history.command, history.count, true, Curses::A_REVERSE,
-          true, false)
+      scroll_list = Cdk::SCROLL.new(entry.screen, Cdk::CENTER, Cdk::CENTER,
+                                    Cdk::RIGHT, height, 20, '<C></B/29>Command History',
+                                    history.command, history.count, true, Curses::A_REVERSE,
+                                    true, false)
 
       # Get the command to execute.
       selection = scroll_list.activate([])
@@ -177,9 +177,9 @@ class Command
 
     jump_window_cb = lambda do |cdktype, entry, swindow, key|
       # Ask them which line they want to jump to.
-      scale = CDK::SCALE.new(entry.screen, CDK::CENTER, CDK::CENTER,
-          '<C>Jump To Which Line', 'Line', Curses::A_NORMAL, 5,
-          0, 0, swindow.list_size, 1, 2, true, false)
+      scale = Cdk::SCALE.new(entry.screen, Cdk::CENTER, Cdk::CENTER,
+                             '<C>Jump To Which Line', 'Line', Curses::A_NORMAL, 5,
+                             0, 0, swindow.list_size, 1, 2, true, false)
 
       # Get the line.
       line = scale.activate([])
@@ -197,9 +197,9 @@ class Command
 
     command_entry.bind(:ENTRY, Curses::KEY_UP, history_up_cb, history)
     command_entry.bind(:ENTRY, Curses::KEY_DOWN, history_down_cb, history)
-    command_entry.bind(:ENTRY, CDK::KEY_TAB, view_history_cb, command_output)
-    command_entry.bind(:ENTRY, CDK.CTRL('^'), list_history_cb, history)
-    command_entry.bind(:ENTRY, CDK.CTRL('G'), jump_window_cb, command_output)
+    command_entry.bind(:ENTRY, Cdk::KEY_TAB, view_history_cb, command_output)
+    command_entry.bind(:ENTRY, Cdk.CTRL('^'), list_history_cb, history)
+    command_entry.bind(:ENTRY, Cdk.CTRL('G'), jump_window_cb, command_output)
 
     # Draw the screen.
     cdkscreen.refresh
@@ -223,7 +223,7 @@ class Command
         command_output.destroy
         cdkscreen.destroy
 
-        CDK::SCREEN.endCDK
+        Cdk::Screen.endCDK
 
         exit  # EXIT_SUCCESS
       elsif command == 'clear'
@@ -260,13 +260,13 @@ class Command
         history.current = history.count
 
         # Jump to the bottom of the scrolling window.
-        command_output.jumpToLine(CDK::BOTTOM)
+        command_output.jumpToLine(Cdk::BOTTOM)
 
         # Insert a line providing the command.
-        command_output.add('Command: </R>%s' % [command], CDK::BOTTOM)
+        command_output.add('Command: </R>%s' % [command], Cdk::BOTTOM)
 
         # Run the command
-        command_output.exec(command, CDK::BOTTOM)
+        command_output.exec(command, Cdk::BOTTOM)
 
         # Clean out the entry field.
         command_entry.clean

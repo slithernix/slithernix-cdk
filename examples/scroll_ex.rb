@@ -15,12 +15,12 @@ class ScrollExample < CLIExample
     # default values
     params.box = true
     params.shadow = false
-    params.x_value = CDK::CENTER
-    params.y_value = CDK::CENTER
+    params.x_value = Cdk::CENTER
+    params.y_value = Cdk::CENTER
     params.h_value = 10
     params.w_value = 50
     params.c = false
-    params.spos = CDK::RIGHT
+    params.spos = Cdk::RIGHT
     params.title = "<C></5>Pick a file"
 
     super(opts, params)
@@ -53,26 +53,26 @@ class ScrollExample < CLIExample
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     # Use the current directory list to fill the radio list
     item = []
-    count = CDK.getDirectoryContents(".", item)
+    count = Cdk.getDirectoryContents(".", item)
 
     # Create the scrolling list.
-    scroll_list = CDK::SCROLL.new(cdkscreen,
-        params.x_value, params.y_value, params.spos,
-        params.h_value, params.w_value, params.title,
+    scroll_list = Cdk::SCROLL.new(cdkscreen,
+                                  params.x_value, params.y_value, params.spos,
+                                  params.h_value, params.w_value, params.title,
         if params.c then nil else item end,
         if params.c then 0 else count end,
-        true, Curses::A_REVERSE, params.box, params.shadow)
+                                  true, Curses::A_REVERSE, params.box, params.shadow)
 
     if scroll_list.nil?
       cdkscreen.destroyCDKScreen
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
 
       puts "Cannot make scrolling list.  Is the window too small?"
       exit #EXIT_FAILURE
@@ -115,7 +115,7 @@ class ScrollExample < CLIExample
       msg << '<C>Press any key to continue.'
       cdkscreen.popupLabel(msg, 3)
     elsif scroll_list.exit_type == :NORMAL
-      the_item = CDK.chtype2Char(scroll_list.item[selection])
+      the_item = Cdk.chtype2Char(scroll_list.item[selection])
       msg = ['<C>You selected the following file',
           "<C>%.*s" % [236, the_item],  # FIXME magic number
           "<C>Press any key to continue."
@@ -128,7 +128,7 @@ class ScrollExample < CLIExample
     # CDKfreeStrings (item);
     scroll_list.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     exit #EXIT_SUCCESS
   end
 end

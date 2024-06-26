@@ -1,7 +1,7 @@
 require_relative 'slider'
 
-module CDK
-  class FSLIDER < CDK::SLIDER
+module Cdk
+  class FSLIDER < Cdk::SLIDER
     def initialize(cdkscreen, xplace, yplace, title, label, filler,
         field_width, start, low, high, inc, fast_inc, digits, box, shadow)
       @digits = digits
@@ -29,7 +29,7 @@ module CDK
       temp = format % [@current]
 
       Draw.writeCharAttrib(@field_win, @field_width, 0, temp,
-          Curses::A_NORMAL, CDK::HORIZONTAL, 0, temp.size)
+                           Curses::A_NORMAL, Cdk::HORIZONTAL, 0, temp.size)
 
       self.moveToEditPosition(@field_edit)
       @field_win.refresh

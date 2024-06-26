@@ -1,7 +1,7 @@
-require_relative '../cdk_objs'
+require_relative '../objects'
 
-module CDK
-  class VIEWER < CDK::CDKOBJS
+module Cdk
+  class VIEWER < Cdk::Objects
     DOWN = 0
     UP = 1
 
@@ -16,26 +16,26 @@ module CDK
       button_adj = 0
       button_pos = 1
       bindings = {
-          CDK::BACKCHAR => Curses::KEY_PPAGE,
-          'b'           => Curses::KEY_PPAGE,
-          'B'           => Curses::KEY_PPAGE,
-          CDK::FORCHAR  => Curses::KEY_NPAGE,
-          ' '           => Curses::KEY_NPAGE,
-          'f'           => Curses::KEY_NPAGE,
-          'F'           => Curses::KEY_NPAGE,
-          '|'           => Curses::KEY_HOME,
-          '$'           => Curses::KEY_END,
+        Cdk::BACKCHAR => Curses::KEY_PPAGE,
+        'b'           => Curses::KEY_PPAGE,
+        'B'           => Curses::KEY_PPAGE,
+        Cdk::FORCHAR  => Curses::KEY_NPAGE,
+        ' '           => Curses::KEY_NPAGE,
+        'f'           => Curses::KEY_NPAGE,
+        'F'           => Curses::KEY_NPAGE,
+        '|'           => Curses::KEY_HOME,
+        '$'           => Curses::KEY_END,
       }
 
       self.setBox(box)
 
-      box_height = CDK.setWidgetDimension(parent_height, height, 0)
-      box_width = CDK.setWidgetDimension(parent_width, width, 0)
+      box_height = Cdk.setWidgetDimension(parent_height, height, 0)
+      box_width = Cdk.setWidgetDimension(parent_width, width, 0)
 
       # Rejustify the x and y positions if we need to.
       xtmp = [xplace]
       ytmp = [yplace]
-      CDK.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+      Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -57,7 +57,7 @@ module CDK
       if button_count > 0
         (0...button_count).each do |x|
           button_len = []
-          @button << CDK.char2Chtype(buttons[x], button_len, [])
+          @button << Cdk.char2Chtype(buttons[x], button_len, [])
           @button_len << button_len[0]
           button_width += @button_len[x] + 1
         end
@@ -137,9 +137,9 @@ module CDK
       if interpret
         list_len = []
         list_pos = []
-        @list[x] = CDK.char2Chtype(list, list_len, list_pos)
+        @list[x] = Cdk.char2Chtype(list, list_len, list_pos)
         @list_len[x] = list_len[0]
-        @list_pos[x] = CDK.justifyString(@box_width, @list_len[x], list_pos[0])
+        @list_pos[x] = Cdk.justifyString(@box_width, @list_len[x], list_pos[0])
       else
         # We must convert tabs and other nonprinting characters. The curses
         # library normally does this, but we are bypassing it by writing
@@ -152,8 +152,8 @@ module CDK
               t  << ' '
               len += 1
             end while (len & 7) != 0
-          elsif CDK.CharOf(list[y].ord).match(/^[[:print:]]$/)
-            t << CDK.CharOf(list[y].ord)
+          elsif Cdk.CharOf(list[y].ord).match(/^[[:print:]]$/)
+            t << Cdk.CharOf(list[y].ord)
             len += 1
           else
             t << Curses.unctrl(list[y].ord)
@@ -187,9 +187,9 @@ module CDK
       if list.size > 0 && interpret
         (0...list_size).each do |x|
           filename = ''
-          if CDK.checkForLink(list[x], filename) == 1
+          if Cdk.checkForLink(list[x], filename) == 1
             file_contents = []
-            file_len = CDK.readFile(filename, file_contents)
+            file_len = Cdk.readFile(filename, file_contents)
 
             if file_len >= 0
               viewer_size += (file_len - 1)
@@ -218,13 +218,13 @@ module CDK
         else
           # Check if we have a file link in this line.
           filename = []
-          if CDK.checkForLink(list[x], filename) == 1
+          if Cdk.checkForLink(list[x], filename) == 1
             # We have a link, open the file.
             file_contents = []
             file_len = 0
 
             # Open the file and put it into the viewer
-            file_len = CDK.readFile(filename, file_contents)
+            file_len = Cdk.readFile(filename, file_contents)
             if file_len == -1
               fopen_fmt = if Curses.has_colors?
                           then '<C></16>Link Failed: Could not open the file %s'
@@ -350,7 +350,7 @@ module CDK
         input = self.getch([])
         if !self.checkBind(:VIEWER, input)
           case input
-          when CDK::KEY_TAB
+          when Cdk::KEY_TAB
             if @button_count > 1
               if @current_button == @button_count - 1
                 @current_button = 0
@@ -361,7 +361,7 @@ module CDK
               # Redraw the buttons.
               self.drawButtons
             end
-          when CDK::PREV
+          when Cdk::PREV
             if @button_count > 1
               if @current_button == 0
                 @current_button = @button_count - 1
@@ -377,28 +377,28 @@ module CDK
               @current_top -= 1
               refresh = true
             else
-              CDK.Beep
+              Cdk.Beep
             end
           when Curses::KEY_DOWN
             if @current_top < @max_top_line
               @current_top += 1
               refresh = true
             else
-              CDK.Beep
+              Cdk.Beep
             end
           when Curses::KEY_RIGHT
             if @left_char < @max_left_char
               @left_char += 1
               refresh = true
             else
-              CDK.Beep
+              Cdk.Beep
             end
           when Curses::KEY_LEFT
             if @left_char > 0
               @left_char -= 1
               refresh = true
             else
-              CDK.Beep
+              Cdk.Beep
             end
           when Curses::KEY_PPAGE
             if @current_top > 0
@@ -409,7 +409,7 @@ module CDK
               end
               refresh = true
             else
-              CDK.Beep
+              Cdk.Beep
             end
           when Curses::KEY_NPAGE
             if @current_top < @max_top_line
@@ -420,7 +420,7 @@ module CDK
               end
               refresh = true
             else
-              CDK.Beep
+              Cdk.Beep
             end
           when Curses::KEY_HOME
             @left_char = 0
@@ -440,7 +440,7 @@ module CDK
               @current_top = x
               refresh = true
             else
-              CDK.Beep
+              Cdk.Beep
             end
           when 'l'
             x = @current_top / 2
@@ -448,17 +448,17 @@ module CDK
               @current_top = x
               refresh = true
             else
-              CDK.Beep
+              Cdk.Beep
             end
           when '?'
-            @search_direction = CDK::VIEWER::UP
+            @search_direction = Cdk::VIEWER::UP
             self.getAndStorePattern(@screen)
             if !self.searchForWord(@search_pattern, @search_direction)
               self.PatternNotFound(@search_pattern)
             end
             refresh = true
           when '/'
-            @search_direction = CDK::VIEWER:DOWN
+            @search_direction = Cdk::VIEWER:DOWN
             self.getAndStorePattern(@screen)
             if !self.searchForWord(@search_pattern, @search_direction)
               self.PatternNotFound(@search_pattern)
@@ -482,20 +482,20 @@ module CDK
           when 'i', 's', 'S'
             self.popUpLabel(file_info)
             refresh = true
-          when CDK::KEY_ESC
+          when Cdk::KEY_ESC
             self.setExitType(input)
             return -1
           when Curses::Error
             self.setExitType(input)
             return -1
-          when Curses::KEY_ENTER, CDK::KEY_RETURN
+          when Curses::KEY_ENTER, Cdk::KEY_RETURN
             self.setExitType(input)
             return @current_button
-          when CDK::REFRESH
+          when Cdk::REFRESH
             @screen.erase
             @screen.refresh
           else
-            CDK.Beep
+            Cdk.Beep
           end
         end
 
@@ -511,17 +511,17 @@ module CDK
       temp = ''
 
       # Check the direction.
-      if @search_direction == CDK::VIEWER::UP
+      if @search_direction == Cdk::VIEWER::UP
         temp = '</5>Search Up  : <!5>'
       else
         temp = '</5>Search Down: <!5>'
       end
 
       # Pop up the entry field.
-      get_pattern = CDK::ENTRY.new(screen, CDK::CENTER, CDK::CENTER,
-          '', label, Curses.color_pair(5) | Curses::A_BOLD,
-          '.' | Curses.color_pair(5) | Curses::A_BOLD,
-          :MIXED, 10, 0, 256, true, false)
+      get_pattern = Cdk::ENTRY.new(screen, Cdk::CENTER, Cdk::CENTER,
+                                   '', label, Curses.color_pair(5) | Curses::A_BOLD,
+                                   '.' | Curses.color_pair(5) | Curses::A_BOLD,
+                                   :MIXED, 10, 0, 256, true, false)
 
       # Is there an old search pattern?
       if @search_pattern.size != 0
@@ -548,14 +548,14 @@ module CDK
 
       # If the pattern is empty then return.
       if pattern.size != 0
-        if direction == CDK::VIEWER::DOWN
+        if direction == Cdk::VIEWER::DOWN
           # Start looking from 'here' down.
           x = @current_top + 1
           while !found && x < @list_size
             pos = 0
             y = 0
             while y < @list[x].size
-              plain_char = CDK.CharOf(@list[x][y])
+              plain_char = Cdk.CharOf(@list[x][y])
 
               pos += 1
               if @CDK.CharOf(pattern[pos-1]) != plain_char
@@ -578,10 +578,10 @@ module CDK
             y = 0
             pos = 0
             while y < @list[x].size
-              plain_char = CDK.CharOf(@list[x][y])
+              plain_char = Cdk.CharOf(@list[x][y])
 
               pos += 1
-              if CDK.CharOf(pattern[pos-1]) != plain_char
+              if Cdk.CharOf(pattern[pos-1]) != plain_char
                 y -= (pos - 1)
                 pos = 0
               elsif pos == pattern.size
@@ -599,10 +599,10 @@ module CDK
 
     # This allows us to 'jump' to a given line in the file.
     def jumpToLine
-      newline = CDK::SCALE.new(@screen, CDK::CENTER, CDK::CENTER,
-          '<C>Jump To Line', '</5>Line :', Curses::A_BOLD,
-          @list_size.size + 1, @current_top + 1, 0, @max_top_line + 1,
-          1, 10, true, true)
+      newline = Cdk::SCALE.new(@screen, Cdk::CENTER, Cdk::CENTER,
+                               '<C>Jump To Line', '</5>Line :', Curses::A_BOLD,
+                               @list_size.size + 1, @current_top + 1, 0, @max_top_line + 1,
+                               1, 10, true, true)
       line = newline.activate([])
       newline.destroy
       return line - 1
@@ -611,8 +611,8 @@ module CDK
     # This pops a little message up on the screen.
     def popUpLabel(mesg)
       # Set up variables.
-      label = CDK::LABEL.new(@screen, CDK::CENTER, CDK::CENTER,
-          mesg, mesg.size, true, false)
+      label = Cdk::LABEL.new(@screen, Cdk::CENTER, Cdk::CENTER,
+                             mesg, mesg.size, true, false)
 
       # Draw the label and wait.
       label.draw(true)
@@ -654,13 +654,13 @@ module CDK
       # Redraw the buttons.
       (0...@button_count).each do |x|
         Draw.writeChtype(@win, @button_pos[x], @box_height - 2,
-            @button[x], CDK::HORIZONTAL, 0, @button_len[x])
+                         @button[x], Cdk::HORIZONTAL, 0, @button_len[x])
       end
 
       # Highlight the current button.
       (0...@button_len[@current_button]).each do |x|
         # Strip the character of any extra attributes.
-        character = CDK.CharOf(@button[@current_button][x])
+        character = Cdk.CharOf(@button[@current_button][x])
 
         # Add the character into the window.
         @win.mvwaddch(@box_height - 2, @button_pos[@current_button] + x,
@@ -689,21 +689,21 @@ module CDK
       self.cleanTitle
 
       # Clean up the windows.
-      CDK.deleteCursesWindow(@shadow_win)
-      CDK.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@win)
 
       # Clean the key bindings.
       self.cleanBindings(:VIEWER)
 
       # Unregister this object.
-      CDK::SCREEN.unregister(:VIEWER, self)
+      Cdk::Screen.unregister(:VIEWER, self)
     end
 
     # This function erases the viewer widget from the screen.
     def erase
       if self.validCDKObject
-        CDK.eraseCursesWindow(@win)
-        CDK.eraseCursesWindow(@shadow_win)
+        Cdk.eraseCursesWindow(@win)
+        Cdk.eraseCursesWindow(@shadow_win)
       end
     end
 
@@ -738,7 +738,7 @@ module CDK
         end
         Draw.writeChar(@win, 1,
             if list_adjust then @title_lines else 0 end + 1,
-            temp, CDK::HORIZONTAL, 0, temp.size)
+                       temp, Cdk::HORIZONTAL, 0, temp.size)
       end
 
       # Determine the last line to draw.
@@ -752,13 +752,13 @@ module CDK
 
           Draw.writeChtype(@win,
               if screen_pos >= 0 then screen_pos else 1 end,
-              x + @title_lines + if list_adjust then 1 else 0 end + 1,
-              @list[x + @current_top], CDK::HORIZONTAL,
+                           x + @title_lines + if list_adjust then 1 else 0 end + 1,
+                           @list[x + @current_top], Cdk::HORIZONTAL,
               if screen_pos >= 0
               then 0
               else @left_char - @list_pos[@current_top + x]
               end,
-              @list_len[x + @current_top])
+                           @list_len[x + @current_top])
         end
       end
 
@@ -776,9 +776,9 @@ module CDK
           @win.mvwaddch(@box_height - 3, x, @HZChar | boxattr)
         end
 
-        @win.mvwaddch(@box_height - 3, 0, CDK::ACS_LTEE | boxattr)
+        @win.mvwaddch(@box_height - 3, 0, Cdk::ACS_LTEE | boxattr)
         @win.mvwaddch(@box_height - 3, @win.maxx - 1,
-            CDK::ACS_RTEE | boxattr)
+                      Cdk::ACS_RTEE | boxattr)
       end
 
       # Draw the buttons. This will call refresh on the viewer win.

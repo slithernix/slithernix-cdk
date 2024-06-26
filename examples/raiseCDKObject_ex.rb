@@ -9,8 +9,8 @@ class RaiseCDKObjectExample < Example
   def RaiseCDKObjectExample.parse_opts(opts, param)
     opts.banner = 'Usage: raiseCDKObject_ex.rb [options]'
 
-    param.x_value = CDK::CENTER
-    param.y_value = CDK::BOTTOM
+    param.x_value = Cdk::CENTER
+    param.y_value = Cdk::BOTTOM
     param.box = true
     param.shadow = false
     super(opts, param)
@@ -22,7 +22,7 @@ class RaiseCDKObjectExample < Example
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     mesg1 = [
         "label1 label1 label1 label1 label1 label1 label1",
@@ -36,7 +36,7 @@ class RaiseCDKObjectExample < Example
         "label1 label1 label1 label1 label1 label1 label1",
         "label1 label1 label1 label1 label1 label1 label1"
     ]
-    label1 = CDK::LABEL.new(cdkscreen, 10, 4, mesg1, 10, true, false)
+    label1 = Cdk::LABEL.new(cdkscreen, 10, 4, mesg1, 10, true, false)
     label1.setULchar('1'.ord | Curses::A_BOLD)
 
     mesg2 = [
@@ -51,7 +51,7 @@ class RaiseCDKObjectExample < Example
         "label2 label2 label2 label2 label2 label2 label2",
         "label2 label2 label2 label2 label2 label2 label2"
     ]
-    label2 = CDK::LABEL.new(cdkscreen, 8, 8, mesg2, 10, true, false)
+    label2 = Cdk::LABEL.new(cdkscreen, 8, 8, mesg2, 10, true, false)
     label2.setULchar('2'.ord | Curses::A_BOLD)
 
     mesg3 = [
@@ -66,7 +66,7 @@ class RaiseCDKObjectExample < Example
         "label3 label3 label3 label3 label3 label3 label3",
         "label3 label3 label3 label3 label3 label3 label3"
     ]
-    label3 = CDK::LABEL.new(cdkscreen, 6, 12, mesg3, 10, true, false)
+    label3 = Cdk::LABEL.new(cdkscreen, 6, 12, mesg3, 10, true, false)
     label3.setULchar('3'.ord | Curses::A_BOLD)
 
     mesg4 = [
@@ -81,13 +81,13 @@ class RaiseCDKObjectExample < Example
         "label4 label4 label4 label4 label4 label4 label4",
         "label4 label4 label4 label4 label4 label4 label4"
     ]
-    label4 = CDK::LABEL.new(cdkscreen, 4, 16, mesg4, 10, true, false)
+    label4 = Cdk::LABEL.new(cdkscreen, 4, 16, mesg4, 10, true, false)
     label4.setULchar('4'.ord | Curses::A_BOLD)
 
     mesg = ["</B>#<!B> - raise </U>label#<!U>, </B>r<!B> - </U>redraw<!U>, "]
     mesg[0] << "</B>q<!B> - </U>quit<!U>"
-    instruct = CDK::LABEL.new(cdkscreen, params.x_value, params.y_value,
-        mesg, 1, params.box, params.shadow)
+    instruct = Cdk::LABEL.new(cdkscreen, params.x_value, params.y_value,
+                              mesg, 1, params.box, params.shadow)
 
     instruct.setULchar(' '.ord | Curses::A_NORMAL)
     instruct.setURchar(' '.ord | Curses::A_NORMAL)
@@ -106,13 +106,13 @@ class RaiseCDKObjectExample < Example
     while (ch = STDIN.getc.chr) != 'q'
       case ch
       when '1'
-        CDK::SCREEN.raiseCDKObject(:LABEL, label1)
+        Cdk::Screen.raiseCDKObject(:LABEL, label1)
       when '2'
-        CDK::SCREEN.raiseCDKObject(:LABEL, label2)
+        Cdk::Screen.raiseCDKObject(:LABEL, label2)
       when '3'
-        CDK::SCREEN.raiseCDKObject(:LABEL, label3)
+        Cdk::Screen.raiseCDKObject(:LABEL, label3)
       when '4'
-        CDK::SCREEN.raiseCDKObject(:LABEL, label4)
+        Cdk::Screen.raiseCDKObject(:LABEL, label4)
       when 'r'
         cdkscreen.refresh
       else
@@ -134,7 +134,7 @@ class RaiseCDKObjectExample < Example
     label4.destroy
     instruct.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     #ExitProgram (EXIT_SUCCESS);
   end
 end

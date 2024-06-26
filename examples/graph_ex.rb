@@ -8,8 +8,8 @@ class GraphExample < CLIExample
     # default values
     params.box = true
     params.shadow = false
-    params.x_value = CDK::CENTER
-    params.y_value = CDK::CENTER
+    params.x_value = Cdk::CENTER
+    params.y_value = Cdk::CENTER
     params.h_value = 10
     params.w_value = 20
 
@@ -21,10 +21,10 @@ class GraphExample < CLIExample
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     # Create the graph values.
     values = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
@@ -37,26 +37,26 @@ class GraphExample < CLIExample
     # Create the label values.
     mesg = ["Press any key when done viewing the graph."]
 
-    graph = CDK::GRAPH.new(cdkscreen, params.x_value, params.y_value,
-        params.h_value, params.w_value, title, xtitle, ytitle)
+    graph = Cdk::GRAPH.new(cdkscreen, params.x_value, params.y_value,
+                           params.h_value, params.w_value, title, xtitle, ytitle)
 
     # Is the graph null?
     if graph.nil?
       cdkscreen.destroy
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
 
       puts "Cannot make the graph widget.  Is the window too small?"
       exit #EXIT_FAILURE
     end
 
     # Create the label widget.
-    pausep = CDK::LABEL.new(cdkscreen, CDK::CENTER, CDK::BOTTOM, mesg, 1,
-        true, false)
+    pausep = Cdk::LABEL.new(cdkscreen, Cdk::CENTER, Cdk::BOTTOM, mesg, 1,
+                            true, false)
 
     if pausep.nil?
       graph.destroy
       cdkscreen.destroy
-      CDK::SCREEN.endCDK
+      Cdk::Screen.endCDK
 
       puts "Cannot make the label widget. Is the window too small?"
       exit  # EXIT_FAILURE
@@ -77,7 +77,7 @@ class GraphExample < CLIExample
     graph.destroy
     pausep.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     exit  # EXIT_SUCCESS
   end
 end

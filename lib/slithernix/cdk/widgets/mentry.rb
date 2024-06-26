@@ -1,7 +1,7 @@
-require_relative '../cdk_objs'
+require_relative '../objects'
 
-module CDK
-  class MENTRY < CDK::CDKOBJS
+module Cdk
+  class MENTRY < Cdk::Objects
     attr_accessor :info, :current_col, :current_row, :top_row
     attr_reader :disp_type, :field_width, :rows, :field_win
 
@@ -17,11 +17,11 @@ module CDK
 
       # If the field_width is a negative value, the field_width will be
       # COLS-field_width, otherwise the field_width will be the given width.
-      field_width = CDK.setWidgetDimension(parent_width, field_width, 0)
+      field_width = Cdk.setWidgetDimension(parent_width, field_width, 0)
 
       # If the field_rows is a negative value, the field_rows will be
       # ROWS-field_rows, otherwise the field_rows will be the given rows.
-      field_rows = CDK.setWidgetDimension(parent_width, field_rows, 0)
+      field_rows = Cdk.setWidgetDimension(parent_width, field_rows, 0)
       box_height = field_rows + 2
 
       # Set some basic values of the mentry field
@@ -32,7 +32,7 @@ module CDK
       # We need to translate the string label to a chtype array
       if label.size > 0
         label_len = []
-        @label = CDK.char2Chtype(label, label_len, [])
+        @label = Cdk.char2Chtype(label, label_len, [])
         @label_len = label_len[0]
       end
       box_width = @label_len + field_width + 2
@@ -52,7 +52,7 @@ module CDK
       # Rejustify the x and y positions if we need to.
       xtmp = [xplace]
       ytmp = [yplace]
-      CDK.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+      Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -114,7 +114,7 @@ module CDK
         newchar = Display.filterByDisplayType(mentry.disp_type, character)
 
         if newchar == Curses::Error
-          CDK.Beep
+          Cdk.Beep
         else
           mentry.info = mentry.info[0...cursor_pos] + newchar.chr +
               mentry.info[cursor_pos..-1]
@@ -216,7 +216,7 @@ module CDK
       end
 
       if !moved[0] && !redraw[0]
-        CDK.Beep
+        Cdk.Beep
         result = false
       end
       return result
@@ -289,7 +289,7 @@ module CDK
               moved = self.setCurPos(@current_row + 1, 0)
             end
             if !moved && !redraw
-              CDK.Beep
+              Cdk.Beep
             end
           when Curses::KEY_DOWN
             if @current_row != @rows - 1
@@ -302,7 +302,7 @@ module CDK
               end
             end
             if !moved && !redraw
-              CDK.Beep
+              Cdk.Beep
             end
           when Curses::KEY_UP
             if @current_row != 0
@@ -311,20 +311,20 @@ module CDK
               redraw = self.setTopRow(@top_row - 1)
             end
             if !moved && !redraw
-              CDK.Beep
+              Cdk.Beep
             end
           when Curses::KEY_BACKSPACE, Curses::KEY_DC
             if @disp_type == :VIEWONLY
-              CDK.Beep
+              Cdk.Beep
             elsif @info.length == 0
-              CDK.Beep
+              Cdk.Beep
             elsif input == Curses::KEY_DC
               cursor_pos = self.getCursorPos
               if cursor_pos < @info.size
                 @info = @info[0...cursor_pos] + @info[cursor_pos + 1..-1]
                 self.drawField
               else
-                CDK.Beep
+                Cdk.Beep
               end
             else
               mtmp = [moved]
@@ -338,48 +338,48 @@ module CDK
                   @info = @info[0...cursor_pos] + @info[cursor_pos + 1..-1]
                   self.drawField
                 else
-                  CDK.Beep
+                  Cdk.Beep
                 end
               end
             end
-          when CDK::TRANSPOSE
+          when Cdk::TRANSPOSE
             if cursor_pos >= @info.size - 1
-              CDK.Beep
+              Cdk.Beep
             else
               holder = @info[cursor_pos]
               @info[cursor_pos] = @info[cursor_pos + 1]
               @info[cursor_pos + 1] = holder
               self.drawField
             end
-          when CDK::ERASE
+          when Cdk::ERASE
             if @info.size != 0
               self.clean
               self.drawField
             end
-          when CDK::CUT
+          when Cdk::CUT
             if @info.size == 0
-              CDK.Beep
+              Cdk.Beep
             else
               @@g_paste_buffer = @info.clone
               self.clean
               self.drawField
             end
-          when CDK::COPY
+          when Cdk::COPY
             if @info.size == 0
-              CDK.Beep
+              Cdk.Beep
             else
               @@g_paste_buffer = @info.clone
             end
-          when CDK::PASTE
+          when Cdk::PASTE
             if @@g_paste_buffer.size == 0
-              CDK.Beep
+              Cdk.Beep
             else
               self.setValue(@@g_paste_buffer)
               self.draw(@box)
             end
-          when CDK::KEY_TAB, CDK::KEY_RETURN, Curses::KEY_ENTER
+          when Cdk::KEY_TAB, Cdk::KEY_RETURN, Curses::KEY_ENTER
             if @info.size < @min + 1
-              CDK.Beep
+              Cdk.Beep
             else
               self.setExitType(input)
               ret = @info
@@ -388,15 +388,15 @@ module CDK
           when Curses::Error
             self.setExitType(input)
             complete = true
-          when CDK::KEY_ESC
+          when Cdk::KEY_ESC
             self.setExitType(input)
             complete = true
-          when CDK::REFRESH
+          when Cdk::REFRESH
             @screen.erase
             @screen.refresh
           else
             if @disp_type == :VIEWONLY || @info.size >= @total_width
-              CDK.Beep
+              Cdk.Beep
             else
               @callbackfn.call(self, input)
             end
@@ -477,8 +477,8 @@ module CDK
 
       # Draw in the label to the widget.
       unless @label_win.nil?
-        Draw.writeChtype(@label_win, 0, 0, @label, CDK::HORIZONTAL,
-            0, @label_len)
+        Draw.writeChtype(@label_win, 0, 0, @label, Cdk::HORIZONTAL,
+                         0, @label_len)
         @label_win.refresh
       end
 
@@ -498,10 +498,10 @@ module CDK
     # This function erases the multiple line entry field from the screen.
     def erase
       if self.validCDKObject
-        CDK.eraseCursesWindow(@field_win)
-        CDK.eraseCursesWindow(@label_win)
-        CDK.eraseCursesWindow(@win)
-        CDK.eraseCursesWindow(@shadow_win)
+        Cdk.eraseCursesWindow(@field_win)
+        Cdk.eraseCursesWindow(@label_win)
+        Cdk.eraseCursesWindow(@win)
+        Cdk.eraseCursesWindow(@shadow_win)
       end
     end
 
@@ -510,16 +510,16 @@ module CDK
       self.cleanTitle
 
       # Clean up the windows.
-      CDK.deleteCursesWindow(@field_win)
-      CDK.deleteCursesWindow(@label_win)
-      CDK.deleteCursesWindow(@shadow_win)
-      CDK.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@field_win)
+      Cdk.deleteCursesWindow(@label_win)
+      Cdk.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@win)
 
       # Clean the key bindings.
       self.cleanBindings(:MENTRY)
 
       # Unregister this object.
-      CDK::SCREEN.unregister(:MENTRY, self)
+      Cdk::Screen.unregister(:MENTRY, self)
     end
 
     # This sets multiple attributes of the widget.

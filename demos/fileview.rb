@@ -16,18 +16,18 @@ class FileView
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = CDK::SCREEN.new(curses_win)
+    cdkscreen = Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    CDK::Draw.initCDKColor
+    Cdk::Draw.initCDKColor
 
     # Get the filename
     if filename == ''
       title = '<C>Pick a file.'
       label = 'File: '
-      fselect = CDK::FSELECT.new(cdkscreen, CDK::CENTER, CDK::CENTER,
-          20, 65, title, label, Curses::A_NORMAL, '_', Curses::A_REVERSE,
-          '</5>', '</48>', '</N>', '</N>', true, false)
+      fselect = Cdk::FSELECT.new(cdkscreen, Cdk::CENTER, Cdk::CENTER,
+                                 20, 65, title, label, Curses::A_NORMAL, '_', Curses::A_REVERSE,
+                                 '</5>', '</48>', '</N>', '</N>', true, false)
 
       # Set the starting directory.  This is not necessary because when
       # the file selector starts it uses the present directory as a default.
@@ -50,7 +50,7 @@ class FileView
         fselect.destroy
 
         cdkscreen.destroy
-        CDK::SCREEN.endCDK
+        Cdk::Screen.endCDK
 
         exit  # EXIT_SUCCESS
       end
@@ -59,8 +59,8 @@ class FileView
     end
 
     # Create the file viewer to view the file selected.
-    example = CDK::VIEWER.new(cdkscreen, CDK::CENTER, CDK::CENTER, 20, -2,
-        button, 2, Curses::A_REVERSE, true, false)
+    example = Cdk::VIEWER.new(cdkscreen, Cdk::CENTER, Cdk::CENTER, 20, -2,
+                              button, 2, Curses::A_REVERSE, true, false)
 
     # Could we create the viewer widget?
     if example.nil?
@@ -68,7 +68,7 @@ class FileView
       cdkscreen.destroy
 
       # End curses...
-      CDK.endCDK
+      Cdk.endCDK
 
       puts "Cannot create viewer. Is the window too small?"
       exit  # EXIT_FAILURE
@@ -77,7 +77,7 @@ class FileView
     # Open the file and read the contents.
 
     info = []
-    lines = CDK.readFile(filename, info)
+    lines = Cdk.readFile(filename, info)
     if lines == -1
       puts "Could not open %s" % [filename]
       exit  # EXIT_FAILURE
@@ -110,7 +110,7 @@ class FileView
     # Clean up
     example.destroy
     cdkscreen.destroy
-    CDK::SCREEN.endCDK
+    Cdk::Screen.endCDK
     #ExitProgram (EXIT_SUCCESS);
   end
 end

@@ -1,7 +1,7 @@
-require_relative '../cdk_objs'
+require_relative '../objects'
 
-module CDK
-  class TEMPLATE < CDK::CDKOBJS
+module Cdk
+  class TEMPLATE < Cdk::Objects
     def initialize(cdkscreen, xplace, yplace, title, label, plate,
         overlay, box, shadow)
       super()
@@ -27,14 +27,14 @@ module CDK
       # Translate the label string to achtype array
       if !(label.nil?) && label.size > 0
         label_len = []
-        @label = CDK.char2Chtype(label, label_len, [])
+        @label = Cdk.char2Chtype(label, label_len, [])
         @label_len = label_len[0]
       end
 
       # Translate the char * overlay to a chtype array
       if !(overlay.nil?) && overlay.size > 0
         overlay_len = []
-        @overlay = CDK.char2Chtype(overlay, overlay_len, [])
+        @overlay = Cdk.char2Chtype(overlay, overlay_len, [])
         @overlay_len = overlay_len[0]
         @field_attr = @overlay[0] & Curses::A_ATTRIBUTES
       else
@@ -61,7 +61,7 @@ module CDK
       # Rejustify the x and y positions if we need to.
       xtmp = [xplace]
       ytmp = [yplace]
-      CDK.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+      Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
       xpos = xtmp[0]
       ypos = ytmp[0]
 
@@ -152,7 +152,7 @@ module CDK
             else
               failed = true
             end
-          elsif CDK.isChar(input) && @plate_pos < @plate.size
+          elsif Cdk.isChar(input) && @plate_pos < @plate.size
             test[mark] = input.chr
             change = true
             amount = 1
@@ -171,7 +171,7 @@ module CDK
         end
 
         if failed
-          CDK.Beep
+          Cdk.Beep
         elsif change || moveby
           @info_pos += amount
           @plate_pos += amount
@@ -243,26 +243,26 @@ module CDK
           complete = true
         else
           case input
-          when CDK::ERASE
+          when Cdk::ERASE
             if @info.size > 0
               self.clean
               self.drawField
             end
-          when CDK::CUT
+          when Cdk::CUT
             if @info.size > 0
               @@g_paste_buffer = @info.clone
               self.clean
               self.drawField
             else
-              CDK.Beep
+              Cdk.Beep
             end
-          when CDK::COPY
+          when Cdk::COPY
             if @info.size > 0
               @@g_paste_buffer = @info.clone
             else
-              CDK.Beep
+              Cdk.Beep
             end
-          when CDK::PASTE
+          when Cdk::PASTE
             if @@g_paste_buffer.size > 0
               self.clean
 
@@ -272,23 +272,23 @@ module CDK
               end
               self.drawField
             else
-              CDK.Beep
+              Cdk.Beep
             end
-          when CDK::KEY_TAB, CDK::KEY_RETURN, Curses::KEY_ENTER
+          when Cdk::KEY_TAB, Cdk::KEY_RETURN, Curses::KEY_ENTER
             if @info.size < @min
-              CDK.Beep
+              Cdk.Beep
             else
               self.setExitType(input)
               ret = @info
               complete = true
             end
-          when CDK::KEY_ESC
+          when Cdk::KEY_ESC
             self.setExitType(input)
             complete = true
           when Curses::Error
             self.setExitType(input)
             complete = true
-          when CDK::REFRESH
+          when Cdk::REFRESH
             @screen.erase
             @screen.refresh
           else
@@ -315,7 +315,7 @@ module CDK
       ip = 0
       while ip < input.size && pp < @plate.size
         newchar = input[ip]
-        while pp < @plate.size && !CDK::TEMPLATE.isPlateChar(@plate[pp])
+        while pp < @plate.size && !Cdk::TEMPLATE.isPlateChar(@plate[pp])
           pp += 1
         end
         if pp == @plate.size
@@ -323,10 +323,10 @@ module CDK
         end
 
         # Check if the input matches the plate
-        if CDK.digit?(newchar) && 'ACc'.include?(@plate[pp])
+        if Cdk.digit?(newchar) && 'ACc'.include?(@plate[pp])
           return false
         end
-        if !CDK.digit?(newchar) && @plate[pp] == '#'
+        if !Cdk.digit?(newchar) && @plate[pp] == '#'
           return false
         end
 
@@ -352,7 +352,7 @@ module CDK
       if @info.size > 0
         mixed_string = ''
         while plate_pos < @plate_len && info_pos < @info.size
-          mixed_string << if CDK::TEMPLATE.isPlateChar(@plate[plate_pos])
+          mixed_string << if Cdk::TEMPLATE.isPlateChar(@plate[plate_pos])
                           then info_pos += 1; @info[info_pos - 1]
                           else @plate[plate_pos]
                           end
@@ -369,7 +369,7 @@ module CDK
       unmixed_string = ''
 
       while pos < @info.size
-        if CDK::TEMPLATE.isPlateChar(@plate[pos])
+        if Cdk::TEMPLATE.isPlateChar(@plate[pos])
           unmixed_string << info[pos]
         end
         pos += 1
@@ -410,22 +410,22 @@ module CDK
 
       # Draw in the label and the template object.
       unless @label_win.nil?
-        Draw.writeChtype(@label_win, 0, 0, @label, CDK::HORIZONTAL,
-            0, @label_len)
+        Draw.writeChtype(@label_win, 0, 0, @label, Cdk::HORIZONTAL,
+                         0, @label_len)
         @label_win.refresh
       end
 
       # Draw in the template
       if @overlay.size > 0
-        Draw.writeChtype(@field_win, 0, 0, @overlay, CDK::HORIZONTAL,
-            0, @overlay_len)
+        Draw.writeChtype(@field_win, 0, 0, @overlay, Cdk::HORIZONTAL,
+                         0, @overlay_len)
       end
 
       # Adjust the cursor.
       if @info.size > 0
         pos = 0
         (0...[@field_width, @plate.size].min).each do |x|
-          if CDK::TEMPLATE.isPlateChar(@plate[x]) && pos < @info.size
+          if Cdk::TEMPLATE.isPlateChar(@plate[x]) && pos < @info.size
             field_color = @overlay[x] & Curses::A_ATTRIBUTES
             @field_win.mvwaddch(0, x, @info[pos].ord | field_color)
             pos += 1
@@ -441,7 +441,7 @@ module CDK
     # Adjust the cursor for the template
     def adjustCursor(direction)
       while @plate_pos < [@field_width, @plate.size].min &&
-          !CDK::TEMPLATE.isPlateChar(@plate[@plate_pos])
+          !Cdk::TEMPLATE.isPlateChar(@plate[@plate_pos])
         @plate_pos += direction
         @screen_pos += direction
       end
@@ -463,24 +463,24 @@ module CDK
       self.cleanTitle
 
       # Delete the windows
-      CDK.deleteCursesWindow(@field_win)
-      CDK.deleteCursesWindow(@label_win)
-      CDK.deleteCursesWindow(@shadow_win)
-      CDK.deleteCursesWindow(@win)
+      Cdk.deleteCursesWindow(@field_win)
+      Cdk.deleteCursesWindow(@label_win)
+      Cdk.deleteCursesWindow(@shadow_win)
+      Cdk.deleteCursesWindow(@win)
 
       # Clean the key bindings.
       self.cleanBindings(:TEMPLATE)
 
-      CDK::SCREEN.unregister(:TEMPLATE, self)
+      Cdk::Screen.unregister(:TEMPLATE, self)
     end
 
     # Erase the widget.
     def erase
       if self.validCDKObject
-        CDK.eraseCursesWindow(@field_win)
-        CDK.eraseCursesWindow(@label_win)
-        CDK.eraseCursesWindow(@shadow_win)
-        CDK.eraseCursesWindow(@win)
+        Cdk.eraseCursesWindow(@field_win)
+        Cdk.eraseCursesWindow(@label_win)
+        Cdk.eraseCursesWindow(@shadow_win)
+        Cdk.eraseCursesWindow(@win)
       end
     end
 
