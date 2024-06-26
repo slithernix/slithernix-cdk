@@ -8,8 +8,8 @@ class ViewerExample < CLIExample
     # default values
     params.box = true
     params.shadow = false
-    params.x_value = Cdk::CENTER
-    params.y_value = Cdk::CENTER
+    params.x_value = Slithernix::Cdk::CENTER
+    params.y_value = Slithernix::Cdk::CENTER
     params.h_value = 20
     params.w_value = nil
     params.filename = ''
@@ -57,21 +57,21 @@ class ViewerExample < CLIExample
 
     # Start curses
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Start CDK colors.
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     f_select = nil
     if params.filename == ''
-      f_select = Cdk::FSELECT.new(cdkscreen, params.x_value, params.y_value,
+      f_select = Slithernix::Cdk::Widget::FSelect.new(cdkscreen, params.x_value, params.y_value,
                                   params.h_value, params.f_width, title, label, Curses::A_NORMAL,
                                   '_', Curses::A_REVERSE, '</5>', '</48>', '</N>', '</N',
                                   params.box, params.shadow)
 
       if f_select.nil?
         cdkscreen.destroy
-        Cdk::Screen.endCDK
+        Slithernix::Cdk::Screen.endCDK
 
         $stderr.puts 'Cannot create fselect-widget'
         exit  # EXIT_FAILURE
@@ -98,13 +98,13 @@ class ViewerExample < CLIExample
         # Exit CDK.
         f_select.destroy
         cdkscreen.destroy
-        Cdk::Screen.endCDK
+        Slithernix::Cdk::Screen.endCDK
         exit  # EXIT_SUCCESS
       end
     end
 
     # Create the file viewer to view the file selected.
-    example = Cdk::VIEWER.new(cdkscreen, params.x_value, params.y_value,
+    example = Slithernix::Cdk::Viewer.new(cdkscreen, params.x_value, params.y_value,
                               params.h_value, params.v_width, button, 2, Curses::A_REVERSE,
                               params.box, params.shadow)
 
@@ -112,7 +112,7 @@ class ViewerExample < CLIExample
     if example.nil?
       # Exit CDK.
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       puts "Cannot create the viewer. Is the window too small?"
       exit  # EXIT_FAILURE
@@ -127,9 +127,9 @@ class ViewerExample < CLIExample
     else
       example.set('reading...', 0, 0, Curses::A_REVERSE, true, true, true)
       # Open the file and read the contents.
-      lines = Cdk.readFile(params.filename, info)
+      lines = Slithernix::Cdk.readFile(params.filename, info)
       if lines == -1
-        Cdk::Screen.endCDK
+        Slithernix::Cdk::Screen.endCDK
         puts 'Could not open "%s"' % [params.filename]
         exit  # EXIT_FAILURE
       end
@@ -168,7 +168,7 @@ class ViewerExample < CLIExample
     # Clean up.
     example.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     exit  # EXIT_SUCCESS
   end
 end

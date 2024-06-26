@@ -13,13 +13,13 @@ class SelectionExample < CLIExample
     params.header =  ''
     params.footer = ''
 
-    params.x_value = Cdk::CENTER
+    params.x_value = Slithernix::Cdk::CENTER
     params.y_value = nil
     params.h_value = 10
     params.w_value = 50
     params.box = true
     params.c = false
-    params.spos = Cdk::RIGHT
+    params.spos = Slithernix::Cdk::RIGHT
     params.title = "<C></5>Pick one or more accounts."
     params.shadow = false
 
@@ -72,15 +72,15 @@ class SelectionExample < CLIExample
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     if params.header != ''
       list = [params.header]
-      header = Cdk::LABEL.new(cdkscreen, params.x_value,
-                              if params.y_value.nil? then Cdk::TOP else params.y_value end,
+      header = Slithernix::Cdk::Widget::Label.new(cdkscreen, params.x_value,
+                              if params.y_value.nil? then Slithernix::Cdk::TOP else params.y_value end,
                               list, 1, params.box, !params.shadow)
       unless header.nil?
         header.activate([])
@@ -89,8 +89,8 @@ class SelectionExample < CLIExample
 
     if params.footer != ''
       list = [params.footer]
-      footer = Cdk::LABEL.new(cdkscreen, params.x_value,
-                              if params.y_value.nil? then Cdk::BOTTOM else params.y_value end,
+      footer = Slithernix::Cdk::Widget::Label.new(cdkscreen, params.x_value,
+                              if params.y_value.nil? then Slithernix::Cdk::BOTTOM else params.y_value end,
                               list, 1, params.box, !params.shadow)
       unless footer.nil?
         footer.activate([])
@@ -98,8 +98,8 @@ class SelectionExample < CLIExample
     end
 
     # Create the selection list.
-    selection = Cdk::SELECTION.new(cdkscreen, params.x_value,
-                                   if params.y_value.nil? then Cdk::CENTER else params.y_value end,
+    selection = Slithernix::Cdk::Widget::Selection.new(cdkscreen, params.x_value,
+                                   if params.y_value.nil? then Slithernix::Cdk::CENTER else params.y_value end,
                                    params.spos, params.h_value, params.w_value,
                                    params.title,
         if params.c then [] else item end,
@@ -108,7 +108,7 @@ class SelectionExample < CLIExample
 
     if selection.nil?
       cdkscreen.destroyCDKScreen
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       puts "Cannot make selection list.  Is the window too small?"
       exit #EXIT_FAILURE
@@ -145,7 +145,7 @@ class SelectionExample < CLIExample
     # Clean up.
     selection.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     exit #EXIT_SUCCESS
   end
 end

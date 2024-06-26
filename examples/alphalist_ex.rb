@@ -41,8 +41,8 @@ class AlphalistExample < CLIExample
     # default values
     params.box = true
     params.shadow = false
-    params.x_value = Cdk::CENTER
-    params.y_value = Cdk::CENTER
+    params.x_value = Slithernix::Cdk::CENTER
+    params.y_value = Slithernix::Cdk::CENTER
     params.h_value = 0
     params.w_value = 0
     params.c = false
@@ -77,13 +77,13 @@ class AlphalistExample < CLIExample
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Create the alphalist list.
-    alpha_list = Cdk::ALPHALIST.new(cdkscreen,
+    alpha_list = Slithernix::Cdk::AlphaList.new(cdkscreen,
                                     params.x_value, params.y_value, params.h_value, params.w_value,
                                     title, label,
         if params.c then nil else user_list end,
@@ -92,13 +92,13 @@ class AlphalistExample < CLIExample
 
     if alpha_list.nil?
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       $stderr.puts "Cannot create widget."
       exit #EXIT_FAILURE
     end
 
-    do_delete = lambda do |cdktype, object, widget, key|
+    do_delete = lambda do |cdktype, widget, widget, key|
       size = []
       list = widget.getContents(size)
       size = size[0]
@@ -119,7 +119,7 @@ class AlphalistExample < CLIExample
       return result
     end
 
-    do_delete1 = lambda do |cdktype, object, widget, key|
+    do_delete1 = lambda do |cdktype, widget, widget, key|
       size = []
       list = widget.getContents(size)
       size = size[0]
@@ -143,7 +143,7 @@ class AlphalistExample < CLIExample
       return result
     end
 
-    do_help = lambda do |cdktype, object, client_data, key|
+    do_help = lambda do |cdktype, widget, client_data, key|
       message = [
           'Alpha List tests:',
           '',
@@ -157,7 +157,7 @@ class AlphalistExample < CLIExample
       return true
     end
 
-    do_reload = lambda do |cdktype, object, widget, key|
+    do_reload = lambda do |cdktype, widget, widget, key|
       result = false
 
       if @@my_user_list.size > 0
@@ -169,7 +169,7 @@ class AlphalistExample < CLIExample
       return result
     end
 
-    do_undo = lambda do |cdktype, object, widget, key|
+    do_undo = lambda do |cdktype, widget, widget, key|
       result = false
       if @@my_undo_list.size > 0
         size = []
@@ -188,12 +188,12 @@ class AlphalistExample < CLIExample
       return result
     end
 
-    alpha_list.bind(:ALPHALIST, '?', do_help, nil)
-    alpha_list.bind(:ALPHALIST, Cdk::KEY_F(1), do_help, nil)
-    alpha_list.bind(:ALPHALIST, Cdk::KEY_F(2), do_delete, alpha_list)
-    alpha_list.bind(:ALPHALIST, Cdk::KEY_F(3), do_delete1, alpha_list)
-    alpha_list.bind(:ALPHALIST, Cdk::KEY_F(4), do_reload, alpha_list)
-    alpha_list.bind(:ALPHALIST, Cdk::KEY_F(5), do_undo, alpha_list)
+    alpha_list.bind(:AlphaList, '?', do_help, nil)
+    alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(1), do_help, nil)
+    alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(2), do_delete, alpha_list)
+    alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(3), do_delete1, alpha_list)
+    alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(4), do_reload, alpha_list)
+    alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(5), do_undo, alpha_list)
 
     if params.c
       alpha_list.setContents(user_list, user_size)
@@ -222,7 +222,7 @@ class AlphalistExample < CLIExample
     # Clean up.
     alpha_list.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     exit  # EXIT_SUCCESS
   end
 end

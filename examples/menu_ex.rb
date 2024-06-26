@@ -4,8 +4,8 @@ require_relative 'example'
 class MenuExample < Example
   # This program demonstrates the Cdk menu widget.
   def MenuExample.main
-    menu_list = (0...Cdk::MENU::MAX_MENU_ITEMS).map {
-        [nil] * Cdk::MENU::MAX_SUB_ITEMS}.compact
+    menu_list = (0...Slithernix::Cdk::Widget::Menu::MAX_MENU_ITEMS).map {
+        [nil] * Slithernix::Cdk::Widget::Menu::MAX_SUB_ITEMS}.compact
     menu_info = [
         [
             "",
@@ -29,10 +29,10 @@ class MenuExample < Example
 
     # Set up CDK.
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Start color.
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Set up the menu.
     menu_list[0][0] = "</B>File<!B>"
@@ -51,7 +51,7 @@ class MenuExample < Example
 
     submenusize = [3, 4, 4]
 
-    menuloc = [Cdk::LEFT, Cdk::LEFT, Cdk::RIGHT]
+    menuloc = [Slithernix::Cdk::LEFT, Slithernix::Cdk::LEFT, Slithernix::Cdk::RIGHT]
 
     # Create the label window.
     mesg = [
@@ -61,12 +61,12 @@ class MenuExample < Example
         "                                          "
     ]
 
-    info_box = Cdk::LABEL.new(cdkscreen, Cdk::CENTER, Cdk::CENTER,
+    info_box = Slithernix::Cdk::Widget::Label.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
                               mesg, 4, true, true)
 
     # Create the menu.
-    menu = Cdk::MENU.new(cdkscreen, menu_list, 3, submenusize, menuloc,
-                         Cdk::TOP, Curses::A_UNDERLINE, Curses::A_REVERSE)
+    menu = Slithernix::Cdk::Widget::Menu.new(cdkscreen, menu_list, 3, submenusize, menuloc,
+                         Slithernix::Cdk::TOP, Curses::A_UNDERLINE, Curses::A_REVERSE)
 
     # Create the post process function
     display_callback = lambda do |cdktype, menu, info_box, key|
@@ -119,7 +119,7 @@ class MenuExample < Example
     menu.destroy
     info_box.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
 
     exit # EXIT_SUCCESS
   end

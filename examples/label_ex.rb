@@ -5,8 +5,8 @@ class LabelExample < Example
   def LabelExample.parse_opts(opts, param)
     opts.banner = 'Usage: label_ex.rb [options]'
 
-    param.x_value = Cdk::CENTER
-    param.y_value = Cdk::CENTER
+    param.x_value = Slithernix::Cdk::CENTER
+    param.y_value = Slithernix::Cdk::CENTER
     param.box = true
     param.shadow = true
     super(opts, param)
@@ -21,10 +21,10 @@ class LabelExample < Example
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Set the labels up.
     mesg = [
@@ -35,7 +35,7 @@ class LabelExample < Example
     ]
 
     # Declare the labels.
-    demo = Cdk::LABEL.new(cdkscreen,
+    demo = Slithernix::Cdk::Widget::Label.new(cdkscreen,
                           params.x_value, params.y_value, mesg, 4,
                           params.box, params.shadow)
 
@@ -58,7 +58,7 @@ class LabelExample < Example
     # Clean up
     demo.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     #ExitProgram (EXIT_SUCCESS);
   end
 end

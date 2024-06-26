@@ -5,8 +5,8 @@ class TemplateExample < Example
   def TemplateExample.parse_opts(opts, param)
     opts.banner = 'Usage: template_ex.rb [options]'
 
-    param.x_value = Cdk::CENTER
-    param.y_value = Cdk::CENTER
+    param.x_value = Slithernix::Cdk::CENTER
+    param.y_value = Slithernix::Cdk::CENTER
     param.box = true
     param.shadow = false
     super(opts, param)
@@ -23,19 +23,19 @@ class TemplateExample < Example
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Declare the template.
-    phone_number = Cdk::TEMPLATE.new(cdkscreen, params.x_value, params.y_value,
+    phone_number = Slithernix::Cdk::Widget::Template.new(cdkscreen, params.x_value, params.y_value,
                                      title, label, plate, overlay, params.box, params.shadow)
 
     if phone_number.nil?
       # Exit CDK.
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       puts 'Cannot create template. Is the window too small?'
       exit  # EXIT_FAILURE
@@ -70,7 +70,7 @@ class TemplateExample < Example
     # Clean up
     phone_number.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     #ExitProgram (EXIT_SUCCESS);
   end
 end

@@ -16,16 +16,16 @@ class FileView
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Get the filename
     if filename == ''
       title = '<C>Pick a file.'
       label = 'File: '
-      fselect = Cdk::FSELECT.new(cdkscreen, Cdk::CENTER, Cdk::CENTER,
+      fselect = Slithernix::Cdk::Widget::FSelect.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
                                  20, 65, title, label, Curses::A_NORMAL, '_', Curses::A_REVERSE,
                                  '</5>', '</48>', '</N>', '</N>', true, false)
 
@@ -50,7 +50,7 @@ class FileView
         fselect.destroy
 
         cdkscreen.destroy
-        Cdk::Screen.endCDK
+        Slithernix::Cdk::Screen.endCDK
 
         exit  # EXIT_SUCCESS
       end
@@ -59,7 +59,7 @@ class FileView
     end
 
     # Create the file viewer to view the file selected.
-    example = Cdk::VIEWER.new(cdkscreen, Cdk::CENTER, Cdk::CENTER, 20, -2,
+    example = Slithernix::Cdk::Viewer.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, 20, -2,
                               button, 2, Curses::A_REVERSE, true, false)
 
     # Could we create the viewer widget?
@@ -68,7 +68,7 @@ class FileView
       cdkscreen.destroy
 
       # End curses...
-      Cdk.endCDK
+      Slithernix::Cdk.endCDK
 
       puts "Cannot create viewer. Is the window too small?"
       exit  # EXIT_FAILURE
@@ -77,7 +77,7 @@ class FileView
     # Open the file and read the contents.
 
     info = []
-    lines = Cdk.readFile(filename, info)
+    lines = Slithernix::Cdk.readFile(filename, info)
     if lines == -1
       puts "Could not open %s" % [filename]
       exit  # EXIT_FAILURE
@@ -110,7 +110,7 @@ class FileView
     # Clean up
     example.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     #ExitProgram (EXIT_SUCCESS);
   end
 end

@@ -7,8 +7,8 @@ class ItemlistExample < Example
   def ItemlistExample.parse_opts(opts, param)
     opts.banner = 'Usage: itemlist_ex.rb [options]'
 
-    param.x_value = Cdk::CENTER
-    param.y_value = Cdk::CENTER
+    param.x_value = Slithernix::Cdk::CENTER
+    param.y_value = Slithernix::Cdk::CENTER
     param.box = true
     param.shadow = false
     param.c = false
@@ -34,10 +34,10 @@ class ItemlistExample < Example
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Create the choice list.
     info = [
@@ -56,7 +56,7 @@ class ItemlistExample < Example
     ]
 
     # Create the itemlist widget.
-    monthlist = Cdk::ITEMLIST.new(
+    monthlist = Slithernix::Cdk::Widget::ItemList.new(
       cdkscreen,
       params.x_value,
       params.y_value,
@@ -73,7 +73,7 @@ class ItemlistExample < Example
     if monthlist.nil?
       # Clean up.
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       puts "Cannot create the itemlist box. Is the window too small?"
       exit
@@ -96,7 +96,7 @@ class ItemlistExample < Example
       monthlist.screen.popupLabel(mesg, 3)
     elsif monthlist.exit_type == :NORMAL
       human_count_choice = choice + 1
-      suffix = case human_count_choice % 10
+      suffix = case human_count_choice
         when 1 then 'st'
         when 2 then 'nd'
         when 3 then 'rd'
@@ -116,7 +116,7 @@ class ItemlistExample < Example
     # Clean up
     monthlist.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     #ExitProgram (EXIT_SUCCESS);
   end
 end

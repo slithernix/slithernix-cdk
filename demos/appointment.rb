@@ -26,7 +26,7 @@ class Appointment
     lines = []
 
     # Read the appointment file.
-    lines_read = Cdk.readFile(filename, lines)
+    lines_read = Slithernix::Cdk.readFile(filename, lines)
     if lines_read == -1
       app_info.count = 0
       return
@@ -34,7 +34,7 @@ class Appointment
 
     # Split each line up and create an appointment.
     (0...lines_read).each do |x|
-      temp = lines[x].split(Cdk.CTRL('V').chr)
+      temp = lines[x].split(Slithernix::Cdk.CTRL('V').chr)
       segments =  temp.size
 
       # A valid line has 5 elements:
@@ -65,11 +65,11 @@ class Appointment
     app_info.appointment.each do |appointment|
       if appointment.description != ''
         fd.puts '%d%c%d%c%d%c%d%c%s' % [
-          appointment.day, Cdk.CTRL('V').chr,
-          appointment.month, Cdk.CTRL('V').chr,
-          appointment.year, Cdk.CTRL('V').chr,
+          appointment.day, Slithernix::Cdk.CTRL('V').chr,
+          appointment.month, Slithernix::Cdk.CTRL('V').chr,
+          appointment.year, Slithernix::Cdk.CTRL('V').chr,
           Appointment::AppointmentType.index(appointment.type),
-          Cdk.CTRL('V').chr, appointment.description]
+          Slithernix::Cdk.CTRL('V').chr, appointment.description]
       end
     end
     fd.close
@@ -126,27 +126,27 @@ class Appointment
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Create the calendar widget.
-    calendar = Cdk::CALENDAR.new(cdkscreen, Cdk::CENTER, Cdk::CENTER,
+    calendar = Slithernix::Cdk::Widget::Calendar.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
                                  title, day, month, year, Curses::A_NORMAL, Curses::A_NORMAL,
                                  Curses::A_NORMAL, Curses::A_REVERSE, true, false)
 
     # Is the widget nil?
     if calendar.nil?
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       puts "Cannot create the calendar. Is the window too small?"
       exit  # EXIT_FAILURE
     end
 
     # This adds a marker to the calendar.
-    create_calendar_mark_cb = lambda do |object_type, calendar, info, key|
+    create_calendar_mark_cb = lambda do |widget_type, calendar, info, key|
       items = [
           'Birthday',
           'Anniversary',
@@ -155,8 +155,8 @@ class Appointment
       ]
 
       # Create the itemlist widget.
-      itemlist = Cdk::ITEMLIST.new(calendar.screen,
-                                   Cdk::CENTER, Cdk::CENTER, '', 'Select Appointment Type: ',
+      itemlist = Slithernix::Cdk::Widget::ItemList.new(calendar.screen,
+                                   Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, '', 'Select Appointment Type: ',
                                    items, items.size, 0, true, false)
 
       # Get the appointment type from the user.
@@ -175,7 +175,7 @@ class Appointment
       marker = Appointment::GPAppointmentAttributes[selection]
 
       # Create the entry field for the description.
-      entry = Cdk::ENTRY.new(calendar.screen, Cdk::CENTER, Cdk::CENTER,
+      entry = Slithernix::Cdk::Widget::Entry.new(calendar.screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
                              '<C>Enter a description of the appointment.',
                              'Description: ', Curses::A_NORMAL, '.'.ord, :MIXED, 40, 1, 512,
                              true, false)
@@ -213,7 +213,7 @@ class Appointment
     end
 
     # This removes a marker from the calendar.
-    remove_calendar_mark_cb = lambda do |object_type, calendar, info, key|
+    remove_calendar_mark_cb = lambda do |widget_type, calendar, info, key|
       info.appointment.each do |appointment|
         if appointment.day == calendar.day &&
             appointment.month == calendar.month &&
@@ -232,7 +232,7 @@ class Appointment
     end
 
     # This displays the marker(s) on the given day.
-    display_calendar_mark_cb = lambda do |object_type, calendar, info, key|
+    display_calendar_mark_cb = lambda do |widget_type, calendar, info, key|
       found = 0
       type = ''
       mesg = []
@@ -284,7 +284,7 @@ class Appointment
       end
 
       # Create the label widget
-      label = Cdk::LABEL.new(calendar.screen, Cdk::CENTER, Cdk::CENTER,
+      label = Slithernix::Cdk::Widget::Label.new(calendar.screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
                              mesg, mesg.size, true, false)
       label.draw(label.box)
       label.wait(' ')
@@ -296,18 +296,18 @@ class Appointment
     end
 
     # This allows the user to accelerate to a given date.
-    accelerate_to_date_cb = lambda do |object_type, object, client_data, key|
+    accelerate_to_date_cb = lambda do |widget_type, widget, client_data, key|
       return false
     end
 
     # Create a key binding to mark days on the calendar.
-    calendar.bind(:CALENDAR, 'm', create_calendar_mark_cb, appointment_info)
-    calendar.bind(:CALENDAR, 'M', create_calendar_mark_cb, appointment_info)
-    calendar.bind(:CALENDAR, 'r', remove_calendar_mark_cb, appointment_info)
-    calendar.bind(:CALENDAR, 'R', remove_calendar_mark_cb, appointment_info)
-    calendar.bind(:CALENDAR, '?', display_calendar_mark_cb, appointment_info)
-    calendar.bind(:CALENDAR, 'j', accelerate_to_date_cb, appointment_info)
-    calendar.bind(:CALENDAR, 'J', accelerate_to_date_cb, appointment_info)
+    calendar.bind(:Calendar, 'm', create_calendar_mark_cb, appointment_info)
+    calendar.bind(:Calendar, 'M', create_calendar_mark_cb, appointment_info)
+    calendar.bind(:Calendar, 'r', remove_calendar_mark_cb, appointment_info)
+    calendar.bind(:Calendar, 'R', remove_calendar_mark_cb, appointment_info)
+    calendar.bind(:Calendar, '?', display_calendar_mark_cb, appointment_info)
+    calendar.bind(:Calendar, 'j', accelerate_to_date_cb, appointment_info)
+    calendar.bind(:Calendar, 'J', accelerate_to_date_cb, appointment_info)
 
     # Set all the appointments read from the file.
     appointment_info.appointment.each do |appointment|
@@ -330,7 +330,7 @@ class Appointment
     # Clean up.
     calendar.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     exit  # EXIT_SUCCESS
   end
 end

@@ -8,8 +8,8 @@ class SwindowExample < CLIExample
     # default values
     params.box = true
     params.shadow = false
-    params.x_value = Cdk::CENTER
-    params.y_value = Cdk::CENTER
+    params.x_value = Slithernix::Cdk::CENTER
+    params.y_value = Slithernix::Cdk::CENTER
     params.h_value = 6
     params.w_value = 65
 
@@ -25,13 +25,13 @@ class SwindowExample < CLIExample
 
     # Start curses
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Start CDK colors.
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Create the scrolling window.
-    swindow = Cdk::SWINDOW.new(
+    swindow = Slithernix::Cdk::Widget::SWindow.new(
       cdkscreen,
       params.x_value,
       params.y_value,
@@ -47,7 +47,7 @@ class SwindowExample < CLIExample
     if swindow.nil?
       # Exit CDK.
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       puts "Cannot create the scrolling window. Is the window too small?"
       exit  # EXIT_FAILURE
@@ -57,37 +57,37 @@ class SwindowExample < CLIExample
     swindow.draw(swindow.box)
 
     # Load up the scrolling window.
-    swindow.add('<C></11>TOP: This is the first line.', Cdk::BOTTOM)
-    swindow.add('<C>Sleeping for 1 second.', Cdk::BOTTOM)
+    swindow.add('<C></11>TOP: This is the first line.', Slithernix::Cdk::BOTTOM)
+    swindow.add('<C>Sleeping for 1 second.', Slithernix::Cdk::BOTTOM)
     sleep(1)
 
-    swindow.add('<L></11>1: This is another line.', Cdk::BOTTOM)
-    swindow.add('<C>Sleeping for 1 second', Cdk::BOTTOM)
+    swindow.add('<L></11>1: This is another line.', Slithernix::Cdk::BOTTOM)
+    swindow.add('<C>Sleeping for 1 second', Slithernix::Cdk::BOTTOM)
     sleep(1)
 
-    swindow.add('<C></11>2: This is another line.', Cdk::BOTTOM)
-    swindow.add('<C>Sleeping for 1 second.', Cdk::BOTTOM)
+    swindow.add('<C></11>2: This is another line.', Slithernix::Cdk::BOTTOM)
+    swindow.add('<C>Sleeping for 1 second.', Slithernix::Cdk::BOTTOM)
     sleep(1)
 
-    swindow.add('<R></11>3: This is another line.', Cdk::BOTTOM)
-    swindow.add('<C>Sleeping for 1 second', Cdk::BOTTOM)
+    swindow.add('<R></11>3: This is another line.', Slithernix::Cdk::BOTTOM)
+    swindow.add('<C>Sleeping for 1 second', Slithernix::Cdk::BOTTOM)
     sleep(1)
 
-    swindow.add('<C></11>4: This is another line.', Cdk::BOTTOM)
-    swindow.add('<C>Sleeping for 1 second.', Cdk::BOTTOM)
+    swindow.add('<C></11>4: This is another line.', Slithernix::Cdk::BOTTOM)
+    swindow.add('<C>Sleeping for 1 second.', Slithernix::Cdk::BOTTOM)
     sleep(1)
 
-    swindow.add('<L></11>5: This is another line.', Cdk::BOTTOM)
-    swindow.add('<C>Sleeping for 1 second', Cdk::BOTTOM)
+    swindow.add('<L></11>5: This is another line.', Slithernix::Cdk::BOTTOM)
+    swindow.add('<C>Sleeping for 1 second', Slithernix::Cdk::BOTTOM)
     sleep(1)
 
-    swindow.add('<C></11>6: This is another line.', Cdk::BOTTOM)
-    swindow.add('<C>Sleeping for 1 second.', Cdk::BOTTOM)
+    swindow.add('<C></11>6: This is another line.', Slithernix::Cdk::BOTTOM)
+    swindow.add('<C>Sleeping for 1 second.', Slithernix::Cdk::BOTTOM)
     sleep(1)
 
-    swindow.add('<C>Done. You can now play.', Cdk::BOTTOM)
+    swindow.add('<C>Done. You can now play.', Slithernix::Cdk::BOTTOM)
 
-    swindow.add('<C>This is being added to the top.', Cdk::TOP)
+    swindow.add('<C>This is being added to the top.', Slithernix::Cdk::TOP)
 
     # Activate the scrolling window.
     swindow.activate([])
@@ -112,7 +112,7 @@ class SwindowExample < CLIExample
     # Clean up.
     swindow.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     exit # EXIT_SUCCESS
   end
 end

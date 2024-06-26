@@ -8,12 +8,12 @@ class RadioExample < CLIExample
     # default values
     params.box = true
     params.shadow = false
-    params.x_value = Cdk::CENTER
-    params.y_value = Cdk::CENTER
+    params.x_value = Slithernix::Cdk::CENTER
+    params.y_value = Slithernix::Cdk::CENTER
     params.h_value = 10
     params.w_value = 40
     params.c = false
-    params.spos = Cdk::RIGHT
+    params.spos = Slithernix::Cdk::RIGHT
     params.title = "<C></5>Select a filename"
 
     super(opts, params)
@@ -43,7 +43,7 @@ class RadioExample < CLIExample
 
     # Use the current directory list to fill the radio list
     item = []
-    count = Cdk.getDirectoryContents(".", item)
+    count = Slithernix::Cdk.getDirectoryContents(".", item)
     if count <= 0
       $stderr.puts "Cannot get directory list"
       exit  # EXIT_FAILURE
@@ -51,13 +51,13 @@ class RadioExample < CLIExample
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Create the radio list.
-    radio = Cdk::RADIO.new(cdkscreen,
+    radio = Slithernix::Cdk::Widget::Radio.new(cdkscreen,
                            params.x_value, params.y_value, params.spos,
                            params.h_value, params.w_value, params.title,
         if params.c then [] else item end,
@@ -67,7 +67,7 @@ class RadioExample < CLIExample
 
     if radio.nil?
       cdkscreen.destroyCDKScreen
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       puts "Cannot make radio widget.  Is the window too small?"
       exit #EXIT_FAILURE
@@ -102,7 +102,7 @@ class RadioExample < CLIExample
           ]
           cdkscreen.popupLabel(mesg, 4)
           nitem = []
-          count = Cdk.getDirectoryContents(item[selection], nitem)
+          count = Slithernix::Cdk.getDirectoryContents(item[selection], nitem)
           if count > 0
             Dir.chdir(item[selection])
             item = nitem
@@ -123,7 +123,7 @@ class RadioExample < CLIExample
     # Clean up.
     radio.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     exit #EXIT_SUCCESS
   end
 end

@@ -98,7 +98,7 @@ class Vinstall
 
     file_list = []
     # Open the file list file and read it in.
-    count = Cdk.readFile(filename, file_list)
+    count = Slithernix::Cdk.readFile(filename, file_list)
     if count == 0
       $stderr.puts '%s: Input filename <%s> is empty.' % [ARGV[0], filename]
     end
@@ -110,10 +110,10 @@ class Vinstall
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Create the title label.
     title_mesg = [
@@ -121,10 +121,10 @@ class Vinstall
       title == '' ? '<C></32/B>CDK Installer' : '<C></32/B>%.256s' % [title],
       '<C></32/B><#HL(30)>'
     ]
-    title_win = Cdk::LABEL.new(
+    title_win = Slithernix::Cdk::Widget::Label.new(
       cdkscreen,
-      Cdk::CENTER,
-      Cdk::TOP,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::TOP,
       title_mesg,
       3,
       false,
@@ -136,9 +136,9 @@ class Vinstall
 
     # Allow them to change the install directory.
     if source_path == ''
-      source_entry = Cdk::ENTRY.new(
+      source_entry = Slithernix::Cdk::Widget::Entry.new(
         cdkscreen,
-        Cdk::CENTER,
+        Slithernix::Cdk::CENTER,
         8,
         '',
         'Source Directory        :',
@@ -154,9 +154,9 @@ class Vinstall
     end
 
     if dest_path == ''
-      dest_entry = Cdk::ENTRY.new(
+      dest_entry = Slithernix::Cdk::Widget::Entry.new(
         cdkscreen,
-        Cdk::CENTER,
+        Slithernix::Cdk::CENTER,
         11,
         '',
         'Destination Directory:',
@@ -198,7 +198,7 @@ class Vinstall
       # Clean up and leave.
       title_win.destroy
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
       exit  # EXIT_FAILURE
     end
 
@@ -206,31 +206,31 @@ class Vinstall
     if Vinstall.verifyDirectory(cdkscreen, dest_dir) != 0
       title_win.destroy
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
       exit  # EXIT_FAILURE
     end
 
     # Create the histogram.
-    progress_bar = Cdk::HISTOGRAM.new(
+    progress_bar = Slithernix::Cdk::Widget::Histogram.new(
       cdkscreen,
-      Cdk::CENTER,
+      Slithernix::Cdk::CENTER,
       5,
       3,
       0,
-      Cdk::HORIZONTAL,
+      Slithernix::Cdk::HORIZONTAL,
       '<C></56/B>Install Progress',
       true,
       false,
     )
 
     # Set the top left/right characters of the histogram.
-    progress_bar.setLLchar(Cdk::ACS_LTEE)
-    progress_bar.setLRchar(Cdk::ACS_RTEE)
+    progress_bar.setLLchar(Slithernix::Cdk::ACS_LTEE)
+    progress_bar.setLRchar(Slithernix::Cdk::ACS_RTEE)
 
     # Set the initial value fo the histgoram.
     progress_bar.set(
       :PERCENT,
-      Cdk::TOP,
+      Slithernix::Cdk::TOP,
       Curses::A_BOLD,
       1,
       count,
@@ -246,10 +246,10 @@ class Vinstall
     end
 
     # Create the scrolling window.
-    install_output = Cdk::SWINDOW.new(
+    install_output = Slithernix::Cdk::Widget::SWindow.new(
       cdkscreen,
-      Cdk::CENTER,
-      Cdk::BOTTOM,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::BOTTOM,
       swindow_height,
       0,
       '<C></56/B>Install Results',
@@ -259,8 +259,8 @@ class Vinstall
     )
 
     # Set the top left/right characters of the scrolling window.
-    install_output.setULchar(Cdk::ACS_LTEE)
-    install_output.setURchar(Cdk::ACS_RTEE)
+    install_output.setULchar(Slithernix::Cdk::ACS_LTEE)
+    install_output.setURchar(Slithernix::Cdk::ACS_RTEE)
 
     # Draw the screen.
     cdkscreen.draw
@@ -295,11 +295,11 @@ class Vinstall
       end
 
       # Add the message to the scrolling window.
-      install_output.add(temp, Cdk::BOTTOM)
+      install_output.add(temp, Slithernix::Cdk::BOTTOM)
       install_output.draw(install_output.box)
 
       # Update the histogram.
-      progress_bar.set(:PERCENT, Cdk::TOP, Curses::A_BOLD, 1, count,
+      progress_bar.set(:PERCENT, Slithernix::Cdk::TOP, Curses::A_BOLD, 1, count,
                        x + 1, Curses.color_pair(24) | Curses::A_REVERSE | ' '.ord, true)
 
       # Update the screen.
@@ -363,7 +363,7 @@ class Vinstall
     progress_bar.destroy
     install_output.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     exit  # EXIT_SUCCESS
   end
 end

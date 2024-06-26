@@ -5,8 +5,8 @@ class MentryExample < Example
   def MentryExample.parse_opts(opts, param)
     opts.banner = 'Usage: mentry_ex.rb [options]'
 
-    param.x_value = Cdk::CENTER
-    param.y_value = Cdk::CENTER
+    param.x_value = Slithernix::Cdk::CENTER
+    param.y_value = Slithernix::Cdk::CENTER
     param.box = true
     param.shadow = false
     param.w = 20
@@ -38,12 +38,12 @@ class MentryExample < Example
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
-    widget = Cdk::MENTRY.new(cdkscreen, params.x_value, params.y_value,
+    widget = Slithernix::Cdk::Widget::MEntry.new(cdkscreen, params.x_value, params.y_value,
                              title, label, Curses::A_BOLD, '.', :MIXED, params.w, params.h,
                              params.rows, 0, params.box, params.shadow)
 
@@ -51,9 +51,9 @@ class MentryExample < Example
     if widget.nil?
       # Clean up.
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
-      puts "Cannot create CDK object. Is the window too small?"
+      puts "Cannot create CDK widget. Is the window too small?"
       exit  # EXIT_FAILURE
     end
 
@@ -71,7 +71,7 @@ class MentryExample < Example
     # Clean up.
     widget.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
 
     puts "\n\n"
     puts "Your message was : <%s>" % [info]

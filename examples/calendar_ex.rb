@@ -5,8 +5,8 @@ class CalendarExample < Example
   def CalendarExample.parse_opts(opts, param)
     opts.banner = 'Usage: calendar_ex.rb [options]'
 
-    param.x_value = Cdk::CENTER
-    param.y_value = Cdk::CENTER
+    param.x_value = Slithernix::Cdk::CENTER
+    param.y_value = Slithernix::Cdk::CENTER
     param.box = true
     param.shadow = false
     param.day = 0
@@ -60,13 +60,13 @@ class CalendarExample < Example
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Declare the calendar widget.
-    calendar = Cdk::CALENDAR.new(cdkscreen, params.x_value, params.y_value,
+    calendar = Slithernix::Cdk::Widget::Calendar.new(cdkscreen, params.x_value, params.y_value,
                                  params.title, params.day, params.month, params.year,
                                  Curses.color_pair(16) | Curses::A_BOLD,
                                  Curses.color_pair(24) | Curses::A_BOLD,
@@ -77,31 +77,31 @@ class CalendarExample < Example
     if calendar.nil?
       # Exit CDK.
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       puts 'Cannot create the calendar. Is the window too small?'
       exit  # EXIT_FAILURE
     end
 
     # This adds a marker ot the calendar.
-    create_calendar_mark = lambda do |object_type, calendar, client_data, key|
+    create_calendar_mark = lambda do |widget_type, calendar, client_data, key|
       calendar.setMarker(calendar.day, calendar.month, calendar.year)
       calendar.draw(calendar.box)
       return false
     end
 
     # This removes a marker from the calendar.
-    remove_calendar_mark = lambda do |object_type, calendar, client_data, key|
+    remove_calendar_mark = lambda do |widget_type, calendar, client_data, key|
       calendar.removeMarker(calendar.day, calendar.month, calendar.year)
       calendar.draw(calendar.box)
       return false
     end
 
     # Create a key binding to mark days on the calendar.
-    calendar.bind(:CALENDAR, 'm', create_calendar_mark, calendar)
-    calendar.bind(:CALENDAR, 'M', create_calendar_mark, calendar)
-    calendar.bind(:CALENDAR, 'r', remove_calendar_mark, calendar)
-    calendar.bind(:CALENDAR, 'R', remove_calendar_mark, calendar)
+    calendar.bind(:Calendar, 'm', create_calendar_mark, calendar)
+    calendar.bind(:Calendar, 'M', create_calendar_mark, calendar)
+    calendar.bind(:Calendar, 'r', remove_calendar_mark, calendar)
+    calendar.bind(:Calendar, 'R', remove_calendar_mark, calendar)
 
     calendar.week_base = params.week_base
 
@@ -129,7 +129,7 @@ class CalendarExample < Example
     # Clean up
     calendar.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     $stdout.flush
     puts 'Selected Time: %s' % ret_val.ctime
     #ExitProgram (EXIT_SUCCESS);

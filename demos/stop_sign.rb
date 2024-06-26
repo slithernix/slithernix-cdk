@@ -5,10 +5,10 @@ class StopSign
   def StopSign.main
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Set the labels up.
     mesg = [
@@ -25,9 +25,9 @@ class StopSign
     ]
 
     # Declare the labels.
-    title = Cdk::LABEL.new(cdkscreen, Cdk::CENTER, Cdk::TOP,
+    title = Slithernix::Cdk::Widget::Label.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::TOP,
                            mesg, 5, false, false)
-    stop_sign = Cdk::LABEL.new(cdkscreen, Cdk::CENTER, Cdk::CENTER,
+    stop_sign = Slithernix::Cdk::Widget::Label.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
                                sign, 3, true, true)
 
     # Do this until they hit q or escape.
@@ -36,7 +36,7 @@ class StopSign
       stop_sign.draw(true)
 
       key = stop_sign.getch([])
-      if key == Cdk::KEY_ESC || key == 'q' || key == 'Q'
+      if key == Slithernix::Cdk::KEY_ESC || key == 'q' || key == 'Q'
         break
       elsif key == 'r' || key == 'R'
         sign[0] = ' </B/16><#DI> '
@@ -60,7 +60,7 @@ class StopSign
     title.destroy
     stop_sign.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     #ExitProgram (EXIT_SUCCESS);
   end
 end

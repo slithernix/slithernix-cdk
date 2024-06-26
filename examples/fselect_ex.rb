@@ -41,8 +41,8 @@ class FselectExample < CLIExample
     # default values
     params.box = true
     params.shadow = false
-    params.x_value = Cdk::CENTER
-    params.y_value = Cdk::CENTER
+    params.x_value = Slithernix::Cdk::CENTER
+    params.y_value = Slithernix::Cdk::CENTER
     params.h_value = 20
     params.w_value = 65
     params.dir = '.'
@@ -69,26 +69,26 @@ class FselectExample < CLIExample
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Get the filename.
-    fselect = Cdk::FSELECT.new(cdkscreen, params.x_value, params.y_value,
+    fselect = Slithernix::Cdk::Widget::FSelect.new(cdkscreen, params.x_value, params.y_value,
                                params.h_value, params.w_value, title, label, Curses::A_NORMAL,
                                '_', Curses::A_REVERSE, "</5>", "</48>", "</N>", "</N>",
                                params.box, params.shadow)
 
     if fselect.nil?
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       $stderr.puts "Cannot create widget."
       exit #EXIT_FAILURE
     end
 
-    do_delete = lambda do |cdktype, object, widget, key|
+    do_delete = lambda do |cdktype, widget, widget, key|
       size = []
       list = widget.getContents(size)
       size = size[0]
@@ -109,7 +109,7 @@ class FselectExample < CLIExample
       return result
     end
 
-    do_delete1 = lambda do |cdktype, object, widget, key|
+    do_delete1 = lambda do |cdktype, widget, widget, key|
       size = []
       list = widget.getContents(size)
       size = size[0]
@@ -133,7 +133,7 @@ class FselectExample < CLIExample
       return result
     end
 
-    do_help = lambda do |cdktype, object, client_data, key|
+    do_help = lambda do |cdktype, widget, client_data, key|
       message = [
           'File Selection tests:',
           '',
@@ -147,7 +147,7 @@ class FselectExample < CLIExample
       return true
     end
 
-    do_reload = lambda do |cdktype, object, widget, key|
+    do_reload = lambda do |cdktype, widget, widget, key|
       result = false
 
       if @@my_user_list.size > 0
@@ -159,7 +159,7 @@ class FselectExample < CLIExample
       return result
     end
 
-    do_undo = lambda do |cdktype, object, widget, key|
+    do_undo = lambda do |cdktype, widget, widget, key|
       result = false
       if @@my_undo_list.size > 0
         size = []
@@ -178,12 +178,12 @@ class FselectExample < CLIExample
       return result
     end
 
-    fselect.bind(:FSELECT, '?', do_help, nil)
-    fselect.bind(:FSELECT, Cdk::KEY_F(1), do_help, nil)
-    fselect.bind(:FSELECT, Cdk::KEY_F(2), do_delete, fselect)
-    fselect.bind(:FSELECT, Cdk::KEY_F(3), do_delete1, fselect)
-    fselect.bind(:FSELECT, Cdk::KEY_F(4), do_reload, fselect)
-    fselect.bind(:FSELECT, Cdk::KEY_F(5), do_undo, fselect)
+    fselect.bind(:FSelect, '?', do_help, nil)
+    fselect.bind(:FSelect, Slithernix::Cdk::KEY_F(1), do_help, nil)
+    fselect.bind(:FSelect, Slithernix::Cdk::KEY_F(2), do_delete, fselect)
+    fselect.bind(:FSelect, Slithernix::Cdk::KEY_F(3), do_delete1, fselect)
+    fselect.bind(:FSelect, Slithernix::Cdk::KEY_F(4), do_reload, fselect)
+    fselect.bind(:FSelect, Slithernix::Cdk::KEY_F(5), do_undo, fselect)
 
     # Set the starting directory. This is not necessary because when
     # the file selector starts it uses the present directory as a default.
@@ -207,12 +207,12 @@ class FselectExample < CLIExample
       # Exit CDK.
       fselect.destroy
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
       exit  # EXIT_SUCCESS
     end
 
     # Create the file viewer to view the file selected.
-    example = Cdk::VIEWER.new(cdkscreen, Cdk::CENTER, Cdk::CENTER, 20, -2,
+    example = Slithernix::Cdk::Viewer.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, 20, -2,
                               button, 2, Curses::A_REVERSE, true, false)
 
     # Could we create the viewer widget?
@@ -220,7 +220,7 @@ class FselectExample < CLIExample
       # Exit CDK.
       fselect.destroy
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       puts "Can't seem to create viewer. Is the window too small?"
       exit  # EXIT_SUCCESS
@@ -228,11 +228,11 @@ class FselectExample < CLIExample
 
     # Open the file and read the contents.
     info = []
-    lines = Cdk::readFile(filename, info)
+    lines = Slithernix::Cdk::readFile(filename, info)
     if lines == -1
       fselect.destroy
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       puts "Coult not open \"%s\"" % [filename]
 
@@ -269,7 +269,7 @@ class FselectExample < CLIExample
     # Clean up.
     example.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     exit  # EXIT_SUCCESS
   end
 end

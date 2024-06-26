@@ -8,10 +8,10 @@ class Clock
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Set the labels up.
     mesg = [
@@ -19,10 +19,10 @@ class Clock
     ]
 
     # Declare the labels.
-    demo = Cdk::LABEL.new(
+    demo = Slithernix::Cdk::Widget::Label.new(
       cdkscreen,
-      Cdk::CENTER,
-      Cdk::CENTER,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::CENTER,
       mesg,
       1,
       box_label,
@@ -35,7 +35,7 @@ class Clock
       cdkscreen.destroy
 
       # End curses...
-      Cdk.endCDK
+      Slithernix::Cdk.endCDK
 
       puts "Cannot create the label. Is the window too small?"
       exit  # EXIT_FAILURE
@@ -72,7 +72,7 @@ class Clock
     # Clean up
     demo.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     #ExitProgram (EXIT_SUCCESS);
   end
 end

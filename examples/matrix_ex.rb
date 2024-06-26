@@ -5,8 +5,8 @@ class MatrixExample < Example
   def MatrixExample.parse_opts(opts, param)
     opts.banner = 'Usage: matrix_ex.rb [options]'
 
-    param.x_value = Cdk::CENTER
-    param.y_value = Cdk::CENTER
+    param.x_value = Slithernix::Cdk::CENTER
+    param.y_value = Slithernix::Cdk::CENTER
     param.box = true
     param.shadow = true
     param.title =
@@ -45,10 +45,10 @@ class MatrixExample < Example
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     coltitle = []
     unless params.cancel_col
@@ -66,8 +66,8 @@ class MatrixExample < Example
       end
     end
 
-    # Create the matrix object
-    course_list = Cdk::MATRIX.new(cdkscreen, params.x_value, params.y_value,
+    # Create the matrix widget
+    course_list = Slithernix::Cdk::Widget::Matrix.new(cdkscreen, params.x_value, params.y_value,
                                   rows, cols, vrows, vcols,
         if params.cancel_title then '' else params.title end,
                                   rowtitle, coltitle, colwidth, colvalue, -1, -1, '.',
@@ -76,7 +76,7 @@ class MatrixExample < Example
     if course_list.nil?
       # Exit CDK.
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       puts 'Cannot create the matrix widget. Is the window too small?'
       exit  # EXIT_FAILURE
@@ -109,7 +109,7 @@ class MatrixExample < Example
     # Clean up
     course_list.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     #ExitProgram (EXIT_SUCCESS);
   end
 end

@@ -8,11 +8,11 @@ class SubwindowExample < CLIExample
     # default values
     params.box = true
     params.shadow = false
-    params.x_value = Cdk::CENTER
-    params.y_value = Cdk::CENTER
+    params.x_value = Slithernix::Cdk::CENTER
+    params.y_value = Slithernix::Cdk::CENTER
     params.h_value = 10
     params.w_value = 15
-    params.spos = Cdk::RIGHT
+    params.spos = Slithernix::Cdk::RIGHT
 
     super(opts, params)
 
@@ -22,7 +22,7 @@ class SubwindowExample < CLIExample
     end
   end
 
-  # This demo displays the ability to put widgets within a curses subwindow.
+  # This demo displays the ability to put widget within a curses subwindow.
   def SubwindowExample.main
     dow = [
         'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
@@ -40,15 +40,15 @@ class SubwindowExample < CLIExample
     sub_window = Curses::Window.new(
         Curses.lines - 5, Curses.lines - 10, 2, 5)
 
-    # Start Cdk.
-    cdkscreen = Cdk::Screen.new(sub_window)
+    # Start Slithernix::Cdk.
+    cdkscreen = Slithernix::Cdk::Screen.new(sub_window)
 
     # Box our window.
-    sub_window.box(Cdk::ACS_VLINE, Cdk::ACS_HLINE)
+    sub_window.box(Slithernix::Cdk::ACS_VLINE, Slithernix::Cdk::ACS_HLINE)
     sub_window.refresh
 
     # Create a basic scrolling list inside the window.
-    dow_list = Cdk::SCROLL.new(cdkscreen,
+    dow_list = Slithernix::Cdk::Widget::Scroll.new(cdkscreen,
                                params.x_value, params.y_value, params.spos,
                                params.h_value, params.w_value, "<C></U>Pick a Day",
                                dow, 7, false, Curses::A_REVERSE, params.box, params.shadow)
@@ -60,7 +60,7 @@ class SubwindowExample < CLIExample
         "<C>inside a curses window.",
         "<C><#HL(30)>"
     ]
-    title = Cdk::LABEL.new(cdkscreen, Cdk::CENTER, 0, mesg, 4, false, false)
+    title = Slithernix::Cdk::Widget::Label.new(cdkscreen, Slithernix::Cdk::CENTER, 0, mesg, 4, false, false)
 
     # Refresh the screen.
     cdkscreen.refresh
@@ -71,9 +71,9 @@ class SubwindowExample < CLIExample
     # Clean up.
     dow_list.destroy
     title.destroy
-    Cdk.eraseCursesWindow(sub_window)
+    Slithernix::Cdk.eraseCursesWindow(sub_window)
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
 
     # Tell them what they picked.
     puts "You picked %s" % [dow[pick]]

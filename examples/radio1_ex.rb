@@ -8,11 +8,11 @@ class Radio1Example < CLIExample
     # default values
     params.box = true
     params.shadow = false
-    params.x_value = Cdk::CENTER
-    params.y_value = Cdk::CENTER
+    params.x_value = Slithernix::Cdk::CENTER
+    params.y_value = Slithernix::Cdk::CENTER
     params.h_value = 5
     params.w_value = 20
-    params.spos = Cdk::NONE
+    params.spos = Slithernix::Cdk::NONE
     params.title = ""
 
     super(opts, params)
@@ -44,13 +44,13 @@ class Radio1Example < CLIExample
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Create the radio list.
-    radio = Cdk::RADIO.new(cdkscreen,
+    radio = Slithernix::Cdk::Widget::Radio.new(cdkscreen,
                            params.x_value, params.y_value, params.spos,
                            params.h_value, params.w_value, params.title,
                            item, 3, '#'.ord | Curses::A_REVERSE, true,
@@ -58,7 +58,7 @@ class Radio1Example < CLIExample
 
     if radio.nil?
       cdkscreen.destroyCDKScreen
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       puts "Cannot make radio widget.  Is the window too small?"
       exit #EXIT_FAILURE
@@ -88,7 +88,7 @@ class Radio1Example < CLIExample
     # Clean up.
     radio.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     exit #EXIT_SUCCESS
   end
 end

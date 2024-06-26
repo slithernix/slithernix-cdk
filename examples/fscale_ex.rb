@@ -5,8 +5,8 @@ class FScaleExample < Example
   def FScaleExample.parse_opts(opts, param)
     opts.banner = 'Usage: fscale_ex.rb [options]'
 
-    param.x_value = Cdk::CENTER
-    param.y_value = Cdk::CENTER
+    param.x_value = Slithernix::Cdk::CENTER
+    param.y_value = Slithernix::Cdk::CENTER
     param.box = true
     param.shadow = false
     param.high = 2.4
@@ -41,13 +41,13 @@ class FScaleExample < Example
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Create the widget
-    widget = Cdk::FSCALE.new(cdkscreen, params.x_value, params.y_value,
+    widget = Slithernix::Cdk::Widget::FScale.new(cdkscreen, params.x_value, params.y_value,
                              title, label, Curses::A_NORMAL, params.width, params.low, params.low,
                              params.high, params.inc, (params.inc * 2), 1, params.box, params.shadow)
 
@@ -55,7 +55,7 @@ class FScaleExample < Example
     if widget.nil?
       # Exit CDK.
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       puts "Cannot make the scale widget. Is the window too small?"
       exit  # EXIT_FAILURE
@@ -84,7 +84,7 @@ class FScaleExample < Example
     # Clean up
     widget.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     #ExitProgram (EXIT_SUCCESS);
   end
 end

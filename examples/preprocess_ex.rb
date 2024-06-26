@@ -8,20 +8,20 @@ class PreProcessExample < Example
 
     # Set up CDK.
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Start color.
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Create the entry field widget.
-    widget = Cdk::ENTRY.new(cdkscreen, Cdk::CENTER, Cdk::CENTER,
+    widget = Slithernix::Cdk::Widget::Entry.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
                             title, '', Curses::A_NORMAL, '.', :MIXED, 40, 0, 256,
                             true, false)
 
     if widget.nil?
       # Clean up
       cdkscreen.destroy
-      Cdk.endCDK
+      Slithernix::Cdk.endCDK
 
       puts "Cannot create the entry box. Is the window too small?"
       exit  # EXIT_FAILURE
@@ -38,7 +38,7 @@ class PreProcessExample < Example
         mesg << "<C>I told you </B>NOT<!B> to type G"
         mesg << "<C><#HL(30)>"
 
-        dialog = Cdk::DIALOG.new(entry.screen, Cdk::CENTER, Cdk::CENTER,
+        dialog = Slithernix::Cdk::Widget::Dialog.new(entry.screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
                                  mesg, mesg.size, buttons, button_count, Curses::A_REVERSE,
                                  false, true, false)
         dialog.activate('')
@@ -77,7 +77,7 @@ class PreProcessExample < Example
     # Clean up and exit.
     widget.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     exit  # EXIT_SUCCESS
   end
 end

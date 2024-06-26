@@ -1,5 +1,47 @@
 SlitherNix CDK TODO List (You can find the original Tawny list below)
 
+* Little command shell demo exits uncleanly on escape
+
+  ./command.rb:216:in `main': undefined method `upcase' for 1:Integer (NoMethodError)
+
+        upper = command.upcase
+                       ^^^^^^^
+    from ./command.rb:278:in `<main>'
+
+* Appointment Demo doesn't really do anything
+
+  I assume this thing should pop up widgets to take down appointment
+  information.
+
+* Viewer widgets not working anymore
+
+  Pressing arrow keys or enter does nothing.
+
+* Widget position method is broken
+
+  Does not move the widget or anything
+
+* Graph widget a little off
+
+  It has the wrong names on the axes, and 5 is printed twice.
+
+* Calendar example doesn't exit cleanly on escape press
+
+  ./calendar_ex.rb:134:in `main': undefined method `ctime' for -1:Integer (NoMethodError)
+
+      puts 'Selected Time: %s' % ret_val.ctime
+                                        ^^^^^^
+  Did you mean?  times
+    from ./calendar_ex.rb:139:in `<main>'
+
+* ButtonBox can't be navigated to hit cancel
+
+  Can't use arrows or tabs just exits
+
+* Help (?) on bind example not working
+
+  Hitting ? does nothing
+
 * Fix matrix widget
 
   This thing is just totally hosed. I am not really sure what it's supposed

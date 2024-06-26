@@ -48,7 +48,7 @@ class SQLiteDemo
     history.current = 0
 
     # Read the file.
-    if (history.count = Cdk.readFile(filename, history.cmd_history)) != -1
+    if (history.count = Slithernix::Cdk.readFile(filename, history.cmd_history)) != -1
       history.current = history.count
     end
   end
@@ -131,10 +131,10 @@ class SQLiteDemo
 
     # Set up CDK
     curses_win = Curses.init_screen
-    @@gp_cdk_screen = Cdk::Screen.new(curses_win)
+    @@gp_cdk_screen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     begin
       sqlitedb = SQLite3::Database.new(dbfile)
@@ -148,13 +148,13 @@ class SQLiteDemo
     SQLiteDemo.loadHistory(history)
 
     # Create the scrolling window.
-    command_output = Cdk::SWINDOW.new(@@gp_cdk_screen, Cdk::CENTER, Cdk::TOP,
+    command_output = Slithernix::Cdk::Widget::SWindow.new(@@gp_cdk_screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::TOP,
                                       -8, -2, '<C></B/5>Command Output Window', SQLiteDemo::MAXWIDTH,
                                       true, false)
 
     # Create the entry field.
     width = Curses.cols - prompt.size - 1
-    command_entry = Cdk::ENTRY.new(@@gp_cdk_screen, Cdk::CENTER, Cdk::BOTTOM,
+    command_entry = Slithernix::Cdk::Widget::Entry.new(@@gp_cdk_screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::BOTTOM,
                                    '', prompt, Curses::A_BOLD | Curses.color_pair(8),
                                    Curses.color_pair(24) | '_'.ord, :MIXED, width, 1, 512, false, false)
 
@@ -163,7 +163,7 @@ class SQLiteDemo
     history_up_cb = lambda do |cdktype, entry, history, key|
       # Make sure we don't go out of bounds
       if history.current == 0
-        Cdk.Beep
+        Slithernix::Cdk.Beep
         return true
       end
 
@@ -179,7 +179,7 @@ class SQLiteDemo
     history_down_cb = lambda do |cdktype, entry, history, key|
       # Make sure we don't go out of bounds.
       if history.current == history.count
-        Cdk.Beep
+        Slithernix::Cdk.Beep
         return true
       end
 
@@ -217,8 +217,8 @@ class SQLiteDemo
       end
 
       # Create the scrolling list of previous commands.
-      scroll_list = Cdk::SCROLL.new(entry.screen, Cdk::CENTER, Cdk::CENTER,
-                                    Cdk::RIGHT, height, -10, '<C></B/29>Command History',
+      scroll_list = Slithernix::Cdk::Widget::Scroll.new(entry.screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
+                                    Slithernix::Cdk::RIGHT, height, -10, '<C></B/29>Command History',
                                     history.cmd_history, history.count, true, Curses::A_REVERSE,
                                     true, false)
 
@@ -244,16 +244,16 @@ class SQLiteDemo
       return true
     end
 
-    swindow_help_cb = lambda do |cdktype, object, entry, key|
+    swindow_help_cb = lambda do |cdktype, widget, entry, key|
       SQLiteDemo.help(entry)
       return true
     end
 
-    command_entry.bind(:ENTRY, Curses::KEY_UP, history_up_cb, history)
-    command_entry.bind(:ENTRY, Curses::KEY_DOWN, history_down_cb, history)
-    command_entry.bind(:ENTRY, Cdk.CTRL('^'), list_history_cb, history)
-    command_entry.bind(:ENTRY, Cdk::KEY_TAB, view_history_cb, command_output)
-    command_output.bind(:SWINDOW, '?', swindow_help_cb, command_entry)
+    command_entry.bind(:Entry, Curses::KEY_UP, history_up_cb, history)
+    command_entry.bind(:Entry, Curses::KEY_DOWN, history_down_cb, history)
+    command_entry.bind(:Entry, Slithernix::Cdk.CTRL('^'), list_history_cb, history)
+    command_entry.bind(:Entry, Slithernix::Cdk::KEY_TAB, view_history_cb, command_output)
+    command_output.bind(:SWindow, '?', swindow_help_cb, command_entry)
 
     # Draw the screen.
     @@gp_cdk_screen.refresh
@@ -280,35 +280,35 @@ class SQLiteDemo
         # All done.
         command_entry.destroy
         command_output.destroy
-        Cdk::Screen.endCDK
+        Slithernix::Cdk::Screen.endCDK
         exit  # EXIT_SUCCESS
       elsif command == 'clear'
         # Clear the scrolling window.
         command_output.clean
       elsif command == 'history'
-        list_history_cb.call(:ENTRY, command_entry, history, nil)
+        list_history_cb.call(:Entry, command_entry, history, nil)
         next
       elsif command == 'tables'
         command = "SELECT * FROM sqlite_master WHERE type='table';"
-        command_output.add('</R>%d<!R> %s' % [count + 1, command], Cdk::BOTTOM)
+        command_output.add('</R>%d<!R> %s' % [count + 1, command], Slithernix::Cdk::BOTTOM)
         count += 1
         sqlitedb.execute(command) do |row|
           if row.size >= 3
-            command_output.add(row[2], Cdk::BOTTOM)
+            command_output.add(row[2], Slithernix::Cdk::BOTTOM)
           end
         end
       elsif command == 'help'
         # Display the help.
         SQLiteDemo.help(command_entry)
       else
-        command_output.add('</R>%d<!R> %s' % [count + 1, command], Cdk::BOTTOM)
+        command_output.add('</R>%d<!R> %s' % [count + 1, command], Slithernix::Cdk::BOTTOM)
         count += 1
         begin
           sqlitedb.execute(command) do |row|
-            command_output.add(row.join(' '), Cdk::BOTTOM)
+            command_output.add(row.join(' '), Slithernix::Cdk::BOTTOM)
           end
         rescue Exception => e
-          command_output.add('Error: %s' % [e.message], Cdk::BOTTOM)
+          command_output.add('Error: %s' % [e.message], Slithernix::Cdk::BOTTOM)
         end
       end
 
@@ -324,7 +324,7 @@ class SQLiteDemo
 
     # Clean up
     @@gp_cdk_screen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     exit  # EXIT_SUCCESS
   end
 end

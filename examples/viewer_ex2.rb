@@ -8,8 +8,8 @@ class Viewer2Example < CLIExample
     # default values
     params.box = true
     params.shadow = false
-    params.x_value = Cdk::CENTER
-    params.y_value = Cdk::CENTER
+    params.x_value = Slithernix::Cdk::CENTER
+    params.y_value = Slithernix::Cdk::CENTER
     params.h_value = 20
     params.w_value = 65
     params.filename = ''
@@ -45,21 +45,21 @@ class Viewer2Example < CLIExample
 
     # Start curses
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Start CDK colors.
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     f_select = nil
     if params.filename == ''
-      f_select = Cdk::FSELECT.new(cdkscreen, params.x_value, params.y_value,
+      f_select = Slithernix::Cdk::Widget::FSelect.new(cdkscreen, params.x_value, params.y_value,
                                   params.h_value, params.w_value, title, label, Curses::A_NORMAL,
                                   '_', Curses::A_REVERSE, '</5>', '</48>', '</N>', '</N',
                                   params.box, params.shadow)
 
       if f_select.nil?
         cdkscreen.destroy
-        Cdk::Screen.endCDK
+        Slithernix::Cdk::Screen.endCDK
 
         $stderr.puts 'Cannot create fselect-widget'
         exit  # EXIT_FAILURE
@@ -86,7 +86,7 @@ class Viewer2Example < CLIExample
         # Exit CDK.
         f_select.destroy
         cdkscreen.destroy
-        Cdk::Screen.endCDK
+        Slithernix::Cdk::Screen.endCDK
         exit  # EXIT_SUCCESS
       end
     end
@@ -94,7 +94,7 @@ class Viewer2Example < CLIExample
     # Set up the viewer title and the contents to the widget.
     v_title = '<C></B/21>Filename:<!21></22>%20s<!22!B>' % [params.filename]
 
-    selected = Cdk.viewFile(cdkscreen, v_title, params.filename, button, 2)
+    selected = Slithernix::Cdk.viewFile(cdkscreen, v_title, params.filename, button, 2)
 
     # Destroy the file selector widget (do not need filename anymore)
     unless f_select.nil?
@@ -111,7 +111,7 @@ class Viewer2Example < CLIExample
 
     # Clean up.
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     exit  # EXIT_SUCCESS
   end
 end

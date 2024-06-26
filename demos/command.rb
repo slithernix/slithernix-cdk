@@ -63,23 +63,23 @@ class Command
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Create the scrolling window.
-    command_output = Cdk::SWINDOW.new(cdkscreen, Cdk::CENTER, Cdk::TOP,
+    command_output = Slithernix::Cdk::Widget::SWindow.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::TOP,
                                       -8, -2, title, 1000, true, false)
 
     # Convert the prompt to a chtype and determine its length
     prompt_len = []
-    convert = Cdk.char2Chtype(prompt, prompt_len, [])
+    convert = Slithernix::Cdk.char2Chtype(prompt, prompt_len, [])
     prompt_len = prompt_len[0]
     command_field_width = Curses.cols - prompt_len - 4
 
     # Create the entry field.
-    command_entry = Cdk::ENTRY.new(cdkscreen, Cdk::CENTER, Cdk::BOTTOM,
+    command_entry = Slithernix::Cdk::Widget::Entry.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::BOTTOM,
                                    '', prompt, Curses::A_BOLD | Curses.color_pair(8),
                                    Curses.color_pair(24) | '_'.ord, :MIXED,
                                    command_field_width, 1, 512, false, false)
@@ -88,7 +88,7 @@ class Command
     history_up_cb = lambda do |cdktype, entry, history, key|
       # Make sure we don't go out of bounds
       if history.current == 0
-        Cdk.Beep
+        Slithernix::Cdk.Beep
         return false
       end
 
@@ -104,7 +104,7 @@ class Command
     history_down_cb = lambda do |cdktype, entry, history, key|
       # Make sure we don't go out of bounds
       if history.current == @count
-        Cdk.Beep
+        Slithernix::Cdk.Beep
         return false
       end
 
@@ -154,8 +154,8 @@ class Command
       end
 
       # Create the scrolling list of previous commands.
-      scroll_list = Cdk::SCROLL.new(entry.screen, Cdk::CENTER, Cdk::CENTER,
-                                    Cdk::RIGHT, height, 20, '<C></B/29>Command History',
+      scroll_list = Slithernix::Cdk::Widget::Scroll.new(entry.screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
+                                    Slithernix::Cdk::RIGHT, height, 20, '<C></B/29>Command History',
                                     history.command, history.count, true, Curses::A_REVERSE,
                                     true, false)
 
@@ -177,7 +177,7 @@ class Command
 
     jump_window_cb = lambda do |cdktype, entry, swindow, key|
       # Ask them which line they want to jump to.
-      scale = Cdk::SCALE.new(entry.screen, Cdk::CENTER, Cdk::CENTER,
+      scale = Slithernix::Cdk::Widget::Scale.new(entry.screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
                              '<C>Jump To Which Line', 'Line', Curses::A_NORMAL, 5,
                              0, 0, swindow.list_size, 1, 2, true, false)
 
@@ -190,16 +190,16 @@ class Command
       # Jump to the line.
       swindow.jumpToLine(line)
 
-      # Redraw the widgets.
+      # Redraw the widget.
       entry.draw(entry.box)
       return false
     end
 
-    command_entry.bind(:ENTRY, Curses::KEY_UP, history_up_cb, history)
-    command_entry.bind(:ENTRY, Curses::KEY_DOWN, history_down_cb, history)
-    command_entry.bind(:ENTRY, Cdk::KEY_TAB, view_history_cb, command_output)
-    command_entry.bind(:ENTRY, Cdk.CTRL('^'), list_history_cb, history)
-    command_entry.bind(:ENTRY, Cdk.CTRL('G'), jump_window_cb, command_output)
+    command_entry.bind(:Entry, Curses::KEY_UP, history_up_cb, history)
+    command_entry.bind(:Entry, Curses::KEY_DOWN, history_down_cb, history)
+    command_entry.bind(:Entry, Slithernix::Cdk::KEY_TAB, view_history_cb, command_output)
+    command_entry.bind(:Entry, Slithernix::Cdk.CTRL('^'), list_history_cb, history)
+    command_entry.bind(:Entry, Slithernix::Cdk.CTRL('G'), jump_window_cb, command_output)
 
     # Draw the screen.
     cdkscreen.refresh
@@ -223,7 +223,7 @@ class Command
         command_output.destroy
         cdkscreen.destroy
 
-        Cdk::Screen.endCDK
+        Slithernix::Cdk::Screen.endCDK
 
         exit  # EXIT_SUCCESS
       elsif command == 'clear'
@@ -235,7 +235,7 @@ class Command
         command_entry.clean
       elsif command == 'history'
         # Display the history list.
-        list_history_cb.call(:ENTRY, command_entry, history, 0)
+        list_history_cb.call(:Entry, command_entry, history, 0)
 
         # Keep the history.
         history.command << command
@@ -260,13 +260,13 @@ class Command
         history.current = history.count
 
         # Jump to the bottom of the scrolling window.
-        command_output.jumpToLine(Cdk::BOTTOM)
+        command_output.jumpToLine(Slithernix::Cdk::BOTTOM)
 
         # Insert a line providing the command.
-        command_output.add('Command: </R>%s' % [command], Cdk::BOTTOM)
+        command_output.add('Command: </R>%s' % [command], Slithernix::Cdk::BOTTOM)
 
         # Run the command
-        command_output.exec(command, Cdk::BOTTOM)
+        command_output.exec(command, Slithernix::Cdk::BOTTOM)
 
         # Clean out the entry field.
         command_entry.clean

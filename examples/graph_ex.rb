@@ -8,8 +8,8 @@ class GraphExample < CLIExample
     # default values
     params.box = true
     params.shadow = false
-    params.x_value = Cdk::CENTER
-    params.y_value = Cdk::CENTER
+    params.x_value = Slithernix::Cdk::CENTER
+    params.y_value = Slithernix::Cdk::CENTER
     params.h_value = 10
     params.w_value = 20
 
@@ -21,10 +21,10 @@ class GraphExample < CLIExample
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Create the graph values.
     values = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
@@ -37,26 +37,34 @@ class GraphExample < CLIExample
     # Create the label values.
     mesg = ["Press any key when done viewing the graph."]
 
-    graph = Cdk::GRAPH.new(cdkscreen, params.x_value, params.y_value,
-                           params.h_value, params.w_value, title, xtitle, ytitle)
+    graph = Slithernix::Cdk::Widget::Graph.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value,
+      params.h_value,
+      params.w_value,
+      title,
+      xtitle,
+      ytitle,
+    )
 
     # Is the graph null?
     if graph.nil?
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       puts "Cannot make the graph widget.  Is the window too small?"
       exit #EXIT_FAILURE
     end
 
     # Create the label widget.
-    pausep = Cdk::LABEL.new(cdkscreen, Cdk::CENTER, Cdk::BOTTOM, mesg, 1,
+    pausep = Slithernix::Cdk::Widget::Label.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::BOTTOM, mesg, 1,
                             true, false)
 
     if pausep.nil?
       graph.destroy
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       puts "Cannot make the label widget. Is the window too small?"
       exit  # EXIT_FAILURE
@@ -77,7 +85,7 @@ class GraphExample < CLIExample
     graph.destroy
     pausep.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     exit  # EXIT_SUCCESS
   end
 end

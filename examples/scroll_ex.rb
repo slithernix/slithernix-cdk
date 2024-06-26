@@ -15,12 +15,12 @@ class ScrollExample < CLIExample
     # default values
     params.box = true
     params.shadow = false
-    params.x_value = Cdk::CENTER
-    params.y_value = Cdk::CENTER
+    params.x_value = Slithernix::Cdk::CENTER
+    params.y_value = Slithernix::Cdk::CENTER
     params.h_value = 10
     params.w_value = 50
     params.c = false
-    params.spos = Cdk::RIGHT
+    params.spos = Slithernix::Cdk::RIGHT
     params.title = "<C></5>Pick a file"
 
     super(opts, params)
@@ -53,17 +53,17 @@ class ScrollExample < CLIExample
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Use the current directory list to fill the radio list
     item = []
-    count = Cdk.getDirectoryContents(".", item)
+    count = Slithernix::Cdk.getDirectoryContents(".", item)
 
     # Create the scrolling list.
-    scroll_list = Cdk::SCROLL.new(cdkscreen,
+    scroll_list = Slithernix::Cdk::Widget::Scroll.new(cdkscreen,
                                   params.x_value, params.y_value, params.spos,
                                   params.h_value, params.w_value, params.title,
         if params.c then nil else item end,
@@ -72,7 +72,7 @@ class ScrollExample < CLIExample
 
     if scroll_list.nil?
       cdkscreen.destroyCDKScreen
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       puts "Cannot make scrolling list.  Is the window too small?"
       exit #EXIT_FAILURE
@@ -82,27 +82,27 @@ class ScrollExample < CLIExample
       scroll_list.setItems(item, count, true)
     end
 
-    addItemCB = lambda do |type, object, client_data, input|
-      object.addItem(ScrollExample.newLabel("add"))
-      object.screen.refresh
+    addItemCB = lambda do |type, widget, client_data, input|
+      widget.addItem(ScrollExample.newLabel("add"))
+      widget.screen.refresh
       return true
     end
 
-    insItemCB = lambda do |type, object, client_data, input|
-      object.insertItem(ScrollExample.newLabel("insert"))
-      object.screen.refresh
+    insItemCB = lambda do |type, widget, client_data, input|
+      widget.insertItem(ScrollExample.newLabel("insert"))
+      widget.screen.refresh
       return true
     end
 
-    delItemCB = lambda do |type, object, client_data, input|
-      object.deleteItem(object.getCurrentItem)
-      object.screen.refresh
+    delItemCB = lambda do |type, widget, client_data, input|
+      widget.deleteItem(widget.getCurrentItem)
+      widget.screen.refresh
       return true
     end
 
-    scroll_list.bind(:SCROLL, 'a', addItemCB, nil)
-    scroll_list.bind(:SCROLL, 'i', insItemCB, nil);
-    scroll_list.bind(:SCROLL, 'd', delItemCB, nil);
+    scroll_list.bind(:Scroll, 'a', addItemCB, nil)
+    scroll_list.bind(:Scroll, 'i', insItemCB, nil);
+    scroll_list.bind(:Scroll, 'd', delItemCB, nil);
 
     # Activate the scrolling list.
 
@@ -115,7 +115,7 @@ class ScrollExample < CLIExample
       msg << '<C>Press any key to continue.'
       cdkscreen.popupLabel(msg, 3)
     elsif scroll_list.exit_type == :NORMAL
-      the_item = Cdk.chtype2Char(scroll_list.item[selection])
+      the_item = Slithernix::Cdk.chtype2Char(scroll_list.item[selection])
       msg = ['<C>You selected the following file',
           "<C>%.*s" % [236, the_item],  # FIXME magic number
           "<C>Press any key to continue."
@@ -128,7 +128,7 @@ class ScrollExample < CLIExample
     # CDKfreeStrings (item);
     scroll_list.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     exit #EXIT_SUCCESS
   end
 end

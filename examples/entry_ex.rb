@@ -5,8 +5,8 @@ class EntryExample < Example
   def EntryExample.parse_opts(opts, param)
     opts.banner = 'Usage: dialog_ex.rb [options]'
 
-    param.x_value = Cdk::CENTER
-    param.y_value = Cdk::CENTER
+    param.x_value = Slithernix::Cdk::CENTER
+    param.y_value = Slithernix::Cdk::CENTER
     param.box = true
     param.shadow = false
     super(opts, param)
@@ -21,27 +21,27 @@ class EntryExample < Example
 
     # Set up CDK.
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Start color.
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.initCDKColor
 
     # Create the entry field widget.
-    directory = Cdk::ENTRY.new(cdkscreen, params.x_value, params.y_value,
+    directory = Slithernix::Cdk::Widget::Entry.new(cdkscreen, params.x_value, params.y_value,
                                title, label, Curses::A_NORMAL, '.', :MIXED, 40, 0, 256,
                                params.box, params.shadow)
 
-    xxxcb = lambda do |cdktype, object, client_data, key|
+    xxxcb = lambda do |cdktype, widget, client_data, key|
       return true
     end
 
-    directory.bind(:ENTRY, '?', xxxcb, 0)
+    directory.bind(:Entry, '?', xxxcb, 0)
 
     # Is the widget nil?
     if directory.nil?
       # Clean p
       cdkscreen.destroy
-      Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.endCDK
 
       puts "Cannot create the entry box. Is the window too small?"
       exit # EXIT_FAILURE
@@ -85,7 +85,7 @@ class EntryExample < Example
 
     # Clean up and exit.
     cdkscreen.destroy
-    Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.endCDK
     exit  # EXIT_SUCCESS
   end
 end
