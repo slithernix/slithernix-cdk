@@ -14,33 +14,33 @@ class TraverseExample < Example
   # focus for traversal.  The names with leading '*' have some limitation
   # that makes them not useful in traversal.
   MENU_TABLE = [
-    ['(CDKGRAPH)',      :Graph], # no traversal (not active)
-    ['(CDKHISTOGRAM)',  :Histogram], # no traversal (not active)
-    ['(CDKLABEL)',      :Label], # no traversal (not active)
-    ['(CDKMARQUEE)',    :Marquee], # hangs (leaves trash)
-    ['*CDKVIEWER',      :Viewer], # traversal out-only on OK
-    ['ALPHALIST',       :AlphaList],
-    ['BUTTON',          :BUTTON],
-    ['BUTTONBOX',       :ButtonBox],
-    ['CALENDAR',        :Calendar],
-    ['DIALOG',          :Dialog],
-    ['DSCALE',          :DScale],
-    ['ENTRY',           :Entry],
-    ['FSCALE',          :FScale],
-    ['FSELECT',         :FSelect],
-    ['FSLIDER',         :FSlider],
-    ['ITEMLIST',        :ItemList],
-    ['MATRIX',          :Matrix],
-    ['MENTRY',          :MEntry],
-    ['RADIO',           :Radio],
-    ['SCALE',           :Scale],
-    ['SCROLL',          :Scroll],
-    ['SELECTION',       :Selection],
-    ['SLIDER',          :Slider],
-    ['SWINDOW',         :SWindow],
-    ['TEMPLATE',        :Template],
-    ['USCALE',          :UScale],
-    ['USLIDER',         :USlider],
+    ['(CDKGraph)',      :Graph], # no traversal (not active)
+    ['(CDKHistogram)',  :Histogram], # no traversal (not active)
+    ['(CDKLabel)',      :Label], # no traversal (not active)
+    ['(CDKMarquee)',    :Marquee], # hangs (leaves trash)
+    ['*CDKViewer',      :Viewer], # traversal out-only on OK
+    ['AlphaList',       :AlphaList],
+    ['Button',          :Button],
+    ['ButtinBox',       :ButtonBox],
+    ['Calendar',        :Calendar],
+    ['Dialog',          :Dialog],
+    ['DScale',          :DScale],
+    ['Entry',           :Entry],
+    ['FScale',          :FScale],
+    ['FSelect',         :FSelect],
+    ['FSlider',         :FSlider],
+    ['ItemList',        :ItemList],
+    ['Matrix',          :Matrix],
+    ['MEntry',          :MEntry],
+    ['Radio',           :Radio],
+    ['Scale',           :Scale],
+    ['Scroll',          :Scroll],
+    ['Selection',       :Selection],
+    ['Slider',          :Slider],
+    ['SWindow',         :SWindow],
+    ['Template',        :Template],
+    ['UScale',          :UScale],
+    ['USlider',         :USlider],
   ]
   @@all_widgets = [nil] * MY_MAX
 

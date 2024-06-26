@@ -56,12 +56,17 @@ module Slithernix
       end
 
       def move(xplace, yplace, relative, refresh_flag)
-        self.move_specific(xplace, yplace, relative, refresh_flag,
-            [@win, @shadow_win], [])
+        self.move_specific(
+          xplace,
+          yplace,
+          relative,
+          refresh_flag,
+          [@win, @shadow_win],
+          [],
+        )
       end
 
-      def move_specific(xplace, yplace, relative, refresh_flag,
-          windows, subwidgets)
+      def move_specific(xplace, yplace, relative, refresh_flag, windows, subwidgets)
         current_x = @win.begx
         current_y = @win.begy
         xpos = xplace
@@ -108,7 +113,7 @@ module Slithernix
 
       def setBox(box)
         @box = box
-        @border_size = if @box then 1 else 0 end
+        @border_size = @box ? 1 : 0
       end
 
       def getBox
