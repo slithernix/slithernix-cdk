@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require 'optparse'
-require_relative '../lib/cdk'
+require_relative '../lib/slithernix/cdk'
 
 class Clock
   def Clock.main
@@ -63,7 +63,7 @@ class Clock
 
       # Draw the label and sleep
       demo.draw(demo.box)
-      Curses.napms(500)
+      Curses.napms(50)
 
       # Break the loop if q is pressed
       break if demo.screen.window.getch == 'q'

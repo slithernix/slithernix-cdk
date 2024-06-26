@@ -1,6 +1,6 @@
 require 'optparse'
 require 'ostruct'
-require_relative '../lib/cdk'
+require_relative '../lib/slithernix/cdk'
 
 class Example
   def Example.parse_opts(opts, params)

@@ -538,22 +538,25 @@ module CDK
       Curses.close_screen
 
       # Try to open the command.
-      # XXX This especially needs exception handling given how Ruby
-      # implements popen
-      unless (ps = IO.popen(command.split, 'r')).nil?
-        # Start reading.
-        until (temp = ps.gets).nil?
-          if temp.size != 0 && temp[-1] == '\n'
-            temp = temp[0...-1]
+      begin
+        unless (ps = IO.popen(command.split, 'r')).nil?
+          # Start reading.
+          until (temp = ps.gets).nil?
+            if temp.size != 0 && temp[-1] == '\n'
+              temp = temp[0...-1]
+            end
+            # Add the line to the scrolling window.
+            self.add(temp, insert_pos)
+            count += 1
           end
-          # Add the line to the scrolling window.
-          self.add(temp, insert_pos)
-          count += 1
-        end
 
-        # Close the pipe
-        ps.close
+          # Close the pipe
+          ps.close
+        end
+      rescue => e
+        self.add(e.message, insert_pos)
       end
+
       return count
     end
 

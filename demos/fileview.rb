@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require 'optparse'
-require_relative '../lib/cdk'
+require_relative '../lib/slithernix/cdk'
 
 class FileView
   def FileView.main

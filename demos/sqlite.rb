@@ -2,7 +2,7 @@
 require 'optparse'
 require 'ostruct'
 require 'sqlite3'
-require_relative '../lib/cdk'
+require_relative '../lib/slithernix/cdk'
 
 class SQLiteDemo
   MAXWIDTH = 5000

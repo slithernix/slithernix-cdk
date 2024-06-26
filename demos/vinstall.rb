@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require 'optparse'
 require 'fileutils'
-require_relative '../lib/cdk'
+require_relative '../lib/slithernix/cdk'
 
 class Vinstall
   FPUsage = '-f filename [-s source directory] [-d destination directory]' <<
