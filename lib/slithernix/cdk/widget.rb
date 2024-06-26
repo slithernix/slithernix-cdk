@@ -77,7 +77,7 @@ module Slithernix
         # Adjust the window if we need to
         xtmp = [xpos]
         ytmp = [ypos]
-        Cdk.alignxy(@screen.window, xtmp, ytmp, @box_width, @box_height)
+        Slithernix::Cdk.alignxy(@screen.window, xtmp, ytmp, @box_width, @box_height)
         xpos = xtmp[0]
         ypos = ytmp[0]
 
@@ -87,7 +87,7 @@ module Slithernix
 
         # Move the window to the new location.
         windows.each do |window|
-          Cdk.moveCursesWindow(window, -xdiff, -ydiff)
+          Slithernix::Cdk.moveCursesWindow(window, -xdiff, -ydiff)
         end
 
         subwidgets.each do |subwidget|
@@ -173,7 +173,7 @@ module Slithernix
         junk2 = []
 
         # Convert the value of the environment variable to a chtype
-        holder = Cdk.char2Chtype(color, junk1, junk2)
+        holder = Slithernix::Cdk.char2Chtype(color, junk1, junk2)
 
         # Set the widget's background color
         self.SetBackAttrObj(holder[0])
@@ -190,7 +190,7 @@ module Slithernix
             temp.each do |line|
               len = []
               align = []
-              holder = Cdk.char2Chtype(line, len, align)
+              holder = Slithernix::Cdk.char2Chtype(line, len, align)
               max_width = [len[0], max_width].max
             end
             box_width = [box_width, max_width + 2 * @border_size].max
@@ -206,9 +206,9 @@ module Slithernix
           (0...@title_lines).each do |x|
             len_x = []
             pos_x = []
-            @title << Cdk.char2Chtype(temp[x], len_x, pos_x)
+            @title << Slithernix::Cdk.char2Chtype(temp[x], len_x, pos_x)
             @title_len.concat(len_x)
-            @title_pos << Cdk.justifyString(title_width, len_x[0], pos_x[0])
+            @title_pos << Slithernix::Cdk.justifyString(title_width, len_x[0], pos_x[0])
           end
         end
 

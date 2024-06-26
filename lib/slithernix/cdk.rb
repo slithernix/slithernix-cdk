@@ -1,4 +1,6 @@
 require 'curses'
+require 'pathname'
+require 'pry-remote'
 require_relative 'cdk/monkey_patches'
 
 require_relative 'cdk/draw'
@@ -7,8 +9,6 @@ require_relative 'cdk/traverse'
 
 require_relative 'cdk/screen'
 require_relative 'cdk/widget'
-
-require 'pathname'
 
 Pathname.glob("#{File.dirname(__FILE__)}/cdk/widget/*.rb").each do |f|
   require f
