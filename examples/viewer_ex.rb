@@ -104,7 +104,7 @@ class ViewerExample < CLIExample
     end
 
     # Create the file viewer to view the file selected.
-    example = Slithernix::Cdk::Viewer.new(cdkscreen, params.x_value, params.y_value,
+    example = Slithernix::Cdk::Widget::Viewer.new(cdkscreen, params.x_value, params.y_value,
                               params.h_value, params.v_width, button, 2, Curses::A_REVERSE,
                               params.box, params.shadow)
 

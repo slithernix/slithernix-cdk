@@ -1,5 +1,9 @@
 SlitherNix CDK TODO List (You can find the original Tawny list below)
 
+* Traverse example's "center" isn't aligned
+
+  Should above that middle window.
+
 * Little command shell demo exits uncleanly on escape
 
   ./command.rb:216:in `main': undefined method `upcase' for 1:Integer (NoMethodError)
@@ -15,11 +19,7 @@ SlitherNix CDK TODO List (You can find the original Tawny list below)
 
 * Viewer widgets not working anymore
 
-  Pressing arrow keys or enter does nothing.
-
-* Widget position method is broken
-
-  Does not move the widget or anything
+  Pressing arrow keys or enter does nothing. ESC also doesn't exit cleanly
 
 * Graph widget a little off
 
@@ -44,27 +44,14 @@ SlitherNix CDK TODO List (You can find the original Tawny list below)
 
 * Fix matrix widget
 
-  This thing is just totally hosed. I am not really sure what it's supposed
-  to look like in the first place so I may have to check out the actual CDK
-  or maybe the python one if it is still maintained.
-
-* Fix selection widget
-
-  The selection widget appears to call .position or something because when
-  you use the arrows to move through the menu, the menu itself moves with
-  the arrow.
+  This is supposed to show entry widgets in each column like a spreadsheet,
+  but it shows the entry widget on the top left outside the matrix.
 
 * Fix position widget
 
-  Have no idea what this widget is supposed to do but it is totally broken.
+  I believe this is supposed to change the window position with arrows, but
+  it does nothing and won't let me enter keys either.
 
-* Traverse Example has broken widgets
-
-  I haven't looked into which widgets this thing uses but it has the issue
-  the selection widget has where if you move up/down in the menu it moves the
-  actual menu with the arrow direction. It's also not justified properly and
-  it appears the entry box is hosed as well. There's some kind of off-by-one
-  error in there.
 
 * Aesthetics
 

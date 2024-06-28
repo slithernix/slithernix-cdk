@@ -7,8 +7,7 @@ module Slithernix
         DOWN = 0
         UP = 1
 
-        def initialize(cdkscreen, xplace, yplace, height, width,
-            buttons, button_count, button_highlight, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, height, width, buttons, button_count, button_highlight, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -42,7 +41,7 @@ module Slithernix
           ypos = ytmp[0]
 
           # Make the viewer window.
-          @win= Curses::Window.new(box_height, box_width, ypos, xpos)
+          @win = Curses::Window.new(box_height, box_width, ypos, xpos)
           if @win.nil?
             self.destroy
             return nil
@@ -453,14 +452,14 @@ module Slithernix
                   Slithernix::Cdk.Beep
                 end
               when '?'
-                @search_direction = Slithernix::Cdk::Viewer::UP
+                @search_direction = Slithernix::Cdk::Widget::Viewer::UP
                 self.getAndStorePattern(@screen)
                 if !self.searchForWord(@search_pattern, @search_direction)
                   self.PatternNotFound(@search_pattern)
                 end
                 refresh = true
               when '/'
-                @search_direction = Slithernix::Cdk::Viewer:DOWN
+                @search_direction = Slithernix::Cdk::Widget::Viewer:DOWN
                 self.getAndStorePattern(@screen)
                 if !self.searchForWord(@search_pattern, @search_direction)
                   self.PatternNotFound(@search_pattern)
@@ -513,7 +512,7 @@ module Slithernix
           temp = ''
 
           # Check the direction.
-          if @search_direction == Slithernix::Cdk::Viewer::UP
+          if @search_direction == Slithernix::Cdk::Widget::Viewer::UP
             temp = '</5>Search Up  : <!5>'
           else
             temp = '</5>Search Down: <!5>'
@@ -550,7 +549,7 @@ module Slithernix
 
           # If the pattern is empty then return.
           if pattern.size != 0
-            if direction == Slithernix::Cdk::Viewer::DOWN
+            if direction == Slithernix::Cdk::Widget::Viewer::DOWN
               # Start looking from 'here' down.
               x = @current_top + 1
               while !found && x < @list_size

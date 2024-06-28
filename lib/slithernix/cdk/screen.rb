@@ -10,6 +10,7 @@ module Slithernix
 
       def initialize(window = nil)
         window ||= Curses.init_screen
+        #Curses.curs_set(0)
         # initialization for the first time
         if Slithernix::Cdk::ALL_SCREENS.size == 0
           # Set up basic curses settings.

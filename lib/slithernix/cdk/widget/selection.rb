@@ -6,8 +6,7 @@ module Slithernix
       class Selection < Slithernix::Cdk::Widget::Scroller
         attr_reader :selections
 
-        def initialize(cdkscreen, xplace, yplace, splace, height, width, title,
-            list, list_size, choices, choice_count, highlight, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, splace, height, width, title, list, list_size, choices, choice_count, highlight, box, shadow)
           super()
           widest_item = -1
           parent_width = cdkscreen.window.maxx
@@ -148,7 +147,8 @@ module Slithernix
           ypos = self.SCREEN_YPOS(@current_item - @current_top)
           xpos = self.SCREEN_XPOS(0) + scrollbar_adj
 
-          @input_window.move(ypos, xpos)
+          # Don't know why this was set up here, since this moves the window -- snake 2024
+          #@input_window.move(ypos, xpos)
           @input_window.refresh
         end
 

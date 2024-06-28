@@ -209,8 +209,12 @@ module Slithernix
           #self.drawField
 
           unless @pre_process_func.nil?
-            pp_return = @pre_process_func.call(:Entry, self,
-                                               @pre_process_data, input)
+            pp_return = @pre_process_func.call(
+              :Entry,
+              self,
+              @pre_process_data,
+              input,
+            )
           end
 
           # Should we continue?

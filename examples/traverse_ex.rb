@@ -260,7 +260,7 @@ class TraverseExample < Example
 
   def self.make_viewer(cdkscreen, x, y)
     button = ['Ok']
-    widget = Slithernix::Cdk::Viewer.new(cdkscreen, x, y, 10, 20, button, 1,
+    widget = Slithernix::Cdk::Widget::Viewer.new(cdkscreen, x, y, 10, 20, button, 1,
                              Curses::A_REVERSE, true, false)
 
     widget.set('Viewer', TraverseExample::MONTHS, TraverseExample::MONTHS.size,
@@ -295,7 +295,7 @@ class TraverseExample < Example
     case type
     when :AlphaList
       func = :make_alphalist
-    when :BUTTON
+    when :Button
       func = :make_button
     when :ButtonBox
       func = :make_buttonbox
@@ -403,7 +403,11 @@ class TraverseExample < Example
   def TraverseExample.main
     menulist = [['Left'], ['Center'], ['Right']]
     submenusize = [TraverseExample::MENU_TABLE.size + 1] * 3
-    menuloc = [Slithernix::Cdk::LEFT, Slithernix::Cdk::LEFT, Slithernix::Cdk::RIGHT]
+    menuloc = [
+      Slithernix::Cdk::LEFT,
+      Slithernix::Cdk::LEFT,
+      Slithernix::Cdk::RIGHT,
+    ]
 
     (0...TraverseExample::MY_MAX).each do |j|
       (0...TraverseExample::MENU_TABLE.size).each do |k|
@@ -418,9 +422,16 @@ class TraverseExample < Example
     # Start CDK colours.
     Slithernix::Cdk::Draw.initCDKColor
 
-    menu = Slithernix::Cdk::Widget::Menu.new(cdkscreen, menulist, TraverseExample::MY_MAX,
-                         submenusize, menuloc, Slithernix::Cdk::TOP, Curses::A_UNDERLINE,
-                         Curses::A_REVERSE)
+    menu = Slithernix::Cdk::Widget::Menu.new(
+      cdkscreen,
+      menulist,
+      TraverseExample::MY_MAX,
+      submenusize,
+      menuloc,
+      Slithernix::Cdk::TOP,
+      Curses::A_UNDERLINE,
+      Curses::A_REVERSE,
+    )
 
     if menu.nil?
       cdkscreen.destroy
@@ -453,9 +464,9 @@ class TraverseExample < Example
     Slithernix::Cdk::Traverse.traverseCDKScreen(cdkscreen)
 
     mesg = [
-        'Done',
-        '',
-        '<C>Press any key to continue'
+      'Done',
+      '',
+      '<C>Press any key to continue'
     ]
     cdkscreen.popupLabel(mesg, 3)
 

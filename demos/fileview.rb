@@ -59,7 +59,7 @@ class FileView
     end
 
     # Create the file viewer to view the file selected.
-    example = Slithernix::Cdk::Viewer.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, 20, -2,
+    example = Slithernix::Cdk::Widget::Viewer.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, 20, -2,
                               button, 2, Curses::A_REVERSE, true, false)
 
     # Could we create the viewer widget?

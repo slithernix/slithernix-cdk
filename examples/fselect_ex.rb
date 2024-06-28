@@ -88,7 +88,7 @@ class FselectExample < CLIExample
       exit #EXIT_FAILURE
     end
 
-    do_delete = lambda do |cdktype, widget, widget, key|
+    do_delete = lambda do |cdktype, widget, fselect, key|
       size = []
       list = widget.getContents(size)
       size = size[0]
@@ -109,7 +109,7 @@ class FselectExample < CLIExample
       return result
     end
 
-    do_delete1 = lambda do |cdktype, widget, widget, key|
+    do_delete1 = lambda do |cdktype, widget, fselect, key|
       size = []
       list = widget.getContents(size)
       size = size[0]
@@ -147,7 +147,7 @@ class FselectExample < CLIExample
       return true
     end
 
-    do_reload = lambda do |cdktype, widget, widget, key|
+    do_reload = lambda do |cdktype, widget, fselect, key|
       result = false
 
       if @@my_user_list.size > 0
@@ -159,7 +159,7 @@ class FselectExample < CLIExample
       return result
     end
 
-    do_undo = lambda do |cdktype, widget, widget, key|
+    do_undo = lambda do |cdktype, widget, fselect, key|
       result = false
       if @@my_undo_list.size > 0
         size = []
@@ -212,7 +212,7 @@ class FselectExample < CLIExample
     end
 
     # Create the file viewer to view the file selected.
-    example = Slithernix::Cdk::Viewer.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, 20, -2,
+    example = Slithernix::Cdk::Widget::Viewer.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, 20, -2,
                               button, 2, Curses::A_REVERSE, true, false)
 
     # Could we create the viewer widget?

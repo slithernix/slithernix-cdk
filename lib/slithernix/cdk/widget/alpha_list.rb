@@ -74,7 +74,7 @@ module Slithernix
           end
 
           # Create the entry field.
-          temp_width =  if Slithernix::Cdk::AlphaList.isFullWidth(width)
+          temp_width =  if Slithernix::Cdk::Widget::AlphaList.isFullWidth(width)
                         then Slithernix::Cdk::FULL
                         else box_width - 2 - label_len
                         end
@@ -260,7 +260,7 @@ module Slithernix
           # Create the scrolling list.  It overlaps the entry field by one line if
           # we are using box-borders.
           temp_height = @entry_field.win.maxy - @border_size
-          temp_width = if Slithernix::Cdk::AlphaList.isFullWidth(width)
+          temp_width = if Slithernix::Cdk::Widget::AlphaList.isFullWidth(width)
                        then Slithernix::Cdk::FULL
                        else box_width - 1
                        end

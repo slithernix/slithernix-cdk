@@ -734,6 +734,7 @@ module Slithernix
 
     # This moves a given window (if we're able to set the window's beginning).
     # We do not use mvwin(), because it does not (usually) move subwindows.
+    # This just didn't work as it was. 
     def self.moveCursesWindow (window, xdiff, ydiff)
       return if window.nil?
 
@@ -741,10 +742,11 @@ module Slithernix
       ypos = window.begy + ydiff
 
       old_window = window
+      window.move(ypos, xpos)
       begin
-        window = Curses::Window.new(old_window.begy, old_window.begx, ypos, xpos)
+        #window = Curses::Window.new(old_window.begy, old_window.begx, ypos, xpos)
         old_window.erase
-        window
+        #window
       rescue
         self.Beep
       end

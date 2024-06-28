@@ -82,7 +82,7 @@ module Slithernix
         # Adjust the window if we need to
         xtmp = [xpos]
         ytmp = [ypos]
-        Slithernix::Cdk.alignxy(@screen.window, xtmp, ytmp, @box_width, @box_height)
+        #Slithernix::Cdk.alignxy(@screen.window, xtmp, ytmp, @box_width, @box_height)
         xpos = xtmp[0]
         ypos = ytmp[0]
 
@@ -96,7 +96,7 @@ module Slithernix
         end
 
         subwidgets.each do |subwidget|
-          subwidget.move(xplace, yplace, relative, false)
+          subwidget.move(xplace, yplace, relative, refresh_flag)
         end
 
         # Touch the windows so they 'move'

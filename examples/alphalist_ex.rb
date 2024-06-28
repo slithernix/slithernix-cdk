@@ -83,7 +83,7 @@ class AlphalistExample < CLIExample
     Slithernix::Cdk::Draw.initCDKColor
 
     # Create the alphalist list.
-    alpha_list = Slithernix::Cdk::AlphaList.new(cdkscreen,
+    alpha_list = Slithernix::Cdk::Widget::AlphaList.new(cdkscreen,
                                     params.x_value, params.y_value, params.h_value, params.w_value,
                                     title, label,
         if params.c then nil else user_list end,
@@ -98,7 +98,8 @@ class AlphalistExample < CLIExample
       exit #EXIT_FAILURE
     end
 
-    do_delete = lambda do |cdktype, widget, widget, key|
+
+    do_delete = lambda do |cdktype, widget, alpha_list, key|
       size = []
       list = widget.getContents(size)
       size = size[0]
@@ -119,7 +120,7 @@ class AlphalistExample < CLIExample
       return result
     end
 
-    do_delete1 = lambda do |cdktype, widget, widget, key|
+    do_delete1 = lambda do |cdktype, widget, alpha_list, key|
       size = []
       list = widget.getContents(size)
       size = size[0]
@@ -157,7 +158,7 @@ class AlphalistExample < CLIExample
       return true
     end
 
-    do_reload = lambda do |cdktype, widget, widget, key|
+    do_reload = lambda do |cdktype, widget, alpha_list, key|
       result = false
 
       if @@my_user_list.size > 0
@@ -169,7 +170,7 @@ class AlphalistExample < CLIExample
       return result
     end
 
-    do_undo = lambda do |cdktype, widget, widget, key|
+    do_undo = lambda do |cdktype, widget, alpha_list, key|
       result = false
       if @@my_undo_list.size > 0
         size = []
