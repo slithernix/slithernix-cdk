@@ -734,7 +734,8 @@ module Slithernix
 
     # This moves a given window (if we're able to set the window's beginning).
     # We do not use mvwin(), because it does not (usually) move subwindows.
-    # This just didn't work as it was. 
+    # This just didn't work as it was. Maybe this mvwin() comment is no longer
+    # accurate but for now, leaving in the usage of window.move.
     def self.moveCursesWindow (window, xdiff, ydiff)
       return if window.nil?
 

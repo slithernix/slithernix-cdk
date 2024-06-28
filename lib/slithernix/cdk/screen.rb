@@ -112,7 +112,7 @@ module Slithernix
         end
       end
 
-      # This 'lowers' an widget.
+      # This 'lowers' a widget.
       def self.lowerCDKObject(cdktype, widget)
         if widget.validObjType(cdktype)
           widget.screen.swapCDKIndices(widget.screen_index, 0)

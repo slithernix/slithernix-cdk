@@ -1,22 +1,23 @@
 module Slithernix
   module Cdk
     module Draw
-      # This sets up a basic set of color pairs. These can be redefined if wanted
+      # Set up all basic BG/FG color pairs based on what Curses supports
       def self.initCDKColor
-        color = [Curses::COLOR_WHITE, Curses::COLOR_RED, Curses::COLOR_GREEN,
-            Curses::COLOR_YELLOW, Curses::COLOR_BLUE, Curses::COLOR_MAGENTA,
-            Curses::COLOR_CYAN, Curses::COLOR_BLACK]
+        colors = Curses.constants.select { |c|
+          c.to_s.start_with?('COLOR_')
+        }.map do |c|
+          Curses.const_get(c)
+        end
+
         pair = 1
 
         if Curses.has_colors?
-          # XXX: Only checks if terminal has colours not if colours are started
           Curses.start_color
           limit = Curses.colors < 8 ? Curses.colors : 8
 
-          # Create the color pairs
           (0...limit).each do |fg|
             (0...limit).each do |bg|
-              Curses.init_pair(pair, color[fg], color[bg])
+              Curses.init_pair(pair, colors[fg], colors[bg])
               pair += 1
             end
           end
@@ -94,9 +95,16 @@ module Slithernix
       # Draw a box around the given window using the widget's defined
       # line-drawing characters
       def self.drawObjBox(win, widget)
-        self.attrbox(win,
-            widget.ULChar, widget.URChar, widget.LLChar, widget.LRChar,
-            widget.HZChar, widget.VTChar, widget.BXAttr)
+        self.attrbox(
+          win,
+          widget.ULChar,
+          widget.URChar,
+          widget.LLChar,
+          widget.LRChar,
+          widget.HZChar,
+          widget.VTChar,
+          widget.BXAttr
+        )
       end
 
       # This draws a line on the given window. (odd angle lines not working yet)
@@ -180,8 +188,16 @@ module Slithernix
 
       # This writes out a char string with no attributes
       def self.writeChar(window, xpos, ypos, string, align, start, endn)
-        self.writeCharAttrib(window, xpos, ypos, string, Curses::A_NORMAL,
-            align, start, endn)
+        self.writeCharAttrib(
+          window,
+          xpos,
+          ypos,
+          string,
+          Curses::A_NORMAL,
+          align,
+          start,
+          endn
+        )
       end
 
       # This writes out a char string with attributes
@@ -205,14 +221,21 @@ module Slithernix
       end
 
       # This writes out a chtype string
-      def self.writeChtype (window, xpos, ypos, string, align, start, endn)
-        self.writeChtypeAttrib(window, xpos, ypos, string, Curses::A_NORMAL,
-            align, start, endn)
+      def self.writeChtype(window, xpos, ypos, string, align, start, endn)
+        self.writeChtypeAttrib(
+          window,
+          xpos,
+          ypos,
+          string,
+          Curses::A_NORMAL,
+          align,
+          start,
+          endn
+        )
       end
 
       # This writes out a chtype string with the given attributes added.
-      def self.writeChtypeAttrib(window, xpos, ypos, string, attr,
-          align, start, endn)
+      def self.writeChtypeAttrib(window, xpos, ypos, string, attr,align, start, endn)
         diff = endn - start
         display = 0
         x = 0

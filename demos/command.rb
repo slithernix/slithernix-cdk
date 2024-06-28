@@ -9,38 +9,38 @@ class Command
   def Command.help(entry)
     # Create the help message.
     mesg = [
-        '<C></B/29>Help',
-        '',
-        '</B/24>When in the command line.',
-        '<B=history   > Displays the command history.',
-        '<B=Ctrl-^    > Displays the command history.',
-        '<B=Up Arrow  > Scrolls back one command.',
-        '<B=Down Arrow> Scrolls forward one command.',
-        '<B=Tab       > Activates the scrolling window.',
-        '<B=help      > Displays this help window.',
-        '',
-        '</B/24>When in the scrolling window.',
-        '<B=l or L    > Loads a file into the window.',
-        '<B=s or S    > Saves the contents of the window to a file.',
-        '<B=Up Arrow  > Scrolls up one line.',
-        '<B=Down Arrow> Scrolls down one line.',
-        '<B=Page Up   > Scrolls back one page.',
-        '<B=Page Down > Scrolls forward one page.',
-        '<B=Tab/Escape> Returns to the command line.',
-        '',
-        '<C> (</B/24>Refer to the scrolling window online manual ' <<
-            'for more help<!B!24>.)'
+      '<C></B/29>Help',
+      '',
+      '</B/24>When in the command line.',
+      '<B=history   > Displays the command history.',
+      '<B=Ctrl-^    > Displays the command history.',
+      '<B=Up Arrow  > Scrolls back one command.',
+      '<B=Down Arrow> Scrolls forward one command.',
+      '<B=Tab       > Activates the scrolling window.',
+      '<B=help      > Displays this help window.',
+      '',
+      '</B/24>When in the scrolling window.',
+      '<B=l or L    > Loads a file into the window.',
+      '<B=s or S    > Saves the contents of the window to a file.',
+      '<B=Up Arrow  > Scrolls up one line.',
+      '<B=Down Arrow> Scrolls down one line.',
+      '<B=Page Up   > Scrolls back one page.',
+      '<B=Page Down > Scrolls forward one page.',
+      '<B=Tab/Escape> Returns to the command line.',
+      '',
+      '<C> (</B/24>Refer to the scrolling window online manual ' <<
+          'for more help<!B!24>.)'
     ]
     entry.screen.popupLabel(mesg, mesg.size)
   end
 
   def Command.main
     intro_mesg = [
-        '<C></B/16>Little Command Interface',
-        '',
-        '<C>Written by Chris Sauro',
-        '',
-        '<C>Type </B>help<!B> to get help.'
+      '<C></B/16>Little Command Interface',
+      '',
+      '<C>Written by Chris Sauro',
+      '',
+      '<C>Type </B>help<!B> to get help.'
     ]
     command = ''
     prompt = '</B/24>Command >'
@@ -69,20 +69,44 @@ class Command
     Slithernix::Cdk::Draw.initCDKColor
 
     # Create the scrolling window.
-    command_output = Slithernix::Cdk::Widget::SWindow.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::TOP,
-                                      -8, -2, title, 1000, true, false)
+    command_output = Slithernix::Cdk::Widget::SWindow.new(
+      cdkscreen,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::TOP,
+      -8,
+      -2
+      ,title,
+      1000,
+      true,
+      false
+    )
 
     # Convert the prompt to a chtype and determine its length
     prompt_len = []
-    convert = Slithernix::Cdk.char2Chtype(prompt, prompt_len, [])
+    convert = Slithernix::Cdk.char2Chtype(
+      prompt,
+      prompt_len,
+      []
+    )
+
     prompt_len = prompt_len[0]
     command_field_width = Curses.cols - prompt_len - 4
 
     # Create the entry field.
-    command_entry = Slithernix::Cdk::Widget::Entry.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::BOTTOM,
-                                   '', prompt, Curses::A_BOLD | Curses.color_pair(8),
-                                   Curses.color_pair(24) | '_'.ord, :MIXED,
-                                   command_field_width, 1, 512, false, false)
+    command_entry = Slithernix::Cdk::Widget::Entry.new(
+      cdkscreen,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::BOTTOM,
+      '',
+      prompt,
+      Curses::A_BOLD | Curses.color_pair(8),
+      Curses.color_pair(24) | '_'.ord, :MIXED,
+      command_field_width,
+      1,
+      512,
+      false,
+      false
+    )
 
     # Create the key bindings.
     history_up_cb = lambda do |cdktype, entry, history, key|
@@ -154,10 +178,21 @@ class Command
       end
 
       # Create the scrolling list of previous commands.
-      scroll_list = Slithernix::Cdk::Widget::Scroll.new(entry.screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                    Slithernix::Cdk::RIGHT, height, 20, '<C></B/29>Command History',
-                                    history.command, history.count, true, Curses::A_REVERSE,
-                                    true, false)
+      scroll_list = Slithernix::Cdk::Widget::Scroll.new(
+        entry.screen,
+        Slithernix::Cdk::CENTER,
+        Slithernix::Cdk::CENTER,
+        Slithernix::Cdk::RIGHT,
+        height,
+        20,
+        '<C></B/29>Command History',
+        history.command,
+        history.count,
+        true,
+        Curses::A_REVERSE,
+        true,
+        false
+      )
 
       # Get the command to execute.
       selection = scroll_list.activate([])
@@ -177,9 +212,21 @@ class Command
 
     jump_window_cb = lambda do |cdktype, entry, swindow, key|
       # Ask them which line they want to jump to.
-      scale = Slithernix::Cdk::Widget::Scale.new(entry.screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                             '<C>Jump To Which Line', 'Line', Curses::A_NORMAL, 5,
-                             0, 0, swindow.list_size, 1, 2, true, false)
+      scale = Slithernix::Cdk::Widget::Scale.new(
+        entry.screen, Slithernix::Cdk::CENTER,
+        Slithernix::Cdk::CENTER,
+        '<C>Jump To Which Line',
+        'Line',
+        Curses::A_NORMAL,
+        5,
+        0,
+        0,
+        swindow.list_size,
+        1,
+        2,
+        true,
+        false
+      )
 
       # Get the line.
       line = scale.activate([])
@@ -209,7 +256,7 @@ class Command
     command_entry.erase
 
     # Do this forever.
-    while true
+    loop do
       # Get the command
       command_entry.draw(command_entry.box)
       command = command_entry.activate([])
