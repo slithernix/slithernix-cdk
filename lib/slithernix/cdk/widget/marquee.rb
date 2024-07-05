@@ -14,9 +14,9 @@ module Slithernix
           @width = width
           @shadow = shadow
 
-          self.setBox(box)
+          setBox(box)
           if @win.nil?
-            self.destroy
+            destroy
             # return (0);
           end
 
@@ -39,7 +39,7 @@ module Slithernix
           end
 
           # Keep the box info, setting BorderOf()
-          self.setBox(box)
+          setBox(box)
 
           padding = mesg[-1] == ' ' ? 0 : 1
 
@@ -47,7 +47,7 @@ module Slithernix
           message = Slithernix::Cdk.char2Chtype(mesg, mesg_length, [])
 
           # Draw in the widget.
-          self.draw(@box)
+          draw(@box)
           view_limit = @width - (2 * @border_size)
 
           # Start doing the marquee thing...
@@ -164,7 +164,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          self.cleanBindings(:Marquee)
+          cleanBindings(:Marquee)
 
           # Unregister this widget.
           Slithernix::Cdk::Screen.unregister(:Marquee, self)
@@ -172,7 +172,7 @@ module Slithernix
 
         # This erases the widget.
         def erase
-          if self.validCDKObject
+          if validCDKObject
             Slithernix::Cdk.eraseCursesWindow(@win)
             Slithernix::Cdk.eraseCursesWindow(@shadow_win)
           end
@@ -185,7 +185,7 @@ module Slithernix
 
           super
 
-          self.layoutWidget(xpos, ypos)
+          layoutWidget(xpos, ypos)
         end
 
         def position

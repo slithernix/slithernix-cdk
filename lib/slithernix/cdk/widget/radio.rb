@@ -22,7 +22,7 @@ module Slithernix
             '>' => Curses::KEY_END,
           }
 
-          self.setBox(box)
+          setBox(box)
 
           # If the height is a negative value, height will be ROWS-height,
           # otherwise the height will be the given height.
@@ -32,7 +32,7 @@ module Slithernix
           # otherwise the width will be the given width.
           box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width, 5)
 
-          box_width = self.setTitle(title, box_width)
+          box_width = setTitle(title, box_width)
 
           # Set the box height.
           if @title_lines > box_height
@@ -51,14 +51,14 @@ module Slithernix
           @box_width = [box_width, parent_width].min
           @box_height = [box_height, parent_height].min
 
-          self.setViewSize(list_size)
+          setViewSize(list_size)
 
           # Each item in the needs to be converted to chtype array
-          widest_item = self.createList(list, list_size, @box_width)
+          widest_item = createList(list, list_size, @box_width)
           if widest_item > 0
-            self.updateViewWidth(widest_item)
+            updateViewWidth(widest_item)
           elsif list_size > 0
-            self.destroy
+            destroy
             return nil
           end
 
@@ -74,7 +74,7 @@ module Slithernix
 
           # Is the window nil?
           if @win.nil?
-            self.destroy
+            destroy
             return nil
           end
 
@@ -83,10 +83,10 @@ module Slithernix
 
           # Create the scrollbar window.
           if splace == Slithernix::Cdk::RIGHT
-            @scrollbar_win = @win.subwin(self.maxViewSize, 1,
+            @scrollbar_win = @win.subwin(maxViewSize, 1,
                 self.SCREEN_YPOS(ypos), xpos + @box_width - @border_size - 1)
           elsif splace == Slithernix::Cdk::LEFT
-            @scrollbar_win = @win.subwin(self.maxViewSize, 1,
+            @scrollbar_win = @win.subwin(maxViewSize, 1,
                 self.SCREEN_YPOS(ypos), self.SCREEN_XPOS(xpos))
           else
             @scrollbar_win = nil
@@ -108,7 +108,7 @@ module Slithernix
           @accepts_focus = true
           @shadow = shadow
 
-          self.setCurrentItem(0)
+          setCurrentItem(0)
 
           # Do we need to create the shadow?
           if shadow
@@ -118,7 +118,7 @@ module Slithernix
 
           # Setup the key bindings
           bindings.each do |from, to|
-            self.bind(:Radio, from, :getc, to)
+            bind(:Radio, from, :getc, to)
           end
 
           cdkscreen.register(:Radio, self)
@@ -137,22 +137,22 @@ module Slithernix
         # This actually manages the radio widget.
         def activate(actions)
           # Draw the radio list.
-          self.draw(@box)
+          draw(@box)
 
           if actions.nil? || actions.size == 0
             while true
-              self.fixCursorPosition
-              input = self.getch([])
+              fixCursorPosition
+              input = getch([])
 
               # Inject the character into the widget.
-              ret = self.inject(input)
+              ret = inject(input)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
             end
           else
             actions.each do |action|
-              ret = self.inject(action)
+              ret = inject(action)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -160,7 +160,7 @@ module Slithernix
           end
 
           # Set the exit type and return
-          self.setExitType(0)
+          setExitType(0)
           return -1
         end
 
@@ -171,10 +171,10 @@ module Slithernix
           complete = false
 
           # Set the exit type
-          self.setExitType(0)
+          setExitType(0)
 
           # Draw the widget list
-          self.drawList(@box)
+          drawList(@box)
 
           # Check if there is a pre-process function to be called
           unless @pre_process_func.nil?
@@ -186,7 +186,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check for a predefined key binding.
-            if self.checkBind(:Radio, input)
+            if checkBind(:Radio, input)
               complete = true
             else
               case input
@@ -213,14 +213,14 @@ module Slithernix
               when ' '
                 @selected_item = @current_item
               when Slithernix::Cdk::KEY_ESC
-                self.setExitType(input)
+                setExitType(input)
                 ret = -1
                 complete = true
               when Curses::Error
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
-                self.setExitType(input)
+                setExitType(input)
                 ret = @selected_item
                 complete = true
               when Slithernix::Cdk::REFRESH
@@ -236,11 +236,11 @@ module Slithernix
           end
 
           if !complete
-            self.drawList(@box)
-            self.setExitType(0)
+            drawList(@box)
+            setExitType(0)
           end
 
-          self.fixCursorPosition
+          fixCursorPosition
           @return_data = ret
           return ret
         end
@@ -248,7 +248,7 @@ module Slithernix
         # This moves the radio field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @scrollbar_win, @shadow_win]
-          self.move_specific(xplace, yplace, relative, refresh_flag,
+          move_specific(xplace, yplace, relative, refresh_flag,
               windows, subwidgets)
         end
 
@@ -259,10 +259,10 @@ module Slithernix
             Slithernix::Cdk::Draw.drawShadow(@shadow_win)
           end
 
-          self.drawTitle(@win)
+          drawTitle(@win)
 
           # Draw in the radio list.
-          self.drawList(@box)
+          drawList(@box)
         end
 
         # This redraws the radio list.
@@ -350,7 +350,7 @@ module Slithernix
             Slithernix::Cdk::Draw.drawObjBox(@win, self)
           end
 
-          self.fixCursorPosition
+          fixCursorPosition
         end
 
         # This sets the background attribute of the widget.
@@ -367,8 +367,8 @@ module Slithernix
 
         # This function destroys the radio widget.
         def destroy
-          self.cleanTitle
-          self.destroyInfo
+          cleanTitle
+          destroyInfo
 
           # Clean up the windows.
           Slithernix::Cdk.deleteCursesWindow(@scrollbar_win)
@@ -376,7 +376,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean up the key bindings.
-          self.cleanBindings(:Radio)
+          cleanBindings(:Radio)
 
           # Unregister this widget.
           Slithernix::Cdk::Screen.unregister(:Radio, self)
@@ -384,7 +384,7 @@ module Slithernix
 
         # This function erases the radio widget
         def erase
-          if self.validCDKObject
+          if validCDKObject
             Slithernix::Cdk.eraseCursesWindow(@win)
             Slithernix::Cdk.eraseCursesWindow(@shadow_win)
           end
@@ -392,14 +392,14 @@ module Slithernix
 
         # This sets various attributes of the radio list.
         def set(highlight, choice_char, box)
-          self.setHighlight(highlight)
-          self.setChoiceCHaracter(choice_char)
-          self.setBox(box)
+          setHighlight(highlight)
+          setChoiceCHaracter(choice_char)
+          setBox(box)
         end
 
         # This sets the radio list items.
         def setItems(list, list_size)
-          widest_item = self.createList(list, list_size, @box_width)
+          widest_item = createList(list, list_size, @box_width)
           if widest_item <= 0
             return
           end
@@ -416,13 +416,13 @@ module Slithernix
             )
           end
 
-          self.setViewSize(list_size)
+          setViewSize(list_size)
 
-          self.setCurrentItem(0)
+          setCurrentItem(0)
           @left_char = 0
           @selected_item = 0
 
-          self.updateViewWidth(widest_item)
+          updateViewWidth(widest_item)
         end
 
         def getItems(list)
@@ -472,7 +472,7 @@ module Slithernix
 
         # This sets the current highlighted item of the widget
         def setCurrentItem(item)
-          self.setPosition(item)
+          setPosition(item)
           @selected_item = item
         end
 
@@ -490,11 +490,11 @@ module Slithernix
         end
 
         def focus
-          self.drawList(@box)
+          drawList(@box)
         end
 
         def unfocus
-          self.drawList(@box)
+          drawList(@box)
         end
 
         def createList(list, list_size, box_width)
@@ -523,7 +523,7 @@ module Slithernix
               widest_item = [widest_item, new_len[j]].max
             end
             if status
-              self.destroyInfo
+              destroyInfo
               @item = new_list
               @item_len = new_len
               @item_pos = new_pos

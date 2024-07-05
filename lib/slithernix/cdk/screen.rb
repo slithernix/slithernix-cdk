@@ -39,7 +39,7 @@ module Slithernix
         end
 
         if widget.validObjType(cdktype)
-          self.setScreenIndex(@widget_count, widget)
+          setScreenIndex(@widget_count, widget)
           @widget_count += 1
         end
       end
@@ -90,11 +90,11 @@ module Slithernix
       end
 
       def swapCDKIndices(n1, n2)
-        if n1 != n2 && self.validIndex(n1) && self.validIndex(n2)
+        if n1 != n2 && validIndex(n1) && validIndex(n2)
           o1 = @widget[n1]
           o2 = @widget[n2]
-          self.setScreenIndex(n1, o2)
-          self.setScreenIndex(n2, o1)
+          setScreenIndex(n1, o2)
+          setScreenIndex(n2, o1)
 
           if @widget_focus == n1
             @widget_focus = n2
@@ -145,8 +145,8 @@ module Slithernix
 
         # Clean the screen.
         Curses.curs_set(old_state)
-        self.erase
-        self.refresh
+        erase
+        refresh
       end
 
       # This pops up a message
@@ -207,15 +207,15 @@ module Slithernix
         popup.destroy
 
         # Clean the screen.
-        self.erase
-        self.refresh
+        erase
+        refresh
 
         return choice
       end
 
       # This calls SCREEN.refresh, (made consistent with widget)
       def draw
-        self.refresh
+        refresh
       end
 
       # Refresh one CDK window.

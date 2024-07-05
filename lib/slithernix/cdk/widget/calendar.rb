@@ -74,9 +74,9 @@ module Slithernix
             Slithernix::Cdk::BACKCHAR => Curses::KEY_PPAGE,
           }
 
-          self.setBox(box)
+          setBox(box)
 
-          box_width = self.setTitle(title, box_width)
+          box_width = setTitle(title, box_width)
           box_height += @title_lines
 
           # Make sure we didn't extend beyond the dimensions of the window.
@@ -95,7 +95,7 @@ module Slithernix
 
           # Is the window nil?
           if @win.nil?
-            self.destroy
+            destroy
             return nil
           end
           @win.keypad(true)
@@ -131,17 +131,17 @@ module Slithernix
           @label_win = @win.subwin(1, @field_width,
               ypos + @title_lines + 1, xpos + 1 + @border_size)
           if @label_win.nil?
-            self.destroy
+            destroy
             return nil
           end
 
           @field_win = @win.subwin(7, 20,
               ypos + @title_lines + 3, xpos + @x_offset)
           if @field_win.nil?
-            self.destroy
+            destroy
             return nil
           end
-          self.setBox(box)
+          setBox(box)
 
           @marker = [0] * Slithernix::Cdk::Widget::Calendar::CALENDAR_LIMIT
 
@@ -154,7 +154,7 @@ module Slithernix
           end
 
           # Verify the dates provided.
-          self.verifyCalendarDate
+          verifyCalendarDate
 
           # Determine which day the month starts on.
           @week_day = Slithernix::Cdk::Widget::Calendar.getMonthStartWeekday(@year, @month)
@@ -167,7 +167,7 @@ module Slithernix
 
           # Setup the key bindings.
           bindings.each do |from, to|
-            self.bind(:Calendar, from, :getc, to)
+            bind(:Calendar, from, :getc, to)
           end
 
           cdkscreen.register(:Calendar, self)
@@ -176,14 +176,14 @@ module Slithernix
         # This function lets the user play with this widget.
         def activate(actions)
           ret = -1
-          self.draw(@box)
+          draw(@box)
 
           if actions.nil? || actions.size == 0
             while true
-              input = self.getch([])
+              input = getch([])
 
               # Inject the character into the widget.
-              ret = self.inject(input)
+              ret = inject(input)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -191,7 +191,7 @@ module Slithernix
           else
             # Inject each character one at a time.
             actions.each do |action|
-              ret = self.inject(action)
+              ret = inject(action)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -208,10 +208,10 @@ module Slithernix
           complete = false
 
           # Set the exit type
-          self.setExitType(0)
+          setExitType(0)
 
           # Refresh the widget field.
-          self.drawField
+          drawField
 
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
@@ -222,42 +222,42 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check a predefined binding
-            if self.checkBind(:Calendar, input)
-              self.checkEarlyExit
+            if checkBind(:Calendar, input)
+              checkEarlyExit
               complete = true
             else
               case input
               when Curses::KEY_UP
-                self.decrementCalendarDay(7)
+                decrementCalendarDay(7)
               when Curses::KEY_DOWN
-                self.incrementCalendarDay(7)
+                incrementCalendarDay(7)
               when Curses::KEY_LEFT
-                self.decrementCalendarDay(1)
+                decrementCalendarDay(1)
               when Curses::KEY_RIGHT
-                self.incrementCalendarDay(1)
+                incrementCalendarDay(1)
               when Curses::KEY_NPAGE
-                self.incrementCalendarMonth(1)
+                incrementCalendarMonth(1)
               when Curses::KEY_PPAGE
-                self.decrementCalendarMonth(1)
+                decrementCalendarMonth(1)
               when 'N'
-                self.incrementCalendarMonth(6)
+                incrementCalendarMonth(6)
               when 'P'
-                self.decrementCalendarMonth(6)
+                decrementCalendarMonth(6)
               when '-'
-                self.decrementCalendarYear(1)
+                decrementCalendarYear(1)
               when '+'
-                self.incrementCalendarYear(1)
+                incrementCalendarYear(1)
               when Curses::KEY_HOME
-                self.setDate(-1, -1, -1)
+                setDate(-1, -1, -1)
               when Slithernix::Cdk::KEY_ESC
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Curses::Error
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
-                self.setExitType(input)
-                ret = self.getCurrentTime
+                setExitType(input)
+                ret = getCurrentTime
                 complete = true
               when Slithernix::Cdk::REFRESH
                 @screen.erase
@@ -272,7 +272,7 @@ module Slithernix
           end
 
           if !complete
-            self.setExitType(0)
+            setExitType(0)
           end
 
           @result_data = ret
@@ -282,7 +282,7 @@ module Slithernix
         # This moves the calendar field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @field_win, @label_win, @shadow_win]
-          self.move_specific(xplace, yplace, relative, refresh_flag,
+          move_specific(xplace, yplace, relative, refresh_flag,
               windows, [])
         end
 
@@ -301,7 +301,7 @@ module Slithernix
             Slithernix::Cdk::Draw.drawObjBox(@win, self)
           end
 
-          self.drawTitle(@win)
+          drawTitle(@win)
 
           # Draw in the day-of-the-week header.
           (0...7).each do |col|
@@ -312,7 +312,7 @@ module Slithernix
           end
 
           @win.refresh
-          self.drawField
+          drawField
         end
 
         # This draws the month field.
@@ -343,7 +343,7 @@ module Slithernix
                   save_y = ypos + @field_win.begy - @input_window.begy
                   save_x = 1
                 else
-                  marker |= self.getMarker(day, @month, year_index)
+                  marker |= getMarker(day, @month, year_index)
                 end
                 Slithernix::Cdk::Draw.writeCharAttrib(@field_win, xpos, ypos, temp, marker,
                                      Slithernix::Cdk::HORIZONTAL, 0, 2)
@@ -384,12 +384,12 @@ module Slithernix
         # This sets multiple attributes of the widget
         def set(day, month, year, day_attrib, month_attrib, year_attrib,
             highlight, box)
-          self.setDate(day, month, yar)
-          self.setDayAttribute(day_attrib)
-          self.setMonthAttribute(month_attrib)
-          self.setYearAttribute(year_attrib)
-          self.setHighlight(highlight)
-          self.setBox(box)
+          setDate(day, month, yar)
+          setDayAttribute(day_attrib)
+          setMonthAttribute(month_attrib)
+          setYearAttribute(year_attrib)
+          setHighlight(highlight)
+          setBox(box)
         end
 
         # This sets the date and some attributes.
@@ -404,7 +404,7 @@ module Slithernix
           @year = year == -1 ? date_info.year : year
 
           # Verify the date information.
-          self.verifyCalendarDate
+          verifyCalendarDate
 
           # Get the start of the current month.
           @week_day = Slithernix::Cdk::Widget::Calendar.getMonthStartWeekday(@year, @month)
@@ -464,7 +464,7 @@ module Slithernix
 
         # This erases the calendar widget.
         def erase
-          if self.validCDKObject
+          if validCDKObject
             Slithernix::Cdk.eraseCursesWindow(@label_win)
             Slithernix::Cdk.eraseCursesWindow(@field_win)
             Slithernix::Cdk.eraseCursesWindow(@win)
@@ -474,7 +474,7 @@ module Slithernix
 
         # This destroys the calendar
         def destroy
-          self.cleanTitle
+          cleanTitle
 
           Slithernix::Cdk.deleteCursesWindow(@label_win)
           Slithernix::Cdk.deleteCursesWindow(@field_win)
@@ -482,7 +482,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          self.cleanBindings(:Calendar)
+          cleanBindings(:Calendar)
 
           # Unregister the widget.
           Slithernix::Cdk::Screen.unregister(:Calendar, self)
@@ -491,14 +491,14 @@ module Slithernix
         # This sets a marker on the calendar.
         def setMarker(day, month, year, marker)
           year_index = Slithernix::Cdk::Widget::Calendar.YEAR2INDEX(year)
-          oldmarker = self.getMarker(day, month, year)
+          oldmarker = getMarker(day, month, year)
 
           # Check to see if a marker has not already been set
           if oldmarker != 0
-            self.setCalendarCell(day, month, year_index,
+            setCalendarCell(day, month, year_index,
                 oldmarker | Curses::A_BLINK)
           else
-            self.setCalendarCell(day, month, year_index, marker)
+            setCalendarCell(day, month, year_index, marker)
           end
         end
 
@@ -506,7 +506,7 @@ module Slithernix
           result = 0
           year = Slithernix::Cdk::Widget::Calendar.YEAR2INDEX(year)
           if @marker != 0
-            result = self.getCalendarCell(day, month, year)
+            result = getCalendarCell(day, month, year)
           end
           return result
         end
@@ -514,7 +514,7 @@ module Slithernix
         # This sets a marker on the calendar.
         def removeMarker(day, month, year)
           year_index = Slithernix::Cdk::Widget::Calendar.YEAR2INDEX(year)
-          self.setCalendarCell(day, month, year_index, 0)
+          setCalendarCell(day, month, year_index, 0)
         end
 
         # THis function sets the month name.
@@ -582,10 +582,10 @@ module Slithernix
           if adjust + @day > month_length
             # Have to increment the month by one.
             @day = @day + adjust - month_length
-            self.incrementCalendarMonth(1)
+            incrementCalendarMonth(1)
           else
             @day += adjust
-            self.drawField
+            drawField
           end
         end
 
@@ -613,10 +613,10 @@ module Slithernix
             @day = month_length - (adjust - @day)
 
             # Have to decrement the month by one.
-            self.decrementCalendarMonth(1)
+            decrementCalendarMonth(1)
           else
             @day -= adjust
-            self.drawField
+            drawField
           end
         end
 
@@ -640,8 +640,8 @@ module Slithernix
           @week_day = Slithernix::Cdk::Widget::Calendar.getMonthStartWeekday(@year, @month)
 
           # Redraw the calendar.
-          self.erase
-          self.draw(@box)
+          erase
+          draw(@box)
         end
 
         # This decrements the current month by the given value.
@@ -674,8 +674,8 @@ module Slithernix
           @week_day = Slithernix::Cdk::Widget::Calendar.getMonthStartWeekday(@year, @month)
 
           # Redraw the calendar.
-          self.erase
-          self.draw(@box)
+          erase
+          draw(@box)
         end
 
         # This increments the current year by the given value.
@@ -695,8 +695,8 @@ module Slithernix
           @week_day = Slithernix::Cdk::Widget::Calendar.getMonthStartWeekday(@year, @month)
 
           # Redraw the calendar.
-          self.erase
-          self.draw(@box)
+          erase
+          draw(@box)
         end
 
         # This decrements the current year by the given value.
@@ -727,8 +727,8 @@ module Slithernix
           @week_day = Slithernix::Cdk::Widget::Calendar.getMonthStartWeekday(@year, @month)
 
           # Redraw the calendar.
-          self.erase
-          self.draw(@box)
+          erase
+          draw(@box)
         end
 
         # This returns the length of the current month.
@@ -753,12 +753,12 @@ module Slithernix
 
         def focus
           # Original: drawCDKFscale(widget, ObjOf (widget)->box);
-          self.draw(@box)
+          draw(@box)
         end
 
         def unfocus
           # Original: drawCDKFscale(widget, ObjOf (widget)->box);
-          self.draw(@box)
+          draw(@box)
         end
 
         def self.YEAR2INDEX(year)

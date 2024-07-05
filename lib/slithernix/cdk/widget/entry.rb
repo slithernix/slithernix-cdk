@@ -18,7 +18,7 @@ module Slithernix
           xpos = xplace
           ypos = yplace
 
-          self.setBox(box)
+          setBox(box)
           box_height = @border_size * 2 + 1
 
           # If the field_width is a negative value, the field_width will be
@@ -40,7 +40,7 @@ module Slithernix
           end
 
           old_width = box_width
-          box_width = self.setTitle(title, box_width)
+          box_width = setTitle(title, box_width)
           horizontal_adjust = (box_width - old_width) / 2
 
           box_height += @title_lines
@@ -61,7 +61,7 @@ module Slithernix
           # Make the label window.
           @win = cdkscreen.window.subwin(box_height, box_width, ypos, xpos)
           if @win.nil?
-            self.destroy
+            destroy
             return nil
           end
           @win.keypad(true)
@@ -72,7 +72,7 @@ module Slithernix
               xpos + @label_len + horizontal_adjust + @border_size)
 
           if @field_win.nil?
-            self.destroy
+            destroy
             return nil
           end
           @field_win.keypad(true)
@@ -150,14 +150,14 @@ module Slithernix
           ret = 0
 
           # Draw the widget.
-          self.draw(@box)
+          draw(@box)
 
           if actions.nil? or actions.size == 0
             while true
-              input = self.getch([])
+              input = getch([])
 
               # Inject the character into the widget.
-              ret = self.inject(input)
+              ret = inject(input)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -165,7 +165,7 @@ module Slithernix
           else
             # Inject each character one at a time.
             actions.each do |action|
-              ret = self.inject(action)
+              ret = inject(action)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -203,7 +203,7 @@ module Slithernix
           complete = false
 
           # Set the exit type
-          self.setExitType(0)
+          setExitType(0)
 
           # Refresh the widget field. This seems useless?
           #self.drawField
@@ -220,7 +220,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check a predefined binding
-            if self.checkBind(:Entry, input)
+            if checkBind(:Entry, input)
               complete = true
             else
               curr_pos = @screen_col + @left_char
@@ -231,7 +231,7 @@ module Slithernix
               when Curses::KEY_HOME
                 @left_char = 0
                 @screen_col = 0
-                self.drawField
+                drawField
               when Slithernix::Cdk::TRANSPOSE
                 if curr_pos >= @info.size - 1
                   Slithernix::Cdk.Beep
@@ -239,18 +239,18 @@ module Slithernix
                   holder = @info[curr_pos]
                   @info[curr_pos] = @info[curr_pos + 1]
                   @info[curr_pos + 1] = holder
-                  self.drawField
+                  drawField
                 end
               when Curses::KEY_END
-                self.setPositionToEnd
-                self.drawField
+                setPositionToEnd
+                drawField
               when Curses::KEY_LEFT
                 if curr_pos <= 0
                   Slithernix::Cdk.Beep
                 elsif @screen_col == 0
                   # Scroll left.
                   @left_char -= 1
-                  self.drawField
+                  drawField
                 else
                   @screen_col -= 1
                   #@field_win.move(0, @screen_col)
@@ -261,7 +261,7 @@ module Slithernix
                 elsif @screen_col == @field_width - 1
                   # Scroll to the right.
                   @left_char += 1
-                  self.drawField
+                  drawField
                 else
                   # Move right.
                   @screen_col += 1
@@ -294,24 +294,24 @@ module Slithernix
                         @left_char -= 1
                       end
                     end
-                    self.drawField
+                    drawField
                   else
                     Slithernix::Cdk.Beep
                   end
                 end
               when Slithernix::Cdk::KEY_ESC
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Slithernix::Cdk::ERASE
                 if @info.size != 0
-                  self.clean
-                  self.drawField
+                  clean
+                  drawField
                 end
               when Slithernix::Cdk::CUT
                 if @info.size != 0
                   @@g_paste_buffer = @info.clone
-                  self.clean
-                  self.drawField
+                  clean
+                  drawField
                 else
                   Slithernix::Cdk.Beep
                 end
@@ -323,21 +323,21 @@ module Slithernix
                 end
               when Slithernix::Cdk::PASTE
                 if @@g_paste_buffer != 0
-                  self.setValue(@@g_paste_buffer)
-                  self.drawField
+                  setValue(@@g_paste_buffer)
+                  drawField
                 else
                   Slithernix::Cdk.Beep
                 end
               when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
                 if @info.size >= @min
-                  self.setExitType(input)
+                  setExitType(input)
                   ret = @info
                   complete = true
                 else
                   Slithernix::Cdk.Beep
                 end
               when Curses::Error
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Slithernix::Cdk::REFRESH
                 @screen.erase
@@ -353,7 +353,7 @@ module Slithernix
           end
 
           unless complete
-            self.setExitType(0)
+            setExitType(0)
           end
 
           @result_data = ret
@@ -363,7 +363,7 @@ module Slithernix
         # This moves the entry field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @field_win, @label_win, @shadow_win]
-          self.move_specific(xplace, yplace, relative, refresh_flag,
+          move_specific(xplace, yplace, relative, refresh_flag,
               windows, [])
         end
 
@@ -397,7 +397,7 @@ module Slithernix
             Slithernix::Cdk::Draw.drawObjBox(@win, self)
           end
 
-          self.drawTitle(@win)
+          drawTitle(@win)
 
           @win.refresh
 
@@ -408,7 +408,7 @@ module Slithernix
             @label_win.refresh
           end
 
-          self.drawField
+          drawField
         end
 
         def drawField
@@ -435,7 +435,7 @@ module Slithernix
 
         # This erases an entry widget from the screen.
         def erase
-          if self.validCDKObject
+          if validCDKObject
             Slithernix::Cdk.eraseCursesWindow(@field_win)
             Slithernix::Cdk.eraseCursesWindow(@label_win)
             Slithernix::Cdk.eraseCursesWindow(@win)
@@ -445,23 +445,23 @@ module Slithernix
 
         # This destroys an entry widget.
         def destroy
-          self.cleanTitle
+          cleanTitle
 
           Slithernix::Cdk.deleteCursesWindow(@field_win)
           Slithernix::Cdk.deleteCursesWindow(@label_win)
           Slithernix::Cdk.deleteCursesWindow(@shadow_win)
           Slithernix::Cdk.deleteCursesWindow(@win)
 
-          self.cleanBindings(:Entry)
+          cleanBindings(:Entry)
 
           Slithernix::Cdk::Screen.unregister(:Entry, self)
         end
 
         # This sets specific attributes of the entry field.
         def set(value, min, max, box)
-          self.setValue(value)
-          self.setMin(min)
-          self.setMax(max)
+          setValue(value)
+          setMin(min)
+          setMax(max)
         end
 
         # This removes the old information in the entry field and keeps
@@ -475,7 +475,7 @@ module Slithernix
           else
             @info = new_value.clone
 
-            self.setPositionToEnd
+            setPositionToEnd
           end
         end
 
@@ -547,7 +547,7 @@ module Slithernix
         end
 
         def unfocus
-          self.draw(box)
+          draw(box)
           @field_win.refresh
         end
 

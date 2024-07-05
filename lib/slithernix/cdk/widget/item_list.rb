@@ -11,12 +11,12 @@ module Slithernix
           parent_height = cdkscreen.window.maxy
           field_width = 0
 
-          if !self.createList(item, count)
-            self.destroy
+          if !createList(item, count)
+            destroy
             return nil
           end
 
-          self.setBox(box)
+          setBox(box)
           box_height = (@border_size * 2) + 1
 
           # Set some basic values of the item list
@@ -32,15 +32,15 @@ module Slithernix
           end
 
           # Set the box width. Allow an extra char in field width for cursor
-          field_width = self.maximumFieldWidth + 1
+          field_width = maximumFieldWidth + 1
           box_width = field_width + @label_len + 2 * @border_size
-          box_width = self.setTitle(title, box_width)
+          box_width = setTitle(title, box_width)
           box_height += @title_lines
 
           # Make sure we didn't extend beyond the dimensions of the window
           @box_width = [box_width, parent_width].min
           @box_height = [box_height, parent_height].min
-          self.updateFieldWidth
+          updateFieldWidth
 
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
@@ -52,7 +52,7 @@ module Slithernix
           # Make the window.
           @win = Curses::Window.new(box_height, box_width, ypos, xpos)
           if @win.nil?
-            self.destroy
+            destroy
             return nil
           end
 
@@ -63,7 +63,7 @@ module Slithernix
                 xpos + @border_size)
 
             if @label_win.nil?
-              self.destroy
+              destroy
               return nil
             end
           end
@@ -71,10 +71,10 @@ module Slithernix
           @win.keypad(true)
 
           # Make the field window.
-          if !self.createFieldWin(
+          if !createFieldWin(
               ypos + @border_size + @title_lines,
               xpos + @label_len + @border_size)
-            self.destroy
+            destroy
             return nil
           end
 
@@ -99,7 +99,7 @@ module Slithernix
             @shadow_win = Curses::Window.new(box_height, box_width,
                 ypos + 1, xpos + 1)
             if @shadow_win.nil?
-              self.destroy
+              destroy
               return nil
             end
           end
@@ -113,17 +113,17 @@ module Slithernix
           ret = -1
 
           # Draw the widget.
-          self.draw(@box)
-          self.drawField(true)
+          draw(@box)
+          drawField(true)
 
           if actions.nil? || actions.size == 0
             input = 0
 
             while true
-              input = self.getch([])
+              input = getch([])
 
               # Inject the character into the widget.
-              ret = self.inject(input)
+              ret = inject(input)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -131,7 +131,7 @@ module Slithernix
           else
             # Inject each character one at a time.
             actions.each do |action|
-              ret = self.inject(action)
+              ret = inject(action)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -139,7 +139,7 @@ module Slithernix
           end
 
           # Set the exit type and exit.
-          self.setExitType(0)
+          setExitType(0)
           return ret
         end
 
@@ -150,10 +150,10 @@ module Slithernix
           complete = false
 
           # Set the exit type.
-          self.setExitType(0)
+          setExitType(0)
 
           # Draw the widget field
-          self.drawField(true)
+          drawField(true)
 
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
@@ -164,7 +164,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check a predefined binding.
-            if self.checkBind(:ItemList, input)
+            if checkBind(:ItemList, input)
               complete = true
             else
               case input
@@ -187,13 +187,13 @@ module Slithernix
               when '$'
                 @current_item = @list_size - 1
               when Slithernix::Cdk::KEY_ESC
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Curses::Error
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
-                self.setExitType(input)
+                setExitType(input)
                 ret = @current_item
                 complete = true
               when Slithernix::Cdk::REFRESH
@@ -211,8 +211,8 @@ module Slithernix
           end
 
           if !complete
-            self.drawField(true)
-            self.setExitType(0)
+            drawField(true)
+            setExitType(0)
           end
 
           @result_data = ret
@@ -222,7 +222,7 @@ module Slithernix
         # This moves the itemlist field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @field_win, @label_win, @shadow_win]
-          self.move_specific(xplace, yplace, relative, refresh_flag,
+          move_specific(xplace, yplace, relative, refresh_flag,
               windows, [])
         end
 
@@ -233,7 +233,7 @@ module Slithernix
             Slithernix::Cdk::Draw.drawShadow(@shadow_win)
           end
 
-          self.drawTitle(@win)
+          drawTitle(@win)
 
           # Draw in the label to the widget.
           unless @label_win.nil?
@@ -249,7 +249,7 @@ module Slithernix
           @win.refresh
 
           # Draw in the field.
-          self.drawField(false)
+          drawField(false)
         end
 
         # This sets the background attribute of the widget
@@ -289,7 +289,7 @@ module Slithernix
 
         # This function removes the widget from the screen.
         def erase
-          if self.validCDKObject
+          if validCDKObject
             Slithernix::Cdk.eraseCursesWindow(@field_win)
             Slithernix::Cdk.eraseCursesWindow(@label_win)
             Slithernix::Cdk.eraseCursesWindow(@win)
@@ -304,8 +304,8 @@ module Slithernix
 
         # This function destroys the widget and all the memory it used.
         def destroy
-          self.cleanTitle
-          self.destroyInfo
+          cleanTitle
+          destroyInfo
 
           # Delete the windows
           Slithernix::Cdk.deleteCursesWindow(@field_win)
@@ -314,20 +314,20 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          self.cleanBindings(:ItemList)
+          cleanBindings(:ItemList)
 
           Slithernix::Cdk::Screen.unregister(:ItemList, self)
         end
 
         # This sets multiple attributes of the widget.
         def set(list, count, current, box)
-          self.setValues(list, count, current)
-          self.setBox(box)
+          setValues(list, count, current)
+          setBox(box)
         end
 
         # This function sets the contents of the list
         def setValues(item, count, default_item)
-          if self.createList(item, count)
+          if createList(item, count)
             old_width = @field_width
 
             # Set the default item.
@@ -338,14 +338,14 @@ module Slithernix
 
             # This will not resize the outer windows but can still make a usable
             # field width if the title made the outer window wide enough
-            self.updateFieldWidth
+            updateFieldWidth
             if @field_width > old_width
-              self.createFieldWin(@field_win.begy, @field_win.begx)
+              createFieldWin(@field_win.begy, @field_win.begx)
             end
 
             # Draw the field.
-            self.erase
-            self.draw(@box)
+            erase
+            draw(@box)
           end
         end
 
@@ -383,11 +383,11 @@ module Slithernix
         end
 
         def focus
-          self.drawField(true)
+          drawField(true)
         end
 
         def unfocus
-          self.drawField(false)
+          drawField(false)
         end
 
         def createList(item, count)
@@ -421,7 +421,7 @@ module Slithernix
             end
 
             if status
-              self.destroyInfo
+              destroyInfo
 
               # Copy in the new information
               @list_size = count
@@ -430,7 +430,7 @@ module Slithernix
               @item_len = new_len
             end
           else
-            self.destroyInfo
+            destroyInfo
             status = true
           end
 
@@ -450,7 +450,7 @@ module Slithernix
         end
 
         def updateFieldWidth
-          want = self.maximumFieldWidth + 1
+          want = maximumFieldWidth + 1
           have = @box_width - @label_len - 2 * @border_size
           @field_width = [want, have].min
         end

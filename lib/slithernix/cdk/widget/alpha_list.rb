@@ -19,12 +19,12 @@ module Slithernix
             Slithernix::Cdk::FORCHAR  => Curses::KEY_NPAGE,
           }
 
-          if !self.createList(list, list_size)
-            self.destroy
+          if !createList(list, list_size)
+            destroy
             return nil
           end
 
-          self.setBox(box)
+          setBox(box)
 
           # If the height is a negative value, the height will be ROWS-height,
           # otherwise the height will be the given height.
@@ -52,7 +52,7 @@ module Slithernix
           @win = Curses::Window.new(box_height, box_width, ypos, xpos)
 
           if @win.nil?
-            self.destroy
+            destroy
             return nil
           end
           @win.keypad(true)
@@ -96,7 +96,7 @@ module Slithernix
           )
 
           if @entry_field.nil?
-            self.destroy
+            destroy
             return nil
           end
           @entry_field.setLLchar(Slithernix::Cdk::ACS_LTEE)
@@ -315,7 +315,7 @@ module Slithernix
 
           # Setup the key bindings.
           bindings.each do |from, to|
-            self.bind(:AlphaList, from, :getc, to)
+            bind(:AlphaList, from, :getc, to)
           end
 
           cdkscreen.register(:AlphaList, self)
@@ -323,7 +323,7 @@ module Slithernix
 
         # This erases the alphalist from the screen.
         def erase
-          if self.validCDKObject
+          if validCDKObject
             @scroll_field.erase
             @entry_field.erase
 
@@ -336,7 +336,7 @@ module Slithernix
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @shadow_win]
           subwidgets = [@entry_field, @scroll_field]
-          self.move_specific(xplace, yplace, relative, refresh_flag,
+          move_specific(xplace, yplace, relative, refresh_flag,
               windows, subwidgets)
         end
 
@@ -354,15 +354,15 @@ module Slithernix
         end
 
         def drawMyScroller
-          self.saveFocus
+          saveFocus
           @scroll_field.draw(@scroll_field.box)
-          self.restoreFocus
+          restoreFocus
         end
 
         def injectMyScroller(key)
-          self.saveFocus
+          saveFocus
           @scroll_field.inject(key)
-          self.restoreFocus
+          restoreFocus
         end
 
         # This draws the alphalist widget.
@@ -376,7 +376,7 @@ module Slithernix
           @entry_field.draw(@entry_field.box)
 
           # Draw in the scroll field.
-          self.drawMyScroller
+          drawMyScroller
         end
 
         # This activates the alphalist
@@ -384,7 +384,7 @@ module Slithernix
           ret = 0
 
           # Draw the widget.
-          self.draw(@box)
+          draw(@box)
 
           # Activate the widget.
           ret = @entry_field.activate(actions)
@@ -404,7 +404,7 @@ module Slithernix
           ret = -1
 
           # Draw the widget.
-          self.draw(@box)
+          draw(@box)
 
           # Inject a character into the widget.
           ret = @entry_field.inject(input)
@@ -423,15 +423,15 @@ module Slithernix
 
         # This sets multiple attributes of the widget.
         def set(list, list_size, filler_char, highlight, box)
-          self.setContents(list, list_size)
-          self.setFillerChar(filler_char)
-          self.setHighlight(highlight)
-          self.setBox(box)
+          setContents(list, list_size)
+          setFillerChar(filler_char)
+          setHighlight(highlight)
+          setBox(box)
         end
 
         # This function sets the information inside the alphalist.
         def setContents(list, list_size)
-          if !self.createList(list, list_size)
+          if !createList(list, list_size)
             return
           end
 
@@ -440,12 +440,12 @@ module Slithernix
               @scroll_field.highlight, @scroll_field.box)
 
           # Clean out the entry field.
-          self.setCurrentItem(0)
+          setCurrentItem(0)
           @entry_field.clean
 
           # Redraw the widget.
-          self.erase
-          self.draw(@box)
+          erase
+          draw(@box)
         end
 
         # This returns the contents of the widget.
@@ -530,10 +530,10 @@ module Slithernix
 
         # This destroys the alpha list
         def destroy
-          self.destroyInfo
+          destroyInfo
 
           # Clean the key bindings.
-          self.cleanBindings(:AlphaList)
+          cleanBindings(:AlphaList)
 
           @entry_field.destroy
           @scroll_field.destroy
@@ -570,24 +570,24 @@ module Slithernix
               end
             end
             if status
-              self.destroyInfo
+              destroyInfo
               @list_size = list_size
               @list = newlist
               @list.sort!
             end
           else
-            self.destroyInfo
+            destroyInfo
             status = true
           end
           return status
         end
 
         def focus
-          self.entry_field.focus
+          entry_field.focus
         end
 
         def unfocus
-          self.entry_field.unfocus
+          entry_field.unfocus
         end
 
         def self.isFullWidth(width)

@@ -91,7 +91,7 @@ module Slithernix
             @pull_win[x1] = cdkscreen.window.subwin(high, max + 2,
                 ypos + y2, xpos + x2)
             if @title_win[x1].nil? || @pull_win[x1].nil?
-              self.destroy
+              destroy
               return nil
             end
 
@@ -113,10 +113,10 @@ module Slithernix
           @screen.refresh
 
           # Display the menu titles.
-          self.draw(@box)
+          draw(@box)
 
           # Highlight the current title and window.
-          self.drawSubwin
+          drawSubwin
 
           # If the input string is empty this is an interactive activate.
           if actions.nil? || actions.size == 0
@@ -124,10 +124,10 @@ module Slithernix
 
             # Start taking input from the keyboard.
             while true
-              input = self.getch([])
+              input = getch([])
 
               # Inject the character into the widget.
-              ret = self.inject(input)
+              ret = inject(input)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -141,7 +141,7 @@ module Slithernix
           end
 
           # Set the exit type and return.
-          self.setExitType(0)
+          setExitType(0)
           return -1
         end
 
@@ -175,16 +175,16 @@ module Slithernix
             if 1 + @pull_win[@current_title].begy + @subsize[@current_title] >=
                 ymax
               @current_subtitle = next_item
-              self.drawSubwin
+              drawSubwin
             else
               # Erase the old subtitle.
-              self.drawItem(@current_subtitle, 0)
+              drawItem(@current_subtitle, 0)
 
               # Set the values
               @current_subtitle = next_item
 
               # Draw the new sub-title.
-              self.selectItem(@current_subtitle, 0)
+              selectItem(@current_subtitle, 0)
 
               @pull_win[@current_title].refresh
             end
@@ -198,7 +198,7 @@ module Slithernix
 
           if next_item != @current_title
             # Erase the menu sub-window.
-            self.eraseSubwin
+            eraseSubwin
             @screen.refresh
 
             # Set the values.
@@ -206,7 +206,7 @@ module Slithernix
             @current_subtitle = 0
 
             # Draw the new menu sub-window.
-            self.drawSubwin
+            drawSubwin
             @input_window = @title_win[@current_title]
           end
         end
@@ -218,7 +218,7 @@ module Slithernix
           complete = false
 
           # Set the exit type.
-          self.setExitType(0)
+          setExitType(0)
 
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
@@ -231,36 +231,36 @@ module Slithernix
 
           if pp_return != 0
             # Check for key bindings.
-            if self.checkBind(:Menu, input)
+            if checkBind(:Menu, input)
               complete = true
             else
               case input
               when Curses::KEY_LEFT
-                self.acrossSubmenus(-1)
+                acrossSubmenus(-1)
               when Curses::KEY_RIGHT, Slithernix::Cdk::KEY_TAB
-                self.acrossSubmenus(1)
+                acrossSubmenus(1)
               when Curses::KEY_UP
-                self.withinSubmenu(-1)
+                withinSubmenu(-1)
               when Curses::KEY_DOWN, ' '
-                self.withinSubmenu(1)
+                withinSubmenu(1)
               when Curses::KEY_ENTER, Slithernix::Cdk::KEY_RETURN
-                self.cleanUpMenu
-                self.setExitType(input)
+                cleanUpMenu
+                setExitType(input)
                 @last_selection = @current_title * 100 + @current_subtitle
                 ret = @last_selection
                 complete = true
               when Slithernix::Cdk::KEY_ESC
-                self.cleanUpMenu
-                self.setExitType(input)
+                cleanUpMenu
+                setExitType(input)
                 @last_selection = -1
                 ret = @last_selection
                 complete = true
               when Curses::Error
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Slithernix::Cdk::REFRESH
-                self.erase
-                self.refresh
+                erase
+                refresh
               end
             end
 
@@ -271,7 +271,7 @@ module Slithernix
           end
 
           if !complete
-            self.setExitType(0)
+            setExitType(0)
           end
 
           @result_data = ret
@@ -305,10 +305,10 @@ module Slithernix
 
           # Draw the items.
           (x0...x1).each do |x|
-            self.drawItem(x, x0)
+            drawItem(x, x0)
           end
 
-          self.selectItem(@current_subtitle, x0)
+          selectItem(@current_subtitle, x0)
           @pull_win[@current_title].refresh
 
           # Highlight the title.
@@ -323,7 +323,7 @@ module Slithernix
           Slithernix::Cdk.eraseCursesWindow(@pull_win[@current_title])
 
           # Redraw the sub-menu title.
-          self.drawTitle(@current_title)
+          drawTitle(@current_title)
           @title_win[@current_title].refresh
         end
 
@@ -331,7 +331,7 @@ module Slithernix
         def draw(box)
           # Draw in the menu titles.
           (0...@menu_items).each do |x|
-            self.drawTitle(x)
+            drawTitle(x)
             @title_win[x].refresh
           end
         end
@@ -342,7 +342,7 @@ module Slithernix
           (0...@menu_items).each do |x|
             windows << @title_win[x]
           end
-          self.move_specific(xplace, yplace, relative, refresh_flag,
+          move_specific(xplace, yplace, relative, refresh_flag,
               windows, [])
         end
 
@@ -363,7 +363,7 @@ module Slithernix
           end
 
           # Clean the key bindings.
-          self.cleanBindings(:Menu)
+          cleanBindings(:Menu)
 
           # Unregister the widget
           Slithernix::Cdk::Screen.unregister(:Menu, self)
@@ -371,7 +371,7 @@ module Slithernix
 
         # Erase the menu widget from the screen.
         def erase
-          if self.validCDKObject
+          if validCDKObject
             (0...@menu_items).each do |x|
               @title_win[x].erase
               @title_win[x].refresh
@@ -382,9 +382,9 @@ module Slithernix
         end
 
         def set(menu_item, submenu_item, title_highlight, subtitle_highlight)
-          self.setCurrentItem(menu_item, submenu_item)
-          self.setTitleHighlight(title_highlight)
-          self.setSubTitleHighlight(subtitle_highlight)
+          setCurrentItem(menu_item, submenu_item)
+          setTitleHighlight(title_highlight)
+          setSubTitleHighlight(subtitle_highlight)
         end
 
         # Set the current menu item to highlight.
@@ -420,7 +420,7 @@ module Slithernix
         # Exit the menu.
         def cleanUpMenu
           # Erase the sub-menu.
-          self.eraseSubwin
+          eraseSubwin
           @pull_win[@current_title].refresh
 
           # Refresh the screen.
@@ -428,7 +428,7 @@ module Slithernix
         end
 
         def focus
-          self.drawSubwin
+          drawSubwin
           @input_window = @title_win[@current_title]
         end
 

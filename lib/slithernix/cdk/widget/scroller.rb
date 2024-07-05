@@ -134,7 +134,7 @@ module Slithernix
 
         # Set variables that depend upon the list_size
         def setViewSize(list_size)
-          @view_size = self.maxViewSize
+          @view_size = maxViewSize
           @list_size = list_size
           @last_item = list_size - 1
           @max_top_item = list_size - @view_size
@@ -144,9 +144,9 @@ module Slithernix
             @max_top_item = 0
           end
 
-          if @list_size > 0 && self.maxViewSize > 0
-            @step = 1.0 * self.maxViewSize / @list_size
-            @toggle_size = if @list_size > self.maxViewSize
+          if @list_size > 0 && maxViewSize > 0
+            @step = 1.0 * maxViewSize / @list_size
+            @toggle_size = if @list_size > maxViewSize
                            then 1
                            else @step.ceil
                            end
@@ -179,7 +179,7 @@ module Slithernix
         end
 
         def setCurrentItem(item)
-          self.setPosition(item);
+          setPosition(item);
         end
       end
     end

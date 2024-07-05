@@ -56,7 +56,7 @@ module Slithernix
       end
 
       def move(xplace, yplace, relative, refresh_flag)
-        self.move_specific(
+        move_specific(
           xplace,
           yplace,
           relative,
@@ -110,7 +110,7 @@ module Slithernix
 
         # Redraw the window, if they asked for it
         if refresh_flag
-          self.draw(@box)
+          draw(@box)
         end
       end
 
@@ -281,14 +281,14 @@ module Slithernix
       def validCDKObject
         result = false
         if Slithernix::Cdk::ALL_OBJECTS.include?(self)
-          result = self.validObjType(self.widget_type)
+          result = validObjType(widget_type)
         end
         return result
       end
 
       def getc
-        cdktype = self.widget_type
-        test = self.bindableObject(cdktype)
+        cdktype = widget_type
+        test = bindableObject(cdktype)
         result = @input_window.getch
 
         if result.ord >= 0 && !(test.nil?) && test.binding_list.include?(result) &&
@@ -324,15 +324,15 @@ module Slithernix
       end
 
       def getch(function_key)
-        key = self.getc
+        key = getc
         function_key << (key.ord >= Curses::KEY_MIN && key.ord <= Curses::KEY_MAX)
         return key
       end
 
       def bindableObject(cdktype)
-        if cdktype != self.widget_type
+        if cdktype != widget_type
           return nil
-        elsif [:FSelect, :AlphaList].include?(self.widget_type)
+        elsif [:FSelect, :AlphaList].include?(widget_type)
           return @entry_field
         else
           return self
@@ -340,7 +340,7 @@ module Slithernix
       end
 
       def bind(type, key, function, data)
-        widg = self.bindableObject(type)
+        widg = bindableObject(type)
         if key.ord < Curses::KEY_MAX && !(widg.nil?)
           if key.ord != 0
             widg.binding_list[key] = [function, data]
@@ -349,14 +349,14 @@ module Slithernix
       end
 
       def unbind(type, key)
-        widg = self.bindableObject(type)
+        widg = bindableObject(type)
         unless widg.nil?
           widg.binding_list.delete(key)
         end
       end
 
       def cleanBindings(type)
-        widg = self.bindableObject(type)
+        widg = bindableObject(type)
         if !(widg.nil?) && !(widg.binding_list.nil?)
           widg.binding_list.clear
         end
@@ -367,7 +367,7 @@ module Slithernix
       # If it doesn't it returns a false.  This way we can 'overwrite' coded
       # bindings.
       def checkBind(type, key)
-        widg = self.bindableObject(type)
+        widg = bindableObject(type)
         if !(widg.nil?) && widg.binding_list.include?(key)
           function = widg.binding_list[key][0]
           data = widg.binding_list[key][1]
@@ -384,7 +384,7 @@ module Slithernix
       # This checks to see if the binding for the key exists.
       def isBind(type, key)
         result = false
-        widg = self.bindableObject(type)
+        widg = bindableObject(type)
         unless widg.nil?
           result = widg.binding_list.include?(key)
         end
@@ -405,76 +405,76 @@ module Slithernix
 
         # Let them move the widget around until they hit return.
         while !([Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER].include?(
-            key = self.getch([])))
+            key = getch([])))
           case key
           when Curses::KEY_UP, '8'
             if win.begy > beg_y
-              self.move(0, -1, true, true)
+              move(0, -1, true, true)
             else
               Slithernix::Cdk.Beep
             end
           when Curses::KEY_DOWN, '2'
             if (win.begy + win.maxy) < end_y
-              self.move(0, 1, true, true)
+              move(0, 1, true, true)
             else
               Slithernix::Cdk.Beep
             end
           when Curses::KEY_LEFT, '4'
             if win.begx > beg_x
-              self.move(-1, 0, true, true)
+              move(-1, 0, true, true)
             else
               Slithernix::Cdk.Beep
             end
           when Curses::KEY_RIGHT, '6'
             if (win.begx + win.maxx) < end_x
-              self.move(1, 0, true, true)
+              move(1, 0, true, true)
             else
               Slithernix::Cdk.Beep
             end
           when '7'
             if win.begy > beg_y && win.begx > beg_x
-              self.move(-1, -1, true, true)
+              move(-1, -1, true, true)
             else
               Slithernix::Cdk.Beep
             end
           when '9'
             if (win.begx + win.maxx) < end_x && win.begy > beg_y
-              self.move(1, -1, true, true)
+              move(1, -1, true, true)
             else
               Slithernix::Cdk.Beep
             end
           when '1'
             if win.begx > beg_x && (win.begy + win.maxy) < end_y
-              self.move(-1, 1, true, true)
+              move(-1, 1, true, true)
             else
               Slithernix::Cdk.Beep
             end
           when '3'
             if (win.begx + win.maxx) < end_x &&
                 (win.begy + win.maxy) < end_y
-              self.move(1, 1, true, true)
+              move(1, 1, true, true)
             else
               Slithernix::Cdk.Beep
             end
           when '5'
-            self.move(Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, false, true)
+            move(Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, false, true)
           when 't'
-            self.move(win.begx, Slithernix::Cdk::TOP, false, true)
+            move(win.begx, Slithernix::Cdk::TOP, false, true)
           when 'b'
-            self.move(win.begx, Slithernix::Cdk::BOTTOM, false, true)
+            move(win.begx, Slithernix::Cdk::BOTTOM, false, true)
           when 'l'
-            self.move(Slithernix::Cdk::LEFT, win.begy, false, true)
+            move(Slithernix::Cdk::LEFT, win.begy, false, true)
           when 'r'
-            self.move(Slithernix::Cdk::RIGHT, win.begy, false, true)
+            move(Slithernix::Cdk::RIGHT, win.begy, false, true)
           when 'c'
-            self.move(Slithernix::Cdk::CENTER, win.begy, false, true)
+            move(Slithernix::Cdk::CENTER, win.begy, false, true)
           when 'C'
-            self.move(win.begx, Slithernix::Cdk::CENTER, false, true)
+            move(win.begx, Slithernix::Cdk::CENTER, false, true)
           when Slithernix::Cdk::REFRESH
             @screen.erase
             @screen.refresh
           when Slithernix::Cdk::KEY_ESC
-            self.move(orig_x, orig_y, false, true)
+            move(orig_x, orig_y, false, true)
           else
             Slithernix::Cdk.Beep
           end

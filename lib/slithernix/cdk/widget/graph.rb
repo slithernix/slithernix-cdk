@@ -7,11 +7,11 @@ module Slithernix
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
 
-          self.setBox(false)
+          setBox(false)
 
           box_height = Slithernix::Cdk.setWidgetDimension(parent_height, height, 3)
           box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width, 0)
-          box_width = self.setTitle(title, box_width)
+          box_width = setTitle(title, box_width)
           box_height += @title_lines
           box_width = [parent_width, box_width].min
           box_height = [parent_height, box_height].min
@@ -37,7 +37,7 @@ module Slithernix
           @display_type = :LINE
 
           if @win.nil?
-            self.destroy
+            destroy
             return nil
           end
           @win.keypad(true)
@@ -82,14 +82,14 @@ module Slithernix
 
         # This was added for the builder.
         def activate(actions)
-          self.draw(@box)
+          draw(@box)
         end
 
         # Set multiple attributes of the widget
         def set(values, count, graph_char, start_at_zero, display_type)
-          ret = self.setValues(values, count, start_at_zero)
-          self.setCharacters(graph_char)
-          self.setDisplayType(display_type)
+          ret = setValues(values, count, start_at_zero)
+          setCharacters(graph_char)
+          setDisplayType(display_type)
           return ret
         end
 
@@ -140,7 +140,7 @@ module Slithernix
             @minx = 0
           end
 
-          self.setScales
+          setScales
 
           return true
         end
@@ -167,7 +167,7 @@ module Slithernix
             @minx = 0
           end
 
-          self.setScales
+          setScales
 
           return true
         end
@@ -267,7 +267,7 @@ module Slithernix
 
           # Reraw the windowk if they asked for it
           if refresh_flag
-            self.draw(@box)
+            draw(@box)
           end
         end
 
@@ -301,7 +301,7 @@ module Slithernix
             Slithernix::Cdk::ACS_HLINE,
           )
 
-          self.drawTitle(@win)
+          drawTitle(@win)
 
           # Draw in the X axis title.
           if !(@xtitle.nil?) && @xtitle.size > 0
@@ -430,14 +430,14 @@ module Slithernix
         end
 
         def destroy
-          self.cleanTitle
-          self.cleanBindings(:Graph)
+          cleanTitle
+          cleanBindings(:Graph)
           Slithernix::Cdk::Screen.unregister(:Graph, self)
           Slithernix::Cdk.deleteCursesWindow(@win)
         end
 
         def erase
-          if self.validCDKObject
+          if validCDKObject
             Slithernix::Cdk.eraseCursesWindow(@win)
           end
         end

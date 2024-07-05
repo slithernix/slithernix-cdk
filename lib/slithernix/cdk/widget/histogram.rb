@@ -9,7 +9,7 @@ module Slithernix
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
 
-          self.setBox(box)
+          setBox(box)
 
           box_height = Slithernix::Cdk.setWidgetDimension(parent_height, height, 2)
           old_height = box_height
@@ -17,7 +17,7 @@ module Slithernix
           box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width, 0)
           old_width = box_width
 
-          box_width = self.setTitle(title, -(box_width + 1))
+          box_width = setTitle(title, -(box_width + 1))
 
           # Increment the height by number of lines in in the title
           box_height += @title_lines
@@ -47,7 +47,7 @@ module Slithernix
 
           # Is the window nil
           if @win.nil?
-            self.destroy
+            destroy
             return nil
           end
 
@@ -86,17 +86,17 @@ module Slithernix
 
         # This was added for the builder
         def activate(actions)
-          self.draw(@box)
+          draw(@box)
         end
 
         # Set various widget attributes
         def set(view_type, stats_pos, stats_attr, low, high, value, filler, box)
-          self.setDisplayType(view_type)
-          self.setStatsPos(stats_pos)
-          self.setValue(low, high, value)
-          self.setFillerChar(filler)
-          self.setStatsAttr(stats_attr)
-          self.setBox(box)
+          setDisplayType(view_type)
+          setStatsPos(stats_pos)
+          setValue(low, high, value)
+          setFillerChar(filler)
+          setStatsAttr(stats_attr)
+          setBox(box)
         end
 
         # Set the values for the widget.
@@ -334,7 +334,7 @@ module Slithernix
             Slithernix::Cdk::Draw.drawShadow(@shadow_win)
           end
 
-          self.drawTitle(@win)
+          drawTitle(@win)
 
           # If the user asked for labels, draw them in.
           if @view_type != :NONE
@@ -381,14 +381,14 @@ module Slithernix
 
         # Destroy the widget.
         def destroy
-          self.cleanTitle
+          cleanTitle
 
           # Clean up the windows.
           Slithernix::Cdk.deleteCursesWindow(@shadow_win)
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          self.cleanBindings(:Histogram)
+          cleanBindings(:Histogram)
 
           # Unregister this widget.
           Slithernix::Cdk::Screen.unregister(:Histogram, self)
@@ -396,7 +396,7 @@ module Slithernix
 
         # Erase the widget from the screen.
         def erase
-          if self.validCDKObject
+          if validCDKObject
             Slithernix::Cdk.eraseCursesWindow(@win)
             Slithernix::Cdk.eraseCursesWindow(@shadow_win)
           end

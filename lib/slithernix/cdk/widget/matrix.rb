@@ -33,12 +33,12 @@ module Slithernix
             Slithernix::Cdk::BACKCHAR => Curses::KEY_PPAGE,
           }
 
-          self.setBox(box)
+          setBox(box)
           borderw = @box ? 1 : 0
 
           # Make sure that the number of rows/cols/vrows/vcols is not zero.
           if rows <= 0 || cols <= 0 || vrows <= 0 || vcols <= 0
-            self.destroy
+            destroy
             return nil
           end
 
@@ -110,7 +110,7 @@ module Slithernix
           end
           max_width -= (col_space - 1)
           box_width = [max_width, box_width].max
-          box_width = self.setTitle(title, box_width)
+          box_width = setTitle(title, box_width)
 
           # Make sure the dimensions of the window didn't extend
           # beyond the dimensions of the parent window
@@ -128,7 +128,7 @@ module Slithernix
           @win = Curses::Window.new(box_height, box_width, ypos, xpos)
 
           if @win.nil?
-            self.destroy
+            destroy
             return nil
           end
 
@@ -162,7 +162,7 @@ module Slithernix
               cell_width = colwidths[x] + 3
               @cell[0][x] = @win.subwin(borderw, cell_width, begy, begx)
               if @cell[0][x].nil?
-                self.destroy
+                destroy
                 return nil
               end
               begx += cell_width + col_space - 1
@@ -177,7 +177,7 @@ module Slithernix
               @cell[x][0] = @win.subwin(3, @maxrt, begy, xpos + borderw)
 
               if @cell[x][0].nil?
-                self.destroy
+                destroy
                 return nil
               end
             end
@@ -191,7 +191,7 @@ module Slithernix
               @cell[x][y] = @win.subwin(3, cell_width, begy, begx)
 
               if @cell[x][y].nil?
-                self.destroy
+                destroy
                 return nil
               end
               begx += cell_width + col_space - 1
@@ -274,7 +274,7 @@ module Slithernix
 
           # Set up the key bindings.
           bindings.each do |from, to|
-            self.bind(:Matrix, from, :getc, to)
+            bind(:Matrix, from, :getc, to)
           end
 
           # Register this baby.
@@ -283,16 +283,16 @@ module Slithernix
 
         # This activates the matrix.
         def activate(actions)
-          self.draw(@box)
+          draw(@box)
 
           if actions.nil? || actions.size == 0
             while true
               @input_window = self.CurMatrixCell
               @input_window.keypad(true)
-              input = self.getch([])
+              input = getch([])
 
               # Inject the character into the widget.
-              ret = self.inject(input)
+              ret = inject(input)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -300,7 +300,7 @@ module Slithernix
           else
             # Inject each character one at a time.
             actions.each do |action|
-              ret = self.inject(action)
+              ret = inject(action)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -308,7 +308,7 @@ module Slithernix
           end
 
           # Set the exit type and exit.
-          self.setExitType(0)
+          setExitType(0)
           return -1
         end
 
@@ -322,7 +322,7 @@ module Slithernix
           complete = false
 
           # Set the exit type.
-          self.setExitType(0)
+          setExitType(0)
 
           # Move the cursor to the correct position within the cell.
           if @colwidths[@ccol] == 1
@@ -332,7 +332,7 @@ module Slithernix
           end
 
           # Put the focus on the current cell.
-          self.focusCurrent
+          focusCurrent
 
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
@@ -344,7 +344,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check the key bindings.
-            if self.checkBind(:Matrix, input)
+            if checkBind(:Matrix, input)
               complete = true
             else
               case input
@@ -376,7 +376,7 @@ module Slithernix
 
                     # Redraw the column titles.
                     if @rows > @vrows
-                      self.redrawTitles(false, true)
+                      redrawTitles(false, true)
                     end
                     refresh_cells = true
                     moved_cell = true
@@ -399,7 +399,7 @@ module Slithernix
                         @row += 1
                         @trow += 1
                       end
-                      self.redrawTitles(true, true)
+                      redrawTitles(true, true)
                       refresh_cells = true
                       moved_cell = true
                     end
@@ -419,7 +419,7 @@ module Slithernix
 
                     # Redraw the column titles.
                     if @cols > @vcols
-                      self.redrawTitles(false, true)
+                      redrawTitles(false, true)
                     end
                     refresh_cells = true
                     moved_cell = true
@@ -441,7 +441,7 @@ module Slithernix
                         @row -= 1
                         @trow -= 1
                       end
-                      self.redrawTitles(true, true)
+                      redrawTitles(true, true)
                       refresh_cells = true
                       moved_cell = true
                     end
@@ -459,7 +459,7 @@ module Slithernix
 
                     # Redraw the row titles.
                     if @rows > @vrows
-                      self.redrawTitles(true, false)
+                      redrawTitles(true, false)
                     end
                     refresh_cells = true
                     moved_cell = true
@@ -479,7 +479,7 @@ module Slithernix
 
                     # Redraw the titles.
                     if @rows > @vrows
-                      self.redrawTitles(true, false)
+                      redrawTitles(true, false)
                     end
                     refresh_cells = true
                     moved_cell = true
@@ -492,7 +492,7 @@ module Slithernix
                   if @trow + (@vrows - 1) * 2 <= @rows
                     @trow += @vrows - 1
                     @row += @vrows - 1
-                    self.redrawTitles(true, false)
+                    redrawTitles(true, false)
                     refresh_cells = true
                     moved_cell = true
                   else
@@ -506,7 +506,7 @@ module Slithernix
                   if @trow - (@vrows - 1) * 2 >= 1
                     @trow -= @vrows - 1
                     @row -= @vrows - 1
-                    self.redrawTitles(true, false)
+                    redrawTitles(true, false)
                     refresh_cells = true
                     moved_cell = true
                   else
@@ -516,48 +516,48 @@ module Slithernix
                   Slithernix::Cdk.Beep
                 end
               when Slithernix::Cdk.CTRL('G')
-                self.jumpToCell(-1, -1)
-                self.draw(@box)
+                jumpToCell(-1, -1)
+                draw(@box)
               when Slithernix::Cdk::PASTE
                 if @@g_paste_buffer.size == 0 ||
                     @@g_paste_buffer.size > @colwidths[@ccol]
                   Slithernix::Cdk.Beep
                 else
                   self.CurMatrixInfo = @@g_paste_buffer.clone
-                  self.drawCurCell
+                  drawCurCell
                 end
               when Slithernix::Cdk::COPY
                 @@g_paste_buffer = self.CurMatrixInfo.clone
               when Slithernix::Cdk::CUT
                 @@g_paste_buffer = self.CurMatrixInfo.clone
-                self.cleanCell(@trow + @crow - 1, @lcol + @ccol - 1)
-                self.drawCurCell
+                cleanCell(@trow + @crow - 1, @lcol + @ccol - 1)
+                drawCurCell
               when Slithernix::Cdk::ERASE
-                self.cleanCell(@trow + @crow - 1, @lcol + @ccol - 1)
-                self.drawCurCell
+                cleanCell(@trow + @crow - 1, @lcol + @ccol - 1)
+                drawCurCell
               when Curses::KEY_ENTER, Slithernix::Cdk::KEY_RETURN
                 if !@box_cell
                   Slithernix::Cdk::Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
                       ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
                 else
-                  self.drawOldCell
+                  drawOldCell
                 end
                 self.CurMatrixCell.refresh
-                self.setExitType(input)
+                setExitType(input)
                 ret = 1
                 complete = true
               when Curses::Error
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Slithernix::Cdk::KEY_ESC
                 if !@box_cell
                   Slithernix::Cdk::Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
                       ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
                 else
-                  self.drawOldCell
+                  drawOldCell
                 end
                 self.CurMatrixCell.refresh
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Slithernix::Cdk::REFRESH
                 @screen.erase
@@ -575,17 +575,17 @@ module Slithernix
                   Slithernix::Cdk::Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
                       ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
                 else
-                  self.drawOldCell
+                  drawOldCell
                 end
                 @cell[@oldcrow][@oldccol].refresh
 
-                self.focusCurrent
+                focusCurrent
               end
 
               # Redraw each cell
               if refresh_cells
-                self.drawEachCell
-                self.focusCurrent
+                drawEachCell
+                focusCurrent
               end
 
               # Move to the correct position in the cell.
@@ -613,7 +613,7 @@ module Slithernix
             @oldvcol = @col
 
             # Set the exit type and exit.
-            self.setExitType(0)
+            setExitType(0)
           end
 
           @result_data = ret
@@ -657,7 +657,7 @@ module Slithernix
           end
 
           windows << @shadow_win
-          self.move_specific(xplace, yplace, relative, refresh_flag,
+          move_specific(xplace, yplace, relative, refresh_flag,
              windows, [])
         end
 
@@ -795,7 +795,7 @@ module Slithernix
             end
           end
 
-          self.focusCurrent
+          focusCurrent
         end
 
         def drawEachColTitle
@@ -828,18 +828,18 @@ module Slithernix
           # Fill in the cells.
           (1..@vrows).each do |x|
             (1..@vcols).each do |y|
-              self.drawCell(x, y, @trow + x - 1, @lcol + y - 1,
+              drawCell(x, y, @trow + x - 1, @lcol + y - 1,
                   Curses::A_NORMAL, @box_cell)
             end
           end
         end
 
         def drawCurCell
-          self.drawCell(@crow, @ccol, @row, @col, Curses::A_NORMAL, @box_cell)
+          drawCell(@crow, @ccol, @row, @col, Curses::A_NORMAL, @box_cell)
         end
 
         def drawOldCell
-          self.drawCell(@oldcrow, @oldccol, @oldvrow, @oldvcol,
+          drawCell(@oldcrow, @oldccol, @oldvrow, @oldvcol,
               Curses::A_NORMAL, @box_cell)
         end
 
@@ -855,19 +855,19 @@ module Slithernix
             Slithernix::Cdk::Draw.drawObjBox(@win, self)
           end
 
-          self.drawTitle(@win)
+          drawTitle(@win)
 
           @win.refresh
 
-          self.drawEachColTitle
-          self.drawEachRowTitle
-          self.drawEachCell
-          self.focusCurrent
+          drawEachColTitle
+          drawEachRowTitle
+          drawEachCell
+          focusCurrent
         end
 
         # This function destroys the matrix widget.
         def destroy
-          self.cleanTitle
+          cleanTitle
 
           # Clear the matrix windows.
           Slithernix::Cdk.deleteCursesWindow(@cell[0][0])
@@ -887,7 +887,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          self.cleanBindings(:Matrix)
+          cleanBindings(:Matrix)
 
           # Unregister this widget.
           Slithernix::Cdk::Screen.unregister(:Matrix, self)
@@ -895,7 +895,7 @@ module Slithernix
 
         # This function erases the matrix widget from the screen.
         def erase
-          if self.validCDKObject
+          if validCDKObject
             # Clear the matrix cells.
             Slithernix::Cdk.eraseCursesWindow(@cell[0][0])
             (1..@vrows).each do |x|
@@ -931,7 +931,7 @@ module Slithernix
               if x <= rows && y <= sub_size[x]
                 @info[x][y] = @info[x][y][0..[@colwidths[y], @info[x][y].size].min]
               else
-                self.cleanCell(x, y)
+                cleanCell(x, y)
               end
             end
           end
@@ -941,7 +941,7 @@ module Slithernix
         def clean
           (1..@rows).each do |x|
             (1..@cols).each do |y|
-              self.cleanCell(x, y)
+              cleanCell(x, y)
             end
           end
         end
@@ -984,7 +984,7 @@ module Slithernix
 
           # Hyper-warp....
           if new_row != @row || @new_col != @col
-            return self.moveToCell(new_row, new_col)
+            return moveToCell(new_row, new_col)
           else
             return 1
           end
@@ -1093,12 +1093,12 @@ module Slithernix
         def redrawTitles(row_titles, col_titles)
           # Redraw the row titles.
           if row_titles
-            self.drawEachRowTitle
+            drawEachRowTitle
           end
 
           # Redraw the column titles.
           if col_titles
-            self.drawEachColTitle
+            drawEachColTitle
           end
         end
 
@@ -1109,7 +1109,7 @@ module Slithernix
             return -1
           end
 
-          self.cleanCell(row, col)
+          cleanCell(row, col)
           @info[row][col] = value[0...[@colwidths[col], value.size].min]
           return 1
         end
@@ -1137,7 +1137,7 @@ module Slithernix
                        Slithernix::Cdk::ACS_LRCORNER, Slithernix::Cdk::ACS_HLINE,
                        Slithernix::Cdk::ACS_VLINE, Curses::A_BOLD)
           self.CurMatrixCell.refresh
-          self.highlightCell
+          highlightCell
         end
 
         # This returns the current row/col cell
@@ -1160,11 +1160,11 @@ module Slithernix
         end
 
         def focus
-          self.draw(@box)
+          draw(@box)
         end
 
         def unfocus
-          self.draw(@box)
+          draw(@box)
         end
 
         def position

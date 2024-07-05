@@ -22,7 +22,7 @@ module Slithernix
             '$'           => Curses::KEY_END,
           }
 
-          self.setBox(box)
+          setBox(box)
 
           # If the height is a negative value, the height will be
           # ROWS-height, otherwise the height will be the given height.
@@ -31,7 +31,7 @@ module Slithernix
           # If the width is a negative value, the width will be
           # COLS-width, otherwise the widget will be the given width.
           box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width, 0)
-          box_width = self.setTitle(title, box_width)
+          box_width = setTitle(title, box_width)
 
           # Set the box height.
           box_height += @title_lines + 1
@@ -53,7 +53,7 @@ module Slithernix
           # Make the scrolling window.
           @win = Curses::Window.new(box_height, box_width, ypos, xpos)
           if @win.nil?
-            self.destroy
+            destroy
             return nil
           end
           @win.keypad(true)
@@ -86,8 +86,8 @@ module Slithernix
           @input_window = @win
           @shadow = shadow
 
-          if !self.createList(save_lines)
-            self.destroy
+          if !createList(save_lines)
+            destroy
             return nil
           end
 
@@ -103,7 +103,7 @@ module Slithernix
 
           # Create the key bindings
           bindings.each do |from, to|
-            self.bind(:SWindow, from, :getc, to)
+            bind(:SWindow, from, :getc, to)
           end
 
           # Register this baby.
@@ -112,8 +112,8 @@ module Slithernix
 
         # This sets the lines and the box attribute of the scrolling window.
         def set(list, lines, box)
-          self.setContents(list, lines)
-          self.setBox(box)
+          setContents(list, lines)
+          setBox(box)
         end
 
         def setupLine(list, x)
@@ -132,12 +132,12 @@ module Slithernix
         # This sets all the lines inside the scrolling window.
         def setContents(list, list_size)
           # First let's clean all the lines in the window.
-          self.clean
-          self.createList(list_size)
+          clean
+          createList(list_size)
 
           # Now let's set all the lines inside the window.
           (0...list_size).each do |x|
-            self.setupLine(list[x], x)
+            setupLine(list[x], x)
           end
 
           # Set some more important members of the scrolling window.
@@ -179,7 +179,7 @@ module Slithernix
             @list_len = [@list_len[0]] + @list_len
 
             # Add it into the scrolling window.
-            self.setupLine(list, 0)
+            setupLine(list, 0)
 
             # set some variables.
             @current_top = 0
@@ -197,14 +197,14 @@ module Slithernix
             @list += ['']
             @list_pos += [0]
             @list_len += [0]
-            self.setupLine(list, @list_size)
+            setupLine(list, @list_size)
 
             @max_left_char = @widest_line - (@box_width - 2)
 
             # Increment the item count and zero out the next row.
             if @list_size < @save_lines
               @list_size += 1
-              self.freeLine(@list_size)
+              freeLine(@list_size)
             end
 
             # Set the maximum top line.
@@ -218,7 +218,7 @@ module Slithernix
           end
 
           # Draw in the list.
-          self.drawList(@box)
+          drawList(@box)
         end
 
         # This jumps to a given line.
@@ -245,14 +245,14 @@ module Slithernix
           end
 
           # Redraw the window.
-          self.draw(@box)
+          draw(@box)
         end
 
         # This removes all the lines inside the scrolling window.
         def clean
           # Clean up the memory used...
           (0...@list_size).each do |x|
-            self.freeLine(x)
+            freeLine(x)
           end
 
           # Reset some variables.
@@ -263,7 +263,7 @@ module Slithernix
           @max_top_line = 0
 
           # Redraw the window.
-          self.draw(@box)
+          draw(@box)
         end
 
         # This trims lines from the scrolling window.
@@ -293,7 +293,7 @@ module Slithernix
 
           # Start nuking elements from the window
           (start..finish).each do |x|
-            self.freeLine(x)
+            freeLine(x)
 
             if x < list_size - 1
               @list[x] = @list[x + 1]
@@ -306,20 +306,20 @@ module Slithernix
           @list_size = @list_size - (end_line - begin_line) - 1
 
           # Redraw the window.
-          self.draw(@box)
+          draw(@box)
         end
 
         # This allows the user to play inside the scrolling window.
         def activate(actions)
           # Draw the scrolling list.
-          self.draw(@box)
+          draw(@box)
 
           if actions.nil? || actions.size == 0
             while true
-              input = self.getch([])
+              input = getch([])
 
               # inject the character into the widget.
-              self.inject(input)
+              inject(input)
               if @exit_type != :EARLY_EXIT
                 return
               end
@@ -327,7 +327,7 @@ module Slithernix
           else
             #Inject each character one at a time
             actions.each do |action|
-              self.inject(action)
+              inject(action)
               if @exit_type != :EARLY_EXIT
                 return
               end
@@ -335,7 +335,7 @@ module Slithernix
           end
 
           # Set the exit type and return.
-          self.setExitType(0)
+          setExitType(0)
         end
 
         # This injects a single character into the widget.
@@ -345,10 +345,10 @@ module Slithernix
           complete = false
 
           # Set the exit type.
-          self.setExitType(0)
+          setExitType(0)
 
           # Draw the window....
-          self.draw(@box)
+          draw(@box)
 
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
@@ -360,7 +360,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check for a key binding.
-            if self.checkBind(:SWindow, input)
+            if checkBind(:SWindow, input)
               complete = true
             else
               case input
@@ -417,18 +417,18 @@ module Slithernix
               when 'G', '>'
                 @current_top = @max_top_line
               when 'l', 'L'
-                self.loadInformation
+                loadInformation
               when 's', 'S'
-                self.saveInformation
+                saveInformation
               when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
-                self.setExitType(input)
+                setExitType(input)
                 ret = 1
                 complete = true
               when Slithernix::Cdk::KEY_ESC
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Curses::Error
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Slithernix::Cdk::REFRESH
                 @screen.erase
@@ -443,8 +443,8 @@ module Slithernix
           end
 
           if !complete
-            self.drawList(@box)
-            self.setExitType(0)
+            drawList(@box)
+            setExitType(0)
           end
 
           @return_data = ret
@@ -468,12 +468,12 @@ module Slithernix
             Slithernix::Cdk::Draw.drawObjBox(@win, self)
           end
 
-          self.drawTitle(@win)
+          drawTitle(@win)
 
           @win.refresh
 
           # Draw in the list.
-          self.drawList(box)
+          drawList(box)
         end
 
         # This draws in the contents of the scrolling window
@@ -522,9 +522,9 @@ module Slithernix
 
         # This function destroys the scrolling window widget.
         def destroy
-          self.destroyInfo
+          destroyInfo
 
-          self.cleanTitle
+          cleanTitle
 
           # Delete the windows.
           Slithernix::Cdk.deleteCursesWindow(@shadow_win)
@@ -532,7 +532,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          self.cleanBindings(:SWindow)
+          cleanBindings(:SWindow)
 
           # Unregister this widget.
           Slithernix::Cdk::Screen.unregister(:SWindow, self)
@@ -540,7 +540,7 @@ module Slithernix
 
         # This function erases the scrolling window widget.
         def erase
-          if self.validCDKObject
+          if validCDKObject
             Slithernix::Cdk.eraseCursesWindow(@win)
             Slithernix::Cdk.eraseCursesWindow(@shadow_win)
           end
@@ -560,7 +560,7 @@ module Slithernix
                   temp = temp[0...-1]
                 end
                 # Add the line to the scrolling window.
-                self.add(temp, insert_pos)
+                add(temp, insert_pos)
                 count += 1
               end
 
@@ -568,7 +568,7 @@ module Slithernix
               ps.close
             end
           rescue => e
-            self.add(e.message, insert_pos)
+            add(e.message, insert_pos)
           end
 
           return count
@@ -586,7 +586,7 @@ module Slithernix
                   temp = temp[0...-1]
                 end
                 # Add the line to the scrolling window.
-                self.add(temp, insert_pos)
+                add(temp, insert_pos)
                 count += 1
               end
 
@@ -594,7 +594,7 @@ module Slithernix
               ps.close
             end
           rescue => e
-            self.add(e.message, insert_pos)
+            add(e.message, insert_pos)
           end
 
           return count
@@ -650,16 +650,16 @@ module Slithernix
           end
 
           # Write the contents of the scrolling window to the file.
-          lines_saved = self.dump(filename)
+          lines_saved = dump(filename)
 
           # Was the save successful?
           if lines_saved == -1
             # Nope, tell 'em
-            self.showMessage2('<C></B/16>Error', '<C>Could not save to the file.',
+            showMessage2('<C></B/16>Error', '<C>Could not save to the file.',
                 filename)
           else
             # Yep, let them know how many lines were saved.
-            self.showMessage2(
+            showMessage2(
               '<C></B/5>Save Successful',
               '<C>There were %d lines saved to the file' % [lines_saved],
               filename
@@ -750,7 +750,7 @@ module Slithernix
             # Check the answer.
             if (answer == -1 || answer == 0)
               # Save the information.
-              self.saveInformation
+              saveInformation
             end
           end
 
@@ -777,10 +777,10 @@ module Slithernix
           # }
 
           # Clean out the scrolling window.
-          self.clean
+          clean
 
           # Set the new information in the scrolling window.
-          self.set(file_info, file_info.size, @box)
+          set(file_info, file_info.size, @box)
         end
 
         # This actually dumps the information from the scrolling window to a file.
@@ -804,11 +804,11 @@ module Slithernix
         end
 
         def focus
-          self.draw(@box)
+          draw(@box)
         end
 
         def unfocus
-          self.draw(@box)
+          draw(@box)
         end
 
         def createList(list_size)
@@ -820,13 +820,13 @@ module Slithernix
             new_len = []
 
             status = true
-            self.destroyInfo
+            destroyInfo
 
             @list = new_list
             @list_pos = new_pos
             @list_len = new_len
           else
-            self.destroyInfo
+            destroyInfo
             status = false
           end
           return status

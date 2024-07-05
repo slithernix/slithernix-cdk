@@ -81,8 +81,8 @@ module Util
       terminal_capabilities[k] ||= {}
       terminal_capabilities[k][:ansi_code] = v
       terminal_capabilities[k][:ansi_code] = true if v.nil?
-      terminal_capabilities[k][:regex] = self.ansi_to_regex(v)
-      terminal_capabilities[k][:curses_method] = self.termcap_to_curses(
+      terminal_capabilities[k][:regex] = ansi_to_regex(v)
+      terminal_capabilities[k][:curses_method] = termcap_to_curses(
         terminal_capabilities[k]
       )
     end
@@ -196,7 +196,7 @@ module Util
           begin
             loop do
               break if stdout.closed?
-              break unless self.is_process_alive?(pid)
+              break unless is_process_alive?(pid)
 
               # Char by Char (incompatible with unicode)
               #out_ch = stdout.read_nonblock(1)
@@ -239,14 +239,14 @@ module Util
           begin
             loop do
               break if stdout.closed?
-              break unless self.is_process_alive?(pid)
-              break if self.is_thread_dead_or_dying?(reader)
+              break unless is_process_alive?(pid)
+              break if is_thread_dead_or_dying?(reader)
               #char = $stdin.read_nonblock(1)
               char = curses_window.get_char
               if buffer.empty? && char == ESCAPE_PREFIX
                 buffer << char
               elsif buffer == ESCAPE_PREFIX && char == ESCAPE_SUFFIX
-                Process.kill(9, pid) if self.is_process_alive?(pid)
+                Process.kill(9, pid) if is_process_alive?(pid)
                 break
               else
                 buffer.clear

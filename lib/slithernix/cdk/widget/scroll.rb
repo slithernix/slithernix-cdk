@@ -27,7 +27,7 @@ module Slithernix
           bindings[Slithernix::Cdk::BACKCHAR] = Curses::KEY_PPAGE
           bindings[Slithernix::Cdk::FORCHAR]  = Curses::KEY_NPAGE
 
-          self.setBox(box)
+          setBox(box)
 
           # If the height is a negative value, the height will be ROWS-height,
           # otherwise the height will be the given height
@@ -37,7 +37,7 @@ module Slithernix
           # otherwise the width will be the given width
           box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width, 0)
 
-          box_width = self.setTitle(title, box_width)
+          box_width = setTitle(title, box_width)
 
           # Set the box height.
           if @title_lines > box_height
@@ -62,7 +62,7 @@ module Slithernix
                         else box_height
                         end
 
-          self.setViewSize(list_size)
+          setViewSize(list_size)
 
           # Rejustify the x and y positions if we need to.
           xtmp = [xpos]
@@ -84,10 +84,10 @@ module Slithernix
 
           # Create the scrollbar window.
           if splace == Slithernix::Cdk::RIGHT
-            @scrollbar_win = @win.subwin(self.maxViewSize, 1,
+            @scrollbar_win = @win.subwin(maxViewSize, 1,
                 self.SCREEN_YPOS(ypos), xpos + box_width - @border_size - 1)
           elsif splace == Slithernix::Cdk::LEFT
-            @scrollbar_win = @win.subwin(self.maxViewSize, 1,
+            @scrollbar_win = @win.subwin(maxViewSize, 1,
                 self.SCREEN_YPOS(ypos), self.SCREEN_XPOS(xpos))
           else
             @scrollbar_win = nil
@@ -95,7 +95,7 @@ module Slithernix
 
           # create the list window
           @list_win = @win.subwin(
-            self.maxViewSize,
+            maxViewSize,
             box_width - (2 * @border_size) - scroll_adjust,
             self.SCREEN_YPOS(ypos),
             self.SCREEN_XPOS(xpos) + (splace == Slithernix::Cdk::LEFT ? 1 : 0),
@@ -114,10 +114,10 @@ module Slithernix
           @input_window = @win
           @shadow = shadow
 
-          self.setPosition(0);
+          setPosition(0);
 
           # Create the scrolling list item list and needed variables.
-          if self.createItemList(numbers, list, list_size) <= 0
+          if createItemList(numbers, list, list_size) <= 0
             return nil
           end
 
@@ -130,7 +130,7 @@ module Slithernix
           # Set up the key bindings.
           bindings.each do |from, to|
             #self.bind(:SCROLL, from, getc_lambda, to)
-            self.bind(:Scroll, from, :getc, to)
+            bind(:Scroll, from, :getc, to)
           end
 
           cdkscreen.register(:Scroll, self);
@@ -160,15 +160,15 @@ module Slithernix
         # This actually does all the 'real' work of managing the scrolling list.
         def activate(actions)
           # Draw the scrolling list
-          self.draw(@box)
+          draw(@box)
 
           if actions.nil? || actions.size == 0
             while true
-              self.fixCursorPosition
-              input = self.getch([])
+              fixCursorPosition
+              input = getch([])
 
               # Inject the character into the widget.
-              ret = self.inject(input)
+              ret = inject(input)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -176,7 +176,7 @@ module Slithernix
           else
             # Inject each character one at a time.
             actions.each do |action|
-              ret = self.inject(action)
+              ret = inject(action)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -184,7 +184,7 @@ module Slithernix
           end
 
           # Set the exit type for the widget and return
-          self.setExitType(0)
+          setExitType(0)
           return -1
         end
 
@@ -195,10 +195,10 @@ module Slithernix
           complete = false
 
           # Set the exit type for the widget.
-          self.setExitType(0)
+          setExitType(0)
 
           # Draw the scrolling list
-          self.drawList(@box)
+          drawList(@box)
 
           #Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
@@ -209,7 +209,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check for a predefined key binding.
-            if self.checkBind(:Scroll, input) != false
+            if checkBind(:Scroll, input) != false
               #self.checkEarlyExit
               complete = true
             else
@@ -235,16 +235,16 @@ module Slithernix
               when '|'
                 @left_char = 0
               when Slithernix::Cdk::KEY_ESC
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Curses::Error
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Slithernix::Cdk::REFRESH
                 @screen.erase
                 @screen.refresh
               when Slithernix::Cdk::KEY_TAB, Curses::KEY_ENTER, Slithernix::Cdk::KEY_RETURN
-                self.setExitType(input)
+                setExitType(input)
                 ret = @current_item
                 complete = true
               end
@@ -256,11 +256,11 @@ module Slithernix
           end
 
           if !complete
-            self.drawList(@box)
-            self.setExitType(0)
+            drawList(@box)
+            setExitType(0)
           end
 
-          self.fixCursorPosition
+          fixCursorPosition
           @result_data = ret
 
           #return ret != -1
@@ -279,13 +279,13 @@ module Slithernix
           end
           @current_top = item
 
-          self.setPosition(item);
+          setPosition(item);
         end
 
         # This moves the scroll field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @list_win, @shadow_win, @scrollbar_win]
-          self.move_specific(xplace, yplace, relative, refresh_flag,
+          move_specific(xplace, yplace, relative, refresh_flag,
               windows, [])
         end
 
@@ -296,16 +296,16 @@ module Slithernix
             Slithernix::Cdk::Draw.drawShadow(@shadow_win)
           end
 
-          self.drawTitle(@win)
+          drawTitle(@win)
 
           # Draw in the scrolling list items.
-          self.drawList(box)
+          drawList(box)
         end
 
         def drawCurrent
           # Rehighlight the current menu item.
           screen_pos = @item_pos[@current_item] - @left_char
-          highlight = self.has_focus ? @highlight : Curses::A_NORMAL
+          highlight = has_focus ? @highlight : Curses::A_NORMAL
 
           Slithernix::Cdk::Draw.writeChtypeAttrib(
             @list_win,
@@ -353,7 +353,7 @@ module Slithernix
               end
             end
 
-            self.drawCurrent
+            drawCurrent
 
             # Determine where the toggle is supposed to be.
             unless @scrollbar_win.nil?
@@ -402,7 +402,7 @@ module Slithernix
 
         # This function destroys
         def destroy
-          self.cleanTitle
+          cleanTitle
 
           # Clean up the windows.
           Slithernix::Cdk.deleteCursesWindow(@scrollbar_win)
@@ -411,7 +411,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          self.cleanBindings(:Scroll)
+          cleanBindings(:Scroll)
 
           # Unregister this widget
           Slithernix::Cdk::Screen.unregister(:Scroll, self)
@@ -472,7 +472,7 @@ module Slithernix
               status = 1
               (0...list_size).each do |x|
                 number = numbers ? x + 1 : 0
-                if !self.allocListItem(x, temp, have, number, list[x])
+                if !allocListItem(x, temp, have, number, list[x])
                   status = 0
                   break
                 end
@@ -481,7 +481,7 @@ module Slithernix
               end
 
               if status
-                self.updateViewWidth(widest_item);
+                updateViewWidth(widest_item);
 
                 # Keep the boolean flag 'numbers'
                 @numbers = numbers
@@ -496,14 +496,14 @@ module Slithernix
 
         # This sets certain attributes of the scrolling list.
         def set(list, list_size, numbers, highlight, box)
-          self.setItems(list, list_size, numbers)
-          self.setHighlight(highlight)
-          self.setBox(box)
+          setItems(list, list_size, numbers)
+          setHighlight(highlight)
+          setBox(box)
         end
 
         # This sets the scrolling list items
         def setItems(list, list_size, numbers)
-          if self.createItemList(numbers, list, list_size) <= 0
+          if createItemList(numbers, list, list_size) <= 0
             return
           end
 
@@ -512,8 +512,8 @@ module Slithernix
             Slithernix::Cdk::Draw.writeBlanks(@win, 1, x, Slithernix::Cdk::HORIZONTAL, 0, @box_width - 2);
           end
 
-          self.setViewSize(list_size)
-          self.setPosition(0)
+          setViewSize(list_size)
+          setPosition(0)
           @left_char = 0
         end
 
@@ -571,11 +571,11 @@ module Slithernix
           temp = ''
           have = 0
 
-          if self.allocListArrays(
+          if allocListArrays(
             @list_size,
             @list_size + 1
           ) &&
-          self.allocListItem(
+          allocListItem(
             item_number,
             temp,
             have,
@@ -585,8 +585,8 @@ module Slithernix
             # Determine the size of the widest item.
             widest_item = [@item_len[item_number], widest_item].max
 
-            self.updateViewWidth(widest_item)
-            self.setViewSize(@list_size + 1)
+            updateViewWidth(widest_item)
+            setViewSize(@list_size + 1)
           end
         end
 
@@ -596,14 +596,14 @@ module Slithernix
           temp = ''
           have = 0
 
-          if self.allocListArrays(
+          if allocListArrays(
             @list_size,
             @list_size + 1
           ) &&
-          self.insertListItem(
+          insertListItem(
             @current_item
           ) &&
-          self.allocListItem(
+          allocListItem(
             @current_item,
             temp,
             have,
@@ -613,9 +613,9 @@ module Slithernix
             # Determine the size of the widest item.
             widest_item = [@item_len[@current_item], widest_item].max
 
-            self.updateViewWidth(widest_item)
-            self.setViewSize(@list_size + 1)
-            self.resequence
+            updateViewWidth(widest_item)
+            setViewSize(@list_size + 1)
+            resequence
           end
         end
 
@@ -627,28 +627,28 @@ module Slithernix
             @item_len = @item_len[0...position] + @item_len[position+1..-1]
             @item_pos = @item_pos[0...position] + @item_pos[position+1..-1]
 
-            self.setViewSize(@list_size - 1)
+            setViewSize(@list_size - 1)
 
             if @list_size > 0
-              self.resequence
+              resequence
             end
 
-            if @list_size < self.maxViewSize
+            if @list_size < maxViewSize
               @win.erase  # force the next redraw to be complete
             end
 
             # do this to update the view size, etc
-            self.setPosition(@current_item)
+            setPosition(@current_item)
           end
         end
 
         def focus
-          self.drawCurrent
+          drawCurrent
           @list_win.refresh
         end
 
         def unfocus
-          self.drawCurrent
+          drawCurrent
           @list_win.refresh
         end
 
@@ -677,7 +677,7 @@ module Slithernix
           xpos = xplace
           ypos = yplace
 
-          self.setBox(box)
+          setBox(box)
           box_height = 1 + 2 * @border_size
 
           # Translate the string to a chtype array.
@@ -725,7 +725,7 @@ module Slithernix
           @shadow = shadow
 
           if @win.nil?
-            self.destroy
+            destroy
             return nil
           end
 
@@ -743,15 +743,15 @@ module Slithernix
 
         # This was added for the builder.
         def activate(actions)
-          self.draw(@box)
+          draw(@box)
           ret = -1
 
           if actions.nil? || actions.size == 0
             while true
-              input = self.getch([])
+              input = getch([])
 
               # Inject the character into the widget.
-              ret = self.inject(input)
+              ret = inject(input)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -759,7 +759,7 @@ module Slithernix
           else
             # Inject each character one at a time.
             actions.each do |x|
-              ret = self.inject(action)
+              ret = inject(action)
               if @exit_type == :EARLY_EXIT
                 return ret
               end
@@ -767,14 +767,14 @@ module Slithernix
           end
 
           # Set the exit type and exit
-          self.setExitType(0)
+          setExitType(0)
           return -1
         end
 
         # This sets multiple attributes of the widget.
         def set(mesg, box)
-          self.setMessage(mesg)
-          self.setBox(box)
+          setMessage(mesg)
+          setBox(box)
         end
 
         # This sets the information within the button.
@@ -787,8 +787,8 @@ module Slithernix
                                         info_pos[0])
 
           # Redraw the button widget.
-          self.erase
-          self.draw(box)
+          erase
+          draw(box)
         end
 
         def getMessage
@@ -832,13 +832,13 @@ module Slithernix
           if @box
             Slithernix::Cdk::Draw.drawObjBox(@win, self)
           end
-          self.drawText
+          drawText
           @win.refresh
         end
 
         # This erases the button widget.
         def erase
-          if self.validCDKObject
+          if validCDKObject
             Slithernix::Cdk.eraseCursesWindow(@win)
             Slithernix::Cdk.eraseCursesWindow(@shadow_win)
           end
@@ -878,7 +878,7 @@ module Slithernix
 
           # Redraw the window, if they asked for it.
           if refresh_flag
-            self.draw(@box)
+            draw(@box)
           end
         end
 
@@ -893,77 +893,77 @@ module Slithernix
           # Let them move the widget around until they hit return
           # SUSPECT FOR BUG
           while key != Curses::KEY_ENTER && key != Slithernix::Cdk::KEY_RETURN
-            key = self.getch([])
+            key = getch([])
             if key == Curses::KEY_UP || key == '8'
               if @win.begy > 0
-                self.move(0, -1, true, true)
+                move(0, -1, true, true)
               else
                 Slithernix::Cdk.Beep
               end
             elsif key == Curses::KEY_DOWN || key == '2'
               if @win.begy + @win.maxy < @screen.window.maxy - 1
-                self.move(0, 1, true, true)
+                move(0, 1, true, true)
               else
                 Slithernix::Cdk.Beep
               end
             elsif key == Curses::KEY_LEFT || key == '4'
               if @win.begx > 0
-                self.move(-1, 0, true, true)
+                move(-1, 0, true, true)
               else
                 Slithernix::Cdk.Beep
               end
             elsif key == Curses::KEY_RIGHT || key == '6'
               if @win.begx + @win.maxx < @screen.window.maxx - 1
-                self.move(1, 0, true, true)
+                move(1, 0, true, true)
               else
                 Slithernix::Cdk.Beep
               end
             elsif key == '7'
               if @win.begy > 0 && @win.begx > 0
-                self.move(-1, -1, true, true)
+                move(-1, -1, true, true)
               else
                 Slithernix::Cdk.Beep
               end
             elsif key == '9'
               if @win.begx + @win.maxx < @screen.window.maxx - 1 &&
                   @win.begy > 0
-                self.move(1, -1, true, true)
+                move(1, -1, true, true)
               else
                 Slithernix::Cdk.Beep
               end
             elsif key == '1'
               if @win.begx > 0 &&
                   @win.begx + @win.maxx < @screen.window.maxx - 1
-                self.move(-1, 1, true, true)
+                move(-1, 1, true, true)
               else
                 Slithernix::Cdk.Beep
               end
             elsif key == '3'
               if @win.begx + @win.maxx < @screen.window.maxx - 1 &&
                   @win.begy + @win.maxy < @screen.window.maxy - 1
-                self.move(1, 1, true, true)
+                move(1, 1, true, true)
               else
                 Slithernix::Cdk.Beep
               end
             elsif key == '5'
-              self.move(Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, false, true)
+              move(Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, false, true)
             elsif key == 't'
-              self.move(@win.begx, Slithernix::Cdk::TOP, false, true)
+              move(@win.begx, Slithernix::Cdk::TOP, false, true)
             elsif key == 'b'
-              self.move(@win.begx, Slithernix::Cdk::BOTTOM, false, true)
+              move(@win.begx, Slithernix::Cdk::BOTTOM, false, true)
             elsif key == 'l'
-              self.move(Slithernix::Cdk::LEFT, @win.begy, false, true)
+              move(Slithernix::Cdk::LEFT, @win.begy, false, true)
             elsif key == 'r'
-              self.move(Slithernix::Cdk::RIGHT, @win.begy, false, true)
+              move(Slithernix::Cdk::RIGHT, @win.begy, false, true)
             elsif key == 'c'
-              self.move(Slithernix::Cdk::CENTER, @win.begy, false, true)
+              move(Slithernix::Cdk::CENTER, @win.begy, false, true)
             elsif key == 'C'
-              self.move(@win.begx, Slithernix::Cdk::CENTER, false, true)
+              move(@win.begx, Slithernix::Cdk::CENTER, false, true)
             elsif key == Slithernix::Cdk::REFRESH
               @screen.erase
               @screen.refresh
             elsif key == Slithernix::Cdk::KEY_ESC
-              self.move(orig_x, orig_y, false, true)
+              move(orig_x, orig_y, false, true)
             elsif key != Slithernix::Cdk::KEY_RETURN && key != Curses::KEY_ENTER
               Slithernix::Cdk.Beep
             end
@@ -975,7 +975,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@shadow_win)
           Slithernix::Cdk.deleteCursesWindow(@win)
 
-          self.cleanBindings(:BUTTON)
+          cleanBindings(:BUTTON)
 
           Slithernix::Cdk::Screen.unregister(:BUTTON, self)
         end
@@ -985,24 +985,24 @@ module Slithernix
           ret = -1
           complete = false
 
-          self.setExitType(0)
+          setExitType(0)
 
           # Check a predefined binding.
-          if self.checkBind(:BUTTON, input)
+          if checkBind(:BUTTON, input)
             complete = true
           else
             case input
             when Slithernix::Cdk::KEY_ESC
-              self.setExitType(input)
+              setExitType(input)
               complete = true
             when Curses::Error
-              self.setExitType(input)
+              setExitType(input)
               complete = true
             when ' ', Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
               unless @callback.nil?
                 @callback.call(self)
               end
-              self.setExitType(Curses::KEY_ENTER)
+              setExitType(Curses::KEY_ENTER)
               ret = 0
               complete = true
             when Slithernix::Cdk::REFRESH
@@ -1014,7 +1014,7 @@ module Slithernix
           end
 
           unless complete
-            self.setExitType(0)
+            setExitType(0)
           end
 
           @result_data = ret
@@ -1022,12 +1022,12 @@ module Slithernix
         end
 
         def focus
-          self.drawText
+          drawText
           @win.refresh
         end
 
         def unfocus
-          self.drawText
+          drawText
           @win.refresh
         end
       end

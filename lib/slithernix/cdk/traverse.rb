@@ -155,7 +155,7 @@ module Slithernix
             # find and enable drop down menu
             screen.widget.each do |w|
               if w&.widget_type == :Menu
-                self.handleMenu(screen, w, curwidg)
+                handleMenu(screen, w, curwidg)
               end
             end
           else
@@ -181,10 +181,10 @@ module Slithernix
 
             # TODO look at more direct way to do this
             check_menu_key = lambda do |key_code, function_key|
-              self.checkMenuKey(key_code, function_key)
+              checkMenuKey(key_code, function_key)
             end
 
-            self.traverseCDKOnce(screen, curwidg, key,
+            traverseCDKOnce(screen, curwidg, key,
                 function[0], check_menu_key)
           end
 
@@ -232,8 +232,8 @@ module Slithernix
 
       def self.switchFocus(newwidg, oldwidg)
         if oldwidg != newwidg
-          self.unsetFocus(oldwidg)
-          self.setFocus(newwidg)
+          unsetFocus(oldwidg)
+          setFocus(newwidg)
         end
         return newwidg
       end
@@ -261,8 +261,8 @@ module Slithernix
           end
         end
 
-        if (newwidg = self.getCDKFocusCurrent(screen)).nil?
-          newwidg = self.setCDKFocusNext(screen)
+        if (newwidg = getCDKFocusCurrent(screen)).nil?
+          newwidg = setCDKFocusNext(screen)
         end
 
         return switchFocus(newwidg, menu)

@@ -363,12 +363,12 @@ class TraverseExample < Example
     if func.nil?
       Slithernix::Cdk.Beep
     else
-      widget = self.send(func, cdkscreen, x, y)
+      widget = send(func, cdkscreen, x, y)
       if widget.nil?
         Curses.flash
       else
         @@all_widgets[menu] = widget
-        self.rebind_esc(widget)
+        rebind_esc(widget)
       end
     end
   end
@@ -393,7 +393,7 @@ class TraverseExample < Example
       Curses.clrtoeol
       Curses.refresh
       if sp >= 0 && sp < TraverseExample::MENU_TABLE.size
-        self.make_any(screen, mp, TraverseExample::MENU_TABLE[sp][1])
+        make_any(screen, mp, TraverseExample::MENU_TABLE[sp][1])
       end
     end
     return 1

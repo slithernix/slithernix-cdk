@@ -24,14 +24,14 @@ module Slithernix
           bindings[Slithernix::Cdk::FORCHAR]  = Curses::KEY_NPAGE,
 
           if choice_count <= 0
-            self.destroy
+            destroy
             return nil
           end
 
           @choice = []
           @choicelen = []
 
-          self.setBox(box)
+          setBox(box)
 
           # If the height is a negative value, the height will be ROWS-height,
           # otherwise the height will be the given height.
@@ -49,7 +49,7 @@ module Slithernix
             0,
           )
 
-          box_width = self.setTitle(title, box_width)
+          box_width = setTitle(title, box_width)
 
           # Set the box height.
           if @title_lines > box_height
@@ -70,7 +70,7 @@ module Slithernix
           @box_width = [box_width, parent_width].min
           @box_height = [box_height, parent_height].min
 
-          self.setViewSize(list_size)
+          setViewSize(list_size)
 
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
@@ -84,7 +84,7 @@ module Slithernix
 
           # Is the window nil?
           if @win.nil?
-            self.destroy
+            destroy
             return nil
           end
 
@@ -93,10 +93,10 @@ module Slithernix
 
           # Create the scrollbar window.
           if splace == Slithernix::Cdk::RIGHT
-            @scrollbar_win = @win.subwin(self.maxViewSize, 1,
+            @scrollbar_win = @win.subwin(maxViewSize, 1,
                 self.SCREEN_YPOS(ypos), xpos + @box_width - @border_size - 1)
           elsif splace == Slithernix::Cdk::LEFT
-            @scrollbar_win = @win.subwin(self.maxViewSize, 1,
+            @scrollbar_win = @win.subwin(maxViewSize, 1,
                 self.SCREEN_YPOS(ypos), self.SCREEN_XPOS(ypos))
           else
             @scrollbar_win = nil
@@ -114,7 +114,7 @@ module Slithernix
           @input_window = @win
           @shadow = shadow
 
-          self.setCurrentItem(0)
+          setCurrentItem(0)
 
           # Each choice has to be converted from string to chtype array
           (0...choice_count).each do |j|
@@ -125,11 +125,11 @@ module Slithernix
           end
 
           # Each item in the needs to be converted to chtype array
-          widest_item = self.createList(list, list_size)
+          widest_item = createList(list, list_size)
           if widest_item > 0
-            self.updateViewWidth(widest_item)
+            updateViewWidth(widest_item)
           elsif list_size > 0
-            self.destroy
+            destroy
             return nil
           end
 
@@ -141,7 +141,7 @@ module Slithernix
 
           # Setup the key bindings
           bindings.each do |from, to|
-            self.bind(:Selection, from, :getc, to)
+            bind(:Selection, from, :getc, to)
           end
 
           # Register this baby.
@@ -165,15 +165,15 @@ module Slithernix
         # This actually manages the selection widget
         def activate(actions)
           # Draw the selection list
-          self.draw(@box)
+          draw(@box)
 
           if actions.nil? || actions.size == 0
             while true
-              self.fixCursorPosition
-              input = self.getch([])
+              fixCursorPosition
+              input = getch([])
 
               # Inject the character into the widget.
-              ret = self.inject(input)
+              ret = inject(input)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -181,7 +181,7 @@ module Slithernix
           else
             # Inject each character one at a time.
             actions.each do |action|
-              ret = self.inject(action)
+              ret = inject(action)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -189,7 +189,7 @@ module Slithernix
           end
 
           # Set the exit type and return.
-          self.setExitType(0)
+          setExitType(0)
           return 0
         end
 
@@ -200,10 +200,10 @@ module Slithernix
           complete = false
 
           # Set the exit type
-          self.setExitType(0)
+          setExitType(0)
 
           # Draw the widget list.
-          self.drawList(@box)
+          drawList(@box)
 
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
@@ -214,7 +214,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check for a predefined binding.
-            if self.checkBind(:Selection, input)
+            if checkBind(:Selection, input)
               complete = true
             else
               case input
@@ -249,13 +249,13 @@ module Slithernix
                   Slithernix::Cdk.Beep
                 end
               when Slithernix::Cdk::KEY_ESC
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Curses::Error
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Curses::KEY_ENTER, Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN
-                self.setExitType(input)
+                setExitType(input)
                 ret = 1
                 complete = true
               when Slithernix::Cdk::REFRESH
@@ -271,19 +271,19 @@ module Slithernix
           end
 
           unless complete
-            self.drawList(@box)
-            self.setExitType(0)
+            drawList(@box)
+            setExitType(0)
           end
 
           @result_data = ret
-          self.fixCursorPosition
+          fixCursorPosition
           return ret
         end
 
         # This moves the selection field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @scrollbar_win, @shadow_win]
-          self.move_specific(xplace, yplace, relative, refresh_flag,
+          move_specific(xplace, yplace, relative, refresh_flag,
               windows, [])
         end
 
@@ -294,10 +294,10 @@ module Slithernix
             Slithernix::Cdk::Draw.drawShadow(@shadow_win)
           end
 
-          self.drawTitle(@win)
+          drawTitle(@win)
 
           # Redraw the list
-          self.drawList(box)
+          drawList(box)
         end
 
         # This function draws the selection list window.
@@ -382,7 +382,7 @@ module Slithernix
             Slithernix::Cdk::Draw.drawObjBox(@win, self)
           end
 
-          self.fixCursorPosition
+          fixCursorPosition
         end
 
         # This sets the background attribute of the widget.
@@ -399,8 +399,8 @@ module Slithernix
 
         # This function destroys the selection list.
         def destroy
-          self.cleanTitle
-          self.destroyInfo
+          cleanTitle
+          destroyInfo
 
           # Clean up the windows.
           Slithernix::Cdk.deleteCursesWindow(@scrollbar_win)
@@ -408,7 +408,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean up the key bindings
-          self.cleanBindings(:Selection)
+          cleanBindings(:Selection)
 
           # Unregister this widget.
           Slithernix::Cdk::Screen.unregister(:Selection, self)
@@ -416,7 +416,7 @@ module Slithernix
 
         # This function erases the selection list from the screen.
         def erase
-          if self.validCDKObject
+          if validCDKObject
             Slithernix::Cdk.eraseCursesWindow(@win)
             Slithernix::Cdk.eraseCursesWindow(@shadow_win)
           end
@@ -424,14 +424,14 @@ module Slithernix
 
         # This function sets a couple of the selection list attributes
         def set(highlight, choices, box)
-          self.setChoices(choices)
-          self.setHighlight(highlight)
-          self.setBox(box)
+          setChoices(choices)
+          setHighlight(highlight)
+          setBox(box)
         end
 
         # This sets the selection list items.
         def setItems(list, list_size)
-          widest_item = self.createList(list, list_size)
+          widest_item = createList(list, list_size)
           if widest_item <= 0
             return
           end
@@ -448,10 +448,10 @@ module Slithernix
             )
           end
 
-          self.setViewSize(list_size)
-          self.setCurrentItem(0)
+          setViewSize(list_size)
+          setCurrentItem(0)
 
-          self.updateViewWidth(widest_item)
+          updateViewWidth(widest_item)
         end
 
         def getItems(list)
@@ -467,9 +467,9 @@ module Slithernix
             return
           end
 
-          self.setTitle(title, -(@box_width + 1))
+          setTitle(title, -(@box_width + 1))
 
-          self.setViewSize(@list_size)
+          setViewSize(@list_size)
         end
 
         def getTitle
@@ -579,11 +579,11 @@ module Slithernix
 
         # methods for generic type methods
         def focus
-          self.drawList(@box)
+          drawList(@box)
         end
 
         def unfocus
-          self.drawList(@box)
+          drawList(@box)
         end
 
         def createList(list, list_size)
@@ -620,7 +620,7 @@ module Slithernix
             end
 
             if status
-              self.destroyInfo
+              destroyInfo
 
               @item = new_list
               @item_pos = new_pos
@@ -629,7 +629,7 @@ module Slithernix
               @mode = [0] * list_size
             end
           else
-            self.destroyInfo
+            destroyInfo
           end
 
           return (status ? widest_item : 0)

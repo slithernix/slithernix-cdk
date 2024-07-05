@@ -44,7 +44,7 @@ module Slithernix
             temp.size,
           )
 
-          self.moveToEditPosition(@field_edit)
+          moveToEditPosition(@field_edit)
           @field_win.refresh
         end
 

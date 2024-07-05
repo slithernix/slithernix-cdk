@@ -236,7 +236,7 @@ module Slithernix
 
       if mask[0] != 0
         from += 1
-      elsif self.digit?(string[from+1]) and self.digit?(string[from + 2])
+      elsif digit?(string[from+1]) and digit?(string[from + 2])
         mask[0] = Curses::A_BOLD
 
         if Curses.has_colors?
@@ -246,7 +246,7 @@ module Slithernix
         end
 
         from += 2
-      elsif self.digit?(string[from + 1])
+      elsif digit?(string[from + 1])
         if Curses.has_colors?
           # XXX: Only checks if terminal has colours not if colours are started
           pair = string[from + 1].to_i
@@ -380,7 +380,7 @@ module Slithernix
             x = 0
 
             while from < string.size && string[from] != Curses.R_MARKER
-              if self.digit?(string[from])
+              if digit?(string[from])
                 adjust = adjust * 10 + string[from].to_i
                 x += 1
               end
@@ -500,7 +500,7 @@ module Slithernix
                   adjust = 0
 
                   while from < string.size && string[from] != ')'
-                    if self.digit?(string[from])
+                    if digit?(string[from])
                       adjust = (adjust * 10) + string[from].to_i
                     end
                     from += 1
@@ -513,11 +513,11 @@ module Slithernix
               end
             when '/'
               mask = []
-              from = self.encodeAttribute(string, from, mask)
+              from = encodeAttribute(string, from, mask)
               attrib |= mask[0]
             when '!'
               mask = []
-              from = self.encodeAttribute(string, from, mask)
+              from = encodeAttribute(string, from, mask)
               attrib &= ~(mask[0])
             end
           end
@@ -590,7 +590,7 @@ module Slithernix
       unless string.nil?
         need = 0
         (0...string.size).each do |x|
-          need = self.decodeAttribute(
+          need = decodeAttribute(
             newstring,
             need,
             x > 0 ? string[x - 1] : 0,
@@ -731,7 +731,7 @@ module Slithernix
     def self.deleteCursesWindow (window)
       return if window.nil?
 
-      self.eraseCursesWindow(window)
+      eraseCursesWindow(window)
       window.close
     end
 
@@ -903,13 +903,13 @@ module Slithernix
       result = 0
 
       # Open the file and read the contents.
-      lines = self.readFile(filename, info)
+      lines = readFile(filename, info)
 
       # If we couldn't read the file, return an error.
       if lines == -1
         result = lines
       else
-        result = self.viewInfo(screen, title, info, lines, buttons,
+        result = viewInfo(screen, title, info, lines, buttons,
                               button_count, true)
       end
       return result

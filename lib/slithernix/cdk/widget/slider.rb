@@ -19,14 +19,14 @@ module Slithernix
             'G'           => Curses::KEY_END,
             '$'           => Curses::KEY_END,
           }
-          self.setBox(box)
+          setBox(box)
           box_height = @border_size * 2 + 1
 
           # Set some basic values of the widget's data field.
           @label = []
           @label_len = 0
           @label_win = nil
-          high_value_len = self.formattedSize(high)
+          high_value_len = formattedSize(high)
 
           # If the field_width is a negative will be COLS-field_width,
           # otherwise field_width will be the given width.
@@ -44,7 +44,7 @@ module Slithernix
           end
 
           old_width = box_width
-          box_width = self.setTitle(title, box_width)
+          box_width = setTitle(title, box_width)
           horizontal_adjust = (box_width - old_width) / 2
 
           box_height += @title_lines
@@ -67,7 +67,7 @@ module Slithernix
 
           # Is the main window nil?
           if @win.nil?
-            self.destroy
+            destroy
             return nil
           end
 
@@ -77,7 +77,7 @@ module Slithernix
                 ypos + @title_lines + @border_size,
                 xpos + horizontal_adjust + @border_size)
             if @label_win.nil?
-              self.destroy
+              destroy
               return nil
             end
           end
@@ -88,7 +88,7 @@ module Slithernix
               xpos + @label_len + horizontal_adjust + @border_size)
 
           if @field_win.nil?
-            self.destroy
+            destroy
             return nil
           end
           @field_win.keypad(true)
@@ -122,14 +122,14 @@ module Slithernix
             @shadow_win = Curses::Window.new(box_height, box_width,
                 ypos + 1, xpos + 1)
             if @shadow_win.nil?
-              self.destroy
+              destroy
               return nil
             end
           end
 
           # Setup the key bindings.
           bindings.each do |from, to|
-            self.bind(:Slider, from, :getc, to)
+            bind(:Slider, from, :getc, to)
           end
 
           cdkscreen.register(:Slider, self)
@@ -138,14 +138,14 @@ module Slithernix
         # This allows the person to use the widget's data field.
         def activate(actions)
           # Draw the widget.
-          self.draw(@box)
+          draw(@box)
 
           if actions.nil? || actions.size == 0
             while true
-              input = self.getch([])
+              input = getch([])
 
               # Inject the character into the widget.
-              ret = self.inject(input)
+              ret = inject(input)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -153,7 +153,7 @@ module Slithernix
           else
             # Inject each character one at a time.
             actions.each do |action|
-              ret = self.inject(action)
+              ret = inject(action)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -161,7 +161,7 @@ module Slithernix
           end
 
           # Set the exit type and return.
-          self.setExitType(0)
+          setExitType(0)
           return -1
         end
 
@@ -189,7 +189,7 @@ module Slithernix
           if new_position <= 0 || new_position >= @field_width
             return false
           end
-          if self.moveToEditPosition(new_position) == Curses::Error
+          if moveToEditPosition(new_position) == Curses::Error
             return false
           end
           ch = @field_win.inch
@@ -198,7 +198,7 @@ module Slithernix
           end
           if new_position > 1
             # Don't use recursion - only one level is wanted
-            if self.moveToEditPosition(new_position - 1) == Curses::Error
+            if moveToEditPosition(new_position - 1) == Curses::Error
               return false
             end
             ch = @field_win.inch
@@ -215,7 +215,7 @@ module Slithernix
             Slithernix::Cdk.Beep
           elsif new_position == 0
             @field_edit = new_position
-          elsif self.validEditPosition(new_position)
+          elsif validEditPosition(new_position)
             @field_edit = new_position
           else
             Slithernix::Cdk.Beep
@@ -242,7 +242,7 @@ module Slithernix
           result = false
           modify = true
           base = @field_width
-          need = self.formattedSize(@current)
+          need = formattedSize(@current)
           temp = ''
           col = need - @field_edit
 
@@ -267,7 +267,7 @@ module Slithernix
           if modify &&
               ((value, test) = temp.scanf(self.SCAN_FMT)).size == 2 &&
               test == ' ' && value >= @low && value <= @high
-            self.setValue(value)
+            setValue(value)
             result = true
           end
           return result
@@ -296,10 +296,10 @@ module Slithernix
           complete = false
 
           # Set the exit type.
-          self.setExitType(0)
+          setExitType(0)
 
           # Draw the field.
-          self.drawField
+          drawField
 
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
@@ -311,14 +311,14 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check for a key binding.
-            if self.checkBind(:Slider, input)
+            if checkBind(:Slider, input)
               complete = true
             else
               case input
               when Curses::KEY_LEFT
-                self.setEditPosition(@field_edit + 1)
+                setEditPosition(@field_edit + 1)
               when Curses::KEY_RIGHT
-                self.setEditPosition(@field_edit - 1)
+                setEditPosition(@field_edit - 1)
               when Curses::KEY_DOWN
                 @current = Slithernix::Cdk::Widget::Slider.Decrement(@current, @inc)
               when Curses::KEY_UP
@@ -332,21 +332,21 @@ module Slithernix
               when Curses::KEY_END
                 @current = @high
               when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
-                self.setExitType(input)
+                setExitType(input)
                 ret = @current
                 complete = true
               when Slithernix::Cdk::KEY_ESC
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Curses::Error
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Slithernix::Cdk::REFRESH
                 @screen.erase
                 @screen.refresh
               else
                 if @field_edit != 0
-                  if !self.performEdit(input)
+                  if !performEdit(input)
                     Slithernix::Cdk.Beep
                   end
                 else
@@ -354,20 +354,20 @@ module Slithernix
                   # input as commands.
                 case input
                 when 'd', '-'
-                  return self.inject(Curses::KEY_DOWN)
+                  return inject(Curses::KEY_DOWN)
                 when '+'
-                  return self.inject(Curses::KEY_UP)
+                  return inject(Curses::KEY_UP)
                 when 'D'
-                  return self.inject(Curses::KEY_NPAGE)
+                  return inject(Curses::KEY_NPAGE)
                 when '0'
-                  return self.inject(Curses::KEY_HOME)
+                  return inject(Curses::KEY_HOME)
                 else
                   Slithernix::Cdk.Beep
                 end
                 end
               end
             end
-            self.limitCurrentValue
+            limitCurrentValue
 
             # Should we call a post-process?
             if !complete && !(@post_process_func.nil?)
@@ -376,8 +376,8 @@ module Slithernix
           end
 
           if !complete
-            self.drawField
-            self.setExitType(0)
+            drawField
+            setExitType(0)
           end
 
           @return_data = 0
@@ -387,7 +387,7 @@ module Slithernix
         # This moves the widget's data field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @label_win, @field_win, @shadow_win]
-          self.move_specific(
+          move_specific(
             xplace,
             yplace,
             relative,
@@ -409,7 +409,7 @@ module Slithernix
             Slithernix::Cdk::Draw.drawObjBox(@win, self)
           end
 
-          self.drawTitle(@win)
+          drawTitle(@win)
 
           # Draw the label.
           unless @label_win.nil?
@@ -427,7 +427,7 @@ module Slithernix
           @win.refresh
 
           # Draw the field window.
-          self.drawField
+          drawField
         end
 
         # This draws the widget.
@@ -456,7 +456,7 @@ module Slithernix
             @current.to_s.size,
           )
 
-          self.moveToEditPosition(@field_edit)
+          moveToEditPosition(@field_edit)
           @field_win.refresh
         end
 
@@ -472,7 +472,7 @@ module Slithernix
 
         # This function destroys the widget.
         def destroy
-          self.cleanTitle
+          cleanTitle
           @label = []
 
           # Clean up the windows.
@@ -482,7 +482,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          self.cleanBindings(:Slider)
+          cleanBindings(:Slider)
 
           # Unregister this widget.
           Slithernix::Cdk::Screen.unregister(:Slider, self)
@@ -490,7 +490,7 @@ module Slithernix
 
         # This function erases the widget from the screen.
         def erase
-          if self.validCDKObject
+          if validCDKObject
             Slithernix::Cdk.eraseCursesWindow(@label_win)
             Slithernix::Cdk.eraseCursesWindow(@field_win)
             Slithernix::Cdk.eraseCursesWindow(@lwin)
@@ -504,15 +504,15 @@ module Slithernix
 
         # This function sets the low/high/current values of the widget.
         def set(low, high, value, box)
-          self.setLowHigh(low, high)
-          self.setValue(value)
-          self.setBox(box)
+          setLowHigh(low, high)
+          setValue(value)
+          setBox(box)
         end
 
         # This sets the widget's value.
         def setValue(value)
           @current = value
-          self.limitCurrentValue
+          limitCurrentValue
         end
 
         def getValue
@@ -531,7 +531,7 @@ module Slithernix
           end
 
           # Make sure the user hasn't done something silly.
-          self.limitCurrentValue
+          limitCurrentValue
         end
 
         def getLowValue
@@ -543,11 +543,11 @@ module Slithernix
         end
 
         def focus
-          self.draw(@box)
+          draw(@box)
         end
 
         def unfocus
-          self.draw(@box)
+          draw(@box)
         end
 
         def SCAN_FMT

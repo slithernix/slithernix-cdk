@@ -19,11 +19,11 @@ module Slithernix
           @column_widths = []
 
           if button_count <= 0
-            self.destroy
+            destroy
             return nil
           end
 
-          self.setBox(box)
+          setBox(box)
 
           # Set some default values for the widget.
           @row_adjust = 0
@@ -37,7 +37,7 @@ module Slithernix
           # COLS-width, otherwise the width will be the given width.
           box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width, 0)
 
-          box_width = self.setTitle(title, box_width)
+          box_width = setTitle(title, box_width)
 
           # Translate the buttons string to a chtype array
           (0...button_count).each do |x|
@@ -104,7 +104,7 @@ module Slithernix
 
           # If we couldn't create the window, we should return a null value.
           if @win.nil?
-            self.destroy
+            destroy
             return nil
           end
           @win.keypad(true)
@@ -126,14 +126,14 @@ module Slithernix
         # This activates the widget.
         def activate(actions)
           # Draw the buttonbox box.
-          self.draw(@box)
+          draw(@box)
 
           if actions.nil? || actions.size == 0
             while true
-              input = self.getch([])
+              input = getch([])
 
               # Inject the characer into the widget.
-              ret = self.inject(input)
+              ret = inject(input)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -141,7 +141,7 @@ module Slithernix
           else
             # Inject each character one at a time.
             actions.each do |action|
-              ret = self.inject(action)
+              ret = inject(action)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -149,7 +149,7 @@ module Slithernix
           end
 
           # Set the exit type and exit
-          self.setExitType(0)
+          setExitType(0)
           return -1
         end
 
@@ -162,7 +162,7 @@ module Slithernix
           complete = false
 
           # Set the exit type
-          self.setExitType(0)
+          setExitType(0)
 
           unless @pre_process_func.nil?
             pp_return = @pre_process_func.call(:ButtonBox, self,
@@ -172,7 +172,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check for a key binding.
-            if self.checkBind(:ButtonBox, input)
+            if checkBind(:ButtonBox, input)
               complete = true
             else
               case input
@@ -204,13 +204,13 @@ module Slithernix
                 @screen.erase
                 @screen.refresh
               when Slithernix::Cdk::KEY_ESC
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Curses::Error
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
-                self.setExitType(input)
+                setExitType(input)
                 ret = @current_button
                 complete = true
               end
@@ -224,8 +224,8 @@ module Slithernix
           end
 
           unless complete
-            self.drawButtons
-            self.setExitType(0)
+            drawButtons
+            setExitType(0)
           end
 
           @result_data = ret
@@ -234,8 +234,8 @@ module Slithernix
 
         # This sets multiple attributes of the widget.
         def set(highlight, box)
-          self.setHighlight(highlight)
-          self.setBox(box)
+          setHighlight(highlight)
+          setBox(box)
         end
 
         # This sets the highlight attribute for the buttonboxes
@@ -265,10 +265,10 @@ module Slithernix
           end
 
           # Draw in the title if there is one.
-          self.drawTitle(@win)
+          drawTitle(@win)
 
           # Draw in the buttons.
-          self.drawButtons
+          drawButtons
         end
 
         # This draws the buttons on the button box widget.
@@ -319,7 +319,7 @@ module Slithernix
 
         # This erases the buttonbox box from the screen.
         def erase
-          if self.validCDKObject
+          if validCDKObject
             Slithernix::Cdk.eraseCursesWindow(@win)
             Slithernix::Cdk.eraseCursesWindow(@shadow_win)
           end
@@ -327,12 +327,12 @@ module Slithernix
 
         # This destroys the widget
         def destroy
-          self.cleanTitle
+          cleanTitle
 
           Slithernix::Cdk.deleteCursesWindow(@shadow_win)
           Slithernix::Cdk.deleteCursesWindow(@win)
 
-          self.cleanBindings(:ButtonBox)
+          cleanBindings(:ButtonBox)
 
           Slithernix::Cdk::Screen.unregister(:ButtonBox, self)
         end
@@ -352,11 +352,11 @@ module Slithernix
         end
 
         def focus
-          self.draw(@box)
+          draw(@box)
         end
 
         def unfocus
-          self.draw(@box)
+          draw(@box)
         end
 
         def position

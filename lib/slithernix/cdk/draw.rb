@@ -89,7 +89,7 @@ module Slithernix
       # Draw a box around the given window using the widget's defined
       # line-drawing characters
       def self.drawObjBox(win, widget)
-        self.attrbox(
+        attrbox(
           win,
           widget.ULChar,
           widget.URChar,
@@ -176,13 +176,13 @@ module Slithernix
           blanks = ''
 
           Slithernix::Cdk.cleanChar(blanks, want - 1, ' ')
-          self.writeChar(window, xpos, ypos, blanks, align, start, endn)
+          writeChar(window, xpos, ypos, blanks, align, start, endn)
         end
       end
 
       # This writes out a char string with no attributes
       def self.writeChar(window, xpos, ypos, string, align, start, endn)
-        self.writeCharAttrib(
+        writeCharAttrib(
           window,
           xpos,
           ypos,
@@ -216,7 +216,7 @@ module Slithernix
 
       # This writes out a chtype string
       def self.writeChtype(window, xpos, ypos, string, align, start, endn)
-        self.writeChtypeAttrib(
+        writeChtypeAttrib(
           window,
           xpos,
           ypos,

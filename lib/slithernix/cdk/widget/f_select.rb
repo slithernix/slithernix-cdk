@@ -20,7 +20,7 @@ module Slithernix
             Slithernix::Cdk::FORCHAR  => Curses::KEY_NPAGE,
           }
 
-          self.setBox(box)
+          setBox(box)
 
           # If the height is a negative value the height will be ROWS-height,
           # otherwise the height will be the given height
@@ -74,7 +74,7 @@ module Slithernix
           @pwd = Dir.getwd
 
           # Get the contents of the current directory
-          self.setDirContents
+          setDirContents
 
           # Create the entry field in the selector
           label_len = []
@@ -91,7 +91,7 @@ module Slithernix
 
           # Make sure the widget was created.
           if @entry_field.nil?
-            self.destroy
+            destroy
             return nil
           end
 
@@ -397,7 +397,7 @@ module Slithernix
 
           # Setup the key bindings
           bindings.each do |from, to|
-            self.bind(:FSelect, from, :getc, to)
+            bind(:FSelect, from, :getc, to)
           end
 
           cdkscreen.register(:FSelect, self)
@@ -405,7 +405,7 @@ module Slithernix
 
         # This erases the file selector from the screen.
         def erase
-          if self.validCDKObject
+          if validCDKObject
             @scroll_field.erase
             @entry_field.erase
             Slithernix::Cdk.eraseCursesWindow(@win)
@@ -417,7 +417,7 @@ module Slithernix
           windows = [@win, @shadow_win]
           subwidgets = [@entry_field, @scroll_field]
 
-          self.move_specific(xplace, yplace, relative, refresh_flag,
+          move_specific(xplace, yplace, relative, refresh_flag,
               windows, subwidgets)
         end
 
@@ -436,15 +436,15 @@ module Slithernix
         end
 
         def drawMyScroller
-          self.saveFocus
+          saveFocus
           @scroll_field.draw(@scroll_field.box)
-          self.restoreFocus
+          restoreFocus
         end
 
         def injectMyScroller(key)
-          self.saveFocus
+          saveFocus
           @scroll_field.inject(key)
-          self.restoreFocus
+          restoreFocus
         end
 
         # This draws the file selector widget.
@@ -458,7 +458,7 @@ module Slithernix
           @entry_field.draw(@entry_field.box)
 
           # Draw in the scroll field.
-          self.drawMyScroller
+          drawMyScroller
         end
 
         # This means you want to use the given file selector. It takes input
@@ -469,14 +469,14 @@ module Slithernix
           ret = 0
 
           # Draw the widget.
-          self.draw(@box)
+          draw(@box)
 
           if actions.nil? || actions.size == 0
             while true
               input = @entry_field.getch([])
 
               # Inject the character into the widget.
-              ret = self.inject(input)
+              ret = inject(input)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -484,7 +484,7 @@ module Slithernix
           else
             # Inject each character one at a time.
             actions.each do |action|
-              ret = self.inject(action)
+              ret = inject(action)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -492,7 +492,7 @@ module Slithernix
           end
 
           # Set the exit type and exit.
-          self.setExitType(0)
+          setExitType(0)
           return 0
         end
 
@@ -528,16 +528,16 @@ module Slithernix
             complete = true
           else
             # Set the file selector information.
-            self.set(filename, @field_attribute, @filler_character, @highlight,
+            set(filename, @field_attribute, @filler_character, @highlight,
                 @dir_attribute, @file_attribute, @link_attribute, @sock_attribute,
                 @box)
 
             # Redraw the scrolling list.
-            self.drawMyScroller
+            drawMyScroller
           end
 
           if !complete
-            self.setExitType(0)
+            setExitType(0)
           end
 
           @result_data = ret
@@ -557,8 +557,8 @@ module Slithernix
           @highlight = highlight
 
           # Set the attributes of the entry field/scrolling list.
-          self.setFillerChar(filler)
-          self.setHighlight(highlight)
+          setFillerChar(filler)
+          setHighlight(highlight)
 
           # Only do the directory stuff if the directory is not nil.
           if !(directory.nil?) && directory.size > 0
@@ -585,8 +585,8 @@ module Slithernix
               @screen.popupLabel(mesg, 4)
 
               # Get out of here.
-              self.erase
-              self.draw(@box)
+              erase
+              draw(@box)
               return
             end
           end
@@ -607,7 +607,7 @@ module Slithernix
           fentry.draw(fentry.box)
 
           # Get the directory contents.
-          unless self.setDirContents
+          unless setDirContents
             Slithernix::Cdk.Beep
             return
           end
@@ -686,7 +686,7 @@ module Slithernix
               fentry.draw(fentry.box)
 
               # Get the directory contents.
-              if self.setDirContents
+              if setDirContents
                 # Set the values in the scrolling list.
                 fscroll.setItems(@dir_contents, @file_counter, false)
               else
@@ -727,7 +727,7 @@ module Slithernix
           # Make sure they are not the same.
           if @dir_attribute != attribute
             @dir_attribute = attribute
-            self.setDirContents
+            setDirContents
           end
         end
 
@@ -740,7 +740,7 @@ module Slithernix
           # Make sure they are not the same.
           if @link_attribute != attribute
             @link_attribute = attribute
-            self.setDirContents
+            setDirContents
           end
         end
 
@@ -753,7 +753,7 @@ module Slithernix
           # Make sure they are not the same.
           if @sock_attribute != attribute
             @sock_attribute = attribute
-            self.setDirContents
+            setDirContents
           end
         end
 
@@ -766,7 +766,7 @@ module Slithernix
           # Make sure they are not the same.
           if @file_attribute != attribute
             @file_attribute = attribute
-            self.setDirContents
+            setDirContents
           end
         end
 
@@ -779,7 +779,7 @@ module Slithernix
           scrollp = @scroll_field
           entry = @entry_field
 
-          if !self.createList(list, list_size)
+          if !createList(list, list_size)
             return
           end
 
@@ -788,12 +788,12 @@ module Slithernix
               scrollp.box)
 
           # Clean out the entry field.
-          self.setCurrentItem(0)
+          setCurrentItem(0)
           entry.clean
 
           # Redraw the widget.
-          self.erase
-          self.draw(@box)
+          erase
+          draw(@box)
         end
 
         def getContents(size)
@@ -810,7 +810,7 @@ module Slithernix
           if @file_counter != 0
             @scroll_field.setCurrent(item)
 
-            data = self.contentToPath(@dir_contents[@scroll_field.getCurrentItem])
+            data = contentToPath(@dir_contents[@scroll_field.getCurrentItem])
             @entry_field.setValue(data)
           end
         end
@@ -855,7 +855,7 @@ module Slithernix
 
         # This destroys the file selector.
         def destroy
-          self.cleanBindings(:FSelect)
+          cleanBindings(:FSelect)
 
           # Destroy the other CDK widgets
           @scroll_field.destroy
@@ -919,12 +919,12 @@ module Slithernix
             end
 
             if status
-              self.destroyInfo
+              destroyInfo
               @file_counter = list_size
               @dir_contents = newlist
             end
           else
-            self.destroyInfo
+            destroyInfo
             status = true
           end
           return status

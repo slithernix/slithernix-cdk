@@ -22,37 +22,37 @@ module Curses
   class Window
     def mvwvline(y, x, ch, n)
       n.times do |i|
-        self.setpos(y + i, x)
-        self.addch(ch)
+        setpos(y + i, x)
+        addch(ch)
       end
     end
 
     def mvwhline(y, x, ch, n)
-      self.setpos(y, x)
+      setpos(y, x)
 
       n.times do |i|
-        self.addch(ch)
+        addch(ch)
       end
     end
 
     def mvwaddch(y, x, ch)
-      self.setpos(y, x)
-      self.addch(ch)
+      setpos(y, x)
+      addch(ch)
     end
 
     def mvwdelch(y, x)
-      self.setpos(y, x)
-      self.delch()
+      setpos(y, x)
+      delch()
     end
 
     def mvwinsch(y, x, ch)
-      self.setpos(y, x)
-      self.insch(ch)
+      setpos(y, x)
+      insch(ch)
     end
 
     def mvinch(y, x)
-      self.setpos(y, x)
-      self.inch
+      setpos(y, x)
+      inch
     end
   end
 end

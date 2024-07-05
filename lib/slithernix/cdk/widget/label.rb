@@ -20,7 +20,7 @@ module Slithernix
             return nil
           end
 
-          self.setBox(box)
+          setBox(box)
           box_height = rows + 2 * @border_size
 
           @info = []
@@ -71,7 +71,7 @@ module Slithernix
           @shadow = shadow
 
           if @win.nil?
-            self.destroy
+            destroy
             return nil
           end
 
@@ -89,13 +89,13 @@ module Slithernix
 
         # This was added for the builder.
         def activate(actions)
-          self.draw(@box)
+          draw(@box)
         end
 
         # This sets multiple attributes of the widget
         def set(mesg, lines, box)
-          self.setMessage(mesg, lines)
-          self.setBox(box)
+          setMessage(mesg, lines)
+          setBox(box)
         end
 
         # This sets the information within the label.
@@ -123,8 +123,8 @@ module Slithernix
           end
 
           # Redraw the label widget.
-          self.erase
-          self.draw(@box)
+          erase
+          draw(@box)
         end
 
         def getMessage(size)
@@ -180,7 +180,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@shadow_win)
           Slithernix::Cdk.deleteCursesWindow(@win)
 
-          self.cleanBindings(:Label)
+          cleanBindings(:Label)
 
           Slithernix::Cdk::Screen.unregister(:Label, self)
         end
@@ -189,11 +189,11 @@ module Slithernix
         def wait(key)
           function_key = []
           if key.ord == 0
-            code = self.getch(function_key)
+            code = getch(function_key)
           else
             # Only exit when a specific key is hit
             while true
-              code = self.getch(function_key)
+              code = getch(function_key)
               if code == key
                 break
               end

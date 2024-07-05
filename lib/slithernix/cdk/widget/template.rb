@@ -17,7 +17,7 @@ module Slithernix
             return nil
           end
 
-          self.setBox(box)
+          setBox(box)
 
           field_width = plate.size + 2 * @border_size
 
@@ -49,7 +49,7 @@ module Slithernix
           box_width = field_width + @label_len + 2 * @border_size
 
           old_width = box_width
-          box_width = self.setTitle(title, box_width)
+          box_width = setTitle(title, box_width)
           horizontal_adjust = (box_width - old_width) / 2
 
           box_height += @title_lines
@@ -72,7 +72,7 @@ module Slithernix
 
           # Is the template window nil?
           if @win.nil?
-            self.destroy
+            destroy
             return nil
           end
           @win.keypad(true)
@@ -163,9 +163,9 @@ module Slithernix
               end
 
               if change
-                if self.validTemplate(test)
+                if validTemplate(test)
                   @info = test
-                  self.drawField
+                  drawField
                 else
                   failed = true
                 end
@@ -179,7 +179,7 @@ module Slithernix
               @plate_pos += amount
               @screen_pos += amount
 
-              self.adjustCursor(amount)
+              adjustCursor(amount)
             end
           end
 
@@ -194,14 +194,14 @@ module Slithernix
 
         # This actually manages the tempalte widget
         def activate(actions)
-          self.draw(@box)
+          draw(@box)
 
           if actions.nil? || actions.size == 0
             while true
-              input = self.getch([])
+              input = getch([])
 
               # Inject each character into the widget.
-              ret = self.inject(input)
+              ret = inject(input)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -209,7 +209,7 @@ module Slithernix
           else
             # Inject each character one at a time.
             actions.each do |action|
-              ret = self.inject(action)
+              ret = inject(action)
               if @exit_type != :EARLY_EXIT
                 return ret
               end
@@ -217,7 +217,7 @@ module Slithernix
           end
 
           # Set the exit type and return.
-          self.setExitType(0)
+          setExitType(0)
           return ret
         end
 
@@ -227,10 +227,10 @@ module Slithernix
           complete = false
           ret = -1
 
-          self.setExitType(0)
+          setExitType(0)
 
           # Move the cursor.
-          self.drawField
+          drawField
 
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
@@ -241,20 +241,20 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check a predefined binding
-            if self.checkBind(:Template, input)
+            if checkBind(:Template, input)
               complete = true
             else
               case input
               when Slithernix::Cdk::ERASE
                 if @info.size > 0
-                  self.clean
-                  self.drawField
+                  clean
+                  drawField
                 end
               when Slithernix::Cdk::CUT
                 if @info.size > 0
                   @@g_paste_buffer = @info.clone
-                  self.clean
-                  self.drawField
+                  clean
+                  drawField
                 else
                   Slithernix::Cdk.Beep
                 end
@@ -266,13 +266,13 @@ module Slithernix
                 end
               when Slithernix::Cdk::PASTE
                 if @@g_paste_buffer.size > 0
-                  self.clean
+                  clean
 
                   # Start inserting each character one at a time.
                   (0...@@g_paste_buffer.size).each do |x|
                     @callbackfn.call(self, @@g_paste_buffer[x])
                   end
-                  self.drawField
+                  drawField
                 else
                   Slithernix::Cdk.Beep
                 end
@@ -280,15 +280,15 @@ module Slithernix
                 if @info.size < @min
                   Slithernix::Cdk.Beep
                 else
-                  self.setExitType(input)
+                  setExitType(input)
                   ret = @info
                   complete = true
                 end
               when Slithernix::Cdk::KEY_ESC
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Curses::Error
-                self.setExitType(input)
+                setExitType(input)
                 complete = true
               when Slithernix::Cdk::REFRESH
                 @screen.erase
@@ -305,7 +305,7 @@ module Slithernix
           end
 
           if !complete
-            self.setExitType(0)
+            setExitType(0)
           end
 
           @return_data = ret
@@ -383,7 +383,7 @@ module Slithernix
         # Move the template field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @label_win, @field_win, @shadow_win]
-          self.move_specific(xplace, yplace, relative, refresh_flag,
+          move_specific(xplace, yplace, relative, refresh_flag,
               windows, [])
         end
 
@@ -399,11 +399,11 @@ module Slithernix
             Slithernix::Cdk::Draw.drawObjBox(@win, self)
           end
 
-          self.drawTitle(@win)
+          drawTitle(@win)
 
           @win.refresh
 
-          self.drawField
+          drawField
         end
 
         # Draw the template field
@@ -435,7 +435,7 @@ module Slithernix
             end
             #@field_win.move(0, @screen_pos)
           else
-            self.adjustCursor(1)
+            adjustCursor(1)
           end
           @field_win.refresh
         end
@@ -462,7 +462,7 @@ module Slithernix
 
         # Destroy this widget.
         def destroy
-          self.cleanTitle
+          cleanTitle
 
           # Delete the windows
           Slithernix::Cdk.deleteCursesWindow(@field_win)
@@ -471,14 +471,14 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          self.cleanBindings(:Template)
+          cleanBindings(:Template)
 
           Slithernix::Cdk::Screen.unregister(:Template, self)
         end
 
         # Erase the widget.
         def erase
-          if self.validCDKObject
+          if validCDKObject
             Slithernix::Cdk.eraseCursesWindow(@field_win)
             Slithernix::Cdk.eraseCursesWindow(@label_win)
             Slithernix::Cdk.eraseCursesWindow(@shadow_win)
@@ -488,8 +488,8 @@ module Slithernix
 
         # Set the value given to the template
         def set(new_value, box)
-          self.setValue(new_value)
-          self.setBox(box)
+          setValue(new_value)
+          setBox(box)
         end
 
         # Set the value given to the template.
@@ -498,7 +498,7 @@ module Slithernix
 
           # Just to be sure, let's make sure the new value isn't nil
           if new_value.nil?
-            self.clean
+            clean
             return
           end
 
@@ -542,11 +542,11 @@ module Slithernix
         end
 
         def focus
-          self.draw(@box)
+          draw(@box)
         end
 
         def unfocus
-          self.draw(@box)
+          draw(@box)
         end
 
         def self.isPlateChar(c)
