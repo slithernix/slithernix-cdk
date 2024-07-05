@@ -1,5 +1,10 @@
 SlitherNix CDK TODO List (You can find the original Tawny list below)
 
+* GNU Readline integration for entry
+
+  That way we get shit like history and other readline things, ctrl-w
+  home, etc. Probably should be a construction parameter.
+
 * Traverse example's "center" isn't aligned
 
   Should above that middle window.

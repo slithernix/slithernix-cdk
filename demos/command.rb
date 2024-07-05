@@ -74,8 +74,8 @@ class Command
       Slithernix::Cdk::CENTER,
       Slithernix::Cdk::TOP,
       -8,
-      -2
-      ,title,
+      -2,
+      title,
       1000,
       true,
       false

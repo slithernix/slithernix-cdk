@@ -184,7 +184,6 @@ module Slithernix
     # and returns the adjustment to make, to fill the justification
     # requirement
     def self.justifyString (box_width, mesg_length, justify)
-
       # make sure the message isn't longer than the width
       # if it is, return 0
       if mesg_length >= box_width
@@ -591,8 +590,12 @@ module Slithernix
       unless string.nil?
         need = 0
         (0...string.size).each do |x|
-          need = self.decodeAttribute(newstring, need,
-                                     x > 0 ? string[x - 1] : 0, string[x])
+          need = self.decodeAttribute(
+            newstring,
+            need,
+            x > 0 ? string[x - 1] : 0,
+            string[x],
+          )
           newstring << string[x]
         end
       end

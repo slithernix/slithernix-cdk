@@ -17,26 +17,42 @@ module Slithernix
           button_adj = 0
           button_pos = 1
           bindings = {
-            Slithernix::Cdk::BACKCHAR => Curses::KEY_PPAGE,
-            'b'           => Curses::KEY_PPAGE,
-            'B'           => Curses::KEY_PPAGE,
-            Slithernix::Cdk::FORCHAR  => Curses::KEY_NPAGE,
-            ' '           => Curses::KEY_NPAGE,
-            'f'           => Curses::KEY_NPAGE,
-            'F'           => Curses::KEY_NPAGE,
-            '|'           => Curses::KEY_HOME,
-            '$'           => Curses::KEY_END,
+            'b' => Curses::KEY_PPAGE,
+            'B' => Curses::KEY_PPAGE,
+            ' ' => Curses::KEY_NPAGE,
+            'f' => Curses::KEY_NPAGE,
+            'F' => Curses::KEY_NPAGE,
+            '|' => Curses::KEY_HOME,
+            '$' => Curses::KEY_END,
           }
+
+          bindings[Slithernix::Cdk::FORCHAR] = Curses::KEY_NPAGE,
+          bindings[Slithernix::Cdk::BACKCHAR] = Curses::KEY_PPAGE,
 
           self.setBox(box)
 
-          box_height = Slithernix::Cdk.setWidgetDimension(parent_height, height, 0)
-          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width, 0)
+          box_height = Slithernix::Cdk.setWidgetDimension(
+            parent_height,
+            height,
+            0
+          )
+
+          box_width = Slithernix::Cdk.setWidgetDimension(
+            parent_width,
+            width,
+            0
+          )
 
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+          Slithernix::Cdk.alignxy(
+            cdkscreen.window,
+            xtmp,
+            ytmp,
+            box_width,
+            box_height
+          )
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -58,7 +74,11 @@ module Slithernix
           if button_count > 0
             (0...button_count).each do |x|
               button_len = []
-              @button << Slithernix::Cdk.char2Chtype(buttons[x], button_len, [])
+              @button << Slithernix::Cdk.char2Chtype(
+                buttons[x],
+                button_len,
+                [],
+              )
               @button_len << button_len[0]
               button_width += @button_len[x] + 1
             end
@@ -93,8 +113,12 @@ module Slithernix
 
           # Do we need to create a shadow?
           if shadow
-            @shadow_win = Curses::Window.new(box_height, box_width + 1,
-                ypos + 1, xpos + 1)
+            @shadow_win = Curses::Window.new(
+              box_height,
+              box_width + 1,
+              ypos + 1,
+              xpos + 1,
+            )
             if @shadow_win.nil?
               self.destroy
               return nil
@@ -110,8 +134,7 @@ module Slithernix
         end
 
         # This function sets various attributes of the widget.
-        def set(title, list, list_size, button_highlight,
-            attr_interp, show_line_info, box)
+        def set(title, list, list_size, button_highlight, attr_interp, show_line_info, box)
           self.setTitle(title)
           self.setHighlight(button_highlight)
           self.setInfoLine(show_line_info)
@@ -140,7 +163,11 @@ module Slithernix
             list_pos = []
             @list[x] = Slithernix::Cdk.char2Chtype(list, list_len, list_pos)
             @list_len[x] = list_len[0]
-            @list_pos[x] = Slithernix::Cdk.justifyString(@box_width, @list_len[x], list_pos[0])
+            @list_pos[x] = Slithernix::Cdk.justifyString(
+              @box_width,
+              @list_len[x],
+              list_pos[0],
+            )
           else
             # We must convert tabs and other nonprinting characters. The curses
             # library normally does this, but we are bypassing it by writing
@@ -227,10 +254,9 @@ module Slithernix
                 # Open the file and put it into the viewer
                 file_len = Slithernix::Cdk.readFile(filename, file_contents)
                 if file_len == -1
-                  fopen_fmt = if Curses.has_colors?
-                              then '<C></16>Link Failed: Could not open the file %s'
-                              else '<C></K>Link Failed: Could not open the file %s'
-                              end
+                  color_msg = '<C></16>Link Failed: Could not open the file %s'
+                  bw_msg = '<C></K>Link Failed: Could not open the file %s'
+                  fopen_fmt = Curses.has_colors? ? color_msg : bw_msg
                   temp = fopen_fmt % filename
                   self.setupLine(true, temp, current_line)
                   current_line += 1
@@ -327,12 +353,12 @@ module Slithernix
           refresh = false
           # Create the information about the file stats.
           file_info = [
-              '</5>      </U>File Statistics<!U>     <!5>',
-              '</5>                          <!5>',
-              '</5/R>Character Count:<!R> %-4d     <!5>' % @characters,
-              '</5/R>Line Count     :<!R> %-4d     <!5>' % @list_size,
-              '</5>                          <!5>',
-              '<C></5>Press Any Key To Continue.<!5>'
+            '</5>      </U>File Statistics<!U>     <!5>',
+            '</5>                          <!5>',
+            '</5/R>Character Count:<!R> %-4d     <!5>' % @characters,
+            '</5/R>Line Count     :<!R> %-4d     <!5>' % @list_size,
+            '</5>                          <!5>',
+            '<C></5>Press Any Key To Continue.<!5>'
           ]
 
           temp_info = ['<C></5>Press Any Key To Continue.<!5>']
@@ -519,15 +545,30 @@ module Slithernix
           end
 
           # Pop up the entry field.
-          get_pattern = Slithernix::Cdk::Widget::Entry.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                       '', label, Curses.color_pair(5) | Curses::A_BOLD,
-                                       '.' | Curses.color_pair(5) | Curses::A_BOLD,
-                                       :MIXED, 10, 0, 256, true, false)
+          get_pattern = Slithernix::Cdk::Widget::Entry.new(
+            screen,
+            Slithernix::Cdk::CENTER,
+            Slithernix::Cdk::CENTER,
+            '',
+            label,
+            Curses.color_pair(5) | Curses::A_BOLD,
+            '.' | Curses.color_pair(5) | Curses::A_BOLD,
+            :MIXED,
+            10,
+            0,
+            256,
+            true,
+            false,
+          )
 
           # Is there an old search pattern?
           if @search_pattern.size != 0
-            get_pattern.set(@search_pattern, get_pattern.min, get_pattern.max,
-                get_pattern.box)
+            get_pattern.set(
+              @search_pattern,
+              get_pattern.min,
+              get_pattern.max,
+              get_pattern.box,
+            )
           end
 
           # Activate this baby.
@@ -564,7 +605,7 @@ module Slithernix
                     pos = 0
                   elsif pos == pattern.size
                     @current_top = [x, @max_top_line].min
-                    @left_char = if y < @box_width then 0 else @max_left_char end
+                    @left_char = y < @box_width ? 0 : @max_left_char
                     found = true
                     break
                   end
@@ -587,7 +628,7 @@ module Slithernix
                     pos = 0
                   elsif pos == pattern.size
                     @current_top = x
-                    @left_char = if y < @box_width then 0 else @max_left_char end
+                    @left_char = y < @box_width ? 0 : @max_left_char
                     found = true
                     break
                   end
@@ -600,10 +641,22 @@ module Slithernix
 
         # This allows us to 'jump' to a given line in the file.
         def jumpToLine
-          newline = Slithernix::Cdk::Scale.new(@screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                   '<C>Jump To Line', '</5>Line :', Curses::A_BOLD,
-                                   @list_size.size + 1, @current_top + 1, 0, @max_top_line + 1,
-                                   1, 10, true, true)
+          newline = Slithernix::Cdk::Scale.new(
+            @screen,
+            Slithernix::Cdk::CENTER,
+            Slithernix::Cdk::CENTER,
+            '<C>Jump To Line',
+            '</5>Line :',
+            Curses::A_BOLD,
+            @list_size.size + 1,
+            @current_top + 1,
+            0,
+            @max_top_line + 1,
+            1,
+            10,
+            true,
+            true,
+          )
           line = newline.activate([])
           newline.destroy
           return line - 1
@@ -612,8 +665,15 @@ module Slithernix
         # This pops a little message up on the screen.
         def popUpLabel(mesg)
           # Set up variables.
-          label = Slithernix::Cdk::Label.new(@screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                 mesg, mesg.size, true, false)
+          label = Slithernix::Cdk::Label.new(
+            @screen,
+            Slithernix::Cdk::CENTER,
+            Slithernix::Cdk::CENTER,
+            mesg,
+            mesg.size,
+            true,
+            false,
+          )
 
           # Draw the label and wait.
           label.draw(true)
@@ -654,8 +714,15 @@ module Slithernix
 
           # Redraw the buttons.
           (0...@button_count).each do |x|
-            Slithernix::Cdk::Draw.writeChtype(@win, @button_pos[x], @box_height - 2,
-                             @button[x], Slithernix::Cdk::HORIZONTAL, 0, @button_len[x])
+            Slithernix::Cdk::Draw.writeChtype(
+              @win,
+              @button_pos[x],
+              @box_height - 2,
+              @button[x],
+              Slithernix::Cdk::HORIZONTAL,
+              0,
+              @button_len[x],
+            )
           end
 
           # Highlight the current button.
@@ -664,8 +731,11 @@ module Slithernix
             character = Slithernix::Cdk.CharOf(@button[@current_button][x])
 
             # Add the character into the window.
-            @win.mvwaddch(@box_height - 2, @button_pos[@current_button] + x,
-                character.ord | @button_highlight)
+            @win.mvwaddch(
+              @box_height - 2,
+              @button_pos[@current_button] + x,
+              character.ord | @button_highlight,
+            )
           end
 
           # Refresh the window.
@@ -724,8 +794,11 @@ module Slithernix
             if @in_progress
               temp = 'processing...'
             elsif @list_size != 0
-              temp = '%d/%d %2.0f%%' % [@current_top + 1, @list_size,
-                  ((1.0 * @current_top + 1) / (@list_size)) * 100]
+              temp = '%d/%d %2.0f%%' % [
+                @current_top + 1,
+                @list_size,
+                ((1.0 * @current_top + 1) / (@list_size)) * 100,
+              ]
             else
               temp = '%d/%d %2.0f%%' % [0, 0, 0.0]
             end
@@ -737,9 +810,15 @@ module Slithernix
             if @title_lines == '' || @title_pos[0] < temp.size + 2
               list_adjust = true
             end
-            Slithernix::Cdk::Draw.writeChar(@win, 1,
-                if list_adjust then @title_lines else 0 end + 1,
-                           temp, Slithernix::Cdk::HORIZONTAL, 0, temp.size)
+            Slithernix::Cdk::Draw.writeChar(
+              @win,
+              1,
+              (list_adjust ? @title_lines : 0) + 1,
+              temp,
+              Slithernix::Cdk::HORIZONTAL,
+              0,
+              temp.size,
+            )
           end
 
           # Determine the last line to draw.
@@ -751,15 +830,15 @@ module Slithernix
             if @current_top + x < @list_size
               screen_pos = @list_pos[@current_top + x] + 1 - @left_char
 
-              Slithernix::Cdk::Draw.writeChtype(@win,
-                  if screen_pos >= 0 then screen_pos else 1 end,
-                               x + @title_lines + if list_adjust then 1 else 0 end + 1,
-                               @list[x + @current_top], Slithernix::Cdk::HORIZONTAL,
-                  if screen_pos >= 0
-                  then 0
-                  else @left_char - @list_pos[@current_top + x]
-                  end,
-                               @list_len[x + @current_top])
+              Slithernix::Cdk::Draw.writeChtype(
+                @win,
+                screen_pos >= 0 ? screen_pos : 1,
+                x + @title_lines + (list_adjust ? 1 : 0) + 1,
+                @list[x + @current_top],
+                Slithernix::Cdk::HORIZONTAL,
+                screen_pos >= 0 ? 0 : @left_char - @list_pos[@current_top+x],
+                @list_len[x + @current_top],
+              )
             end
           end
 
@@ -774,12 +853,24 @@ module Slithernix
             boxattr = @BXAttr
 
             (1..@box_width).each do |x|
-              @win.mvwaddch(@box_height - 3, x, @HZChar | boxattr)
+              @win.mvwaddch(
+                @box_height - 3,
+                x,
+                @HZChar | boxattr,
+              )
             end
 
-            @win.mvwaddch(@box_height - 3, 0, Slithernix::Cdk::ACS_LTEE | boxattr)
-            @win.mvwaddch(@box_height - 3, @win.maxx - 1,
-                          Slithernix::Cdk::ACS_RTEE | boxattr)
+            @win.mvwaddch(
+              @box_height - 3,
+              0,
+              Slithernix::Cdk::ACS_LTEE | boxattr,
+            )
+
+            @win.mvwaddch(
+              @box_height - 3,
+              @win.maxx - 1,
+              Slithernix::Cdk::ACS_RTEE | boxattr,
+            )
           end
 
           # Draw the buttons. This will call refresh on the viewer win.

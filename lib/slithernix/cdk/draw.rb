@@ -3,21 +3,15 @@ module Slithernix
     module Draw
       # Set up all basic BG/FG color pairs based on what Curses supports
       def self.initCDKColor
-        colors = Curses.constants.select { |c|
-          c.to_s.start_with?('COLOR_')
-        }.map do |c|
-          Curses.const_get(c)
-        end
-
-        pair = 1
-
         if Curses.has_colors?
           Curses.start_color
-          limit = Curses.colors < 8 ? Curses.colors : 8
+          limit = [Curses.colors, 256].min
 
+          # Create color pairs for all combinations of foreground and background colors
+          pair = 1
           (0...limit).each do |fg|
             (0...limit).each do |bg|
-              Curses.init_pair(pair, colors[fg], colors[bg])
+              Curses.init_pair(pair, fg, bg)
               pair += 1
             end
           end

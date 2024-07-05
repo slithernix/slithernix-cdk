@@ -4,8 +4,7 @@ module Slithernix
   module Cdk
     class Widget
       class SWindow < Slithernix::Cdk::Widget
-        def initialize(cdkscreen, xplace, yplace, height, width, title,
-            save_lines, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, height, width, title, save_lines, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -60,8 +59,13 @@ module Slithernix
           @win.keypad(true)
 
           # Make the field window
-          @field_win = @win.subwin(box_height - @title_lines - 2, box_width - 2,
-              ypos + @title_lines + 1, xpos + 1)
+          @field_win = @win.subwin(
+            box_height - @title_lines - 2,
+            box_width - 2,
+            ypos + @title_lines + 1,
+            xpos + 1
+          )
+
           @field_win.keypad(true)
 
           # Set the rest of the variables
@@ -89,8 +93,12 @@ module Slithernix
 
           # Do we need to create a shadow?
           if shadow
-            @shadow_win = Curses::Window.new(box_height, box_width,
-                ypos + 1, xpos + 1)
+            @shadow_win = Curses::Window.new(
+              box_height,
+              box_width,
+              ypos + 1,
+              xpos + 1
+            )
           end
 
           # Create the key bindings
@@ -113,7 +121,11 @@ module Slithernix
           list_pos = []
           @list[x] = Slithernix::Cdk.char2Chtype(list, list_len, list_pos)
           @list_len[x] = list_len[0]
-          @list_pos[x] = Slithernix::Cdk.justifyString(@box_width, list_len[0], list_pos[0])
+          @list_pos[x] = Slithernix::Cdk.justifyString(
+            @box_width,
+            list_len[0],
+            list_pos[0],
+          )
           @widest_line = [@widest_line, @list_len[x]].max
         end
 
@@ -562,13 +574,39 @@ module Slithernix
           return count
         end
 
+        def exec_interactive(command, insert_pos)
+          count = -1
+
+          # Try to open the command.
+          begin
+            unless (ps = IO.popen(command.split, 'r')).nil?
+              # Start reading.
+              until (temp = ps.gets).nil?
+                if temp.size != 0 && temp[-1] == '\n'
+                  temp = temp[0...-1]
+                end
+                # Add the line to the scrolling window.
+                self.add(temp, insert_pos)
+                count += 1
+              end
+
+              # Close the pipe
+              ps.close
+            end
+          rescue => e
+            self.add(e.message, insert_pos)
+          end
+
+          return count
+        end
+
         def showMessage2(msg, msg2, filename)
           mesg = [
-              msg,
-              msg2,
-              "<C>(%s)" % [filename],
-              ' ',
-              '<C> Press any key to continue.',
+            msg,
+            msg2,
+            "<C>(%s)" % [filename],
+            ' ',
+            '<C> Press any key to continue.',
           ]
           @screen.popupLabel(mesg, mesg.size)
         end
@@ -577,10 +615,21 @@ module Slithernix
         # scrolling window to a file.
         def saveInformation
           # Create the entry field to get the filename.
-          entry = Slithernix::Cdk::Widget::Entry.new(@screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                 '<C></B/5>Enter the filename of the save file.',
-                                 'Filename: ', Curses::A_NORMAL, '_'.ord, :MIXED,
-                                 20, 1, 256, true, false)
+          entry = Slithernix::Cdk::Widget::Entry.new(
+            @screen,
+            Slithernix::Cdk::CENTER,
+            Slithernix::Cdk::CENTER,
+            '<C></B/5>Enter the filename of the save file.',
+            'Filename: ',
+            Curses::A_NORMAL,
+            '_'.ord,
+            :MIXED,
+            20,
+            1,
+            256,
+            true,
+            false
+          )
 
           # Get the filename.
           filename = entry.activate([])
@@ -589,10 +638,10 @@ module Slithernix
           if entry.exit_type == :ESCAPE_HIT
             # Popup a message.
             mesg = [
-                '<C></B/5>Save Canceled.',
-                '<C>Escape hit. Scrolling window information not saved.',
-                ' ',
-                '<C>Press any key to continue.'
+              '<C></B/5>Save Canceled.',
+              '<C>Escape hit. Scrolling window information not saved.',
+              ' ',
+              '<C>Press any key to continue.'
             ]
             @screen.popupLabel(mesg, 4)
 
@@ -610,9 +659,11 @@ module Slithernix
                 filename)
           else
             # Yep, let them know how many lines were saved.
-            self.showMessage2('<C></B/5>Save Successful',
-                '<C>There were %d lines saved to the file' % [lines_saved],
-                filename)
+            self.showMessage2(
+              '<C></B/5>Save Successful',
+              '<C>There were %d lines saved to the file' % [lines_saved],
+              filename
+            )
           end
 
           # Clean up and exit.
@@ -625,9 +676,24 @@ module Slithernix
         # window.
         def loadInformation
           # Create the file selector to choose the file.
-          fselect = Slithernix::Cdk::Widget::FSelect.new(@screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, 20, 55,
-                                     '<C>Load Which File', 'FIlename', Curses::A_NORMAL, '.',
-                                     Curses::A_REVERSE, '</5>', '</48>', '</N>', '</N>', true, false)
+          fselect = Slithernix::Cdk::Widget::FSelect.new(
+            @screen,
+            Slithernix::Cdk::CENTER,
+            Slithernix::Cdk::CENTER,
+            20,
+            55,
+            '<C>Load Which File',
+            'Filename',
+            Curses::A_NORMAL,
+            '.',
+            Curses::A_REVERSE,
+            '</5>',
+            '</48>',
+            '</N>',
+            '</N>',
+            true,
+            false
+          )
 
           # Get the filename to load.
           filename = fselect.activate([])
@@ -636,9 +702,9 @@ module Slithernix
           if fselect.exit_type == :ESCAPE_HIT
             # Popup a message.
             mesg = [
-                '<C></B/5>Load Canceled.',
-                ' ',
-                '<C>Press any key to continue.',
+              '<C></B/5>Load Canceled.',
+              ' ',
+              '<C>Press any key to continue.',
             ]
             @screen.popupLabel(mesg, 3)
 
@@ -656,16 +722,26 @@ module Slithernix
           if @list_size > 0
             # Create the dialog message.
             mesg = [
-                '<C></B/5>Save Information First',
-                '<C>There is information in the scrolling window.',
-                '<C>Do you want to save it to a file first?',
+              '<C></B/5>Save Information First',
+              '<C>There is information in the scrolling window.',
+              '<C>Do you want to save it to a file first?',
             ]
             button = ['(Yes)', '(No)']
 
             # Create the dialog widget.
-            dialog = Slithernix::Cdk::Dialog.new(@screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                     mesg, 3, button, 2, Curses.color_pair(2) | Curses::A_REVERSE,
-                                     true, true, false)
+            dialog = Slithernix::Cdk::Dialog.new(
+              @screen,
+              Slithernix::Cdk::CENTER,
+              Slithernix::Cdk::CENTER,
+              mesg,
+              3,
+              button,
+              2,
+              Curses.color_pair(2) | Curses::A_REVERSE,
+              true,
+              true,
+              false
+            )
 
             # Activate the widet.
             answer = dialog.activate([])

@@ -41,8 +41,8 @@ class ViewerExample < CLIExample
     title = "<C>Pick\n<C>A\n<C>File"
     label = 'File: '
     button = [
-        '</5><OK><!5>',
-        '</5><Cancel><!5>',
+      '</5><OK><!5>',
+      '</5><Cancel><!5>',
     ]
 
     # Declare variables.
@@ -64,23 +64,46 @@ class ViewerExample < CLIExample
 
     f_select = nil
     if params.filename == ''
-      f_select = Slithernix::Cdk::Widget::FSelect.new(cdkscreen, params.x_value, params.y_value,
-                                  params.h_value, params.f_width, title, label, Curses::A_NORMAL,
-                                  '_', Curses::A_REVERSE, '</5>', '</48>', '</N>', '</N',
-                                  params.box, params.shadow)
+      f_select = Slithernix::Cdk::Widget::FSelect.new(
+        cdkscreen,
+        params.x_value,
+        params.y_value,
+        params.h_value,
+        params.f_width,
+        title,
+        label,
+        Curses::A_NORMAL,
+        '_',
+        Curses::A_REVERSE,
+        '</5>',
+        '</48>',
+        '</N>',
+        '</N',
+        params.box,
+        params.shadow,
+      )
 
       if f_select.nil?
         cdkscreen.destroy
         Slithernix::Cdk::Screen.endCDK
 
         $stderr.puts 'Cannot create fselect-widget'
-        exit  # EXIT_FAILURE
+        exit
       end
 
       # Set the starting directory. This is not necessary because when
       # the file selector starts it uses the present directory as a default.
-      f_select.set(params.directory, Curses::A_NORMAL, '.',
-          Curses::A_REVERSE, '</5>', '</48>', '</N>', '</N>', @box)
+      f_select.set(
+        params.directory,
+        Curses::A_NORMAL,
+        '.',
+        Curses::A_REVERSE,
+        '</5>',
+        '</48>',
+        '</N>',
+        '</N>',
+        @box
+      )
 
       # Activate the file selector.
       params.filename = f_select.activate([])
@@ -89,24 +112,32 @@ class ViewerExample < CLIExample
       if f_select.exit_type == :ESCAPE_HIT
         # Pop up a message for the user.
         mesg = [
-            '<C>Escape hit. No file selected.',
-            '',
-            '<C>Press any key to continue.',
+          '<C>Escape hit. No file selected.',
+          '',
+          '<C>Press any key to continue.',
         ]
         cdkscreen.popupLabel(mesg, 3)
 
-        # Exit CDK.
         f_select.destroy
         cdkscreen.destroy
         Slithernix::Cdk::Screen.endCDK
-        exit  # EXIT_SUCCESS
+        exit
       end
     end
 
     # Create the file viewer to view the file selected.
-    example = Slithernix::Cdk::Widget::Viewer.new(cdkscreen, params.x_value, params.y_value,
-                              params.h_value, params.v_width, button, 2, Curses::A_REVERSE,
-                              params.box, params.shadow)
+    example = Slithernix::Cdk::Widget::Viewer.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value,
+      params.h_value,
+      params.v_width,
+      button,
+      2,
+      Curses::A_REVERSE,
+      params.box,
+      params.shadow
+    )
 
     # Could we create the viewer widget?
     if example.nil?
@@ -115,7 +146,7 @@ class ViewerExample < CLIExample
       Slithernix::Cdk::Screen.endCDK
 
       puts "Cannot create the viewer. Is the window too small?"
-      exit  # EXIT_FAILURE
+      exit
     end
 
     info = []
@@ -131,14 +162,21 @@ class ViewerExample < CLIExample
       if lines == -1
         Slithernix::Cdk::Screen.endCDK
         puts 'Could not open "%s"' % [params.filename]
-        exit  # EXIT_FAILURE
+        exit
       end
     end
 
     # Set up the viewer title and the contents to the widget.
     v_title = '<C></B/21>Filename:<!21></22>%20s<!22!B>' % [params.filename]
-    example.set(v_title, info, lines, Curses::A_REVERSE, params.interp,
-        true, true)
+    example.set(
+      v_title,
+      info,
+      lines,
+      Curses::A_REVERSE,
+      params.interp,
+      true,
+      true,
+    )
 
     # Destroy the file selector widget.
     unless f_select.nil?
@@ -149,27 +187,27 @@ class ViewerExample < CLIExample
     selected = example.activate([])
 
     # Check how the person exited from the widget.
-    if example.exit_type == :ESCAPE_HIT
-      mesg = [
+    case example.exit_type
+      when :ESCAPE_HIT
+        mesg = [
           '<C>Escape hit. No Button selected..',
           '',
           '<C>Press any key to continue.',
-      ]
-      cdkscreen.popupLabel(mesg, 3)
-    elsif example.exit_type == :NORMAL
-      mesg = [
+        ]
+      when :NORMAL
+        mesg = [
           '<C>You selected button %d' % [selected],
           '',
           '<C>Press any key to continue.'
-      ]
-      cdkscreen.popupLabel(mesg, 3)
+        ]
+      else
     end
 
-    # Clean up.
+    cdkscreen.popupLabel(mesg, 3)
     example.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
-    exit  # EXIT_SUCCESS
+    exit
   end
 end
 
