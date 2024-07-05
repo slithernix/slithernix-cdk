@@ -90,7 +90,7 @@ class ButtonboxExample < Example
     Slithernix::Cdk::Screen.endCDK
 
     puts "You typed in (%s) and selected button (%s)" % [
-      info&.size > 0 ? info : '<null>',
+      info&.size&.positive? ? info : '<null>',
       buttons[selection]
     ]
     exit # EXIT_SUCCESS
