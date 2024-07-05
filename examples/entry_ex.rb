@@ -27,9 +27,21 @@ class EntryExample < Example
     Slithernix::Cdk::Draw.initCDKColor
 
     # Create the entry field widget.
-    directory = Slithernix::Cdk::Widget::Entry.new(cdkscreen, params.x_value, params.y_value,
-                               title, label, Curses::A_NORMAL, '.', :MIXED, 40, 0, 256,
-                               params.box, params.shadow)
+    directory = Slithernix::Cdk::Widget::Entry.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value,
+      title,
+      label,
+      Curses::A_NORMAL,
+      '.',
+      :MIXED,
+      40,
+      0,
+      256,
+      params.box,
+      params.shadow,
+    )
 
     xxxcb = lambda do |cdktype, widget, client_data, key|
       return true
@@ -44,46 +56,38 @@ class EntryExample < Example
       Slithernix::Cdk::Screen.endCDK
 
       puts "Cannot create the entry box. Is the window too small?"
-      exit # EXIT_FAILURE
+      exit
     end
 
     # Draw the screen.
     cdkscreen.refresh
 
     # Pass in whatever was given off of the command line.
-    arg = if ARGV.size > 0 then ARGV[0] else nil end
+    arg = ARGV.size > 0 ? ARGV[0] : nil
     directory.set(arg, 0, 256, true)
 
     # Activate the entry field.
     info = directory.activate('')
 
     # Tell them what they typed.
-    if directory.exit_type == :ESCAPE_HIT
-      mesg = [
+    case directory.exit_type
+      when :ESCAPE_HIT
+        mesg = [
           "<C>You hit escape. No information passed back.",
           "",
           "<C>Press any key to continue."
-      ]
-
-      directory.destroy
-
-      cdkscreen.popupLabel(mesg, 3)
-    elsif directory.exit_type == :NORMAL
-      mesg = [
+        ]
+      when :NORMAL
+        mesg = [
           "<C>You typed in the following",
           "<C>(%.*s)" % [246, info],  # FIXME: magic number
           "",
           "<C>Press any key to continue."
-      ]
-
-      directory.destroy
-
-      cdkscreen.popupLabel(mesg, 4)
-    else
-      directory.destroy
+        ]
     end
 
-    # Clean up and exit.
+    directory.destroy
+    cdkscreen.popupLabel(mesg, mesg.size)
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
     exit  # EXIT_SUCCESS

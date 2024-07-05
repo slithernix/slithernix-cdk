@@ -13,14 +13,15 @@ module Slithernix
           parent_height = cdkscreen.window.maxy
           box_width = width
           bindings = {
-            Slithernix::Cdk::BACKCHAR => Curses::KEY_PPAGE,
-            Slithernix::Cdk::FORCHAR  => Curses::KEY_NPAGE,
-            'g'           => Curses::KEY_HOME,
-            '1'           => Curses::KEY_HOME,
-            'G'           => Curses::KEY_END,
-            '<'           => Curses::KEY_HOME,
-            '>'           => Curses::KEY_END,
+            'g' => Curses::KEY_HOME,
+            '1' => Curses::KEY_HOME,
+            'G' => Curses::KEY_END,
+            '<' => Curses::KEY_HOME,
+            '>' => Curses::KEY_END,
           }
+
+          bindings[Slithernix::Cdk::BACKCHAR] = Curses::KEY_PPAGE,
+          bindings[Slithernix::Cdk::FORCHAR]  = Curses::KEY_NPAGE,
 
           if choice_count <= 0
             self.destroy
@@ -34,11 +35,20 @@ module Slithernix
 
           # If the height is a negative value, the height will be ROWS-height,
           # otherwise the height will be the given height.
-          box_height = Slithernix::Cdk.setWidgetDimension(parent_height, height, 0)
+          box_height = Slithernix::Cdk.setWidgetDimension(
+            parent_height,
+            height,
+            0,
+          )
 
           # If the width is a negative value, the width will be COLS-width,
           # otherwise the width will be the given width
-          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width, 0)
+          box_width = Slithernix::Cdk.setWidgetDimension(
+            parent_width,
+            width,
+            0,
+          )
+
           box_width = self.setTitle(title, box_width)
 
           # Set the box height.
@@ -292,7 +302,7 @@ module Slithernix
 
         # This function draws the selection list window.
         def drawList(box)
-          scrollbar_adj = if @scrollbar_placement == LEFT then 1 else 0 end
+          scrollbar_adj = @scrollbar_placement == LEFT ? 1 : 0
           screen_pos = 0
           sel_item = -1
 
@@ -311,22 +321,39 @@ module Slithernix
               xpos = self.SCREEN_XPOS(0)
 
               # Draw the empty line.
-              Slithernix::Cdk::Draw.writeBlanks(@win, xpos, ypos, Slithernix::Cdk::HORIZONTAL, 0, @win.maxx)
+              Slithernix::Cdk::Draw.writeBlanks(
+                @win,
+                xpos,
+                ypos,
+                Slithernix::Cdk::HORIZONTAL,
+                0,
+                @win.maxx,
+              )
 
               # Draw the selection item.
-              Slithernix::Cdk::Draw.writeChtypeAttrib(@win,
-                  if screen_pos >= 0 then screen_pos else 1 end,
-                                     ypos, @item[k],
-                  if k == sel_item then @highlight else Curses::A_NORMAL end,
-                                     Slithernix::Cdk::HORIZONTAL,
-                  if screen_pos >= 0 then 0 else 1 - screen_pos end,
-                                     @item_len[k])
+              Slithernix::Cdk::Draw.writeChtypeAttrib(
+                @win,
+                screen_pos >= 0 ? screen_pos : 1,
+                ypos,
+                @item[k],
+                k == sel_item ? @highlight : Curses::A_NORMAL,
+                Slithernix::Cdk::HORIZONTAL,
+                screen_pos >= 0 ? 0 : 1 - screen_pos,
+                @item_len[k],
+              )
 
               # Draw the choice value
-              Slithernix::Cdk::Draw.writeChtype(@win, xpos + scrollbar_adj, ypos,
-                               @choice[@selections[k]], Slithernix::Cdk::HORIZONTAL, 0,
-                               @choicelen[@selections[k]])
+              Slithernix::Cdk::Draw.writeChtype(
+                @win,
+                xpos + scrollbar_adj,
+                ypos,
+                @choice[@selections[k]],
+                Slithernix::Cdk::HORIZONTAL,
+                0,
+                @choicelen[@selections[k]],
+              )
             end
+
             j += 1
           end
 
@@ -335,10 +362,19 @@ module Slithernix
             @toggle_pos = (@current_item * @step).floor
             @toggle_pos = [@toggle_pos, @scrollbar_win.maxy - 1].min
 
-            @scrollbar_win.mvwvline(0, 0, Slithernix::Cdk::ACS_CKBOARD,
-                                    @scrollbar_win.maxy)
-            @scrollbar_win.mvwvline(@toggle_pos, 0,
-                ' '.ord | Curses::A_REVERSE, @toggle_size)
+            @scrollbar_win.mvwvline(
+              0,
+              0,
+              Slithernix::Cdk::ACS_CKBOARD,
+              @scrollbar_win.maxy,
+            )
+
+            @scrollbar_win.mvwvline(
+              @toggle_pos,
+              0,
+              ' '.ord | Curses::A_REVERSE,
+              @toggle_size,
+            )
           end
 
           # Box it if needed
@@ -402,8 +438,14 @@ module Slithernix
 
           # Clean up the display
           (0...@view_size).each do |j|
-            Slithernix::Cdk::Draw.writeBlanks(@win, self.SCREEN_XPOS(0), self.SCREEN_YPOS(j),
-                             Slithernix::Cdk::HORIZONTAL, 0, @win.maxx)
+            Slithernix::Cdk::Draw.writeBlanks(
+              @win,
+              self.SCREEN_XPOS(0),
+              self.SCREEN_YPOS(j),
+              Slithernix::Cdk::HORIZONTAL,
+              0,
+              @win.maxx,
+            )
           end
 
           self.setViewSize(list_size)
@@ -568,8 +610,12 @@ module Slithernix
                 status = 0
                 break
               end
-              new_pos[j] =
-                  Slithernix::Cdk.justifyString(box_width, new_len[j], new_pos[j]) + adjust
+              new_pos[j] = Slithernix::Cdk.justifyString(
+                box_width,
+                new_len[j],
+                new_pos[j],
+              ) + adjust
+
               widest_item = [widest_item, new_len[j]].max
             end
 
@@ -586,7 +632,7 @@ module Slithernix
             self.destroyInfo
           end
 
-          return (if status then widest_item else 0 end)
+          return (status ? widest_item : 0)
         end
 
         # Determine how many characters we can shift to the right
@@ -596,10 +642,7 @@ module Slithernix
         end
 
         def updateViewWidth(widest)
-          @max_left_char = if @box_width > widest
-                           then 0
-                           else widest - self.AvailableWidth
-                           end
+          @max_left_char = @box_width > widest ? 0 : widest - self.AvailableWidth
         end
 
         def WidestItem

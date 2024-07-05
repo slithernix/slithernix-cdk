@@ -57,20 +57,29 @@ class RadioExample < CLIExample
     Slithernix::Cdk::Draw.initCDKColor
 
     # Create the radio list.
-    radio = Slithernix::Cdk::Widget::Radio.new(cdkscreen,
-                           params.x_value, params.y_value, params.spos,
-                           params.h_value, params.w_value, params.title,
-        if params.c then [] else item end,
-        if params.c then 0 else count end,
-                           '#'.ord | Curses::A_REVERSE, true, Curses::A_REVERSE,
-                           params.box, params.shadow)
+    radio = Slithernix::Cdk::Widget::Radio.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value,
+      params.spos,
+      params.h_value,
+      params.w_value,
+      params.title,
+      params.c ? [] : item,
+      params.c ? 0 : count,
+      '#'.ord | Curses::A_REVERSE,
+      true,
+      Curses::A_REVERSE,
+      params.box,
+      params.shadow,
+    )
 
     if radio.nil?
       cdkscreen.destroyCDKScreen
       Slithernix::Cdk::Screen.endCDK
 
-      puts "Cannot make radio widget.  Is the window too small?"
-      exit #EXIT_FAILURE
+      puts "Cannot make radio widget. Is the window too small?"
+      exit
     end
 
     if params.c
@@ -78,7 +87,7 @@ class RadioExample < CLIExample
     end
 
     # Loop until the user selects a file, or cancels
-    while true
+    loop do
 
       # Activate the radio widget.
       selection = radio.activate([])
@@ -86,19 +95,19 @@ class RadioExample < CLIExample
       # Check the exit status of the widget.
       if radio.exit_type == :ESCAPE_HIT
         mesg = [
-            '<C>You hit escape. No item selected',
-            '',
-            '<C>Press any key to continue.'
+          '<C>You hit escape. No item selected',
+          '',
+          '<C>Press any key to continue.'
         ]
         cdkscreen.popupLabel(mesg, 3)
         break
       elsif radio.exit_type == :NORMAL
         if File.directory?(item[selection])
           mesg = [
-              "<C> You selected a directory",
-              "<C>%.*s" % [236, item[selection]],  # FIXME magic number
-              "",
-              "<C>Press any key to continue"
+            "<C> You selected a directory",
+            "<C>%.*s" % [236, item[selection]],  # FIXME magic number
+            "",
+            "<C>Press any key to continue"
           ]
           cdkscreen.popupLabel(mesg, 4)
           nitem = []
@@ -109,7 +118,8 @@ class RadioExample < CLIExample
             radio.setItems(item, count)
           end
         else
-          mesg = ['<C>You selected the filename',
+          mesg = [
+            '<C>You selected the filename',
             "<C>%.*s" % [236, item[selection]],  # FIXME magic number
             "",
             "<C>Press any key to continue."
@@ -124,7 +134,7 @@ class RadioExample < CLIExample
     radio.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
-    exit #EXIT_SUCCESS
+    exit
   end
 end
 

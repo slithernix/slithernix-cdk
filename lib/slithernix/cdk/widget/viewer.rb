@@ -823,7 +823,7 @@ module Slithernix
 
           # Determine the last line to draw.
           last_line = [@list_size, @view_size].min
-          last_line -= if list_adjust then 1 else 0 end
+          last_line -= list_adjust ? 1 : 0
 
           # Redraw the list.
           (0...last_line).each do |x|

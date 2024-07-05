@@ -246,7 +246,7 @@ module Slithernix
           temp = ''
           col = need - @field_edit
 
-          adj = if col < 0 then -col else 0 end
+          adj = col < 0 ? -col : 0
           if adj != 0
             temp  = ' ' * adj
           end
@@ -387,8 +387,14 @@ module Slithernix
         # This moves the widget's data field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @label_win, @field_win, @shadow_win]
-          self.move_specific(xplace, yplace, relative, refresh_flag,
-              windows, [])
+          self.move_specific(
+            xplace,
+            yplace,
+            relative,
+            refresh_flag,
+            windows,
+            [],
+          )
         end
 
         # This function draws the widget.
@@ -407,8 +413,15 @@ module Slithernix
 
           # Draw the label.
           unless @label_win.nil?
-            Slithernix::Cdk::Draw.writeChtype(@label_win, 0, 0, @label, Slithernix::Cdk::HORIZONTAL,
-                             0, @label_len)
+            Slithernix::Cdk::Draw.writeChtype(
+              @label_win,
+              0,
+              0,
+              @label,
+              Slithernix::Cdk::HORIZONTAL,
+              0,
+              @label_len,
+            )
             @label_win.refresh
           end
           @win.refresh
@@ -432,8 +445,16 @@ module Slithernix
           end
 
           # Draw the value in the field.
-          Slithernix::Cdk::Draw.writeCharAttrib(@field_win, @field_width, 0, @current.to_s,
-                               Curses::A_NORMAL, Slithernix::Cdk::HORIZONTAL, 0, @current.to_s.size)
+          Slithernix::Cdk::Draw.writeCharAttrib(
+            @field_win,
+            @field_width,
+            0,
+            @current.to_s,
+            Curses::A_NORMAL,
+            Slithernix::Cdk::HORIZONTAL,
+            0,
+            @current.to_s.size,
+          )
 
           self.moveToEditPosition(@field_edit)
           @field_win.refresh

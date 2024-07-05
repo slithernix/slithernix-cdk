@@ -83,12 +83,21 @@ class AlphalistExample < CLIExample
     Slithernix::Cdk::Draw.initCDKColor
 
     # Create the alphalist list.
-    alpha_list = Slithernix::Cdk::Widget::AlphaList.new(cdkscreen,
-                                    params.x_value, params.y_value, params.h_value, params.w_value,
-                                    title, label,
-        if params.c then nil else user_list end,
-        if params.c then 0 else user_size end,
-                                    '_', Curses::A_REVERSE, params.box, params.shadow)
+    alpha_list = Slithernix::Cdk::Widget::AlphaList.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value,
+      params.h_value,
+      params.w_value,
+      title,
+      label,
+      params.c ? nil : user_list,
+      params.c ? 0 : user_size,
+      '_',
+      Curses::A_REVERSE,
+      params.box,
+      params.shadow,
+    )
 
     if alpha_list.nil?
       cdkscreen.destroy
@@ -146,13 +155,13 @@ class AlphalistExample < CLIExample
 
     do_help = lambda do |cdktype, widget, client_data, key|
       message = [
-          'Alpha List tests:',
-          '',
-          'F1 = help (this message)',
-          'F2 = delete current item',
-          'F3 = delete previous item',
-          'F4 = reload all items',
-          'F5 = undo deletion',
+        'Alpha List tests:',
+        '',
+        'F1 = help (this message)',
+        'F2 = delete current item',
+        'F3 = delete previous item',
+        'F4 = reload all items',
+        'F5 = undo deletion',
       ]
       cdkscreen.popupLabel(message, message.size)
       return true
@@ -206,16 +215,17 @@ class AlphalistExample < CLIExample
     # Determine what the user did.
     if alpha_list.exit_type == :ESCAPE_HIT
       mesg = [
-          '<C>You hit escape. No word was selected.',
-          '',
-          '<C>Press any key to continue.'
+        '<C>You hit escape. No word was selected.',
+        '',
+        '<C>Press any key to continue.'
       ]
       cdkscreen.popupLabel(mesg, 3)
     elsif alpha_list.exit_type == :NORMAL
-      mesg = ['<C>You selected the following',
-          "<C>(%.*s)" % [246, word],  # FIXME magic number
-          '',
-          '<C>Press any key to continue.'
+      mesg = [
+        '<C>You selected the following',
+        "<C>(%.*s)" % [246, word],  # FIXME magic number
+        '',
+        '<C>Press any key to continue.'
       ]
       cdkscreen.popupLabel(mesg, 4);
     end
@@ -224,7 +234,7 @@ class AlphalistExample < CLIExample
     alpha_list.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
-    exit  # EXIT_SUCCESS
+    exit
   end
 end
 
