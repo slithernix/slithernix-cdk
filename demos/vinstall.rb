@@ -25,10 +25,10 @@ class Vinstall
     if !(Dir.exist?(directory))
       # Create the question.
       mesg = [
-          '<C>The directory',
-          '<C>%.256s' % [directory],
-          '<C>Does not exist. Do you want to',
-          '<C>create it?',
+        '<C>The directory',
+        '<C>%.256s' % [directory],
+        '<C>Does not exist. Do you want to',
+        '<C>create it?',
       ]
 
       # Ask them if they want to create the directory.
@@ -316,14 +316,14 @@ class Vinstall
           'Ignore Errors',
       ]
       mesg = [
-          '<C>There were errors in the installation.',
-          '<C>If you want, you may scroll through the',
-          '<C>messages of the scrolling window to see',
-          '<C>what the errors were. If you want to save',
-          '<C>the output of the window you may press</R>s<!R>',
-          '<C>while in the window, or you may save the output',
-          '<C>of the install now and look at the install',
-          '<C>histoyr at a later date.'
+        '<C>There were errors in the installation.',
+        '<C>If you want, you may scroll through the',
+        '<C>messages of the scrolling window to see',
+        '<C>what the errors were. If you want to save',
+        '<C>the output of the window you may press</R>s<!R>',
+        '<C>while in the window, or you may save the output',
+        '<C>of the install now and look at the install',
+        '<C>histoyr at a later date.'
       ]
 
       # Popup the dialog box.

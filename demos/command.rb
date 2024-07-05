@@ -158,14 +158,14 @@ class Command
     end
 
     list_history_cb = lambda do |cdktype, entry, history, key|
-      height = if history.count < 10 then history.count + 3 else 13 end
+      height = history.count < 10 ? history.count + 3 : 13
 
       # No history, no list.
       if history.count == 0
         # Popup a little message telling the user there are no comands.
         mesg = [
-            '<C></B/16>No Commands Entered',
-            '<C>No History',
+          '<C></B/16>No Commands Entered',
+          '<C>No History',
         ]
         entry.screen.popupLabel(mesg, 2)
 

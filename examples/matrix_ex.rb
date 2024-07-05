@@ -67,11 +67,27 @@ class MatrixExample < Example
     end
 
     # Create the matrix widget
-    course_list = Slithernix::Cdk::Widget::Matrix.new(cdkscreen, params.x_value, params.y_value,
-                                  rows, cols, vrows, vcols,
-        if params.cancel_title then '' else params.title end,
-                                  rowtitle, coltitle, colwidth, colvalue, -1, -1, '.',
-                                  2, params.box, params.box, params.shadow)
+    course_list = Slithernix::Cdk::Widget::Matrix.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value,
+      rows,
+      cols,
+      vrows,
+      vcols,
+      params.cancel_title ? '' : params.title,
+      rowtitle,
+      coltitle,
+      colwidth,
+      colvalue,
+      -1,
+      -1,
+      '.',
+      2,
+      params.box,
+      params.box,
+      params.shadow,
+    )
 
     if course_list.nil?
       # Exit CDK.

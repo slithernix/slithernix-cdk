@@ -172,7 +172,7 @@ class CdkPryShell
     end
 
     list_history_cb = lambda do |cdktype, entry, history, key|
-      height = if history.count < 10 then history.count + 3 else 13 end
+      height = history.count < 10 ? history.count + 3 : 13
 
       # No history, no list.
       if history.count == 0

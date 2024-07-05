@@ -54,14 +54,14 @@ class MentryExample < Example
       Slithernix::Cdk::Screen.endCDK
 
       puts "Cannot create CDK widget. Is the window too small?"
-      exit  # EXIT_FAILURE
+      exit
     end
 
     # Draw the CDK screen.
     cdkscreen.refresh
 
     # Set whatever was given from the command line.
-    arg = if ARGV.size > 0 then ARGV[0] else '' end
+    arg = ARGV.size > 0 ? ARGV[0] : ''
     widget.set(arg, 0, true)
 
     # Activate the entry field.

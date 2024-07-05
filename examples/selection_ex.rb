@@ -79,9 +79,15 @@ class SelectionExample < CLIExample
 
     if params.header != ''
       list = [params.header]
-      header = Slithernix::Cdk::Widget::Label.new(cdkscreen, params.x_value,
-                              if params.y_value.nil? then Slithernix::Cdk::TOP else params.y_value end,
-                              list, 1, params.box, !params.shadow)
+      header = Slithernix::Cdk::Widget::Label.new(
+        cdkscreen,
+        params.x_value,
+        params.y_value.nil? ? Slithernix::Cdk::TOP : params.y_value,
+        list,
+        1,
+        params.box,
+        !params.shadow,
+      )
       unless header.nil?
         header.activate([])
       end
@@ -89,29 +95,44 @@ class SelectionExample < CLIExample
 
     if params.footer != ''
       list = [params.footer]
-      footer = Slithernix::Cdk::Widget::Label.new(cdkscreen, params.x_value,
-                              if params.y_value.nil? then Slithernix::Cdk::BOTTOM else params.y_value end,
-                              list, 1, params.box, !params.shadow)
+      footer = Slithernix::Cdk::Widget::Label.new(
+        cdkscreen,
+        params.x_value,
+        params.y_value.nil? ? Slithernix::Cdk::BOTTOM : params.y_value,
+        list,
+        1,
+        params.box,
+        !params.shadow,
+      )
       unless footer.nil?
         footer.activate([])
       end
     end
 
     # Create the selection list.
-    selection = Slithernix::Cdk::Widget::Selection.new(cdkscreen, params.x_value,
-                                   if params.y_value.nil? then Slithernix::Cdk::CENTER else params.y_value end,
-                                   params.spos, params.h_value, params.w_value,
-                                   params.title,
-        if params.c then [] else item end,
-        if params.c then 0 else item.size end,
-                                   choices, 2, Curses::A_REVERSE, params.box, params.shadow)
+    selection = Slithernix::Cdk::Widget::Selection.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value.nil? ? Slithernix::Cdk::CENTER : params.y_value,
+      params.spos,
+      params.h_value,
+      params.w_value,
+      params.title,
+      params.c ? [] : item,
+      params.c ? 0 : item.size,
+      choices,
+      2,
+      Curses::A_REVERSE,
+      params.box,
+      params.shadow
+    )
 
     if selection.nil?
       cdkscreen.destroyCDKScreen
       Slithernix::Cdk::Screen.endCDK
 
       puts "Cannot make selection list.  Is the window too small?"
-      exit #EXIT_FAILURE
+      exit
     end
 
     if params.c
@@ -124,9 +145,9 @@ class SelectionExample < CLIExample
     # Check the exit status of the widget
     if selection.exit_type == :ESCAPE_HIT
       mesg = [
-          '<C>You hit escape. No item selected',
-          '',
-          '<C>Press any key to continue.'
+        '<C>You hit escape. No item selected',
+        '',
+        '<C>Press any key to continue.'
       ]
       cdkscreen.popupLabel(mesg, 3)
     elsif selection.exit_type == :NORMAL
@@ -146,7 +167,7 @@ class SelectionExample < CLIExample
     selection.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
-    exit #EXIT_SUCCESS
+    exit
   end
 end
 

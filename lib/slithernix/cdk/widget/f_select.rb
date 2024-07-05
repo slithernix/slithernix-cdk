@@ -190,10 +190,17 @@ module Slithernix
             #Dir.chdir(fselect.pwd)
 
             # XXX original: isDirectory ? mydirname : filename
-            fselect.set(if is_directory then filename else mydirname end,
-                fselect.field_attribute, fselect.filler_character,
-                fselect.highlight, fselect.dir_attribute, fselect.file_attribute,
-                fselect.link_attribute, fselect.sock_attribute, fselect.box)
+            fselect.set(
+              is_directory ? filename : mydirname,
+              fselect.field_attribute,
+              fselect.filler_character,
+              fselect.highlight,
+              fselect.dir_attribute,
+              fselect.file_attribute,
+              fselect.link_attribute,
+              fselect.sock_attribute,
+              fselect.box
+            )
 
             # If we can, change into the directory.
             # XXX original: if isDirectory (with 0 as success result)

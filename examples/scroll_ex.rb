@@ -63,19 +63,28 @@ class ScrollExample < CLIExample
     count = Slithernix::Cdk.getDirectoryContents(".", item)
 
     # Create the scrolling list.
-    scroll_list = Slithernix::Cdk::Widget::Scroll.new(cdkscreen,
-                                  params.x_value, params.y_value, params.spos,
-                                  params.h_value, params.w_value, params.title,
-        if params.c then nil else item end,
-        if params.c then 0 else count end,
-                                  true, Curses::A_REVERSE, params.box, params.shadow)
+    scroll_list = Slithernix::Cdk::Widget::Scroll.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value,
+      params.spos,
+      params.h_value,
+      params.w_value,
+      params.title,
+      params.c ? nil : item,
+      params.c ? 0 : count,
+      true,
+      Curses::A_REVERSE,
+      params.box,
+      params.shadow,
+    )
 
     if scroll_list.nil?
       cdkscreen.destroyCDKScreen
       Slithernix::Cdk::Screen.endCDK
 
       puts "Cannot make scrolling list.  Is the window too small?"
-      exit #EXIT_FAILURE
+      exit
     end
 
     if params.c
@@ -105,31 +114,33 @@ class ScrollExample < CLIExample
     scroll_list.bind(:Scroll, 'd', delItemCB, nil);
 
     # Activate the scrolling list.
-
     selection = scroll_list.activate('')
 
     # Determine how the widget was exited
-    if scroll_list.exit_type == :ESCAPE_HIT
-      msg = ['<C>You hit escape. No file selected']
-      msg << ''
-      msg << '<C>Press any key to continue.'
-      cdkscreen.popupLabel(msg, 3)
-    elsif scroll_list.exit_type == :NORMAL
-      the_item = Slithernix::Cdk.chtype2Char(scroll_list.item[selection])
-      msg = ['<C>You selected the following file',
-          "<C>%.*s" % [236, the_item],  # FIXME magic number
-          "<C>Press any key to continue."
+    case scroll_list.exit_type
+    when :ESCAPE_HIT
+      msg = [
+        '<C>You hit escape. No file selected',
+        '',
+        '<C>Press any key to continue.',
       ]
-      cdkscreen.popupLabel(msg, 3);
-      #freeChar (theItem);
+    when :NORMAL
+      the_item = Slithernix::Cdk.chtype2Char(scroll_list.item[selection])
+      msg = [
+        '<C>You selected the following file',
+        "<C>%.*s" % [236, the_item],  # FIXME magic number
+        "<C>Press any key to continue."
+      ]
     end
+
+    cdkscreen.popupLabel(msg, 3)
 
     # Clean up.
     # CDKfreeStrings (item);
     scroll_list.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
-    exit #EXIT_SUCCESS
+    exit
   end
 end
 
