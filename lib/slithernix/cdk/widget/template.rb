@@ -10,7 +10,7 @@ module Slithernix
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
           box_width = 0
-          box_height = if box then 3 else 1 end
+          box_height = box ? 3 : 1
           plate_len = 0
 
           if plate.nil? || plate.size == 0

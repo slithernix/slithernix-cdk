@@ -399,9 +399,9 @@ module Slithernix
           date_info = Time.new.gmtime
 
           # Set the date elements if we need to.
-          @day = if day == -1 then date_info.day else day end
-          @month = if month == -1 then date_info.month else month end
-          @year = if year == -1 then date_info.year else year end
+          @day = day == -1 ? date_info.day : day
+          @month = month == -1 ? date_info.month : month
+          @year = year == -1 ? date_info.year : year
 
           # Verify the date information.
           self.verifyCalendarDate

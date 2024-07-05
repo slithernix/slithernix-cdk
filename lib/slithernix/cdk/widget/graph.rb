@@ -173,7 +173,7 @@ module Slithernix
         end
 
         def getValue(index)
-          if index >= 0 && index < @count then @values[index] else 0 end
+          index >= 0 and index < @count ? @values[index] : 0
         end
 
         # Set the characters of the graph widget.

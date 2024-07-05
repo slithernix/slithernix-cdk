@@ -266,7 +266,7 @@ module Slithernix
     # same string, we do not necessarily reconstruct them in the same order.
     # Also, alignment markers and tabs are lost.
 
-    def self.decodeAttribute (string, from, oldattr, newattr)
+    def self.decodeAttribute(string, from, oldattr, newattr)
       table = {
         'B' => Curses::A_BOLD,
         'D' => Curses::A_DIM,
@@ -276,7 +276,7 @@ module Slithernix
         'U' => Curses::A_UNDERLINE
       }
 
-      result = if string.nil? then '' else string end
+      result = string.nil? ? '' : string
       base_len = result.size
       tmpattr = oldattr & Curses::A_ATTRIBUTES
 
@@ -835,7 +835,7 @@ module Slithernix
 
       # Determine the height of the list.
       if list_size < 10
-        height = list_size + if title.size == 0 then 2 else 3 end
+        height = list_size + (title.size == 0 ? 2 : 3)
       end
 
       # Determine the width of the list.

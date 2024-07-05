@@ -121,8 +121,8 @@ module Slithernix
           # We need to determine the angle of the line.
           height = xdiff
           width = ydiff
-          xratio = if height > width then 1 else width / height end
-          yration = if width > height then width / height else 1 end
+          xratio = height > width ? 1 : width / height
+          yration = width > height ? width / height : 1
           xadj = 0
           yadj = 0
 
@@ -135,13 +135,13 @@ module Slithernix
 
             # Make the x and y adjustments.
             if xadj != xratio
-              x = if xdiff < 0 then x - 1 else x + 1 end
+              x = xdiff < 0 ? x - 1 : x + 1
               xadj += 1
             else
               xadj = 0
             end
             if yadj != yratio
-              y = if ydiff < 0 then y - 1 else y + 1 end
+              y = ydiff < 0 ? y - 1 : y + 1
               yadj += 1
             else
               yadj = 0
