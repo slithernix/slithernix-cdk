@@ -169,22 +169,18 @@ module Slithernix
 
               # Inject this character into the widget.
               ret = inject(input)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           else
             actions.each do |action|
               ret = inject(action)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           end
 
           # Set the exit type and exit.
           setExitType(0)
-          return 0
+          0
         end
 
         def setTopRow(row)
@@ -192,7 +188,7 @@ module Slithernix
             @top_row = row
             return true
           end
-          return false
+          false
         end
 
         def setCurPos(row, col)
@@ -201,7 +197,7 @@ module Slithernix
             @current_col = col
             return true
           end
-          return false
+          false
         end
 
         def KEY_LEFT(moved, redraw)
@@ -221,11 +217,11 @@ module Slithernix
             Slithernix::Cdk.Beep
             result = false
           end
-          return result
+          result
         end
 
         def getCursorPos
-          return (@current_row + @top_row) * @field_width + @current_col
+          (@current_row + @top_row) * @field_width + @current_col
         end
 
         # This injects a character into the widget.
@@ -290,9 +286,7 @@ module Slithernix
                 else
                   moved = setCurPos(@current_row + 1, 0)
                 end
-                if !moved && !redraw
-                  Slithernix::Cdk.Beep
-                end
+                Slithernix::Cdk.Beep if !moved && !redraw
               when Curses::KEY_DOWN
                 if @current_row != @rows - 1
                   if getCursorPos + @field_width + 1 <= @info.size
@@ -303,18 +297,14 @@ module Slithernix
                     redraw = setTopRow(@top_row + 1)
                   end
                 end
-                if !moved && !redraw
-                  Slithernix::Cdk.Beep
-                end
+                Slithernix::Cdk.Beep if !moved && !redraw
               when Curses::KEY_UP
                 if @current_row != 0
                   moved = setCurPos(@current_row - 1, @current_col)
                 elsif @top_row != 0
                   redraw = setTopRow(@top_row - 1)
                 end
-                if !moved && !redraw
-                  Slithernix::Cdk.Beep
-                end
+                Slithernix::Cdk.Beep if !moved && !redraw
               when Curses::KEY_BACKSPACE, Curses::KEY_DC
                 if @disp_type == :VIEWONLY
                   Slithernix::Cdk.Beep
@@ -418,12 +408,10 @@ module Slithernix
             end
           end
 
-          if !complete
-            setExitType(0)
-          end
+          setExitType(0) if !complete
 
           @result_data = ret
-          return ret
+          ret
         end
 
         # This moves the mentry field to the given location.
@@ -473,9 +461,7 @@ module Slithernix
           end
 
           # Do we need to draw in the shadow?
-          unless @shadow_win.nil?
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
           # Draw in the label to the widget.
           unless @label_win.nil?
@@ -492,9 +478,7 @@ module Slithernix
         def setBKattr(attrib)
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
-          unless @label_win.nil?
-            @label_win.wbkgd(attrib)
-          end
+          @label_win.wbkgd(attrib) unless @label_win.nil?
         end
 
         # This function erases the multiple line entry field from the screen.
@@ -555,7 +539,7 @@ module Slithernix
         end
 
         def getValue
-          return @info
+          @info
         end
 
         # This sets the filler character to use when drawing the widget.
@@ -564,7 +548,7 @@ module Slithernix
         end
 
         def getFillerChar
-          return @filler
+          @filler
         end
 
         # This sets the character to use when a hidden character type is used
@@ -573,7 +557,7 @@ module Slithernix
         end
 
         def getHiddenChar
-          return @hidden
+          @hidden
         end
 
         # This sets a minimum length of the widget.
@@ -582,7 +566,7 @@ module Slithernix
         end
 
         def getMin
-          return @min
+          @min
         end
 
         # This erases the information in the multiple line entry widget

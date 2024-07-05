@@ -71,13 +71,20 @@ class Rolodex
     fd.puts '=' * 78
     phone_data.record.each do |phone_record|
       fd.puts 'Name        : %s' % [phone_record.name]
-      fd.puts 'Phone Number: %s (%s)' % [phone_record.phone_number,
-          Rolodex::GLineType[Rolodex::GTypeMap[phone_record.line_type]]]
-      if !([:PAGER, :CELL].include?(phone_record.line_type))
-        fd.puts 'Address     : %-20s, %-20s' % [phone_record.address,
-            phone_record.city]
-        fd.puts '            : %-10s, %-10s' % [phone_record.province,
-            phone_record.postal_code]
+      fd.puts 'Phone Number: %s (%s)' % [
+        phone_record.phone_number,
+        Rolodex::GLineType[Rolodex::GTypeMap[phone_record.line_type]],
+      ]
+      unless [:PAGER, :CELL].include? phone_record.line_type
+        fd.puts 'Address     : %-20s, %-20s' % [
+          phone_record.address,
+          phone_record.city,
+        ]
+
+        fd.puts '            : %-10s, %-10s' % [
+          phone_record.province,
+          phone_record.postal_code,
+        ]
       end
       fd.puts 'Description : %-30s' % [phone_record.desc]
       fd.puts '-' * 78
@@ -98,7 +105,7 @@ class Rolodex
       end
     end
 
-    return 1
+    1
   end
 
   # This prints a group's phone numbers.
@@ -261,7 +268,7 @@ class Rolodex
     group_count -= 1
     @@g_group_modified = true
 
-    return group_count
+    group_count
   end
 
   # This function gets information about a new phone number.
@@ -301,15 +308,13 @@ class Rolodex
     end
 
     # Check the return value from the getXXXPhoneRecord function.
-    if ret == 0
-      phone_data.count += 1
-    end
+    phone_data.count += 1 if ret == 0
 
     # Clean up
     title.destroy
 
     # Return the new phone list count.
-    return ret
+    ret
   end
 
   # This gets a phone record with all the details
@@ -520,7 +525,7 @@ class Rolodex
 
     # Clean up
     file_selector.destroy
-    return group_count
+    group_count
   end
 
   # This reads the user's rc file.
@@ -533,9 +538,7 @@ class Rolodex
     lines_read = Slithernix::Cdk.readFile(filename, lines)
 
     # Check the number of lines read.
-    if lines_read == 0
-      return 0
-    end
+    return 0 if lines_read == 0
 
     # Cycle through what was given to us and save it.
     (0...lines_read).each do |x|
@@ -570,7 +573,7 @@ class Rolodex
       # This does NOT look like the rolodex RC file.
       return -1
     end
-    return groups_found
+    groups_found
   end
 
   # This writes out the new RC file.
@@ -606,7 +609,7 @@ class Rolodex
 
     screen.popupLabel(mesg, mesg.size)
 
-    return 1
+    1
   end
 
 
@@ -624,7 +627,7 @@ class Rolodex
         Slithernix::Cdk.Beep
         return 0
       end
-      return 1
+      1
     end
     new_rc_file.setPreProcess(entry_pre_process_cb, nil)
 
@@ -649,7 +652,7 @@ class Rolodex
 
     # Clean up.
     new_rc_file.destroy
-    return 1
+    1
   end
 
   # This opens a phone data file and returns the number of elements read
@@ -660,9 +663,7 @@ class Rolodex
     lines_found = 0
 
     # Check the number of lines read.
-    if lines_read <= 0
-      return 0
-    end
+    return 0 if lines_read <= 0
 
     # Cycle through what was given to us and save it.
     (0...lines_read).each do |x|
@@ -709,7 +710,7 @@ class Rolodex
 
     # Keep the record count and return.
     phone_data.count = lines_found
-    return lines_found
+    lines_found
   end
 
   # This writes a phone data file and returns the number of elements written.
@@ -750,7 +751,7 @@ class Rolodex
       end
     end
     fd.close
-    return 1
+    1
   end
 
   # This displays the information about the phone record.
@@ -831,9 +832,7 @@ class Rolodex
       end
 
       # Get the information for a new number.
-      if Rolodex.addPhoneRecord(screen, phone_data) != 0
-        return
-      end
+      return if Rolodex.addPhoneRecord(screen, phone_data) != 0
     elsif phone_count < 0
       mesg = ['<C>Could not open the database for this group.']
       screen.popupLabel(mesg, mesg.size)
@@ -873,7 +872,7 @@ class Rolodex
 
       # Redraw the scrolling list.
       scrollp.draw(scrollp.box)
-      return false
+      false
     end
 
     # This allows the user to delete a phone entry from the database.
@@ -911,7 +910,7 @@ class Rolodex
 
       # Redraw the scrolling list.
       scrollp.draw(scrollp.box)
-      return false
+      false
     end
 
     # This function provides help for the phone list editor.
@@ -926,7 +925,7 @@ class Rolodex
 
       scrollp.screen.popupLabel(mesg, 5)
 
-      return false
+      false
     end
 
     # Create key bindings.
@@ -995,7 +994,7 @@ class Rolodex
 
       # Redraw the scrolling list.
       scrollp.draw(scrollp.box)
-      return false
+      false
     end
     # Create a callback to the scrolling list.
     rolo_list.bind(:Scroll, '?', group_info_cb, group_list)
@@ -1007,7 +1006,7 @@ class Rolodex
     rolo_list.destroy
 
     # return the item selected.
-    return selection
+    selection
   end
 
   # This allows the user to add a rolo group to the list.
@@ -1070,7 +1069,7 @@ class Rolodex
     # Destroy the widget.
     new_name.destroy
     new_desc.destroy
-    return group_count
+    group_count
   end
 
   # This displays rolodex information.
@@ -1204,7 +1203,7 @@ class Rolodex
 
       # Redraw the submenu window.
       menu.drawSubwin
-      return false
+      false
     end
 
     # Define the help key binding
@@ -1232,9 +1231,7 @@ class Rolodex
     end
 
     # Make the rolodex directory.
-    unless Dir.exist?(@@gdbm_dir)
-      Dir.mkdir(@@gdbm_dir, 0755)
-    end
+    Dir.mkdir(@@gdbm_dir, 0755) unless Dir.exist?(@@gdbm_dir)
 
     group_list = []
 
@@ -1287,17 +1284,13 @@ class Rolodex
             cdkscreen, @@grc_file, group_list, group_count)
 
         # Reset the saved flag if the rc file saved ok.
-        if ret != 0
-          @@g_group_modified = false
-        end
+        @@g_group_modified = false if ret != 0
       when 2
         # Save as.
         ret = Rolodex.writeRCFileAs(cdkscreen, group_list, group_count)
 
         # Reset the saved flag if the rc file saved ok.
-        if ret != 0
-          @@g_group_modified = false
-        end
+        @@g_group_modified = false if ret != 0
       when 3
         # Has anything changed?
         if @@g_group_modified

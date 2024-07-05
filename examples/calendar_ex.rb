@@ -46,17 +46,11 @@ class CalendarExample < Example
     # day/month/year values for the calendar.
     date_info = Time.now.gmtime
 
-    if params.day == 0
-      params.day = date_info.day
-    end
+    params.day = date_info.day if params.day == 0
 
-    if params.month == 0
-      params.month = date_info.month
-    end
+    params.month = date_info.month if params.month == 0
 
-    if params.year == 0
-      params.year = date_info.year
-    end
+    params.year = date_info.year if params.year == 0
 
     # Set up CDK
     curses_win = Curses.init_screen
@@ -87,14 +81,14 @@ class CalendarExample < Example
     create_calendar_mark = lambda do |widget_type, calendar, client_data, key|
       calendar.setMarker(calendar.day, calendar.month, calendar.year)
       calendar.draw(calendar.box)
-      return false
+      false
     end
 
     # This removes a marker from the calendar.
     remove_calendar_mark = lambda do |widget_type, calendar, client_data, key|
       calendar.removeMarker(calendar.day, calendar.month, calendar.year)
       calendar.draw(calendar.box)
-      return false
+      false
     end
 
     # Create a key binding to mark days on the calendar.

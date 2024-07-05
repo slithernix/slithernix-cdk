@@ -34,9 +34,7 @@ module Slithernix
           message = []
           first_time = true
 
-          if mesg.nil? or mesg == ''
-            return -1
-          end
+          return -1 if mesg.nil? or mesg == ''
 
           # Keep the box info, setting BorderOf()
           setBox(box)
@@ -108,9 +106,7 @@ module Slithernix
             if view_size <= 0 && first_char == (mesg_length[0] + padding)
               # Check if we repeat a specified number or loop indefinitely
               repeat_count += 1
-              if repeat > 0 && repeat_count >= repeat
-                break
-              end
+              break if repeat > 0 && repeat_count >= repeat
 
               # Time to start over.
               @win.mvwaddch(@border_size, @border_size, ' '.ord)
@@ -121,11 +117,9 @@ module Slithernix
             # Now sleep
             Curses.napms(delay * 10)
           end
-          if oldcurs < 0
-            oldcurs = 1
-          end
+          oldcurs = 1 if oldcurs < 0
           Curses.curs_set(oldcurs)
-          return 0
+          0
         end
 
         # This de-activates a marquee widget.
@@ -144,14 +138,10 @@ module Slithernix
           @box = box
 
           # Do we need to draw a shadow???
-          unless @shadow_win.nil?
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
           # Box it if needed.
-          if box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
-          end
+          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
 
           # Refresh the window.
           @win.refresh

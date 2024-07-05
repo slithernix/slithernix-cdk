@@ -90,20 +90,16 @@ module Slithernix
           ret = setValues(values, count, start_at_zero)
           setCharacters(graph_char)
           setDisplayType(display_type)
-          return ret
+          ret
         end
 
         # Set the scale factors for the graph after wee have loaded new values.
         def setScales
           @xscale = (@maxx - @minx) / [1, @box_height - @title_lines - 5].max
-          if @xscale <= 0
-            @xscale = 1
-          end
+          @xscale = 1 if @xscale <= 0
 
           @yscale = (@box_width - 4) / [1, @count].max
-          if @yscale <= 0
-            @yscale = 1
-          end
+          @yscale = 1 if @yscale <= 0
         end
 
         # Set the values of the graph.
@@ -112,9 +108,7 @@ module Slithernix
           max = -2**30
 
           # Make sure everything is happy.
-          if count < 0
-            return false
-          end
+          return false if count < 0
 
           if !(@values.nil?) && @values.size > 0
             @values = []
@@ -136,26 +130,22 @@ module Slithernix
           @maxx = max
 
           # Check the start at zero status.
-          if start_at_zero
-            @minx = 0
-          end
+          @minx = 0 if start_at_zero
 
           setScales
 
-          return true
+          true
         end
 
         def getValues(size)
           size << @count
-          return @values
+          @values
         end
 
         # Set the value of the graph at the given index.
         def setValue(index, value, start_at_zero)
           # Make sure the index is within range.
-          if index < 0 || index >= @count
-            return false
-          end
+          return false if index < 0 || index >= @count
 
           # Set the min, max, and value for the graph
           @minx = [value, @minx].min
@@ -163,13 +153,11 @@ module Slithernix
           @values[index] = value
 
           # Check the start at zero status
-          if start_at_zero
-            @minx = 0
-          end
+          @minx = 0 if start_at_zero
 
           setScales
 
-          return true
+          true
         end
 
         def getValue(index)
@@ -181,24 +169,20 @@ module Slithernix
           char_count = []
           new_tokens = Slithernix::Cdk.char2Chtype(characters, char_count, [])
 
-          if char_count[0] != @count
-            return false
-          end
+          return false if char_count[0] != @count
 
           @graph_char = new_tokens
-          return true
+          true
         end
 
         def getCharacters
-          return @graph_char
+          @graph_char
         end
 
         # Set the character of the graph widget of the given index.
         def setCharacter(index, character)
           # Make sure the index is within range
-          if index < 0 || index > @count
-            return false
-          end
+          return false if index < 0 || index > @count
 
           # Convert the string given to us
           char_count = []
@@ -206,17 +190,15 @@ module Slithernix
 
           # Check if the number of characters back is the same as the number
           # of elements in the list.
-          if char_count[0] != @count
-            return false
-          end
+          return false if char_count[0] != @count
 
           # Everything OK so far. Set the value of the array.
           @graph_char[index] = new_tokens[0]
-          return true
+          true
         end
 
         def getCharacter(index)
-          return graph_char[index]
+          graph_char[index]
         end
 
         # Set the display type of the graph.
@@ -266,9 +248,7 @@ module Slithernix
           Slithernix::Cdk::Screen.refreshCDKWindow(@screen.window)
 
           # Reraw the windowk if they asked for it
-          if refresh_flag
-            draw(@box)
-          end
+          draw(@box) if refresh_flag
         end
 
         # Draw the grpah widget
@@ -277,9 +257,7 @@ module Slithernix
           spacing = 0
           attrib = ' '.ord | Curses::A_REVERSE
 
-          if box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
-          end
+          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
 
           # Draw in the vertical axis
           Slithernix::Cdk::Draw.drawLine(
@@ -437,9 +415,7 @@ module Slithernix
         end
 
         def erase
-          if validCDKObject
-            Slithernix::Cdk.eraseCursesWindow(@win)
-          end
+          Slithernix::Cdk.eraseCursesWindow(@win) if validCDKObject
         end
 
         def position

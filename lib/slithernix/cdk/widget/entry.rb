@@ -123,9 +123,7 @@ module Slithernix
                 # Update the character pointer.
                 entry.info << plainchar
                 # Do not update the pointer if it's the last character
-                if entry.info.size < entry.max
-                  entry.left_char += 1
-                end
+                entry.left_char += 1 if entry.info.size < entry.max
               end
 
               # Update the entry field.
@@ -158,25 +156,21 @@ module Slithernix
 
               # Inject the character into the widget.
               ret = inject(input)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           else
             # Inject each character one at a time.
             actions.each do |action|
               ret = inject(action)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           end
 
           # Make sure we return the correct info.
           if @exit_type == :NORMAL
-            return @info
+            @info
           else
-            return 0
+            0
           end
         end
 
@@ -272,9 +266,7 @@ module Slithernix
                   Slithernix::Cdk.Beep
                 else
                   success = false
-                  if input == Curses::KEY_BACKSPACE
-                    curr_pos -= 1
-                  end
+                  curr_pos -= 1 if input == Curses::KEY_BACKSPACE
 
                   if curr_pos >= 0 && @info.size > 0
                     if curr_pos < @info.size
@@ -352,12 +344,10 @@ module Slithernix
             end
           end
 
-          unless complete
-            setExitType(0)
-          end
+          setExitType(0) unless complete
 
           @result_data = ret
-          return ret
+          ret
         end
 
         # This moves the entry field to the given location.
@@ -388,14 +378,10 @@ module Slithernix
         # This draws the entry field.
         def draw(box)
           # Did we ask for a shadow?
-          unless @shadow_win.nil?
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
           # Box the widget if asked.
-          if box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
-          end
+          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
 
           drawTitle(@win)
 
@@ -480,7 +466,7 @@ module Slithernix
         end
 
         def getValue
-          return @info
+          @info
         end
 
         # This sets the maximum length of the string that will be accepted
@@ -523,9 +509,7 @@ module Slithernix
         def setBKattr(attrib)
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
-          unless @label_win.nil?
-            @label_win.wbkgd(attrib)
-          end
+          @label_win.wbkgd(attrib) unless @label_win.nil?
         end
 
         # This sets the attribute of the entry field.

@@ -79,9 +79,7 @@ class ItemlistExample < Example
       exit
     end
 
-    if params.c
-      monthlist.setValues(info, ItemlistExample::MONTHS, 0)
-    end
+    monthlist.setValues(info, ItemlistExample::MONTHS, 0) if params.c
 
     # Activate the widget.
     choice = monthlist.activate('')

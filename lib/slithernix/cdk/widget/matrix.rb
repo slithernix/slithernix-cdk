@@ -293,23 +293,19 @@ module Slithernix
 
               # Inject the character into the widget.
               ret = inject(input)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           else
             # Inject each character one at a time.
             actions.each do |action|
               ret = inject(action)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           end
 
           # Set the exit type and exit.
           setExitType(0)
-          return -1
+          -1
         end
 
         # This injects a single character into the matrix widget.
@@ -375,9 +371,7 @@ module Slithernix
                     @col += 1
 
                     # Redraw the column titles.
-                    if @rows > @vrows
-                      redrawTitles(false, true)
-                    end
+                    redrawTitles(false, true) if @rows > @vrows
                     refresh_cells = true
                     moved_cell = true
                   else
@@ -418,9 +412,7 @@ module Slithernix
                     @col -= 1
 
                     # Redraw the column titles.
-                    if @cols > @vcols
-                      redrawTitles(false, true)
-                    end
+                    redrawTitles(false, true) if @cols > @vcols
                     refresh_cells = true
                     moved_cell = true
                   else
@@ -458,9 +450,7 @@ module Slithernix
                     @row -= 1
 
                     # Redraw the row titles.
-                    if @rows > @vrows
-                      redrawTitles(true, false)
-                    end
+                    redrawTitles(true, false) if @rows > @vrows
                     refresh_cells = true
                     moved_cell = true
                   else
@@ -478,9 +468,7 @@ module Slithernix
                     @row += 1
 
                     # Redraw the titles.
-                    if @rows > @vrows
-                      redrawTitles(true, false)
-                    end
+                    redrawTitles(true, false) if @rows > @vrows
                     refresh_cells = true
                     moved_cell = true
                   else
@@ -617,7 +605,7 @@ module Slithernix
           end
 
           @result_data = ret
-          return ret
+          ret
         end
 
         # Highlight the new field.
@@ -690,9 +678,7 @@ module Slithernix
           @cell[row][col].refresh
 
           # Only draw the box iff the user asked for a box.
-          if !box
-            return
-          end
+          return if !box
 
           # If the value of the column spacing is greater than 0 then these
           # are independent boxes
@@ -846,14 +832,10 @@ module Slithernix
         # This function draws the matrix widget.
         def draw(box)
           # Did we ask for a shadow?
-          unless @shadow_win.nil?
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
           # Should we box the matrix?
-          if box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
-          end
+          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
 
           drawTitle(@win)
 
@@ -921,9 +903,7 @@ module Slithernix
 
         # This function sets the values of the matrix widget.
         def setCells(info, rows, maxcols, sub_size)
-          if rows > @rows
-            rows = @rows
-          end
+          rows = @rows if rows > @rows
 
           # Copy in the new info.
           (1..rows).each do |x|
@@ -948,9 +928,7 @@ module Slithernix
 
         # This cleans one cell in the matrix widget.
         def cleanCell(row, col)
-          if row > 0 && row <= @rows && col > col <= @cols
-            @info[row][col] = ''
-          end
+          @info[row][col] = '' if row > 0 && row <= @rows && col > col <= @cols
         end
 
         # This allows us to hyper-warp to a cell
@@ -984,9 +962,9 @@ module Slithernix
 
           # Hyper-warp....
           if new_row != @row || @new_col != @col
-            return moveToCell(new_row, new_col)
+            moveToCell(new_row, new_col)
           else
-            return 1
+            1
           end
         end
 
@@ -1086,49 +1064,41 @@ module Slithernix
           @oldvrow = @row
           @oldvcol = @col
 
-          return 1
+          1
         end
 
         # This redraws the titles indicated...
         def redrawTitles(row_titles, col_titles)
           # Redraw the row titles.
-          if row_titles
-            drawEachRowTitle
-          end
+          drawEachRowTitle if row_titles
 
           # Redraw the column titles.
-          if col_titles
-            drawEachColTitle
-          end
+          drawEachColTitle if col_titles
         end
 
         # This sets the value of a matrix cell.
         def setCell(row, col, value)
           # Make sure the row/col combination is within the matrix.
-          if row > @rows || cols > @cols || row <= 0 || col <= 0
-            return -1
-          end
+          return -1 if row > @rows || cols > @cols || row <= 0 || col <= 0
 
           cleanCell(row, col)
           @info[row][col] = value[0...[@colwidths[col], value.size].min]
-          return 1
+          1
         end
 
         # This gets the value of a matrix cell.
         def getCell(row, col)
           # Make sure the row/col combination is within the matrix.
-          if row > @rows || col > @cols || row <= 0 || col <= 0
-            return 0
-          end
-          return @info[row][col]
+          return 0 if row > @rows || col > @cols || row <= 0 || col <= 0
+          @info[row][col]
         end
 
         def CurMatrixCell
-          return @cell[@crow][@ccol]
+          @cell[@crow][@ccol]
         end
 
         def CurMatrixInfo
-          return @info[@trow + @crow - 1][@lcol + @ccol - 1]
+          @info[@trow + @crow - 1][@lcol + @ccol - 1]
         end
 
         def focusCurrent
@@ -1142,11 +1112,11 @@ module Slithernix
 
         # This returns the current row/col cell
         def getCol
-          return @col
+          @col
         end
 
         def getRow
-          return @row
+          @row
         end
 
         # This sets the background attribute of the widget.

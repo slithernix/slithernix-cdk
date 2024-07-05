@@ -134,23 +134,19 @@ module Slithernix
 
               # Inject the characer into the widget.
               ret = inject(input)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           else
             # Inject each character one at a time.
             actions.each do |action|
               ret = inject(action)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           end
 
           # Set the exit type and exit
           setExitType(0)
-          return -1
+          -1
         end
 
         # This injects a single character into the widget.
@@ -229,7 +225,7 @@ module Slithernix
           end
 
           @result_data = ret
-          return ret
+          ret
         end
 
         # This sets multiple attributes of the widget.
@@ -244,7 +240,7 @@ module Slithernix
         end
 
         def getHighlight
-          return @highlight
+          @highlight
         end
 
         # This sets th background attribute of the widget.
@@ -255,14 +251,10 @@ module Slithernix
         # This draws the buttonbox box widget.
         def draw(box)
           # Is there a shadow?
-          unless @shadow_win.nil?
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
           # Box the widget if they asked.
-          if box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
-          end
+          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
 
           # Draw in the title if there is one.
           drawTitle(@win)
@@ -338,9 +330,7 @@ module Slithernix
         end
 
         def setCurrentButton(button)
-          if button >= 0 && button < @button_count
-            @current_button = button
-          end
+          @current_button = button if button >= 0 && button < @button_count
         end
 
         def getCurrentButton

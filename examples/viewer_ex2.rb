@@ -97,9 +97,7 @@ class Viewer2Example < CLIExample
     selected = Slithernix::Cdk.viewFile(cdkscreen, v_title, params.filename, button, 2)
 
     # Destroy the file selector widget (do not need filename anymore)
-    unless f_select.nil?
-      f_select.destroy
-    end
+    f_select.destroy unless f_select.nil?
 
     # Check how the person exited from the widget.
     mesg = [

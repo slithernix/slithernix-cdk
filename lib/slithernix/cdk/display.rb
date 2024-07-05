@@ -57,7 +57,7 @@ module Slithernix
           result = result.chr.downcase.ord
         end
 
-        return result
+        result
       end
     end
   end

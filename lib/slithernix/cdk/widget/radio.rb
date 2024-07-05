@@ -146,22 +146,18 @@ module Slithernix
 
               # Inject the character into the widget.
               ret = inject(input)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           else
             actions.each do |action|
               ret = inject(action)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           end
 
           # Set the exit type and return
           setExitType(0)
-          return -1
+          -1
         end
 
         # This injects a single character into the widget.
@@ -242,7 +238,7 @@ module Slithernix
 
           fixCursorPosition
           @return_data = ret
-          return ret
+          ret
         end
 
         # This moves the radio field to the given location.
@@ -255,9 +251,7 @@ module Slithernix
         # This function draws the radio widget.
         def draw(box)
           # Do we need to draw in the shadow?
-          if !(@shadow_win.nil?)
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) if !(@shadow_win.nil?)
 
           drawTitle(@win)
 
@@ -346,9 +340,7 @@ module Slithernix
           end
 
           # Box it if needed.
-          if box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
-          end
+          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
 
           fixCursorPosition
         end
@@ -356,9 +348,7 @@ module Slithernix
         # This sets the background attribute of the widget.
         def setBKattr(attrib)
           @win.wbkgd(attrib)
-          unless @scrollbar_win.nil?
-            @scrollbar_win.wbkgd(attrib)
-          end
+          @scrollbar_win.wbkgd(attrib) unless @scrollbar_win.nil?
         end
 
         def destroyInfo
@@ -400,9 +390,7 @@ module Slithernix
         # This sets the radio list items.
         def setItems(list, list_size)
           widest_item = createList(list, list_size, @box_width)
-          if widest_item <= 0
-            return
-          end
+          return if widest_item <= 0
 
           # Clean up the display.
           (0...@view_size).each do |j|
@@ -429,7 +417,7 @@ module Slithernix
           (0...@list_size).each do |j|
             list << Slithernix::Cdk.chtype2Char(@item[j])
           end
-          return @list_size
+          @list_size
         end
 
         # This sets the highlight bar of the radio list.
@@ -438,7 +426,7 @@ module Slithernix
         end
 
         def getHighlight
-          return @highlight
+          @highlight
         end
 
         # This sets the character to use when selecting na item in the list.
@@ -447,7 +435,7 @@ module Slithernix
         end
 
         def getChoiceCharacter
-          return @choice_char
+          @choice_char
         end
 
         # This sets the character to use to drw the left side of the choice box
@@ -457,7 +445,7 @@ module Slithernix
         end
 
         def getLeftBrace
-          return @left_box_char
+          @left_box_char
         end
 
         # This sets the character to use to draw the right side of the choice box
@@ -467,7 +455,7 @@ module Slithernix
         end
 
         def getRightBrace
-          return @right_box_char
+          @right_box_char
         end
 
         # This sets the current highlighted item of the widget
@@ -477,7 +465,7 @@ module Slithernix
         end
 
         def getCurrentItem
-          return @current_item
+          @current_item
         end
 
         # This sets the selected item of the widget
@@ -486,7 +474,7 @@ module Slithernix
         end
 
         def getSelectedItem
-          return @selected_item
+          @selected_item
         end
 
         def focus
@@ -530,7 +518,7 @@ module Slithernix
             end
           end
 
-          return (status ? widest_item : 0)
+          (status ? widest_item : 0)
         end
 
         # Determine how many characters we can shift to the right

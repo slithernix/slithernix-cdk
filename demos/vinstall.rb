@@ -11,7 +11,7 @@ class Vinstall
   def Vinstall.copyFile(cdkscreen, src, dest)
     # TODO: error handling
     FileUtils.cp(src, dest)
-    return :OK
+    :OK
   end
 
   # This makes sure the given directory exists.  If it doesn't then it will
@@ -19,10 +19,10 @@ class Vinstall
   def Vinstall.verifyDirectory(cdkscreen, directory)
     status = 0
     buttons = [
-        'Yes',
-        'No',
+      'Yes',
+      'No',
     ]
-    if !(Dir.exist?(directory))
+    unless Dir.exist?(directory)
       # Create the question.
       mesg = [
         '<C>The directory',
@@ -34,7 +34,7 @@ class Vinstall
       # Ask them if they want to create the directory.
       if cdkscreen.popupDialog(mesg, mesg.size, buttons, buttons.size) == 0
         # TODO error handling
-        if Dir.mkdir(directory, 0754) != 0
+        if Dir.mkdir(directory, 0755) != 0
           # Create the error message.
           error = [
               '<C>Could not create the directory',
@@ -58,7 +58,7 @@ class Vinstall
         status = -1
       end
     end
-    return status
+    status
   end
 
   def Vinstall.main
@@ -71,24 +71,12 @@ class Vinstall
 
     # Check the command line for options
     opts = OptionParser.getopts('d:s:f:t:o:q')
-    if opts['d']
-      dest_path = opts['d']
-    end
-    if opts['s']
-      source_path = opts['s']
-    end
-    if opts['f']
-      filename = opts['f']
-    end
-    if opts['t']
-      title = opts['t']
-    end
-    if opts['o']
-      output = opts['o']
-    end
-    if opts['q']
-      quiet = true
-    end
+    dest_path = opts['d'] if opts['d']
+    source_path = opts['s'] if opts['s']
+    filename = opts['f'] if opts['f']
+    title = opts['t'] if opts['t']
+    output = opts['o'] if opts['o']
+    quiet = true if opts['q']
 
     # Make sure we have everything we need.
     if filename == ''
@@ -186,12 +174,8 @@ class Vinstall
     end
 
     # Destroy the path entry fields.
-    unless source_entry.nil?
-      source_entry.destroy
-    end
-    unless dest_entry.nil?
-      dest_entry.destroy
-    end
+    source_entry.destroy unless source_entry.nil?
+    dest_entry.destroy unless dest_entry.nil?
 
     # Verify that the source directory is valid.
     if Vinstall.verifyDirectory(cdkscreen, source_dir) != 0
@@ -241,9 +225,7 @@ class Vinstall
 
     # Determine the height of the scrolling window.
     swndow_height = 3
-    if Curses.lines >= 16
-      swindow_height = Curses.lines - 13
-    end
+    swindow_height = Curses.lines - 13 if Curses.lines >= 16
 
     # Create the scrolling window.
     install_output = Slithernix::Cdk::Widget::SWindow.new(

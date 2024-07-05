@@ -151,7 +151,7 @@ module Slithernix
 
         def getContents(size)
           size << @list_size
-          return @list
+          @list
         end
 
         def freeLine(x)
@@ -183,9 +183,7 @@ module Slithernix
 
             # set some variables.
             @current_top = 0
-            if @list_size < @save_lines
-              @list_size += 1
-            end
+            @list_size += 1 if @list_size < @save_lines
 
             # Set the maximum top line.
             @max_top_line = @list_size - @view_size
@@ -240,9 +238,7 @@ module Slithernix
           end
 
           # A little sanity check to make sure we don't do something silly
-          if @current_top < 0
-            @current_top = 0
-          end
+          @current_top = 0 if @current_top < 0
 
           # Redraw the window.
           draw(@box)
@@ -287,9 +283,7 @@ module Slithernix
           end
 
           # Make sure the start is lower than the end.
-          if start > finish
-            return
-          end
+          return if start > finish
 
           # Start nuking elements from the window
           (start..finish).each do |x|
@@ -320,17 +314,13 @@ module Slithernix
 
               # inject the character into the widget.
               inject(input)
-              if @exit_type != :EARLY_EXIT
-                return
-              end
+              return if @exit_type != :EARLY_EXIT
             end
           else
             #Inject each character one at a time
             actions.each do |action|
               inject(action)
-              if @exit_type != :EARLY_EXIT
-                return
-              end
+              return if @exit_type != :EARLY_EXIT
             end
           end
 
@@ -448,7 +438,7 @@ module Slithernix
           end
 
           @return_data = ret
-          return ret
+          ret
         end
 
         # This moves the window field to the given location.
@@ -459,14 +449,10 @@ module Slithernix
         # This function draws the swindow window widget.
         def draw(box)
           # Do we need to draw in the shadow.
-          unless @shadow_win.nil?
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
           # Box the widget if needed
-          if box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
-          end
+          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
 
           drawTitle(@win)
 
@@ -556,9 +542,7 @@ module Slithernix
             unless (ps = IO.popen(command.split, 'r')).nil?
               # Start reading.
               until (temp = ps.gets).nil?
-                if temp.size != 0 && temp[-1] == '\n'
-                  temp = temp[0...-1]
-                end
+                temp = temp[0...-1] if temp.size != 0 && temp[-1] == '\n'
                 # Add the line to the scrolling window.
                 add(temp, insert_pos)
                 count += 1
@@ -571,7 +555,7 @@ module Slithernix
             add(e.message, insert_pos)
           end
 
-          return count
+          count
         end
 
         def exec_interactive(command, insert_pos)
@@ -582,9 +566,7 @@ module Slithernix
             unless (ps = IO.popen(command.split, 'r')).nil?
               # Start reading.
               until (temp = ps.gets).nil?
-                if temp.size != 0 && temp[-1] == '\n'
-                  temp = temp[0...-1]
-                end
+                temp = temp[0...-1] if temp.size != 0 && temp[-1] == '\n'
                 # Add the line to the scrolling window.
                 add(temp, insert_pos)
                 count += 1
@@ -597,7 +579,7 @@ module Slithernix
             add(e.message, insert_pos)
           end
 
-          return count
+          count
         end
 
         def showMessage2(msg, msg2, filename)
@@ -800,7 +782,7 @@ module Slithernix
 
           # Close the file and return the number of lines written.
           output_file.close
-          return @list_size
+          @list_size
         end
 
         def focus
@@ -829,7 +811,7 @@ module Slithernix
             destroyInfo
             status = false
           end
-          return status
+          status
         end
 
         def position

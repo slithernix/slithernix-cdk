@@ -179,9 +179,7 @@ class ViewerExample < CLIExample
     )
 
     # Destroy the file selector widget.
-    unless f_select.nil?
-      f_select.destroy
-    end
+    f_select.destroy unless f_select.nil?
 
     # Activate the viewer widget.
     selected = example.activate([])

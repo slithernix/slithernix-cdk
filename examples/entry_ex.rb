@@ -44,7 +44,7 @@ class EntryExample < Example
     )
 
     xxxcb = lambda do |cdktype, widget, client_data, key|
-      return true
+      true
     end
 
     directory.bind(:Entry, '?', xxxcb, 0)

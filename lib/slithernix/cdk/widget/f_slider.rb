@@ -62,7 +62,7 @@ module Slithernix
           digits = [@digits, 30].min
           format = '%%.%if' % [digits]
           temp = format % [value]
-          return temp.size
+          temp.size
         end
 
         def setDigits(digits)
@@ -70,7 +70,7 @@ module Slithernix
         end
 
         def getDigits
-          return @digits
+          @digits
         end
 
         def SCAN_FMT

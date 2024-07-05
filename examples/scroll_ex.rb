@@ -6,7 +6,7 @@ class ScrollExample < CLIExample
   def ScrollExample.newLabel(prefix)
     result = "%s%d" % [prefix, @@count]
     @@count += 1
-    return result
+    result
   end
 
   def ScrollExample.parse_opts(opts, params)
@@ -87,26 +87,24 @@ class ScrollExample < CLIExample
       exit
     end
 
-    if params.c
-      scroll_list.setItems(item, count, true)
-    end
+    scroll_list.setItems(item, count, true) if params.c
 
     addItemCB = lambda do |type, widget, client_data, input|
       widget.addItem(ScrollExample.newLabel("add"))
       widget.screen.refresh
-      return true
+      true
     end
 
     insItemCB = lambda do |type, widget, client_data, input|
       widget.insertItem(ScrollExample.newLabel("insert"))
       widget.screen.refresh
-      return true
+      true
     end
 
     delItemCB = lambda do |type, widget, client_data, input|
       widget.deleteItem(widget.getCurrentItem)
       widget.screen.refresh
-      return true
+      true
     end
 
     scroll_list.bind(:Scroll, 'a', addItemCB, nil)

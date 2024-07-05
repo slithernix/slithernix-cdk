@@ -128,21 +128,17 @@ module Slithernix
 
               # Inject the character into the widget.
               ret = inject(input)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           else
             actions.each do |action|
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           end
 
           # Set the exit type and return.
           setExitType(0)
-          return -1
+          -1
         end
 
         def drawTitle(item)
@@ -270,12 +266,10 @@ module Slithernix
             end
           end
 
-          if !complete
-            setExitType(0)
-          end
+          setExitType(0) if !complete
 
           @result_data = ret
-          return ret
+          ret
         end
 
         # Draw a menu item subwindow
@@ -284,9 +278,7 @@ module Slithernix
           x0 = 0
           x1 = @subsize[@current_title]
 
-          if x1 > high
-            x1 = high
-          end
+          x1 = high if x1 > high
 
           if @current_subtitle >= x1
             x0 = @current_subtitle - x1 + 1
@@ -405,7 +397,7 @@ module Slithernix
         end
 
         def getTitleHighlight
-          return @title_attr
+          @title_attr
         end
 
         # Set the attribute of the sub-title.
@@ -414,7 +406,7 @@ module Slithernix
         end
 
         def getSubTitleHighlight
-          return @subtitle_attr
+          @subtitle_attr
         end
 
         # Exit the menu.
@@ -439,7 +431,7 @@ module Slithernix
           elsif within >= limit
             within = 0
           end
-          return within
+          within
         end
       end
     end

@@ -54,12 +54,8 @@ class Command
 
     # Check the command line for options
     opts = OptionParser.getopts('t:p:')
-    if opts['p']
-      prompt = opts['p']
-    end
-    if opts['t']
-      title = opts['t']
-    end
+    prompt = opts['p'] if opts['p']
+    title = opts['t'] if opts['t']
 
     # Set up CDK
     curses_win = Curses.init_screen
@@ -122,7 +118,7 @@ class Command
       # Display the command.
       entry.setValue(history.command[history.current])
       entry.draw(entry.box)
-      return false
+      false
     end
 
     history_down_cb = lambda do |cdktype, entry, history, key|
@@ -145,7 +141,7 @@ class Command
       # Display the command.
       entry.setValue(history.command[history.current])
       entry.draw(entry.box)
-      return false
+      false
     end
 
     view_history_cb = lambda do |cdktype, entry, swindow, key|
@@ -154,7 +150,7 @@ class Command
 
       # Redraw the entry field.
       entry.draw(entry.box)
-      return false
+      false
     end
 
     list_history_cb = lambda do |cdktype, entry, history, key|
@@ -207,7 +203,7 @@ class Command
       # Redraw the screen.
       entry.erase
       entry.screen.draw
-      return false
+      false
     end
 
     jump_window_cb = lambda do |cdktype, entry, swindow, key|
@@ -239,7 +235,7 @@ class Command
 
       # Redraw the widget.
       entry.draw(entry.box)
-      return false
+      false
     end
 
     command_entry.bind(:Entry, Curses::KEY_UP, history_up_cb, history)

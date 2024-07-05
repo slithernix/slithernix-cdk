@@ -73,7 +73,7 @@ class ButtonboxExample < Example
     # Tab key to the button box widget.
     entryCB = lambda do |cdktype, widget, client_data, key|
       client_data.inject(key)
-      return true
+      true
     end
 
     entry.bind(:Entry, Slithernix::Cdk::KEY_TAB, entryCB, button_widget)

@@ -82,9 +82,7 @@ class RadioExample < CLIExample
       exit
     end
 
-    if params.c
-      radio.setItems(item, count)
-    end
+    radio.setItems(item, count) if params.c
 
     # Loop until the user selects a file, or cancels
     loop do

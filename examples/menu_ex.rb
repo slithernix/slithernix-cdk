@@ -85,7 +85,7 @@ class MenuExample < Example
       info_box.set(mesg, 4, true)
       info_box.draw(true)
 
-      return 0
+      0
     end
 
     # Create the post process function.

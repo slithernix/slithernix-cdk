@@ -46,7 +46,7 @@ class PreProcessExample < Example
         entry.draw(entry.box)
         return 0
       end
-      return 1
+      1
     end
 
     widget.setPreProcess(entry_pre_process_cb, nil)

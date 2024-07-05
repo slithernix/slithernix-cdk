@@ -118,7 +118,7 @@ module Slithernix
               return true
             end
             Slithernix::Cdk.Beep
-            return false
+            false
           end
 
           complete_word_cb = lambda do |widget_type, widget, alphalist, key|
@@ -224,7 +224,7 @@ module Slithernix
               entry.set(alphalist.list[index], entry.min, entry.max, entry.box)
               entry.draw(entry.box)
             end
-            return true
+            true
           end
 
           pre_process_entry_field = lambda do |cdktype, widget, alphalist, input|
@@ -243,12 +243,8 @@ module Slithernix
               curr_pos = entry.screen_col + entry.left_char
               pattern = entry.info.clone
               if [Curses::KEY_BACKSPACE, Curses::KEY_DC].include?(input)
-                if input == Curses::KEY_BACKSPACE
-                  curr_pos -= 1
-                end
-                if curr_pos >= 0
-                  pattern.slice!(curr_pos)
-                end
+                curr_pos -= 1 if input == Curses::KEY_BACKSPACE
+                pattern.slice!(curr_pos) if curr_pos >= 0
               else
                 front = (pattern[0...curr_pos] or '')
                 back = (pattern[curr_pos..-1] or '')
@@ -273,7 +269,7 @@ module Slithernix
               alphalist.drawMyScroller
             end
 
-            return result
+            result
           end
 
           # Set the key bindings for the entry field.
@@ -368,9 +364,7 @@ module Slithernix
         # This draws the alphalist widget.
         def draw(box)
           # Does this widget have a shadow?
-          unless @shadow_win.nil?
-            Draw.drawShadow(@shadow_win)
-          end
+          Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
           # Draw in the entry field.
           @entry_field.draw(@entry_field.box)
@@ -393,10 +387,8 @@ module Slithernix
           @exit_type = @entry_field.exit_type
 
           # Determine the exit status.
-          if @exit_type != :EARLY_EXIT
-            return ret
-          end
-          return 0
+          return ret if @exit_type != :EARLY_EXIT
+          0
         end
 
         # This injects a single character into the alphalist.
@@ -413,12 +405,10 @@ module Slithernix
           @exit_type = @entry_field.exit_type
 
           # Determine the exit status.
-          if @exit_type == :EARLY_EXIT
-            ret = -1
-          end
+          ret = -1 if @exit_type == :EARLY_EXIT
 
           @result_data = ret
-          return ret
+          ret
         end
 
         # This sets multiple attributes of the widget.
@@ -431,9 +421,7 @@ module Slithernix
 
         # This function sets the information inside the alphalist.
         def setContents(list, list_size)
-          if !createList(list, list_size)
-            return
-          end
+          return if !createList(list, list_size)
 
           # Set the information in the scrolling list.
           @scroll_field.set(@list, @list_size, false,
@@ -451,12 +439,12 @@ module Slithernix
         # This returns the contents of the widget.
         def getContents(size)
           size << @list_size
-          return @list
+          @list
         end
 
         # Get/set the current position in the scroll widget.
         def getCurrentItem
-          return @scroll_field.getCurrentItem
+          @scroll_field.getCurrentItem
         end
 
         def setCurrentItem(item)
@@ -473,7 +461,7 @@ module Slithernix
         end
 
         def getFillerChar
-          return @filler_char
+          @filler_char
         end
 
         # This sets the highlgith bar attributes
@@ -579,7 +567,7 @@ module Slithernix
             destroyInfo
             status = true
           end
-          return status
+          status
         end
 
         def focus

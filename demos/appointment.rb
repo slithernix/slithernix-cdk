@@ -91,21 +91,11 @@ class Appointment
 
     # Check the command line for options
     opts = OptionParser.getopts('d:m:y:t:f:')
-    if opts['d']
-      day = opts['d'].to_i
-    end
-    if opts['m']
-      month = opts['m'].to_i
-    end
-    if opts['y']
-      year = opts['y'].to_i
-    end
-    if opts['t']
-      title = opts['t']
-    end
-    if opts['f']
-      filename = opts['f']
-    end
+    day = opts['d'].to_i if opts['d']
+    month = opts['m'].to_i if opts['m']
+    year = opts['y'].to_i if opts['y']
+    title = opts['t'] if opts['t']
+    filename = opts['f'] if opts['f']
 
     # Create the appointment book filename.
     if filename == ''
@@ -209,7 +199,7 @@ class Appointment
 
       # Redraw the calendar.
       calendar.draw(calendar.box)
-      return false
+      false
     end
 
     # This removes a marker from the calendar.
@@ -228,7 +218,7 @@ class Appointment
 
       # Redraw the calendar.
       calendar.draw(calendar.box)
-      return false
+      false
     end
 
     # This displays the marker(s) on the given day.
@@ -292,12 +282,12 @@ class Appointment
 
       # Redraw the calendar
       calendar.draw(calendar.box)
-      return false
+      false
     end
 
     # This allows the user to accelerate to a given date.
     accelerate_to_date_cb = lambda do |widget_type, widget, client_data, key|
-      return false
+      false
     end
 
     # Create a key binding to mark days on the calendar.

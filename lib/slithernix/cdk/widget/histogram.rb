@@ -257,15 +257,15 @@ module Slithernix
         end
 
         def getValue
-          return @value
+          @value
         end
 
         def getLowValue
-          return @low
+          @low
         end
 
         def getHighValue
-          return @high
+          @high
         end
 
         # Set the histogram display type
@@ -274,7 +274,7 @@ module Slithernix
         end
 
         def getViewType
-          return @view_type
+          @view_type
         end
 
         # Set the position of the statistics information.
@@ -283,7 +283,7 @@ module Slithernix
         end
 
         def getStatsPos
-          return @stats_pos
+          @stats_pos
         end
 
         # Set the attribute of the statistics.
@@ -292,7 +292,7 @@ module Slithernix
         end
 
         def getStatsAttr
-          return @stats_attr
+          @stats_attr
         end
 
         # Set the character to use when drawing the widget.
@@ -301,7 +301,7 @@ module Slithernix
         end
 
         def getFillerChar
-          return @filler
+          @filler
         end
 
         # Set the background attribute of the widget.
@@ -325,14 +325,10 @@ module Slithernix
           @win.erase
 
           # Box the widget if asked.
-          if box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
-          end
+          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
 
           # Do we have a shadow to draw?
-          if !(@shadow.nil?)
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) if !(@shadow.nil?)
 
           drawTitle(@win)
 

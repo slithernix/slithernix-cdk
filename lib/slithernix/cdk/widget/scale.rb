@@ -145,23 +145,19 @@ module Slithernix
 
               # Inject the character into the widget.
               ret = inject(input)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           else
             # Inject each character one at a time.
             actions.each do |action|
               ret = inject(action)
             end
-            if @exit_type != :EARLY_EXIT
-              return ret
-            end
+            return ret if @exit_type != :EARLY_EXIT
           end
 
           # Set the exit type and return.
           setExitType(0)
-          return ret
+          ret
         end
 
         # Check if the value lies outsid the low/high range. If so, force it in.
@@ -187,16 +183,10 @@ module Slithernix
         # Check if the cursor is on a valid edit-position. This must be one of
         # the non-blank cells in the field.
         def validEditPosition(new_position)
-          if new_position <= 0 || new_position >= @field_width
-            return false
-          end
-          if moveToEditPosition(new_position) == Curses::Error
-            return false
-          end
+          return false if new_position <= 0 || new_position >= @field_width
+          return false if moveToEditPosition(new_position) == Curses::Error
           ch = @field_win.inch
-          if ch.chr != ' '
-            return true
-          end
+          return true if ch.chr != ' '
           if new_position > 1
             # Don't use recursion - only one level is wanted
             if moveToEditPosition(new_position - 1) == Curses::Error
@@ -205,7 +195,7 @@ module Slithernix
             ch = @field_win.inch
             return ch.chr != ' '
           end
-          return false
+          false
         end
 
         # Set the edit position. Normally the cursor is one cell to the right of
@@ -235,7 +225,7 @@ module Slithernix
             string.chop!
             result = true
           end
-          return result
+          result
         end
 
         # Perform an editing function for the field.
@@ -269,7 +259,7 @@ module Slithernix
             result = true
           end
 
-          return result
+          result
         end
 
         def self.Decrement(value, by)
@@ -345,9 +335,7 @@ module Slithernix
                 @screen.refresh
               else
                 if @field_edit != 0
-                  if !performEdit(input)
-                    Slithernix::Cdk.Beep
-                  end
+                  Slithernix::Cdk.Beep if !performEdit(input)
                 else
                   # The cursor is not within the editable text. Interpret
                   # input as commands.
@@ -381,7 +369,7 @@ module Slithernix
           end
 
           @result_data = ret
-          return ret
+          ret
         end
 
         # This moves the widget's data field to the given location.
@@ -394,14 +382,10 @@ module Slithernix
         # This function draws the widget.
         def draw(box)
           # Draw the shadow.
-          unless @shadow_win.nil?
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
           # Box the widget if asked.
-          if box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
-          end
+          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
 
           drawTitle(@win)
 
@@ -435,9 +419,7 @@ module Slithernix
         def setBKattr(attrib)
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
-          unless @label_win.nil?
-            @label_win.wbkgd(attrib)
-          end
+          @label_win.wbkgd(attrib) unless @label_win.nil?
         end
 
         # This function destroys the widget.
@@ -482,7 +464,7 @@ module Slithernix
         end
 
         def getValue
-          return @current
+          @current
         end
 
         # This function sets the low/high values of the widget.
@@ -501,11 +483,11 @@ module Slithernix
         end
 
         def getLowValue
-          return @low
+          @low
         end
 
         def getHighValue
-          return @high
+          @high
         end
 
         def focus

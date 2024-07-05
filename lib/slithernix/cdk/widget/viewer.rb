@@ -139,7 +139,7 @@ module Slithernix
           setHighlight(button_highlight)
           setInfoLine(show_line_info)
           setBox(box)
-          return setInfo(list, list_size, attr_interp)
+          setInfo(list, list_size, attr_interp)
         end
 
         # This sets the title of the viewer. (A nil title is allowed.
@@ -153,7 +153,7 @@ module Slithernix
         end
 
         def getTitle
-          return @title
+          @title
         end
 
         def setupLine(interpret, list, x)
@@ -288,12 +288,12 @@ module Slithernix
           else
             @max_top_line = @list_size - 1
           end
-          return @list_size
+          @list_size
         end
 
         def getInfo(size)
           size << @list_size
-          return @list
+          @list
         end
 
         # This function sets the highlight type of the buttons.
@@ -302,7 +302,7 @@ module Slithernix
         end
 
         def getHighlight
-          return @button_highlight
+          @button_highlight
         end
 
         # This sets whether or not you wnat to set the viewer info line.
@@ -311,7 +311,7 @@ module Slithernix
         end
 
         def getInfoLine
-          return @show_line_info
+          @show_line_info
         end
 
         # This removes all the lines inside the scrolling window.
@@ -617,7 +617,7 @@ module Slithernix
               end
             end
           end
-          return found
+          found
         end
 
         # This allows us to 'jump' to a given line in the file.

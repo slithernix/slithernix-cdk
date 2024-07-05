@@ -10,15 +10,15 @@ module Slithernix
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
           bindings = {
-            'u'           => Curses::KEY_UP,
-            'U'           => Curses::KEY_PPAGE,
-            Slithernix::Cdk::BACKCHAR => Curses::KEY_PPAGE,
-            Slithernix::Cdk::FORCHAR  => Curses::KEY_NPAGE,
-            'g'           => Curses::KEY_HOME,
-            '^'           => Curses::KEY_HOME,
-            'G'           => Curses::KEY_END,
-            '$'           => Curses::KEY_END,
+            'u' => Curses::KEY_UP,
+            'U' => Curses::KEY_PPAGE,
+            'g' => Curses::KEY_HOME,
+            '^' => Curses::KEY_HOME,
+            'G' => Curses::KEY_END,
+            '$' => Curses::KEY_END,
           }
+          bindings[Slithernix::Cdk::BACKCHAR] = Curses::KEY_PPAGE,
+          bindings[Slithernix::Cdk::FORCHAR]  = Curses::KEY_NPAGE,
           setBox(box)
           box_height = @border_size * 2 + 1
 
@@ -30,10 +30,14 @@ module Slithernix
 
           # If the field_width is a negative will be COLS-field_width,
           # otherwise field_width will be the given width.
-          field_width = Slithernix::Cdk.setWidgetDimension(parent_width, field_width, 0)
+          field_width = Slithernix::Cdk.setWidgetDimension(
+            parent_width,
+            field_width,
+            0,
+          )
 
           # Translate the label string to a chtype array.
-          if !(label.nil?) && label.size > 0
+          if label&.size&.positive?
             label_len = []
             @label = Slithernix::Cdk.char2Chtype(label, label_len, [])
             @label_len = label_len[0]
@@ -113,9 +117,7 @@ module Slithernix
           @field_edit = 0
 
           # Set the start value.
-          if start < low
-            @current = low
-          end
+          @current = low if start < low
 
           # Do we want a shadow?
           if shadow
@@ -146,23 +148,19 @@ module Slithernix
 
               # Inject the character into the widget.
               ret = inject(input)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           else
             # Inject each character one at a time.
             actions.each do |action|
               ret = inject(action)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           end
 
           # Set the exit type and return.
           setExitType(0)
-          return -1
+          -1
         end
 
         # Check if the value lies outside the low/high range. If so, force it in.
@@ -186,16 +184,10 @@ module Slithernix
         # Check if the cursor is on a valid edit-position. This must be one of
         # the non-blank cells in the field.
         def validEditPosition(new_position)
-          if new_position <= 0 || new_position >= @field_width
-            return false
-          end
-          if moveToEditPosition(new_position) == Curses::Error
-            return false
-          end
+          return false if new_position <= 0 || new_position >= @field_width
+          return false if moveToEditPosition(new_position) == Curses::Error
           ch = @field_win.inch
-          if Slithernix::Cdk.CharOf(ch) != ' '
-            return true
-          end
+          return true if Slithernix::Cdk.CharOf(ch) != ' '
           if new_position > 1
             # Don't use recursion - only one level is wanted
             if moveToEditPosition(new_position - 1) == Curses::Error
@@ -204,7 +196,7 @@ module Slithernix
             ch = @field_win.inch
             return Slithernix::Cdk.CharOf(ch) != ' '
           end
-          return false
+          false
         end
 
         # Set the edit position.  Normally the cursor is one cell to the right of
@@ -234,7 +226,7 @@ module Slithernix
             string.chop!
             result = true
           end
-          return result
+          result
         end
 
         # Perform an editing function for the field.
@@ -247,9 +239,7 @@ module Slithernix
           col = need - @field_edit
 
           adj = col < 0 ? -col : 0
-          if adj != 0
-            temp  = ' ' * adj
-          end
+          temp  = ' ' * adj if adj != 0
           @field_win.move(0, base)
           @field_win.winnstr(temp, need)
           temp << ' '
@@ -270,7 +260,7 @@ module Slithernix
             setValue(value)
             result = true
           end
-          return result
+          result
         end
 
         def self.Decrement(value, by)
@@ -346,9 +336,7 @@ module Slithernix
                 @screen.refresh
               else
                 if @field_edit != 0
-                  if !performEdit(input)
-                    Slithernix::Cdk.Beep
-                  end
+                  Slithernix::Cdk.Beep if !performEdit(input)
                 else
                   # The cursor is not within the editable text. Interpret
                   # input as commands.
@@ -381,7 +369,7 @@ module Slithernix
           end
 
           @return_data = 0
-          return ret
+          ret
         end
 
         # This moves the widget's data field to the given location.
@@ -400,14 +388,10 @@ module Slithernix
         # This function draws the widget.
         def draw(box)
           # Draw the shadow.
-          unless @shadow_win.nil?
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
           # Box the widget if asked.
-          if box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
-          end
+          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
 
           drawTitle(@win)
 
@@ -465,9 +449,7 @@ module Slithernix
           # Set the widget's background attribute.
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
-          unless @label_win.nil?
-            @label_win.wbkgd(attrib)
-          end
+          @label_win.wbkgd(attrib) unless @label_win.nil?
         end
 
         # This function destroys the widget.
@@ -499,7 +481,7 @@ module Slithernix
         end
 
         def formattedSize(value)
-          return value.to_s.size
+          value.to_s.size
         end
 
         # This function sets the low/high/current values of the widget.
@@ -516,7 +498,7 @@ module Slithernix
         end
 
         def getValue
-          return @current
+          @current
         end
 
         # This function sets the low/high values of the widget.
@@ -535,11 +517,11 @@ module Slithernix
         end
 
         def getLowValue
-          return @low
+          @low
         end
 
         def getHighValue
-          return @high
+          @high
         end
 
         def focus

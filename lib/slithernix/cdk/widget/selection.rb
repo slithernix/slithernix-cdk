@@ -174,23 +174,19 @@ module Slithernix
 
               # Inject the character into the widget.
               ret = inject(input)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           else
             # Inject each character one at a time.
             actions.each do |action|
               ret = inject(action)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           end
 
           # Set the exit type and return.
           setExitType(0)
-          return 0
+          0
         end
 
         # This injects a single characer into the widget.
@@ -277,7 +273,7 @@ module Slithernix
 
           @result_data = ret
           fixCursorPosition
-          return ret
+          ret
         end
 
         # This moves the selection field to the given location.
@@ -290,9 +286,7 @@ module Slithernix
         # This function draws the selection list.
         def draw(box)
           # Draw in the shadow if we need to.
-          unless @shadow_win.nil?
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
           drawTitle(@win)
 
@@ -307,9 +301,7 @@ module Slithernix
           sel_item = -1
 
           # If there is to be a highlight, assign it now
-          if @has_focus
-            sel_item = @current_item
-          end
+          sel_item = @current_item if @has_focus
 
           # draw the list...
           j = 0
@@ -378,9 +370,7 @@ module Slithernix
           end
 
           # Box it if needed
-          if @box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
-          end
+          Slithernix::Cdk::Draw.drawObjBox(@win, self) if @box
 
           fixCursorPosition
         end
@@ -388,9 +378,7 @@ module Slithernix
         # This sets the background attribute of the widget.
         def setBKattr(attrib)
           @win.wbkgd(attrib)
-          unless @scrollbar_win.nil?
-            @scrollbar_win.wbkgd(attrib)
-          end
+          @scrollbar_win.wbkgd(attrib) unless @scrollbar_win.nil?
         end
 
         def destroyInfo
@@ -432,9 +420,7 @@ module Slithernix
         # This sets the selection list items.
         def setItems(list, list_size)
           widest_item = createList(list, list_size)
-          if widest_item <= 0
-            return
-          end
+          return if widest_item <= 0
 
           # Clean up the display
           (0...@view_size).each do |j|
@@ -458,14 +444,12 @@ module Slithernix
           @item.each do |item|
             list << Slithernix::Cdk.chtype2Char(item)
           end
-          return @list_size
+          @list_size
         end
 
         def setSelectionTitle(title)
           # Make sure the title isn't nil
-          if title.nil?
-            return
-          end
+          return if title.nil?
 
           setTitle(title, -(@box_width + 1))
 
@@ -473,7 +457,7 @@ module Slithernix
         end
 
         def getTitle
-          return Slithernix::Cdk.chtype2Char(@title)
+          Slithernix::Cdk.chtype2Char(@title)
         end
 
         # This sets the highlight bar.
@@ -529,11 +513,11 @@ module Slithernix
         def getChoice(index)
           # Make sure the index isn't out of range.
           if index < 0
-            return @selections[0]
+            @selections[0]
           elsif index > list_size
-            return @selections[@list_size - 1]
+            @selections[@list_size - 1]
           else
-            return @selections[index]
+            @selections[index]
           end
         end
 
@@ -547,7 +531,7 @@ module Slithernix
         end
 
         def getModes
-          return @mode
+          @mode
         end
 
         # This sets a single mode of an item in the selection list.
@@ -565,16 +549,16 @@ module Slithernix
         def getMode(index)
           # Make sure the index isn't out of range
           if index < 0
-            return @mode[0]
+            @mode[0]
           elsif index > list_size
-            return @mode[@list_size - 1]
+            @mode[@list_size - 1]
           else
-            return @mode[index]
+            @mode[index]
           end
         end
 
         def getCurrent
-          return @current_item
+          @current_item
         end
 
         # methods for generic type methods
@@ -632,7 +616,7 @@ module Slithernix
             destroyInfo
           end
 
-          return (status ? widest_item : 0)
+          (status ? widest_item : 0)
         end
 
         # Determine how many characters we can shift to the right

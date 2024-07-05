@@ -278,7 +278,7 @@ module Util
     end
 
     exit_status ||= -44
-    return exit_status
+    exit_status
   end
 
   def self.setup_curses_window
@@ -304,7 +304,7 @@ module Util
     @pry_window = Curses::Window.new(Curses.lines, Curses.cols, 0, 0)
     @pry_window.timeout = 0
     @pry_window.refresh
-    return @pry_window
+    @pry_window
   end
 
   def self.close_curses_window

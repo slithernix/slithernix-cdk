@@ -107,12 +107,8 @@ class SQLiteDemo
     prompt = ''
     dbfile = ''
     opts = OptionParser.getopts('p:f:h')
-    if opts['p']
-      prompt = opts['p']
-    end
-    if opts['f']
-      dbfile = opts['f']
-    end
+    prompt = opts['p'] if opts['p']
+    dbfile = opts['f'] if opts['f']
     if opts['h']
       puts 'Usage: %s %s' % [File.basename($PROGRAM_NAME), SQLiteDemo::GPUsage]
       exit  # EXIT_SUCCESS
@@ -173,7 +169,7 @@ class SQLiteDemo
       # Display the command.
       entry.setValue(history.cmd_history[history.current])
       entry.draw(entry.box)
-      return true
+      true
     end
 
     history_down_cb = lambda do |cdktype, entry, history, key|
@@ -196,7 +192,7 @@ class SQLiteDemo
       # Display the command.
       entry.setValue(history.cmd_history[history.current])
       entry.draw(entry.box)
-      return true
+      true
     end
 
     list_history_cb = lambda do |cdktype, entry, history, key|
@@ -235,18 +231,18 @@ class SQLiteDemo
       # Redraw the screen.
       entry.erase
       entry.screen.draw
-      return true
+      true
     end
 
     view_history_cb = lambda do |cdktype, entry, swindow, key|
       swindow.activate([])
       entry.draw(entry.box)
-      return true
+      true
     end
 
     swindow_help_cb = lambda do |cdktype, widget, entry, key|
       SQLiteDemo.help(entry)
-      return true
+      true
     end
 
     command_entry.bind(:Entry, Curses::KEY_UP, history_up_cb, history)
@@ -273,9 +269,7 @@ class SQLiteDemo
         SQLiteDemo.saveHistory(history, 100)
 
         # Exit
-        if !sqlitedb.closed?
-          sqlitedb.close
-        end
+        sqlitedb.close unless sqlitedb.closed?
 
         # All done.
         command_entry.destroy
@@ -293,9 +287,7 @@ class SQLiteDemo
         command_output.add('</R>%d<!R> %s' % [count + 1, command], Slithernix::Cdk::BOTTOM)
         count += 1
         sqlitedb.execute(command) do |row|
-          if row.size >= 3
-            command_output.add(row[2], Slithernix::Cdk::BOTTOM)
-          end
+          command_output.add(row[2], Slithernix::Cdk::BOTTOM) if row.size >= 3
         end
       elsif command == 'help'
         # Display the help.

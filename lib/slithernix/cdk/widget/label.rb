@@ -16,9 +16,7 @@ module Slithernix
           ypos = [yplace]
           x = 0
 
-          if rows <= 0
-            return nil
-          end
+          return nil if rows <= 0
 
           setBox(box)
           box_height = rows + 2 * @border_size
@@ -129,7 +127,7 @@ module Slithernix
 
         def getMessage(size)
           size << @rows
-          return @info
+          @info
         end
 
         def position
@@ -144,14 +142,10 @@ module Slithernix
         # This draws the label widget.
         def draw(box)
           # Is there a shadow?
-          unless @shadow_win.nil?
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
           # Box the widget if asked.
-          if @box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
-          end
+          Slithernix::Cdk::Draw.drawObjBox(@win, self) if @box
 
           # Draw in the message.
           (0...@rows).each do |x|
@@ -194,12 +188,10 @@ module Slithernix
             # Only exit when a specific key is hit
             while true
               code = getch(function_key)
-              if code == key
-                break
-              end
+              break if code == key
             end
           end
-          return code
+          code
         end
       end
     end

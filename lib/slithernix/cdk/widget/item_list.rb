@@ -124,23 +124,19 @@ module Slithernix
 
               # Inject the character into the widget.
               ret = inject(input)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           else
             # Inject each character one at a time.
             actions.each do |action|
               ret = inject(action)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           end
 
           # Set the exit type and exit.
           setExitType(0)
-          return ret
+          ret
         end
 
         # This injects a single character into the widget.
@@ -216,7 +212,7 @@ module Slithernix
           end
 
           @result_data = ret
-          return ret
+          ret
         end
 
         # This moves the itemlist field to the given location.
@@ -229,9 +225,7 @@ module Slithernix
         # This draws the widget on the screen.
         def draw(box)
           # Did we ask for a shadow?
-          unless @shadow_win.nil?
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
           drawTitle(@win)
 
@@ -242,9 +236,7 @@ module Slithernix
           end
 
           # Box the widget if asked.
-          if box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
-          end
+          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
 
           @win.refresh
 
@@ -256,9 +248,7 @@ module Slithernix
         def setBKattr(attrib)
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
-          unless @label_win.nil?
-            @label_win.wbkgd(attrib)
-          end
+          @label_win.wbkgd(attrib) unless @label_win.nil?
         end
 
         # This function draws the contents of the field.
@@ -276,9 +266,7 @@ module Slithernix
           (0...len).each do |x|
             c = @item[current_item][x]
 
-            if highlight
-              c = c.ord | Curses::A_REVERSE
-            end
+            c = c.ord | Curses::A_REVERSE if highlight
 
             @field_win.mvwaddch(0, x + @item_pos[current_item], c)
           end
@@ -351,7 +339,7 @@ module Slithernix
 
         def getValues(size)
           size << @list_size
-          return @item
+          @item
         end
 
         # This sets the default/current item of the itemlist
@@ -363,7 +351,7 @@ module Slithernix
         end
 
         def getCurrentItem
-          return @current_item
+          @current_item
         end
 
         # This sets the default item in the list.
@@ -379,7 +367,7 @@ module Slithernix
         end
 
         def getDefaultItem
-          return @default_item
+          @default_item
         end
 
         def focus
@@ -434,7 +422,7 @@ module Slithernix
             status = true
           end
 
-          return status
+          status
         end
 
         # Go through the list and determine the widest item.
@@ -446,7 +434,7 @@ module Slithernix
           end
           max_width = [max_width, 0].max
 
-          return max_width
+          max_width
         end
 
         def updateFieldWidth
@@ -463,7 +451,7 @@ module Slithernix
             @input_window = @field_win
             return true
           end
-          return false
+          false
         end
 
         def position

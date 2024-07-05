@@ -109,9 +109,7 @@ module Slithernix
         Slithernix::Cdk::Screen.refreshCDKWindow(@screen.window)
 
         # Redraw the window, if they asked for it
-        if refresh_flag
-          draw(@box)
-        end
+        draw(@box) if refresh_flag
       end
 
       def inject(a)
@@ -123,7 +121,7 @@ module Slithernix
       end
 
       def getBox
-        return @box
+        @box
       end
 
       def focus
@@ -192,7 +190,7 @@ module Slithernix
 
       # Set the widget's title.
       def setTitle (title, box_width)
-        if !title.nil?
+        if title
           temp = title.split("\n")
           @title_lines = temp.size
 
@@ -227,7 +225,7 @@ module Slithernix
           end
         end
 
-        return box_width
+        box_width
       end
 
       # Draw the widget's title
@@ -283,7 +281,7 @@ module Slithernix
         if Slithernix::Cdk::ALL_OBJECTS.include?(self)
           result = validObjType(widget_type)
         end
-        return result
+        result
       end
 
       def getc
@@ -320,46 +318,40 @@ module Slithernix
           end
         end
 
-        return result
+        result
       end
 
       def getch(function_key)
         key = getc
         function_key << (key.ord >= Curses::KEY_MIN && key.ord <= Curses::KEY_MAX)
-        return key
+        key
       end
 
       def bindableObject(cdktype)
         if cdktype != widget_type
-          return nil
+          nil
         elsif [:FSelect, :AlphaList].include?(widget_type)
-          return @entry_field
+          @entry_field
         else
-          return self
+          self
         end
       end
 
       def bind(type, key, function, data)
         widg = bindableObject(type)
         if key.ord < Curses::KEY_MAX && !(widg.nil?)
-          if key.ord != 0
-            widg.binding_list[key] = [function, data]
-          end
+          widg.binding_list[key] = [function, data] if key.ord != 0
         end
       end
 
       def unbind(type, key)
         widg = bindableObject(type)
-        unless widg.nil?
-          widg.binding_list.delete(key)
-        end
+        widg.binding_list.delete(key) unless widg.nil?
       end
 
       def cleanBindings(type)
         widg = bindableObject(type)
-        if !(widg.nil?) && !(widg.binding_list.nil?)
-          widg.binding_list.clear
-        end
+        widg.binding_list.clear if !(widg.nil?) && !(widg.binding_list.nil?)
       end
 
       # This checks to see if the binding for the key exists:
@@ -378,18 +370,16 @@ module Slithernix
             return function.call(type, widg, data, key)
           end
         end
-        return false
+        false
       end
 
       # This checks to see if the binding for the key exists.
       def isBind(type, key)
         result = false
         widg = bindableObject(type)
-        unless widg.nil?
-          result = widg.binding_list.include?(key)
-        end
+        result = widg.binding_list.include?(key) unless widg.nil?
 
-        return result
+        result
       end
 
       # This allows the user to use the cursor keys to adjust the

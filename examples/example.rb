@@ -41,7 +41,7 @@ class Example
 
     opt_parser.parse!(args)
 
-    return params
+    params
   end
 end
 
@@ -58,6 +58,6 @@ class CLIExample < Example
       params.w_value = w
     end
 
-    return params
+    params
   end
 end

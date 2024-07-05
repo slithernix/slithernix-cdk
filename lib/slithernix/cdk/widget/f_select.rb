@@ -159,7 +159,7 @@ module Slithernix
 
             # Redraw the file selector.
             fselect.draw(fselect.box)
-            return true
+            true
           end
 
           # This tries to complete the filename
@@ -286,7 +286,7 @@ module Slithernix
               end
             end
 
-            return true
+            true
           end
 
           # This allows the user to delete a file.
@@ -356,7 +356,7 @@ module Slithernix
               return true
             end
             Slithernix::Cdk.Beep
-            return false
+            false
           end
 
           # Define the callbacks for the entry field.
@@ -450,9 +450,7 @@ module Slithernix
         # This draws the file selector widget.
         def draw(box)
           # Draw in the shadow if we need to.
-          unless @shadow_win.nil?
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
           # Draw in the entry field.
           @entry_field.draw(@entry_field.box)
@@ -477,23 +475,19 @@ module Slithernix
 
               # Inject the character into the widget.
               ret = inject(input)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           else
             # Inject each character one at a time.
             actions.each do |action|
               ret = inject(action)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           end
 
           # Set the exit type and exit.
           setExitType(0)
-          return 0
+          0
         end
 
         # This injects a single character into the file selector.
@@ -508,9 +502,7 @@ module Slithernix
           @exit_type = @entry_field.exit_type
 
           # If we exited early, make sure we don't interpret it as a file.
-          if @exit_type == :EARLY_EXIT
-            return 0
-          end
+          return 0 if @exit_type == :EARLY_EXIT
 
           # Can we change into the directory
           #file = Dir.chdir(filename)
@@ -536,12 +528,10 @@ module Slithernix
             drawMyScroller
           end
 
-          if !complete
-            setExitType(0)
-          end
+          setExitType(0) if !complete
 
           @result_data = ret
-          return ret
+          ret
         end
 
         # This function sets the information inside the file selector.
@@ -593,9 +583,7 @@ module Slithernix
 
           # if the information coming in is the same as the information
           # that is already there, there is no need to destroy it.
-          if @pwd != directory
-            @pwd = Dir.getwd
-          end
+          @pwd = Dir.getwd if @pwd != directory
 
           @file_attribute = file_attribute.clone
           @dir_attribute = dir_attribute.clone
@@ -659,12 +647,12 @@ module Slithernix
             end
             @dir_contents[x] = '%s%s%s' % [attr, dir_list[x], mode]
           end
-          return true
+          true
         end
 
         def getDirContents(count)
           count << @file_counter
-          return @dir_contents
+          @dir_contents
         end
 
         # This sets the current directory of the file selector.
@@ -694,11 +682,11 @@ module Slithernix
               end
             end
           end
-          return result
+          result
         end
 
         def getDirectory
-          return @pwd
+          @pwd
         end
 
         # This sets the filler character of the entry field.
@@ -708,7 +696,7 @@ module Slithernix
         end
 
         def getFillerChar
-          return @filler_character
+          @filler_character
         end
 
         # This sets the highlight bar of the scrolling list.
@@ -718,7 +706,7 @@ module Slithernix
         end
 
         def getHighlight
-          return @highlight
+          @highlight
         end
 
         # This sets the attribute of the directory attribute in the
@@ -732,7 +720,7 @@ module Slithernix
         end
 
         def getDirAttribute
-          return @dir_attribute
+          @dir_attribute
         end
 
         # This sets the attribute of the link attribute in the scrolling list.
@@ -745,7 +733,7 @@ module Slithernix
         end
 
         def getLinkAttribute
-          return @link_attribute
+          @link_attribute
         end
 
         # This sets the attribute of the socket attribute in the scrolling list.
@@ -758,7 +746,7 @@ module Slithernix
         end
 
         def getSocketAttribute
-          return @sock_attribute
+          @sock_attribute
         end
 
         # This sets the attribute of the file attribute in the scrolling list.
@@ -771,7 +759,7 @@ module Slithernix
         end
 
         def getFileAttribute
-          return @file_attribute
+          @file_attribute
         end
 
         # this sets the contents of the widget
@@ -779,9 +767,7 @@ module Slithernix
           scrollp = @scroll_field
           entry = @entry_field
 
-          if !createList(list, list_size)
-            return
-          end
+          return if !createList(list, list_size)
 
           # Set the information in the scrolling list.
           scrollp.set(@dir_contents, @file_counter, false, scrollp.highlight,
@@ -798,12 +784,12 @@ module Slithernix
 
         def getContents(size)
           size << @file_counter
-          return @dir_contents
+          @dir_contents
         end
 
         # Get/set the current position in the scroll wiget.
         def getCurrentItem
-          return @scroll_field.getCurrent
+          @scroll_field.getCurrent
         end
 
         def setCurrentItem(item)
@@ -873,9 +859,9 @@ module Slithernix
         # Currently a wrapper for File.expand_path
         def self.make_pathname(directory, filename)
           if filename == '..'
-            return File.expand_path(directory) + '/..'
+            File.expand_path(directory) + '/..'
           else
-            return File.expand_path(filename, directory)
+            File.expand_path(filename, directory)
           end
         end
 
@@ -889,12 +875,12 @@ module Slithernix
           # Create the pathname.
           result = Slithernix::Cdk::Widget::FSelect.make_pathname(@pwd, temp_char)
 
-          return result
+          result
         end
 
         # Currently a wrapper for File.expand_path
         def self.expandTilde(filename)
-          return File.expand_path(filename)
+          File.expand_path(filename)
         end
 
         def destroyInfo
@@ -927,7 +913,7 @@ module Slithernix
             destroyInfo
             status = true
           end
-          return status
+          status
         end
 
         def focus

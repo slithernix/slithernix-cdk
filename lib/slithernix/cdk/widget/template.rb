@@ -13,9 +13,7 @@ module Slithernix
           box_height = box ? 3 : 1
           plate_len = 0
 
-          if plate.nil? || plate.size == 0
-            return nil
-          end
+          return nil if plate.nil? || plate.size == 0
 
           setBox(box)
 
@@ -202,23 +200,19 @@ module Slithernix
 
               # Inject each character into the widget.
               ret = inject(input)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           else
             # Inject each character one at a time.
             actions.each do |action|
               ret = inject(action)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           end
 
           # Set the exit type and return.
           setExitType(0)
-          return ret
+          ret
         end
 
         # This injects a character into the widget.
@@ -304,12 +298,10 @@ module Slithernix
             end
           end
 
-          if !complete
-            setExitType(0)
-          end
+          setExitType(0) if !complete
 
           @return_data = ret
-          return ret
+          ret
         end
 
         def validTemplate(input)
@@ -320,9 +312,7 @@ module Slithernix
             while pp < @plate.size && !Slithernix::Cdk::Widget::Template.isPlateChar(@plate[pp])
               pp += 1
             end
-            if pp == @plate.size
-              return false
-            end
+            return false if pp == @plate.size
 
             # Check if the input matches the plate
             if Slithernix::Cdk.digit?(newchar) && 'ACc'.include?(@plate[pp])
@@ -342,7 +332,7 @@ module Slithernix
             ip += 1
             pp += 1
           end
-          return true
+          true
         end
 
         # Return a mixture of the plate-overlay and field-info
@@ -362,7 +352,7 @@ module Slithernix
             end
           end
 
-          return mixed_string
+          mixed_string
         end
 
         # Return the field_info from the mixed string.
@@ -377,27 +367,26 @@ module Slithernix
             pos += 1
           end
 
-          return unmixed_string
+          unmixed_string
         end
 
         # Move the template field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
-          windows = [@win, @label_win, @field_win, @shadow_win]
-          move_specific(xplace, yplace, relative, refresh_flag,
-              windows, [])
+          windows = [ @win, @label_win, @field_win, @shadow_win ]
+          move_specific(
+            xplace,
+            yplace,
+            relative,
+            refresh_flag,
+            windows,
+            [],
+          )
         end
 
         # Draw the template widget.
         def draw(box)
-          # Do we need to draw the shadow.
-          unless @shadow_win.nil?
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
-
-          # Box it if needed
-          if box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
+          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
 
           drawTitle(@win)
 
@@ -455,9 +444,7 @@ module Slithernix
         def setBKattr(attrib)
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
-          unless @label_win.nil?
-            @label_win.wbkgd(attrib)
-          end
+          @label_win.wbkgd(attrib) unless @label_win.nil?
         end
 
         # Destroy this widget.
@@ -514,18 +501,16 @@ module Slithernix
         end
 
         def getValue
-          return @info
+          @info
         end
 
         # Set the minimum number of characters to enter into the widget.
         def setMin(min)
-          if min >= 0
-            @min = min
-          end
+          @min = min if min >= 0
         end
 
         def getMin
-          return @min
+          @min
         end
 
         # Erase the information in the template widget.

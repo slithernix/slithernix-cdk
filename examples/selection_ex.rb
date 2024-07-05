@@ -88,9 +88,7 @@ class SelectionExample < CLIExample
         params.box,
         !params.shadow,
       )
-      unless header.nil?
-        header.activate([])
-      end
+      header.activate([]) unless header.nil?
     end
 
     if params.footer != ''
@@ -104,9 +102,7 @@ class SelectionExample < CLIExample
         params.box,
         !params.shadow,
       )
-      unless footer.nil?
-        footer.activate([])
-      end
+      footer.activate([]) unless footer.nil?
     end
 
     # Create the selection list.
@@ -135,9 +131,7 @@ class SelectionExample < CLIExample
       exit
     end
 
-    if params.c
-      selection.setItems(item, item.size)
-    end
+    selection.setItems(item, item.size) if params.c
 
     # Activate the selection list.
     selection.activate([])

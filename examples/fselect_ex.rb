@@ -13,7 +13,7 @@ class FselectExample < CLIExample
     Etc.endpwent
     list.sort!
 
-    return list.size
+    list.size
   end
 
   def FselectExample.fill_undo(widget, deleted, data)
@@ -106,7 +106,7 @@ class FselectExample < CLIExample
         widget.draw(widget.border_size)
         result = true
       end
-      return result
+      result
     end
 
     do_delete1 = lambda do |cdktype, widget, fselect, key|
@@ -130,7 +130,7 @@ class FselectExample < CLIExample
           result = true
         end
       end
-      return result
+      result
     end
 
     do_help = lambda do |cdktype, widget, client_data, key|
@@ -144,7 +144,7 @@ class FselectExample < CLIExample
           'F5 = undo deletion',
       ]
       cdkscreen.popupLabel(message, message.size)
-      return true
+      true
     end
 
     do_reload = lambda do |cdktype, widget, fselect, key|
@@ -156,7 +156,7 @@ class FselectExample < CLIExample
         widget.draw(widget.border_size)
         result = true
       end
-      return result
+      result
     end
 
     do_undo = lambda do |cdktype, widget, fselect, key|
@@ -175,7 +175,7 @@ class FselectExample < CLIExample
         @@my_undo_list = @@my_undo_list[0...-1]
         result = true
       end
-      return result
+      result
     end
 
     fselect.bind(:FSelect, '?', do_help, nil)

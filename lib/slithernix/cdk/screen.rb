@@ -210,7 +210,7 @@ module Slithernix
         erase
         refresh
 
-        return choice
+        choice
       end
 
       # This calls SCREEN.refresh, (made consistent with widget)
@@ -241,12 +241,8 @@ module Slithernix
           widg = @widget[x]
           if widg.validObjType(widg.widget_type)
             if widg.is_visible
-              if visible < 0
-                visible = x
-              end
-              if widg.has_focus && focused < 0
-                focused = x
-              end
+              visible = x if visible < 0
+              focused = x if widg.has_focus && focused < 0
             else
               widg.erase
             end
@@ -259,9 +255,7 @@ module Slithernix
           if widg.validObjType(widg.widget_type)
             widg.has_focus = (x == focused)
 
-            if widg.is_visible
-              widg.draw(widg.box)
-            end
+            widg.draw(widg.box) if widg.is_visible
           end
         end
       end
@@ -271,9 +265,7 @@ module Slithernix
         # We just call the widget erase function
         (0...@widget_count).each do |x|
           widg = @widget[x]
-          if widg.validObjType(widg.widget_type)
-            widg.erase
-          end
+          widg.erase if widg.validObjType(widg.widget_type)
         end
 
         # Refresh the screen.

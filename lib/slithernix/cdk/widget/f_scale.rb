@@ -53,7 +53,7 @@ module Slithernix
         end
 
         def getDigits
-          return @digits
+          @digits
         end
 
         def SCAN_FMT

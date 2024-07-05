@@ -186,9 +186,7 @@ module Slithernix
     def self.justifyString (box_width, mesg_length, justify)
       # make sure the message isn't longer than the width
       # if it is, return 0
-      if mesg_length >= box_width
-        return 0
-      end
+      return 0 if mesg_length >= box_width
 
       # try to justify the message
       case justify
@@ -258,7 +256,7 @@ module Slithernix
         from += 1
       end
 
-      return from
+      from
     end
 
     # The reverse of encodeAttribute
@@ -304,7 +302,7 @@ module Slithernix
             if (tmpattr & Curses::A_COLOR) != (newattr & Curses::A_COLOR)
               oldpair = Curses.PAIR_NUMBER(tmpattr)
               newpair = Curses.PAIR_NUMBER(newattr)
-              if !found
+              unless found
                 found = true
                 result << Slithernix::Cdk::L_MARKER
               end
@@ -328,7 +326,7 @@ module Slithernix
         end
       end
 
-      return from + result.size - base_len
+      from + result.size - base_len
     end
 
     # This function takes a string, full of format markers and translates
@@ -404,7 +402,7 @@ module Slithernix
         from = start
         while from < string.size
           # Are we inside a format marker?
-          if !inside_marker
+          unless inside_marker
             if string[from] == L_MARKER &&
                 ['/', '!', '#'].include?(string[from + 1])
               inside_marker = true
@@ -524,14 +522,12 @@ module Slithernix
           from += 1
         end
 
-        if result.size == 0
-          result << attrib
-        end
+        result << attrib if result.size == 0
         to[0] = used
       else
         result = []
       end
-      return result
+      result
     end
 
     # Compare a regular string to a chtype string
@@ -557,11 +553,11 @@ module Slithernix
       end
 
       if str.size < chstr.size
-        return -1
+        -1
       elsif str.size > chstr.size
-        return 1
+        1
       else
-        return 0
+        0
       end
     end
 
@@ -580,7 +576,7 @@ module Slithernix
         end
       end
 
-      return newstring
+      newstring
     end
 
     # This returns a string from a chtype array
@@ -600,7 +596,7 @@ module Slithernix
         end
       end
 
-      return newstring
+      newstring
     end
 
     # This returns the length of the integer.
@@ -621,7 +617,7 @@ module Slithernix
       end
 
       list.sort!
-      return list.size
+      list.size
     end
 
     # This looks for a subset of a word in the given list
@@ -642,30 +638,24 @@ module Slithernix
           if ret < 0
             index = ret
           else
-            if ret == 0
-              index = x
-            end
+            index = x if ret == 0
             break
           end
         end
       end
-      return index
+      index
     end
 
     # This function checks to see if a link has been requested
     def self.checkForLink (line, filename)
       f_pos = 0
       x = 3
-      if line.nil?
-        return -1
-      end
+      return -1 if line.nil?
 
       # Strip out the filename.
       if line[0] == L_MARKER && line[1] == 'F' && line[2] == '='
         while x < line.size
-          if line[x] == R_MARKER
-            break
-          end
+          break if line[x] == R_MARKER
           if f_pos < CDK_PATHMAX
             filename << line[x]
             f_pos += 1
@@ -673,7 +663,7 @@ module Slithernix
           x += 1
         end
       end
-      return f_pos != 0
+      f_pos != 0
     end
 
     # Returns the filename portion of the given pathname, i.e. after the last
@@ -773,7 +763,7 @@ module Slithernix
     end
 
     def self.Version
-      return "%d.%d - %d" % [
+      "%d.%d - %d" % [
         Slithernix::Cdk::VERSION_MAJOR,
         Slithernix::Cdk::VERSION_MINOR,
         Slithernix::Cdk::VERSION_PATCH,
@@ -800,7 +790,7 @@ module Slithernix
       # Return a copy of the string typed in.
       value = entry.getValue.clone
       widget.destroy
-      return value
+      value
     end
 
     # This allows a person to select a file.
@@ -823,7 +813,7 @@ module Slithernix
       # Otherwise...
       fselect.destroy
       screen.refresh
-      return filename
+      filename
     end
 
     # This returns a selected value in a list
@@ -861,14 +851,12 @@ module Slithernix
       selected = scrollp.activate([])
 
       # Check how they exited.
-      if scrollp.exit_type != :NORMAL
-        selected = -1
-      end
+      selected = -1 if scrollp.exit_type != :NORMAL
 
       # Clean up.
       scrollp.destroy
       screen.refresh
-      return selected
+      selected
     end
 
     # This allows the user to view information.
@@ -894,7 +882,7 @@ module Slithernix
 
       # Clean up and return the button index selected
       viewer.destroy
-      return selected
+      selected
     end
 
     # This allows the user to view a file.
@@ -912,7 +900,7 @@ module Slithernix
         result = viewInfo(screen, title, info, lines, buttons,
                               button_count, true)
       end
-      return result
+      result
     end
   end
 end

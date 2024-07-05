@@ -80,7 +80,7 @@ class BindExample < Example
         ]
         dialog.screen.popupLabel(mesg, 2)
       end
-      return false
+      false
     end
 
     # Create the key binding.

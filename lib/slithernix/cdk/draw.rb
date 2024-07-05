@@ -81,9 +81,7 @@ module Slithernix
           win.mvwaddch(y2, x2, brc | attr)
           count += 1
         end
-        if count != 0
-          win.refresh
-        end
+        win.refresh if count != 0
       end
 
       # Draw a box around the given window using the widget's defined
@@ -110,13 +108,9 @@ module Slithernix
 
         # Determine if we're drawing a horizontal or vertical line.
         if ydiff == 0
-          if xdiff > 0
-            window.mvwhline(starty, startx, line, xdiff)
-          end
+          window.mvwhline(starty, startx, line, xdiff) if xdiff > 0
         elsif xdiff == 0
-          if ydiff > 0
-            window.mvwvline(starty, startx, line, ydiff)
-          end
+          window.mvwvline(starty, startx, line, ydiff) if ydiff > 0
         else
           # We need to determine the angle of the line.
           height = xdiff

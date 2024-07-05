@@ -75,9 +75,7 @@ module Slithernix
           @win = Curses::Window.new(@box_height, @box_width, ypos, xpos)
 
           # Is the scrolling window null?
-          if @win.nil?
-            return nil
-          end
+          return nil if @win.nil?
 
           # Turn the keypad on for the window
           @win.keypad(true)
@@ -117,9 +115,7 @@ module Slithernix
           setPosition(0);
 
           # Create the scrolling list item list and needed variables.
-          if createItemList(numbers, list, list_size) <= 0
-            return nil
-          end
+          return nil if createItemList(numbers, list, list_size) <= 0
 
           # Do we need to create a shadow?
           if shadow
@@ -135,7 +131,7 @@ module Slithernix
 
           cdkscreen.register(:Scroll, self);
 
-          return self
+          self
         end
 
         def widget_type
@@ -169,23 +165,19 @@ module Slithernix
 
               # Inject the character into the widget.
               ret = inject(input)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           else
             # Inject each character one at a time.
             actions.each do |action|
               ret = inject(action)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           end
 
           # Set the exit type for the widget and return
           setExitType(0)
-          return -1
+          -1
         end
 
         # This injects a single character into the widget.
@@ -264,11 +256,11 @@ module Slithernix
           @result_data = ret
 
           #return ret != -1
-          return ret
+          ret
         end
 
         def getCurrentTop
-          return @current_top
+          @current_top
         end
 
         def setCurrentTop(item)
@@ -292,9 +284,7 @@ module Slithernix
         # This function draws the scrolling list widget.
         def draw(box)
           # Draw in the shadow if we need to.
-          unless @shadow_win.nil?
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
           drawTitle(@win)
 
@@ -383,9 +373,7 @@ module Slithernix
           end
 
           # Box it if needed.
-          if box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
-          end
+          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
 
           # Refresh the window
           @win.refresh
@@ -395,9 +383,7 @@ module Slithernix
         def setBKattr(attrib)
           @win.wbkgd(attrib)
           @list_win.wbkgd(attrib)
-          unless @scrollbar_win.nil?
-            @scrollbar_win.wbkgd(attrib)
-          end
+          @scrollbar_win.wbkgd(attrib) unless @scrollbar_win.nil?
         end
 
         # This function destroys
@@ -439,13 +425,11 @@ module Slithernix
           @item_len = new_len
           @item_pos = new_pos
 
-          return result
+          result
         end
 
         def allocListItem(which, work, used, number, value)
-          if number > 0
-            value = "%4d. %s" % [number, value]
-          end
+          value = "%4d. %s" % [number, value] if number > 0
 
           item_len = []
           item_pos = []
@@ -455,7 +439,7 @@ module Slithernix
 
           @item_pos[which] = Slithernix::Cdk.justifyString(@box_width,
                                                @item_len[which], @item_pos[which])
-          return true
+          true
         end
 
         # This function creates the scrolling list information and sets up the
@@ -491,7 +475,7 @@ module Slithernix
             status = 1  # null list is ok - for a while
           end
 
-          return status
+          status
         end
 
         # This sets certain attributes of the scrolling list.
@@ -503,9 +487,7 @@ module Slithernix
 
         # This sets the scrolling list items
         def setItems(list, list_size, numbers)
-          if createItemList(numbers, list, list_size) <= 0
-            return
-          end
+          return if createItemList(numbers, list, list_size) <= 0
 
           # Clean up the display.
           (0...@view_size).each do |x|
@@ -522,7 +504,7 @@ module Slithernix
             list << Slithernix::Cdk.chtype2Char(@item[x])
           end
 
-          return @list_size
+          @list_size
         end
 
         # This sets the highlight of the scrolling list.
@@ -531,7 +513,7 @@ module Slithernix
         end
 
         def getHighlight(highlight)
-          return @highlight
+          @highlight
         end
 
         # Resequence the numbers after an insertion/deletion.
@@ -561,7 +543,7 @@ module Slithernix
           @item = @item[0..item] + @item[item..-1]
           @item_len = @item_len[0..item] + @item_len[item..-1]
           @item_pos = @item_pos[0..item] + @item_pos[item..-1]
-          return true
+          true
         end
 
         # This adds a single item to a scrolling list, at the end of the list.
@@ -629,9 +611,7 @@ module Slithernix
 
             setViewSize(@list_size - 1)
 
-            if @list_size > 0
-              resequence
-            end
+            resequence if @list_size > 0
 
             if @list_size < maxViewSize
               @win.erase  # force the next redraw to be complete
@@ -752,23 +732,19 @@ module Slithernix
 
               # Inject the character into the widget.
               ret = inject(input)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           else
             # Inject each character one at a time.
             actions.each do |x|
               ret = inject(action)
-              if @exit_type == :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type == :EARLY_EXIT
             end
           end
 
           # Set the exit type and exit
           setExitType(0)
-          return -1
+          -1
         end
 
         # This sets multiple attributes of the widget.
@@ -792,7 +768,7 @@ module Slithernix
         end
 
         def getMessage
-          return @info
+          @info
         end
 
         # This sets the background attribute of the widget.
@@ -813,9 +789,7 @@ module Slithernix
               c = ' '
             end
 
-            if @has_focus
-              c = Curses::A_REVERSE | c
-            end
+            c = Curses::A_REVERSE | c if @has_focus
 
             @win.mvwaddch(@border_size, i + @border_size, c)
           end
@@ -824,14 +798,10 @@ module Slithernix
         # This draws the button widget
         def draw(box)
           # Is there a shadow?
-          unless @shadow_win.nil?
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
           # Box the widget if asked.
-          if @box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
-          end
+          Slithernix::Cdk::Draw.drawObjBox(@win, self) if @box
           drawText
           @win.refresh
         end
@@ -877,9 +847,7 @@ module Slithernix
           Slithernix::Cdk::Screen.refreshCDKWindow(@screen.window)
 
           # Redraw the window, if they asked for it.
-          if refresh_flag
-            draw(@box)
-          end
+          draw(@box) if refresh_flag
         end
 
         # This allows the user to use the cursor keys to adjust the
@@ -999,9 +967,7 @@ module Slithernix
               setExitType(input)
               complete = true
             when ' ', Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
-              unless @callback.nil?
-                @callback.call(self)
-              end
+              @callback.call(self) unless @callback.nil?
               setExitType(Curses::KEY_ENTER)
               ret = 0
               complete = true
@@ -1013,12 +979,10 @@ module Slithernix
             end
           end
 
-          unless complete
-            setExitType(0)
-          end
+          setExitType(0) unless complete
 
           @result_data = ret
-          return ret
+          ret
         end
 
         def focus

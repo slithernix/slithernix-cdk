@@ -129,7 +129,7 @@ module Slithernix
         end
 
         def maxViewSize
-          return @box_height - (2 * @border_size + @title_lines)
+          @box_height - (2 * @border_size + @title_lines)
         end
 
         # Set variables that depend upon the list_size

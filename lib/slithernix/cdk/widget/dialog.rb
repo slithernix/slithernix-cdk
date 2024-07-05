@@ -141,23 +141,19 @@ module Slithernix
 
               # Inject the character into the widget.
               ret = inject(input)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           else
             # Inject each character one at a time.
             actions.each do |action|
               ret = inject(action)
-              if @exit_type != :EARLY_EXIT
-                return ret
-              end
+              return ret if @exit_type != :EARLY_EXIT
             end
           end
 
           # Set the exit type and exit
           setExitType(0)
-          return -1
+          -1
         end
 
         # This injects a single character into the dialog widget
@@ -227,7 +223,7 @@ module Slithernix
           end
 
           @result_data = ret
-          return ret
+          ret
         end
 
         # This moves the dialog field to the given location.
@@ -238,14 +234,10 @@ module Slithernix
         # This function draws the dialog widget.
         def draw(box)
           # Is there a shadow?
-          unless @shadow_win.nil?
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
           # Box the widget if they asked.
-          if box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
-          end
+          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
 
           # Draw in the message.
           (0...@message_rows).each do |x|
@@ -294,7 +286,7 @@ module Slithernix
         end
 
         def getHighlight
-          return @highlight
+          @highlight
         end
 
         # This sets whether or not the dialog box will have a separator line.
@@ -303,7 +295,7 @@ module Slithernix
         end
 
         def getSeparator
-          return @separator
+          @separator
         end
 
         # This sets the background attribute of the widget.

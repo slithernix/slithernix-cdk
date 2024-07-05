@@ -13,7 +13,7 @@ class AlphalistExample < CLIExample
     Etc.endpwent
     list.sort!
 
-    return list.size
+    list.size
   end
 
   def AlphalistExample.fill_undo(widget, deleted, data)
@@ -126,7 +126,7 @@ class AlphalistExample < CLIExample
         widget.draw(widget.border_size)
         result = true
       end
-      return result
+      result
     end
 
     do_delete1 = lambda do |cdktype, widget, alpha_list, key|
@@ -150,7 +150,7 @@ class AlphalistExample < CLIExample
           result = true
         end
       end
-      return result
+      result
     end
 
     do_help = lambda do |cdktype, widget, client_data, key|
@@ -164,7 +164,7 @@ class AlphalistExample < CLIExample
         'F5 = undo deletion',
       ]
       cdkscreen.popupLabel(message, message.size)
-      return true
+      true
     end
 
     do_reload = lambda do |cdktype, widget, alpha_list, key|
@@ -176,7 +176,7 @@ class AlphalistExample < CLIExample
         widget.draw(widget.border_size)
         result = true
       end
-      return result
+      result
     end
 
     do_undo = lambda do |cdktype, widget, alpha_list, key|
@@ -195,7 +195,7 @@ class AlphalistExample < CLIExample
         @@my_undo_list = @@my_undo_list[0...-1]
         result = true
       end
-      return result
+      result
     end
 
     alpha_list.bind(:AlphaList, '?', do_help, nil)
@@ -205,9 +205,7 @@ class AlphalistExample < CLIExample
     alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(4), do_reload, alpha_list)
     alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(5), do_undo, alpha_list)
 
-    if params.c
-      alpha_list.setContents(user_list, user_size)
-    end
+    alpha_list.setContents(user_list, user_size) if params.c
 
     # Let them play with the alpha list.
     word = alpha_list.activate([])
