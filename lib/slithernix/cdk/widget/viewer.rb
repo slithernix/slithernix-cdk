@@ -196,9 +196,7 @@ module Slithernix
         end
 
         def freeLine(x)
-          if x < @list_size
-            @list[x] = ''
-          end
+          @list[x] = '' if x < @list_size
         end
 
         # This function sets the contents of the viewer.
@@ -206,9 +204,7 @@ module Slithernix
           current_line = 0
           viewer_size = list_size
 
-          if list_size < 0
-            list_size = list.size
-          end
+          list_size = list.size if list_size.zero?
 
           # Compute the size of the resulting display
           viewer_size = list_size
@@ -218,10 +214,7 @@ module Slithernix
               if Slithernix::Cdk.checkForLink(list[x], filename) == 1
                 file_contents = []
                 file_len = Slithernix::Cdk.readFile(filename, file_contents)
-
-                if file_len >= 0
-                  viewer_size += (file_len - 1)
-                end
+                viewer_size += (file_len - 1) if file_len >= 0
               end
             end
           end
@@ -264,9 +257,7 @@ module Slithernix
                   # For each line read, copy it into the viewer.
                   file_len = [file_len, viewer_size - current_line].min
                   (0...file_len).each do |file_line|
-                    if current_line >= viewer_size
-                      break
-                    end
+                    break if current_line >= viewer_size
                     setupLine(false, file_contents[file_line], current_line)
                     @characters += @list_len[current_line]
                     current_line += 1
@@ -350,7 +341,6 @@ module Slithernix
 
         # This function actually controls the viewer...
         def activate(actions)
-          refresh = false
           # Create the information about the file stats.
           file_info = [
             '</5>      </U>File Statistics<!U>     <!5>',
@@ -371,7 +361,6 @@ module Slithernix
 
           # Do this until KEY_ENTER is hit.
           while true
-            # Reset the refresh flag.
             refresh = false
 
             input = getch([])
@@ -523,10 +512,7 @@ module Slithernix
               end
             end
 
-            # Do we need to redraw the screen?
-            if refresh
-              drawInfo
-            end
+            drawInfo if refresh
           end
         end
 
@@ -572,9 +558,7 @@ module Slithernix
           list = get_pattern.activate([])
 
           # Save teh list.
-          if list.size != 0
-            @search_pattern = list
-          end
+          @search_pattern = list if list.size.nonzero?
 
           # Clean up.
           get_pattern.destroy
@@ -687,10 +671,7 @@ module Slithernix
 
         # This function draws the viewer widget.
         def draw(box)
-          # Do we need to draw in the shadow?
-          if @shadow_win
-            Slithernix::Cdk::Draw.drawShadow(@shadow_win)
-          end
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) if @shadow_win
 
           # Box it if it was asked for.
           if box
