@@ -30,7 +30,7 @@ module Slithernix
           end
 
           self.setBox(box)
-          box_height = if separator then 1 else 0 end
+          box_height = separator ? 1 : 0
           box_height += rows + 2 * @border_size + 1
 
           # Translate the string message to a chtype array

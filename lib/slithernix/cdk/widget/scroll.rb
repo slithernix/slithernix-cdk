@@ -17,14 +17,15 @@ module Slithernix
           ypos = yplace
           scroll_adjust = 0
           bindings = {
-            Slithernix::Cdk::BACKCHAR => Curses::KEY_PPAGE,
-            Slithernix::Cdk::FORCHAR  => Curses::KEY_NPAGE,
-            'g'           => Curses::KEY_HOME,
-            '1'           => Curses::KEY_HOME,
-            'G'           => Curses::KEY_END,
-            '<'           => Curses::KEY_HOME,
-            '>'           => Curses::KEY_END
+            'g' => Curses::KEY_HOME,
+            '1' => Curses::KEY_HOME,
+            'G' => Curses::KEY_END,
+            '<' => Curses::KEY_HOME,
+            '>' => Curses::KEY_END
           }
+
+          bindings[Slithernix::Cdk::BACKCHAR] = Curses::KEY_PPAGE
+          bindings[Slithernix::Cdk::FORCHAR]  = Curses::KEY_NPAGE
 
           self.setBox(box)
 
@@ -93,10 +94,12 @@ module Slithernix
           end
 
           # create the list window
-          @list_win = @win.subwin(self.maxViewSize,
-              box_width - (2 * @border_size) - scroll_adjust,
-              self.SCREEN_YPOS(ypos),
-              self.SCREEN_XPOS(xpos) + (if splace == Slithernix::Cdk::LEFT then 1 else 0 end))
+          @list_win = @win.subwin(
+            self.maxViewSize,
+            box_width - (2 * @border_size) - scroll_adjust,
+            self.SCREEN_YPOS(ypos),
+            self.SCREEN_XPOS(xpos) + (splace == Slithernix::Cdk::LEFT ? 1 : 0),
+          )
 
           # Set the rest of the variables
           @screen = cdkscreen
@@ -145,7 +148,7 @@ module Slithernix
 
         # Put the cursor on the currently-selected item's row.
         def fixCursorPosition
-          scrollbar_adj = if @scrollbar_placement == LEFT then 1 else 0 end
+          scrollbar_adj = @scrollbar_placement == LEFT ? 1 : 0
           ypos = self.SCREEN_YPOS(@current_item - @current_top)
           xpos = self.SCREEN_XPOS(0) + scrollbar_adj
 
@@ -302,16 +305,18 @@ module Slithernix
         def drawCurrent
           # Rehighlight the current menu item.
           screen_pos = @item_pos[@current_item] - @left_char
-          highlight = if self.has_focus
-                      then @highlight
-                      else Curses::A_NORMAL
-                      end
+          highlight = self.has_focus ? @highlight : Curses::A_NORMAL
 
-          Slithernix::Cdk::Draw.writeChtypeAttrib(@list_win,
-              if screen_pos >= 0 then screen_pos else 0 end,
-                                 @current_high, @item[@current_item], highlight, Slithernix::Cdk::HORIZONTAL,
-              if screen_pos >= 0 then 0 else 1 - screen_pos end,
-                                 @item_len[@current_item])
+          Slithernix::Cdk::Draw.writeChtypeAttrib(
+            @list_win,
+            screen_pos >= 0 ? screen_pos : 0,
+            @current_high,
+            @item[@current_item],
+            highlight,
+            Slithernix::Cdk::HORIZONTAL,
+            screen_pos >= 0 ? 0 : (1 - screen_pos),
+            @item_len[@current_item],
+          )
         end
 
         def drawList(box)
@@ -321,8 +326,14 @@ module Slithernix
             (0...@view_size).each do |j|
               k = j + @current_top
 
-              Slithernix::Cdk::Draw.writeBlanks(@list_win, 0, j, Slithernix::Cdk::HORIZONTAL, 0,
-                               @box_width - (2 * @border_size))
+              Slithernix::Cdk::Draw.writeBlanks(
+                @list_win,
+                0,
+                j,
+                Slithernix::Cdk::HORIZONTAL,
+                0,
+                @box_width - (2 * @border_size),
+              )
 
               # Draw the elements in the scrolling list.
               if k < @list_size
@@ -330,11 +341,15 @@ module Slithernix
                 ypos = j
 
                 # Write in the correct line.
-                Slithernix::Cdk::Draw.writeChtype(@list_win,
-                    if screen_pos >= 0 then screen_pos else 1 end,
-                                 ypos, @item[k], Slithernix::Cdk::HORIZONTAL,
-                    if screen_pos >= 0 then 0 else 1 - screen_pos end,
-                                 @item_len[k])
+                Slithernix::Cdk::Draw.writeChtype(
+                  @list_win,
+                  screen_pos >= 0 ? screen_pos : 1,
+                  ypos,
+                  @item[k],
+                  Slithernix::Cdk::HORIZONTAL,
+                  screen_pos >= 0 ? 0 : (1 - screen_pos),
+                  @item_len[k],
+                )
               end
             end
 
@@ -351,10 +366,19 @@ module Slithernix
               end
 
               # Draw the scrollbar
-              @scrollbar_win.mvwvline(0, 0, Slithernix::Cdk::ACS_CKBOARD,
-                                      @scrollbar_win.maxy)
-              @scrollbar_win.mvwvline(@toggle_pos, 0, ' '.ord | Curses::A_REVERSE,
-                  @toggle_size)
+              @scrollbar_win.mvwvline(
+                0,
+                0,
+                Slithernix::Cdk::ACS_CKBOARD,
+                @scrollbar_win.maxy,
+              )
+
+              @scrollbar_win.mvwvline(
+                @toggle_pos,
+                0,
+                ' '.ord | Curses::A_REVERSE,
+                @toggle_size,
+              )
             end
           end
 
@@ -447,7 +471,7 @@ module Slithernix
               # Create the items in the scrolling list.
               status = 1
               (0...list_size).each do |x|
-                number = if numbers then x + 1 else 0 end
+                number = numbers ? x + 1 : 0
                 if !self.allocListItem(x, temp, have, number, list[x])
                   status = 0
                   break
@@ -547,10 +571,17 @@ module Slithernix
           temp = ''
           have = 0
 
-          if self.allocListArrays(@list_size, @list_size + 1) &&
-              self.allocListItem(item_number, temp, have,
-              if @numbers then item_number + 1 else 0 end,
-              item)
+          if self.allocListArrays(
+            @list_size,
+            @list_size + 1
+          ) &&
+          self.allocListItem(
+            item_number,
+            temp,
+            have,
+            @numbers ? item_number + 1 : 0,
+            item,
+          )
             # Determine the size of the widest item.
             widest_item = [@item_len[item_number], widest_item].max
 
@@ -565,11 +596,20 @@ module Slithernix
           temp = ''
           have = 0
 
-          if self.allocListArrays(@list_size, @list_size + 1) &&
-              self.insertListItem(@current_item) &&
-              self.allocListItem(@current_item, temp, have,
-              if @numbers then @current_item + 1 else 0 end,
-              item)
+          if self.allocListArrays(
+            @list_size,
+            @list_size + 1
+          ) &&
+          self.insertListItem(
+            @current_item
+          ) &&
+          self.allocListItem(
+            @current_item,
+            temp,
+            have,
+            @numbers ? @current_item + 1 : 0,
+            item
+          )
             # Determine the size of the widest item.
             widest_item = [@item_len[@current_item], widest_item].max
 

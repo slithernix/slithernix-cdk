@@ -54,7 +54,7 @@ module Slithernix
                    rightcount + 1
                  end
             x2 = 0
-            y1 = if menu_pos == Slithernix::Cdk::BOTTOM then ymax - 1 else 0 end
+            y1 = menu_pos == Slithernix::Cdk::BOTTOM ? ymax - 1 : 0
             y2 = if menu_pos == Slithernix::Cdk::BOTTOM
                  then ymax - subsize[x] - 2
                  else Slithernix::Cdk::Widget::Menu::TITLELINES

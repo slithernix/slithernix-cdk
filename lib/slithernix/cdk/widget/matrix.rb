@@ -34,7 +34,7 @@ module Slithernix
           }
 
           self.setBox(box)
-          borderw = if @box then 1 else 0 end
+          borderw = @box ? 1 : 0
 
           # Make sure that the number of rows/cols/vrows/vcols is not zero.
           if rows <= 0 || cols <= 0 || vrows <= 0 || vcols <= 0

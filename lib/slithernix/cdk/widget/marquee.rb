@@ -41,7 +41,7 @@ module Slithernix
           # Keep the box info, setting BorderOf()
           self.setBox(box)
 
-          padding = if mesg[-1] == ' ' then 0 else 1 end
+          padding = mesg[-1] == ' ' ? 0 : 1
 
           # Translate the string to a chtype array
           message = Slithernix::Cdk.char2Chtype(mesg, mesg_length, [])
@@ -65,7 +65,7 @@ module Slithernix
             # Draw in the characters.
             y = first_char
             (start_pos...(start_pos + view_size)).each do |x|
-              ch = if y < mesg_length[0] then message[y].ord else ' '.ord end
+              ch = y < mesg_length[0] ? message[y].ord : ' '.ord
               @win.mvwaddch(@border_size, x, ch)
               y += 1
             end
@@ -180,8 +180,8 @@ module Slithernix
 
         # This sets the widget box attribute.
         def setBox(box)
-          xpos = if @win.nil? then 0 else @win.begx end
-          ypos = if @win.nil? then 0 else @win.begy end
+          xpos = @win.nil? ? 0 : @win.begx
+          ypos = @win.nil? ? 0 : @win.begy
 
           super
 
@@ -204,13 +204,26 @@ module Slithernix
           Slithernix::Cdk::Widget::Marquee.discardWin(@win)
           Slithernix::Cdk::Widget::Marquee.discardWin(@shadow_win)
 
-          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, @width, 0)
+          box_width = Slithernix::Cdk.setWidgetDimension(
+            parent_width,
+            @width,
+            0,
+          )
+
           box_height = (@border_size * 2) + 1
 
           # Rejustify the x and y positions if we need to.
           xtmp = [xpos]
           ytmp = [ypos]
-          Slithernix::Cdk.alignxy(@screen.window, xtmp, ytmp, box_width, box_height)
+
+          Slithernix::Cdk.alignxy(
+            @screen.window,
+            xtmp,
+            ytmp,
+            box_width,
+            box_height,
+          )
+
           window = Curses::Window.new(box_height, box_width, ytmp[0], xtmp[0])
 
           unless window.nil?

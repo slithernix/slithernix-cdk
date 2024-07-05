@@ -74,13 +74,27 @@ module Slithernix
           end
 
           # Create the entry field.
-          temp_width =  if Slithernix::Cdk::Widget::AlphaList.isFullWidth(width)
-                        then Slithernix::Cdk::FULL
-                        else box_width - 2 - label_len
-                        end
-          @entry_field = Slithernix::Cdk::Widget::Entry.new(cdkscreen, @win.begx, @win.begy,
-                                        title, label, Curses::A_NORMAL, filler_char, :MIXED, temp_width,
-                                        0, 512, box, false)
+          temp_width = if Slithernix::Cdk::Widget::AlphaList.isFullWidth(width)
+                       then Slithernix::Cdk::FULL
+                       else box_width - 2 - label_len
+                       end
+
+          @entry_field = Slithernix::Cdk::Widget::Entry.new(
+            cdkscreen,
+            @win.begx,
+            @win.begy,
+            title,
+            label,
+            Curses::A_NORMAL,
+            filler_char,
+            :MIXED,
+            temp_width,
+            0,
+            512,
+            box,
+            false,
+          )
+
           if @entry_field.nil?
             self.destroy
             return nil
@@ -120,7 +134,11 @@ module Slithernix
             end
 
             # Look for a unique word match.
-            index = Slithernix::Cdk.searchList(alphalist.list, alphalist.list.size, entry.info)
+            index = Slithernix::Cdk.searchList(
+              alphalist.list,
+              alphalist.list.size,
+              entry.info,
+            )
 
             # if the index is less than zero, return we didn't find a match
             if index < 0
@@ -152,13 +170,24 @@ module Slithernix
               end
 
               # Determine the height of the scrolling list.
-              height = if alt_words.size < 8 then alt_words.size + 3 else 11 end
+              height = alt_words.size < 8 ? alt_words.size + 3 : 11
 
               # Create a scrolling list of close matches.
-              scrollp = Slithernix::Cdk::Widget::Scroll.new(entry.screen,
-                                        Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, Slithernix::Cdk::RIGHT, height, -30,
-                                        "<C></B/5>Possible Matches.", alt_words, alt_words.size,
-                                        true, Curses::A_REVERSE, true, false)
+              scrollp = Slithernix::Cdk::Widget::Scroll.new(
+                entry.screen,
+                Slithernix::Cdk::CENTER,
+                Slithernix::Cdk::CENTER,
+                Slithernix::Cdk::RIGHT,
+                height,
+                -30,
+                "<C></B/5>Possible Matches.",
+                alt_words,
+                alt_words.size,
+                true,
+                Curses::A_REVERSE,
+                true,
+                false,
+              )
 
               # Allow them to select a close match.
               match = scrollp.activate([])
@@ -264,10 +293,23 @@ module Slithernix
                        then Slithernix::Cdk::FULL
                        else box_width - 1
                        end
-          @scroll_field = Slithernix::Cdk::Widget::Scroll.new(cdkscreen, @win.begx,
-                                          @entry_field.win.begy + temp_height, Slithernix::Cdk::RIGHT,
-                                          box_height - temp_height, temp_width, '', list, list_size,
-                                          false, Curses::A_REVERSE, box, false)
+
+          @scroll_field = Slithernix::Cdk::Widget::Scroll.new(
+            cdkscreen,
+            @win.begx,
+            @entry_field.win.begy + temp_height,
+            Slithernix::Cdk::RIGHT,
+            box_height - temp_height,
+            temp_width,
+            '',
+            list,
+            list_size,
+            false,
+            Curses::A_REVERSE,
+            box,
+            false,
+          )
+
           @scroll_field.setULchar(Slithernix::Cdk::ACS_LTEE)
           @scroll_field.setURchar(Slithernix::Cdk::ACS_RTEE)
 
