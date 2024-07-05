@@ -1,0 +1,10 @@
+#Exclude:
+#- 'db/schema.rb'
+#- 'vendor/**/*'
+
+AllCops:
+  NewCops: enable
+
+Layout/LineLength:
+  Max: 79
+

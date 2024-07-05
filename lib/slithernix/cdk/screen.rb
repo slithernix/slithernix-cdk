@@ -122,7 +122,15 @@ module Slithernix
       # This pops up a message.
       def popupLabel(mesg, count)
         #Create the label.
-        popup = Slithernix::Cdk::Widget::Label.new(self, CENTER, CENTER, mesg, count, true, false)
+        popup = Slithernix::Cdk::Widget::Label.new(
+          self,
+          CENTER,
+          CENTER,
+          mesg,
+          count,
+          true,
+          false,
+        )
 
         old_state = Curses.curs_set(0)
         #Draw it on the screen
@@ -144,7 +152,15 @@ module Slithernix
       # This pops up a message
       def popupLabelAttrib(mesg, count, attrib)
         # Create the label.
-        popup = Slithernix::Cdk::Widget::Label.new(self, CENTER, CENTER, mesg, count, true, false)
+        popup = Slithernix::Cdk::Widget::Label.new(
+          self,
+          CENTER,
+          CENTER,
+          mesg,
+          count,
+          true,
+          false,
+        )
         popup.setBackgroundAttrib
 
         old_state = Curses.curs_set(0)

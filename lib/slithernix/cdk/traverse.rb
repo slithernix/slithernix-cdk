@@ -60,7 +60,7 @@ module Slithernix
           end
         end
 
-        setFocusIndex(screen, if !(result.nil?) then n else -1 end)
+        setFocusIndex(screen, result ? n : -1)
         return result
       end
 
@@ -85,7 +85,7 @@ module Slithernix
           end
         end
 
-        setFocusIndex(screen, if !(result.nil?) then n else -1 end)
+        setFocusIndex(screen, result ? n : -1)
         return result
       end
 
@@ -112,7 +112,7 @@ module Slithernix
           end
         end
 
-        setFocusIndex(screen, if !(result.nil?) then n else -1 end)
+        setFocusIndex(screen, result ? n : -1)
         return result
       end
 
@@ -153,9 +153,9 @@ module Slithernix
           if !(func_menu_key.nil?) &&
               (func_menu_key.call(key_code, function_key))
             # find and enable drop down menu
-            screen.widget.each do |widget|
-              if !(widget.nil?) && widget.widget_type == :Menu
-                self.handleMenu(screen, widget, curwidg)
+            screen.widget.each do |w|
+              if w&.widget_type == :Menu
+                self.handleMenu(screen, w, curwidg)
               end
             end
           else
@@ -183,7 +183,6 @@ module Slithernix
             check_menu_key = lambda do |key_code, function_key|
               self.checkMenuKey(key_code, function_key)
             end
-
 
             self.traverseCDKOnce(screen, curwidg, key,
                 function[0], check_menu_key)

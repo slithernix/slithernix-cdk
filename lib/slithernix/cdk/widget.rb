@@ -82,7 +82,13 @@ module Slithernix
         # Adjust the window if we need to
         xtmp = [xpos]
         ytmp = [ypos]
-        Slithernix::Cdk.alignxy(@screen.window, xtmp, ytmp, @box_width, @box_height)
+        Slithernix::Cdk.alignxy(
+          @screen.window,
+          xtmp,
+          ytmp,
+          @box_width,
+          @box_height,
+        )
         xpos = xtmp[0]
         ypos = ytmp[0]
 
@@ -213,7 +219,11 @@ module Slithernix
             pos_x = []
             @title << Slithernix::Cdk.char2Chtype(temp[x], len_x, pos_x)
             @title_len.concat(len_x)
-            @title_pos << Slithernix::Cdk.justifyString(title_width, len_x[0], pos_x[0])
+            @title_pos << Slithernix::Cdk.justifyString(
+              title_width,
+              len_x[0],
+              pos_x[0],
+            )
           end
         end
 
@@ -223,9 +233,15 @@ module Slithernix
       # Draw the widget's title
       def drawTitle(win)
         (0...@title_lines).each do |x|
-          Draw.writeChtype(@win, @title_pos[x] + @border_size,
-                           x + @border_size, @title[x], Slithernix::Cdk::HORIZONTAL, 0,
-                           @title_len[x])
+          Draw.writeChtype(
+            @win,
+            @title_pos[x] + @border_size,
+            x + @border_size,
+            @title[x],
+            Slithernix::Cdk::HORIZONTAL,
+            0,
+            @title_len[x],
+          )
         end
       end
 
