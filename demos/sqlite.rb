@@ -10,7 +10,7 @@ class SQLiteDemo
   MAXWIDTH = 5000
   MAXHISTORY = 1000
   GPUsage = '[-p Command Prompt] [-f databasefile] [-h help]'
-  @@gp_current_database = ''
+  @@gp_current_database = String.new
   @@gp_cdk_screen = nil
 
   # This saves the history into RC file.
@@ -104,8 +104,8 @@ class SQLiteDemo
     history.cmd_history = []
     count = 0
 
-    prompt = ''
-    dbfile = ''
+    prompt = String.new
+    dbfile = String.new
     opts = OptionParser.getopts('p:f:h')
     prompt = opts['p'] if opts['p']
     dbfile = opts['f'] if opts['f']

@@ -514,7 +514,7 @@ module Slithernix
         end
 
         def destroyInfo
-          @list = ''
+          @list = String.new
           @list_size = 0
         end
 

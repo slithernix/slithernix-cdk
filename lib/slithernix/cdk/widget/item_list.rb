@@ -20,7 +20,7 @@ module Slithernix
           box_height = (@border_size * 2) + 1
 
           # Set some basic values of the item list
-          @label = ''
+          @label = String.new
           @label_len = 0
           @label_win = nil
 
@@ -290,7 +290,7 @@ module Slithernix
 
         def destroyInfo
           @list_size = 0
-          @item = ''
+          @item = String.new
         end
 
         # This function destroys the widget and all the memory it used.

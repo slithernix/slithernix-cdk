@@ -95,7 +95,7 @@ module Slithernix
         def setMessage(info, info_size)
           # Clean out the old message.`
           (0...@rows).each do |x|
-            @info[x] = ''
+            @info[x] = String.new
             @info_pos[x] = 0
             @info_len[x] = 0
           end

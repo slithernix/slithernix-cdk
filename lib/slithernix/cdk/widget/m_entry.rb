@@ -31,7 +31,7 @@ module Slithernix
           box_height = field_rows + 2
 
           # Set some basic values of the mentry field
-          @label = ''
+          @label = String.new
           @label_len = 0
           @label_win = nil
 
@@ -91,7 +91,7 @@ module Slithernix
           @total_width = (field_width * logical_rows) + 1
 
           # Create the info string
-          @info = ''
+          @info = String.new
 
           # Set up the rest of the widget information.
           @screen = cdkscreen
@@ -577,7 +577,7 @@ module Slithernix
 
         # This erases the information in the multiple line entry widget
         def clean
-          @info = ''
+          @info = String.new
           @current_row = 0
           @current_col = 0
           @top_row = 0

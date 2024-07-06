@@ -448,7 +448,7 @@ module Slithernix
           if list_size.positive?
             widest_item = 0
             have = 0
-            temp = ''
+            temp = String.new
             if allocListArrays(0, list_size)
               # Create the items in the scrolling list.
               status = 1
@@ -549,7 +549,7 @@ module Slithernix
         def addItem(item)
           item_number = @list_size
           widest_item = self.WidestItem
-          temp = ''
+          temp = String.new
           have = 0
 
           if allocListArrays(
@@ -574,7 +574,7 @@ module Slithernix
         # This adds a single item to a scrolling list before the current item
         def insertItem(item)
           widest_item = self.WidestItem
-          temp = ''
+          temp = String.new
           have = 0
 
           if allocListArrays(

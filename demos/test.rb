@@ -41,8 +41,8 @@ module Util
   def self.valid_escape_sequence(escape_sequence); end
 
   def self.process_line(line)
-    processed_line = ''
-    current_escape_sequence = ''
+    processed_line = String.new
+    current_escape_sequence = String.new
 
     line.each_char.to_a.each_with_index do |ch, _i|
       in_escape_sequence = true if ch == "\e"
@@ -54,7 +54,7 @@ module Util
           processed_line << curses_method(
             current_escape_sequence
           ).call(current_escape_sequence)
-          current_escape_sequence = ''
+          current_escape_sequence = String.new
           next
         end
       end
@@ -227,7 +227,7 @@ module Util
         end
 
         writer = Thread.new do
-          buffer = ''
+          buffer = String.new
           begin
             loop do
               break if stdout.closed?

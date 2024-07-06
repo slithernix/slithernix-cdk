@@ -376,7 +376,7 @@ module Slithernix
         end
 
         def destroyInfo
-          @item = ''
+          @item = String.new
         end
 
         # This function destroys the radio widget.

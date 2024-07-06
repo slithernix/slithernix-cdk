@@ -42,9 +42,9 @@ class Rolodex
     'Third Data Line',
   ].freeze
 
-  @@g_current_group = ''
-  @@grc_file = ''
-  @@gdbm_dir = ''
+  @@g_current_group = String.new
+  @@grc_file = String.new
+  @@gdbm_dir = String.new
   @@g_group_modified = false
 
   def self.printGroup(group_record, filename, printer)
@@ -567,13 +567,13 @@ class Rolodex
         return ret
       elsif ret == 1
         # The user does not want to submit the information
-        phone_record.name = ''
-        phone_record.phone_number = ''
-        phone_record.desc = ''
-        phone_record.address = ''
-        phone_record.city = ''
-        phone_record.province = ''
-        phone_record.postal_code = ''
+        phone_record.name = String.new
+        phone_record.phone_number = String.new
+        phone_record.desc = String.new
+        phone_record.address = String.new
+        phone_record.city = String.new
+        phone_record.province = String.new
+        phone_record.postal_code = String.new
 
         name_entry.destroy
         address_entry.destroy
@@ -585,13 +585,13 @@ class Rolodex
         return ret
       else
         # The user wants to edit the information given
-        phone_record.name = ''
-        phone_record.phone_number = ''
-        phone_record.desc = ''
-        phone_record.address = ''
-        phone_record.city = ''
-        phone_record.province = ''
-        phone_record.postal_code = ''
+        phone_record.name = String.new
+        phone_record.phone_number = String.new
+        phone_record.desc = String.new
+        phone_record.address = String.new
+        phone_record.city = String.new
+        phone_record.province = String.new
+        phone_record.postal_code = String.new
       end
     end
   end
@@ -681,13 +681,13 @@ class Rolodex
         return ret
       elsif ret == 1
         # The user does not want to submit the information
-        phone_record.name = ''
-        phone_record.phone_number = ''
-        phone_record.desc = ''
-        phone_record.address = ''
-        phone_record.city = ''
-        phone_record.province = ''
-        phone_record.postal_code = ''
+        phone_record.name = String.new
+        phone_record.phone_number = String.new
+        phone_record.desc = String.new
+        phone_record.address = String.new
+        phone_record.city = String.new
+        phone_record.province = String.new
+        phone_record.postal_code = String.new
 
         name_entry.destroy
         desc_entry.destroy
@@ -695,13 +695,13 @@ class Rolodex
         return ret
       else
         # The user wants to edit the information given
-        phone_record.name = ''
-        phone_record.phone_number = ''
-        phone_record.desc = ''
-        phone_record.address = ''
-        phone_record.city = ''
-        phone_record.province = ''
-        phone_record.postal_code = ''
+        phone_record.name = String.new
+        phone_record.phone_number = String.new
+        phone_record.desc = String.new
+        phone_record.address = String.new
+        phone_record.city = String.new
+        phone_record.province = String.new
+        phone_record.postal_code = String.new
       end
     end
   end
@@ -947,7 +947,7 @@ class Rolodex
         phone_data.record[lines_found].city = items[4]
         phone_data.record[lines_found].province = items[5]
         phone_data.record[lines_found].postal_code = items[6]
-        phone_data.record[lines_found].desc = ''
+        phone_data.record[lines_found].desc = String.new
         lines_found += 1
       else
         # Bad line in the file

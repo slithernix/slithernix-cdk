@@ -103,10 +103,9 @@ module Slithernix
 
           # Set up the info field.
           @plate_len = plate.size
-          @info = ''.dup
+          @info = String.new
           # Copy the plate to the template
-          #@plate = plate.clone
-          @plate = plate.dup
+          @plate = plate.clone
 
           # Set up the rest of the structure.
           @screen = cdkscreen
@@ -145,8 +144,7 @@ module Slithernix
                 failed = true
               end
             else
-              #test = @info.clone
-              test = @info.dup
+              test = @info.clone
               if input == Curses::KEY_BACKSPACE
                 if mark.zero?
                   failed = true
@@ -366,7 +364,7 @@ module Slithernix
           info_pos = 0
 
           if @info.size.positive?
-            mixed_string = ''
+            mixed_string = String.new
             while plate_pos < @plate_len && info_pos < @info.size
               mixed_string << if Slithernix::Cdk::Widget::Template.isPlateChar(@plate[plate_pos])
                               then info_pos += 1
@@ -384,7 +382,7 @@ module Slithernix
         # Return the field_info from the mixed string.
         def unmix(info)
           pos = 0
-          unmixed_string = ''
+          unmixed_string = String.new
 
           while pos < @info.size
             if Slithernix::Cdk::Widget::Template.isPlateChar(@plate[pos])
@@ -541,7 +539,7 @@ module Slithernix
 
         # Erase the information in the template widget.
         def clean
-          @info = ''
+          @info = String.new
           @screen_pos = 0
           @info_pos = 0
           @plaste_pos = 0

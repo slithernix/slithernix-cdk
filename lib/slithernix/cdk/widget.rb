@@ -7,7 +7,7 @@ module Slithernix
                     :ULChar, :URChar, :LLChar, :LRChar, :HZChar, :VTChar, :BXAttr
       attr_reader :binding_list, :accepts_focus, :exit_type, :border_size
 
-      @@g_paste_buffer = ''
+      @@g_paste_buffer = String.new
 
       def initialize
         @has_focus = true
@@ -240,7 +240,7 @@ module Slithernix
 
       # Remove storage for the widget's title.
       def cleanTitle
-        @title_lines = ''
+        @title_lines = String.new
       end
 
       # Set data for preprocessing

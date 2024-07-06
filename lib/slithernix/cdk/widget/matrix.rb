@@ -12,7 +12,7 @@ module Slithernix
         MAX_MATRIX_ROWS = 1000
         MAX_MATRIX_COLS = 1000
 
-        @@g_paste_buffer = ''
+        @@g_paste_buffer = String.new
 
         def initialize(cdkscreen, xplace, yplace, rows, cols, vrows, vcols,
                        title, rowtitles, coltitles, colwidths, colvalues, rspace, cspace,

@@ -73,9 +73,9 @@ module Slithernix
           @highy = 0
           @curx = 0
           @cury = 0
-          @low_string = ''
-          @high_string = ''
-          @cur_string = ''
+          @low_string = String.new
+          @high_string = String.new
+          @cur_string = String.new
 
           # Do we want a shadow?
           if shadow

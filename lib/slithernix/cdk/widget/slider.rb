@@ -242,7 +242,7 @@ module Slithernix
           modify = true
           base = @field_width
           need = formattedSize(@current)
-          temp = ''
+          temp = String.new
           col = need - @field_edit
 
           adj = col.negative? ? -col : 0

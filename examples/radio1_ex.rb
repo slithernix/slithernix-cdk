@@ -15,7 +15,7 @@ class Radio1Example < CLIExample
     params.h_value = 5
     params.w_value = 20
     params.spos = Slithernix::Cdk::NONE
-    params.title = ''
+    params.title = String.new
 
     super
 

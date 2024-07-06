@@ -95,7 +95,7 @@ class Appointment
 
     title = "<C></U>CDK Appointment Book\n<C><#HL(30)>\n"
 
-    filename = ''
+    filename = String.new
 
     # Check the command line for options
     opts = OptionParser.getopts('d:m:y:t:f:')
@@ -249,7 +249,7 @@ class Appointment
                     appointment.month == calendar.month &&
                     appointment.year == calendar.year
 
-        appointment.description = ''
+        appointment.description = String.new
         break
       end
 
@@ -264,7 +264,7 @@ class Appointment
     # This displays the marker(s) on the given day.
     display_calendar_mark_cb = lambda do |_widget_type, calendar, info, _key|
       found = 0
-      type = ''
+      type = String.new
       mesg = []
 
       # Look for the marker in the list.

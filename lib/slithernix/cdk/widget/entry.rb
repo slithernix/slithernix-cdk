@@ -90,7 +90,7 @@ module Slithernix
           end
 
           # cleanChar (entry->info, max + 3, '\0');
-          @info = ''
+          @info = String.new
           @info_width = max + 3
 
           # Set up the rest of the structure.
@@ -368,7 +368,7 @@ module Slithernix
         def clean
           width = @field_width
 
-          @info = ''
+          @info = String.new
 
           # Clean the entry screen field.
           @field_win.mvwhline(0, 0, @filler.ord, width)
@@ -461,7 +461,7 @@ module Slithernix
         # the new information given.
         def setValue(new_value)
           if new_value.nil?
-            @info = ''
+            @info = String.new
 
             @left_char = 0
             @screen_col = 0

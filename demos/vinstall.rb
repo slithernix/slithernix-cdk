@@ -64,11 +64,11 @@ class Vinstall
   end
 
   def self.main
-    source_path = ''
-    dest_path = ''
-    filename = ''
-    title = ''
-    output = ''
+    source_path = String.new
+    dest_path = String.new
+    filename = String.new
+    title = String.new
+    output = String.new
     quiet = false
 
     # Check the command line for options
@@ -269,7 +269,7 @@ class Vinstall
 
       # Copy the file from the source to the destiation.
       ret = Vinstall.copyFile(cdkscreen, old_path, new_path)
-      temp = ''
+      temp = String.new
       if ret == :CanNotOpenSource
         temp = format('</16>Error: Can not open source file "%.256s"<!16>',
                       old_path)

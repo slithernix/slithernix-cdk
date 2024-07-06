@@ -12,8 +12,8 @@ class SelectionExample < CLIExample
     params.box = true
     params.shadow = false
 
-    params.header = ''
-    params.footer = ''
+    params.header = String.new
+    params.footer = String.new
 
     params.x_value = Slithernix::Cdk::CENTER
     params.y_value = nil

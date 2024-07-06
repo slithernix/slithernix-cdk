@@ -14,7 +14,7 @@ class ViewerExample < CLIExample
     params.y_value = Slithernix::Cdk::CENTER
     params.h_value = 20
     params.w_value = nil
-    params.filename = ''
+    params.filename = String.new
     params.directory = '.'
     params.interp = false
     params.link = false

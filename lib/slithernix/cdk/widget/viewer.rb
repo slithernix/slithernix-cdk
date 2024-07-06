@@ -175,7 +175,7 @@ module Slithernix
             # We must convert tabs and other nonprinting characters. The curses
             # library normally does this, but we are bypassing it by writing
             # chtypes directly.
-            t = ''
+            t = String.new
             len = 0
             (0...list.size).each do |y|
               if list[y] == "\t".ord
@@ -200,7 +200,7 @@ module Slithernix
         end
 
         def freeLine(x)
-          @list[x] = '' if x < @list_size
+          @list[x] = String.new if x < @list_size
         end
 
         # This function sets the contents of the viewer.
@@ -214,7 +214,7 @@ module Slithernix
           viewer_size = list_size
           if list.size.positive? && interpret
             (0...list_size).each do |x|
-              filename = ''
+              filename = String.new
               next unless Slithernix::Cdk.checkForLink(list[x], filename) == 1
 
               file_contents = []
@@ -236,7 +236,7 @@ module Slithernix
           x = 0
           while x < list_size && current_line < viewer_size
             if list[x].empty?
-              @list[current_line] = ''
+              @list[current_line] = String.new
               @list_len[current_line] = 0
               @list_pos[current_line] = 0
               current_line += 1
@@ -760,7 +760,7 @@ module Slithernix
 
         # This draws the viewer info lines.
         def drawInfo
-          temp = ''
+          temp = String.new
 
           # Clear the window.
           @win.erase

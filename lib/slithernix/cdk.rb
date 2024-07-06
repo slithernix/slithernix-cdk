@@ -567,7 +567,7 @@ module Slithernix
     # This returns a string from a chtype array
     # Formatting codes are omitted.
     def self.chtype2Char(string)
-      newstring = ''
+      newstring = String.new
 
       string&.each do |char|
         newstring << self.CharOf(char)
@@ -579,7 +579,7 @@ module Slithernix
     # This returns a string from a chtype array
     # Formatting codes are embedded
     def self.chtype2String(string)
-      newstring = ''
+      newstring = String.new
       unless string.nil?
         need = 0
         (0...string.size).each do |x|

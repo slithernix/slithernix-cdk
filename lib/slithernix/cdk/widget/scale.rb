@@ -241,7 +241,7 @@ module Slithernix
           modify = true
           base = 0
           need = @field_width
-          temp = ''
+          temp = String.new
           col = need - @field_edit - 1
 
           @field_win.move(0, base)

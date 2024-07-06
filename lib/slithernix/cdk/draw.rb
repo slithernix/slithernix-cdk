@@ -175,7 +175,7 @@ module Slithernix
         return unless start < endn
 
         want = (endn - start) + 1000
-        blanks = ''.dup
+        blanks = String.new
 
         Slithernix::Cdk.cleanChar(blanks, want - 1, ' ')
         writeChar(window, xpos, ypos, blanks, align, start, endn)

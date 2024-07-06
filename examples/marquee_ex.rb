@@ -13,7 +13,7 @@ class MarqueeExample < Example
     params.x_value = Slithernix::Cdk::CENTER
     params.y_value = Slithernix::Cdk::TOP
 
-    params.message = ''
+    params.message = String.new
     params.repeat_count = 3
     params.delay = 5
     params.bold = false
@@ -22,8 +22,8 @@ class MarqueeExample < Example
     params.blinking = false
     params.width = 30
 
-    params.start_attr = ''
-    params.end_attr = ''
+    params.start_attr = String.new
+    params.end_attr = String.new
 
     super
 

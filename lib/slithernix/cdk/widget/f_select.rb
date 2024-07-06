@@ -67,7 +67,7 @@ module Slithernix
           @box_height = box_height
           @box_width = box_width
           @file_counter = 0
-          @pwd = ''
+          @pwd = String.new
           @input_window = @win
           @shadow = shadow
           @shadow_win = nil
@@ -507,7 +507,7 @@ module Slithernix
                 file_attribute, link_attribute, sock_attribute, _box)
           fscroll = @scroll_field
           fentry = @entry_field
-          new_directory = ''
+          new_directory = String.new
 
           # keep the info sent to us.
           @field_attribute = field_attrib
@@ -589,7 +589,7 @@ module Slithernix
 
           # Set the properties of the files.
           (0...@file_counter).each do |x|
-            attr = ''
+            attr = String.new
 
             # FIXME(original): access() would give a more correct answer
             # TODO: add error handling
