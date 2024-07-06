@@ -67,9 +67,20 @@ class Appointment
     app_info.appointment.each do |appointment|
       next unless appointment.description != ''
 
-      fd.puts format('%d%c%d%c%d%c%d%c%s', appointment.day,
-                     Slithernix::Cdk.CTRL('V').chr, appointment.month, Slithernix::Cdk.CTRL('V').chr, appointment.year, Slithernix::Cdk.CTRL('V').chr, Appointment::AppointmentType.index(appointment.type), Slithernix::Cdk.CTRL('V').chr, appointment.description)
+      fd.puts format(
+        '%d%c%d%c%d%c%d%c%s',
+        appointment.day,
+        Slithernix::Cdk.CTRL('V').chr,
+        appointment.month,
+        Slithernix::Cdk.CTRL('V').chr,
+        appointment.year,
+        Slithernix::Cdk.CTRL('V').chr,
+        Appointment::AppointmentType.index(appointment.type),
+        Slithernix::Cdk.CTRL('V').chr,
+        appointment.description,
+      )
     end
+
     fd.close
   end
 
@@ -119,9 +130,21 @@ class Appointment
     Slithernix::Cdk::Draw.initCDKColor
 
     # Create the calendar widget.
-    calendar = Slithernix::Cdk::Widget::Calendar.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                                     title, day, month, year, Curses::A_NORMAL, Curses::A_NORMAL,
-                                                     Curses::A_NORMAL, Curses::A_REVERSE, true, false)
+    calendar = Slithernix::Cdk::Widget::Calendar.new(
+      cdkscreen,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::CENTER,
+      title,
+      day,
+      month,
+      year,
+      Curses::A_NORMAL,
+      Curses::A_NORMAL,
+      Curses::A_NORMAL,
+      Curses::A_REVERSE,
+      true,
+      false,
+    )
 
     # Is the widget nil?
     if calendar.nil?
@@ -142,9 +165,18 @@ class Appointment
       ]
 
       # Create the itemlist widget.
-      itemlist = Slithernix::Cdk::Widget::ItemList.new(calendar.screen,
-                                                       Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, '', 'Select Appointment Type: ',
-                                                       items, items.size, 0, true, false)
+      itemlist = Slithernix::Cdk::Widget::ItemList.new(
+        calendar.screen,
+        Slithernix::Cdk::CENTER,
+        Slithernix::Cdk::CENTER,
+        '',
+        'Select Appointment Type: ',
+        items,
+        items.size,
+        0,
+        true,
+        false,
+      )
 
       # Get the appointment type from the user.
       selection = itemlist.activate([])
@@ -162,10 +194,21 @@ class Appointment
       marker = Appointment::GPAppointmentAttributes[selection]
 
       # Create the entry field for the description.
-      entry = Slithernix::Cdk::Widget::Entry.new(calendar.screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                                 '<C>Enter a description of the appointment.',
-                                                 'Description: ', Curses::A_NORMAL, '.'.ord, :MIXED, 40, 1, 512,
-                                                 true, false)
+      entry = Slithernix::Cdk::Widget::Entry.new(
+        calendar.screen,
+        Slithernix::Cdk::CENTER,
+        Slithernix::Cdk::CENTER,
+        '<C>Enter a description of the appointment.',
+        'Description: ',
+        Curses::A_NORMAL,
+        '.'.ord,
+        :MIXED,
+        40,
+        1,
+        512,
+        true,
+        false,
+      )
 
       # Get the description.
       description = entry.activate([])
@@ -264,15 +307,27 @@ class Appointment
 
       # If we didn't find the marker, create a different message.
       if found.zero?
-        mesg << (format('<C>There is no appointment for %02d/%02d/%d',
-                        calendar.day, calendar.month, calendar.year))
+        mesg << format(
+          '<C>There is no appointment for %02d/%02d/%d',
+          calendar.day,
+          calendar.month,
+          calendar.year
+        )
         mesg << '<C><#HL(30)>'
         mesg << '<C>Press space to continue.'
       end
 
       # Create the label widget
-      label = Slithernix::Cdk::Widget::Label.new(calendar.screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                                 mesg, mesg.size, true, false)
+      label = Slithernix::Cdk::Widget::Label.new(
+        calendar.screen,
+        Slithernix::Cdk::CENTER,
+        Slithernix::Cdk::CENTER,
+        mesg,
+        mesg.size,
+        true,
+        false
+      )
+
       label.draw(label.box)
       label.wait(' ')
       label.destroy
@@ -299,26 +354,25 @@ class Appointment
     # Set all the appointments read from the file.
     appointment_info.appointment.each do |appointment|
       marker = Appointment::GPAppointmentAttributes[
-          Appointment::AppointmentType.index(appointment.type)]
+          Appointment::AppointmentType.index(appointment.type)
+      ]
 
-      calendar.setMarker(appointment.day, appointment.month,
-                         appointment.year, marker)
+      calendar.setMarker(
+        appointment.day,
+        appointment.month,
+        appointment.year,
+        marker,
+      )
     end
 
-    # Draw the calendar widget.
     calendar.draw(calendar.box)
-
-    # Let the user play with the widget.
     calendar.activate([])
 
-    # Save the appointment information.
     Appointment.saveAppointmentFile(filename, appointment_info)
 
-    # Clean up.
     calendar.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
-    exit # EXIT_SUCCESS
   end
 end
 

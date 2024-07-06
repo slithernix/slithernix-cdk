@@ -74,14 +74,24 @@ class Rolodex
     fd.puts '=' * 78
     phone_data.record.each do |phone_record|
       fd.puts format('Name        : %s', phone_record.name)
-      fd.puts format('Phone Number: %s (%s)', phone_record.phone_number,
-                     Rolodex::GLineType[Rolodex::GTypeMap[phone_record.line_type]])
-      unless %i[PAGER CELL].include? phone_record.line_type
-        fd.puts format('Address     : %-20s, %-20s', phone_record.address,
-                       phone_record.city)
+      fd.puts format(
+        'Phone Number: %s (%s)',
+        phone_record.phone_number,
+        Rolodex::GLineType[Rolodex::GTypeMap[phone_record.line_type]]
+      )
 
-        fd.puts format('            : %-10s, %-10s', phone_record.province,
-                       phone_record.postal_code)
+      unless %i[PAGER CELL].include? phone_record.line_type
+        fd.puts format(
+          'Address     : %-20s, %-20s',
+          phone_record.address,
+          phone_record.city,
+        )
+
+        fd.puts format(
+          '            : %-10s, %-10s',
+          phone_record.province,
+          phone_record.postal_code
+        )
       end
       fd.puts format('Description : %-30s', phone_record.desc)
       fd.puts '-' * 78
@@ -121,10 +131,22 @@ class Rolodex
     height = [group_count, 5].min + 3
 
     # Create the selection list.
-    selection_list = Slithernix::Cdk::Widget::Selection.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                                            Slithernix::Cdk::RIGHT, height, 40, '<C></U>Select Which Groups To Print',
-                                                            item_list, group_count, choices, choices.size, Curses::A_REVERSE,
-                                                            true, false)
+    selection_list = Slithernix::Cdk::Widget::Selection.new(
+      screen,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::RIGHT,
+      height,
+      40,
+      '<C></U>Select Which Groups To Print',
+      item_list,
+      group_count,
+      choices,
+      choices.size,
+      Curses::A_REVERSE,
+      true,
+      false,
+    )
 
     # Activate the selection list.
     if selection_list.activate([]) == -1
@@ -140,16 +162,39 @@ class Rolodex
     (0...group_count).each do |x|
       if selection_list.selections[x].zero?
         # Create a title.
-        mesg = [format('<C></R>Printing Group [%s] to Printer',
-                       group_list[x].name)]
-        title = Slithernix::Cdk::Widget::Label.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::TOP, mesg, mesg.size,
-                                                   false, false)
+        mesg = [
+          format(
+            '<C></R>Printing Group [%s] to Printer',
+            group_list[x].name
+          )
+        ]
+        title = Slithernix::Cdk::Widget::Label.new(
+          screen,
+          Slithernix::Cdk::CENTER,
+          Slithernix::Cdk::TOP,
+          mesg,
+          mesg.size,
+          false,
+          false,
+        )
         title.draw(false)
 
         # Get the printer name to print to.
-        entry = Slithernix::Cdk::Widget::Entry.new(screen, Slithernix::Cdk::CENTER, 8, '',
-                                                   '</R>Printer Name: ', Curses::A_NORMAL, '_'.ord, :MIXED,
-                                                   20, 2, 256, true, false)
+        entry = Slithernix::Cdk::Widget::Entry.new(
+          screen,
+          Slithernix::Cdk::CENTER,
+          8,
+          '',
+          '</R>Printer Name: ',
+          Curses::A_NORMAL,
+          '_'.ord,
+          :MIXED,
+          20,
+          2,
+          256,
+          true,
+          false
+        )
 
         # Set the printer name to the default printer
         default_printer = ENV['PRINTER'] || ''
@@ -160,12 +205,15 @@ class Rolodex
         # Print the group
         if Rolodex.printGroup(group_list[x], '/tmp/rolodex.tmp', printer).zero?
           # The group could not be printed.
-          mesg = ["<C>Sorry the group '%s' could not be printed" %
-            group_list[x].name]
+          mesg = [
+            format(
+              "<C>Sorry the group '%s' could not be printed",
+              group_list[x].name,
+            )
+          ]
           screen.popupLabel(screen, mesg, mesg.size)
         end
 
-        # Clean up.
         title.destroy
         begin
           File.unlink('/tmp/rolodex.tmp')
@@ -173,23 +221,51 @@ class Rolodex
         end
       elsif selection_list.selections[x] == 1
         # Create a title.
-        mesg = [format('<C></R>Printing Group [%s] to File',
-                       group_list[x].name)]
-        title = Slithernix::Cdk::Widget::Label.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::TOP, mesg, mesg.size,
-                                                   false, false)
+        mesg = [
+          format(
+            '<C></R>Printing Group [%s] to File',
+            group_list[x].name
+          )
+        ]
+        title = Slithernix::Cdk::Widget::Label.new(
+          screen,
+          Slithernix::Cdk::CENTER,
+          Slithernix::Cdk::TOP,
+          mesg,
+          mesg.size,
+          false,
+          false,
+        )
         title.draw(false)
 
         # Get the filename to print to.
-        entry = Slithernix::Cdk::Widget::Entry.new(screen, Slithernix::Cdk::CENTER, 8, '', '</R>Filename: ',
-                                                   Curses::A_NORMAL, '_'.ord, :MIXED, 20, 2, 256, true, false)
+        entry = Slithernix::Cdk::Widget::Entry.new(
+          screen,
+          Slithernix::Cdk::CENTER,
+          8,
+          '',
+          '</R>Filename: ',
+          Curses::A_NORMAL,
+          '_'.ord,
+          :MIXED,
+          20,
+          2,
+          256,
+          true,
+          false,
+        )
         filename = entry.activate([])
         entry.destroy
 
         # Print the group.
         if Rolodex.printGroup(group_list[x], filename, '').zero?
           # The group could not be printed.
-          mesg = [format("<C>Sorry the group '%s' could not be printed.",
-                         group_list[x].name)]
+          mesg = [
+            format(
+              "<C>Sorry the group '%s' could not be printed.",
+              group_list[x].name
+            )
+          ]
           screen.popupLabel(mesg, mesg.size)
         end
 
@@ -216,8 +292,12 @@ class Rolodex
     end
 
     # Get the number of the group to delete.
-    selection = Rolodex.pickRolodexGroup(screen,
-                                         '<C></U>Delete Which Rolodex Group?', group_list, group_count)
+    selection = Rolodex.pickRolodexGroup(
+      screen,
+      '<C></U>Delete Which Rolodex Group?',
+      group_list,
+      group_count,
+    )
 
     # Check the results.
     if selection.negative?
@@ -278,8 +358,15 @@ class Rolodex
 
     # Create a title label to display.
     title_mesg = ['<C></B/16>Add New Phone Record']
-    title = Slithernix::Cdk::Widget::Label.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::TOP,
-                                               title_mesg, title_mesg.size, false, false)
+    title = Slithernix::Cdk::Widget::Label.new(
+      screen,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::TOP,
+      title_mesg,
+      title_mesg.size,
+      false,
+      false,
+    )
     title.draw(false)
 
     # Create the phone line type list.
@@ -288,9 +375,18 @@ class Rolodex
     end
 
     # Get the phone line type.
-    item_list = Slithernix::Cdk::Widget::ItemList.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                                      '<C>What Type Of Line Is It?', 'Type: ', types, types.size,
-                                                      0, true, false)
+    item_list = Slithernix::Cdk::Widget::ItemList.new(
+      screen,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::CENTER,
+      '<C>What Type Of Line Is It?',
+      'Type: ',
+      types,
+      types.size,
+      0,
+      true,
+      false,
+    )
     phone_record.line_type = Rolodex::GTypeReverseMap[item_list.activate([])]
     item_list.destroy
 
@@ -317,22 +413,113 @@ class Rolodex
   # This gets a phone record with all the details
   def self.getLargePhoneRecord(screen, phone_record)
     # Define the widget.
-    name_entry = Slithernix::Cdk::Widget::Entry.new(screen, Slithernix::Cdk::LEFT, 5, '', '</B/5>Name: ',
-                                                    Curses::A_NORMAL, '_'.ord, :MIXED, 20, 2, 256, true, false)
-    address_entry = Slithernix::Cdk::Widget::Entry.new(screen, Slithernix::Cdk::RIGHT, 5, '', '</B/5>Address: ',
-                                                       Curses::A_NORMAL, '_'.ord, :MIXED, 40, 2, 256, true, false)
-    city_entry = Slithernix::Cdk::Widget::Entry.new(screen, Slithernix::Cdk::LEFT, 8, '', '</B/5>City: ',
-                                                    Curses::A_NORMAL, '_'.ord, :MIXED, 20, 2, 256, true, false)
-    prov_entry = Slithernix::Cdk::Widget::Entry.new(screen, 29, 8, '', '</B/5>Province: ',
-                                                    Curses::A_NORMAL, '_'.ord, :MIXED, 15, 2, 256, true, false)
-    postal_entry = Slithernix::Cdk::Widget::Entry.new(screen, Slithernix::Cdk::RIGHT, 8, '',
-                                                      '</B/5>Postal Code: ', Curses::A_NORMAL, '_'.ord, :UMIXED,
-                                                      8, 2, 256, true, false)
-    phone_template = Slithernix::Cdk::Widget::Template.new(screen, Slithernix::Cdk::LEFT, 11, '',
-                                                           '</B/5>Number: ', '(###) ###-####', '(___) ___-____', true, false)
-    desc_entry = Slithernix::Cdk::Widget::Entry.new(screen, Slithernix::Cdk::RIGHT, 11, '',
-                                                    '</B/5>Description: ', Curses::A_NORMAL, '_'.ord, :MIXED,
-                                                    20, 2, 256, true, false)
+    name_entry = Slithernix::Cdk::Widget::Entry.new(
+      screen,
+      Slithernix::Cdk::LEFT,
+      5,
+      '',
+      '</B/5>Name: ',
+      Curses::A_NORMAL,
+      '_'.ord,
+      :MIXED,
+      20,
+      2,
+      256,
+      true,
+      false,
+    )
+
+    address_entry = Slithernix::Cdk::Widget::Entry.new(
+      screen,
+      Slithernix::Cdk::RIGHT,
+      5,
+      '',
+      '</B/5>Address: ',
+      Curses::A_NORMAL,
+      '_'.ord,
+      :MIXED,
+      40,
+      2,
+      256,
+      true,
+      false,
+    )
+
+    city_entry = Slithernix::Cdk::Widget::Entry.new(
+      screen,
+      Slithernix::Cdk::LEFT,
+      8,
+      '',
+      '</B/5>City: ',
+      Curses::A_NORMAL,
+      '_'.ord,
+      :MIXED,
+      20,
+      2,
+      256,
+      true,
+      false
+    )
+
+    prov_entry = Slithernix::Cdk::Widget::Entry.new(
+      screen,
+      29,
+      8,
+      '',
+      '</B/5>Province: ',
+      Curses::A_NORMAL,
+      '_'.ord,
+      :MIXED,
+      15,
+      2,
+      256,
+      true,
+      false
+    )
+
+    postal_entry = Slithernix::Cdk::Widget::Entry.new(
+      screen,
+      Slithernix::Cdk::RIGHT,
+      8,
+      '',
+      '</B/5>Postal Code: ',
+      Curses::A_NORMAL,
+      '_'.ord,
+      :UMIXED,
+      8,
+      2,
+      256,
+      true,
+      false,
+    )
+
+    phone_template = Slithernix::Cdk::Widget::Template.new(
+      screen,
+      Slithernix::Cdk::LEFT,
+      11,
+      '',
+      '</B/5>Number: ',
+      '(###) ###-####',
+      '(___) ___-____',
+      true,
+      false,
+    )
+
+    desc_entry = Slithernix::Cdk::Widget::Entry.new(
+      screen,
+      Slithernix::Cdk::RIGHT,
+      11,
+      '',
+      '</B/5>Description: ',
+      Curses::A_NORMAL,
+      '_'.ord,
+      :MIXED,
+      20,
+      2,
+      256,
+      true,
+      false
+    )
 
     # Get the phone information.
     loop do
@@ -412,13 +599,49 @@ class Rolodex
   # This gets a small phone record.
   def self.getSmallPhoneRecord(screen, phone_record)
     # Define the widget.
-    name_entry = Slithernix::Cdk::Widget::Entry.new(screen, Slithernix::Cdk::CENTER, 8, '', '</B/5>Name: ',
-                                                    Curses::A_NORMAL, '_'.ord, :MIXED, 20, 2, 256, true, false)
-    phone_template = Slithernix::Cdk::Widget::Template.new(screen, Slithernix::Cdk::CENTER, 11, '',
-                                                           '</B/5>Number: ', '(###) ###-####', '(___) ___-____', true, false)
-    desc_entry = Slithernix::Cdk::Widget::Entry.new(screen, Slithernix::Cdk::CENTER, 14, '',
-                                                    '</B/5>Description: ', Curses::A_NORMAL, '_'.ord, :MIXED,
-                                                    20, 2, 256, true, false)
+    name_entry = Slithernix::Cdk::Widget::Entry.new(
+      screen,
+      Slithernix::Cdk::CENTER,
+      8,
+      '',
+      '</B/5>Name: ',
+      Curses::A_NORMAL,
+      '_'.ord,
+      :MIXED,
+      20,
+      2,
+      256,
+      true,
+      false,
+    )
+
+    phone_template = Slithernix::Cdk::Widget::Template.new(
+      screen,
+      Slithernix::Cdk::CENTER,
+      11,
+      '',
+      '</B/5>Number: ',
+      '(###) ###-####',
+      '(___) ___-____',
+      true,
+      false,
+    )
+
+    desc_entry = Slithernix::Cdk::Widget::Entry.new(
+      screen,
+      Slithernix::Cdk::CENTER,
+      14,
+      '',
+      '</B/5>Description: ',
+      Curses::A_NORMAL,
+      '_'.ord,
+      :MIXED,
+      20,
+      2,
+      256,
+      true,
+      false,
+    )
 
     # Get the phone information.
     loop do
@@ -486,9 +709,23 @@ class Rolodex
   # This opens a new RC file.
   def self.openNewRCFile(screen, group_list, group_count)
     # Get the filename
-    file_selector = Slithernix::Cdk::Widget::FSelect.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, 20, 55,
-                                                         '<C>Open RC File', 'Filename: ', Curses::A_NORMAL, '.'.ord,
-                                                         Curses::A_REVERSE, '</5>', '</48>', '</N>', '</N>', true, false)
+    file_selector = Slithernix::Cdk::Widget::FSelect.new(screen,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::CENTER,
+      20,
+      55,
+      '<C>Open RC File',
+      'Filename: ',
+      Curses::A_NORMAL,
+      '.'.ord,
+      Curses::A_REVERSE,
+      '</5>',
+      '</48>',
+      '</N>',
+      '</N>',
+      true,
+      false,
+    )
 
     # Activate the file selector.
     filename = file_selector.activate([])
@@ -588,19 +825,24 @@ class Rolodex
 
     # Start writing the RC file.
     group_list.each do |group|
-      fd.puts format('%s%c%s%c%s', group.name, Slithernix::Cdk.CTRL('V').chr,
-                     group.desc, Slithernix::Cdk.CTRL('V').chr, group.dbm)
+      fd.puts format(
+        '%s%c%s%c%s',
+        group.name,
+        Slithernix::Cdk.CTRL('V').chr,
+        group.desc,
+        Slithernix::Cdk.CTRL('V').chr,
+        group.dbm
+      )
     end
 
     fd.close
 
     mesg = []
-    # Pop up a message stating that it has been saved.
-    mesg << if group_count == 1
-              'There was 1 group saved to file'
-            else
-              format('There were %d groups saved to file', group_count)
-            end
+    mesg << format(
+      'There were %d group%s saved to file',
+      group_count,
+      group_count == 1 ? "" : "s",
+    )
 
     mesg << ('<C>%s' % filename)
     mesg << '<C>Press any key to continue.'
@@ -614,9 +856,21 @@ class Rolodex
   # groups under that name.
   def self.writeRCFileAs(screen, group_list, group_count)
     # Create the entry field.
-    new_rc_file = Slithernix::Cdk::Widget::Entry.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                                     '<C></R>Save As', 'Filename: ', Curses::A_NORMAL, '_'.ord,
-                                                     :MIXED, 20, 2, 256, true, false)
+    new_rc_file = Slithernix::Cdk::Widget::Entry.new(
+      screen,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::CENTER,
+      '<C></R>Save As',
+      'Filename: ',
+      Curses::A_NORMAL,
+      '_'.ord,
+      :MIXED,
+      20,
+      2,
+      256,
+      true,
+      false,
+    )
 
     # Add a pre-process function so no spaces are introduced.
     entry_pre_process_cb = lambda do |_cdk_type, _widget, _client_data, input|
@@ -721,19 +975,49 @@ class Rolodex
     # Add the header to the file.
     fd.puts '#'
     fd.puts format('# This file was automatically saved on %s', time.ctime)
-    fd.puts format('# There should be %d phone numbers in this file.',
-                   phone_data.count)
+    fd.puts format(
+      '# There should be %d phone numbers in this file.',
+      phone_data.count,
+    )
     fd.puts '#'
 
     # Cycle through the data and start writing it to the file.
     phone_data.record.each do |phone_record|
       # Check the phone type.
       if %i[CELL PAGER].include?(phone_record.line_type)
-        fd.puts format('%s%c%d%c%s%c-%c-%c-%c-%c%s', phone_record.name,
-                       Slithernix::Cdk.CTRL('V').chr, Rolodex::GTypeMap[phone_record.line_type], Slithernix::Cdk.CTRL('V').chr, phone_record.phone_number, Slithernix::Cdk.CTRL('V').chr, Slithernix::Cdk.CTRL('V').chr, Slithernix::Cdk.CTRL('V').chr, Slithernix::Cdk.CTRL('V').chr, Slithernix::Cdk.CTRL('V').chr, phone_record.desc)
+        fd.puts format(
+          '%s%c%d%c%s%c-%c-%c-%c-%c%s',
+          phone_record.name,
+          Slithernix::Cdk.CTRL('V').chr,
+          Rolodex::GTypeMap[phone_record.line_type],
+          Slithernix::Cdk.CTRL('V').chr,
+          phone_record.phone_number,
+          Slithernix::Cdk.CTRL('V').chr,
+          Slithernix::Cdk.CTRL('V').chr,
+          Slithernix::Cdk.CTRL('V').chr,
+          Slithernix::Cdk.CTRL('V').chr,
+          Slithernix::Cdk.CTRL('V').chr,
+          phone_record.desc
+        )
       else
-        fd.puts format('%s%c%d%c%s%c%s%c%s%c%s%c%s', phone_record.name,
-                       Slithernix::Cdk.CTRL('V').chr, Rolodex::GTypeMap[phone_record.line_type], Slithernix::Cdk.CTRL('V').chr, phone_record.phone_number, Slithernix::Cdk.CTRL('V').chr, phone_record.address, Slithernix::Cdk.CTRL('V').chr, phone_record.city, Slithernix::Cdk.CTRL('V').chr, phone_record.province, Slithernix::Cdk.CTRL('V').chr, phone_record.postal_code, Slithernix::Cdk.CTRL('V').chr, phone_record.desc)
+        fd.puts format(
+          '%s%c%d%c%s%c%s%c%s%c%s%c%s',
+          phone_record.name,
+          Slithernix::Cdk.CTRL('V').chr,
+          Rolodex::GTypeMap[phone_record.line_type],
+          Slithernix::Cdk.CTRL('V').chr,
+          phone_record.phone_number,
+          Slithernix::Cdk.CTRL('V').chr,
+          phone_record.address,
+          Slithernix::Cdk.CTRL('V').chr,
+          phone_record.city,
+          Slithernix::Cdk.CTRL('V').chr,
+          phone_record.province,
+          Slithernix::Cdk.CTRL('V').chr,
+          phone_record.postal_code,
+          Slithernix::Cdk.CTRL('V').chr,
+          phone_record.desc
+        )
       end
     end
     fd.close
@@ -789,8 +1073,15 @@ class Rolodex
       '<C>Press </B>?<!B> to get detailed help.',
       '<C><#HL(30)>',
     ]
-    help_window = Slithernix::Cdk::Widget::Label.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::BOTTOM,
-                                                     title, title.size, false, false)
+    help_window = Slithernix::Cdk::Widget::Label.new(
+      screen,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::BOTTOM,
+      title,
+      title.size,
+      false,
+      false,
+    )
     help_window.draw(false)
 
     # Open the DBM file and read in the contents of the file
@@ -834,9 +1125,21 @@ class Rolodex
     height = [phone_data.count, 5].min + 3
 
     # Create the scrolling list.
-    name_list = Slithernix::Cdk::Widget::Scroll.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                                    Slithernix::Cdk::RIGHT, height, 50, temp, index, phone_data.count,
-                                                    true, Curses::A_REVERSE, true, false)
+    name_list = Slithernix::Cdk::Widget::Scroll.new(
+      screen,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::RIGHT,
+      height,
+      50,
+      temp,
+      index,
+      phone_data.count,
+      true,
+      Curses::A_REVERSE,
+      true,
+      false,
+    )
 
     # This allows the user to insert a new phone entry into the database.
     insert_phone_entry_cb = lambda do |_cdk_type, scrollp, phone_data, _key|
@@ -849,8 +1152,11 @@ class Rolodex
 
       # Call the function which gets phone record information.
       if Rolodex.addPhoneRecord(scrollp.screen, phone_data).zero?
-        temp = format('%s (%s)', phone_record.name,
-                      Rolodex::GLineType[Rolodex::GTypeMap[phone_record.line_type]])
+        temp = format(
+          '%s (%s)',
+          phone_record.name,
+          Rolodex::GLineType[Rolodex::GTypeMap[phone_record.line_type]]
+        )
         scrollp.addItem(temp)
       end
 
@@ -880,11 +1186,12 @@ class Rolodex
       # Ask the user if they really want to delete the listing.
       mesg = [
         '<C>Do you really want to delete the phone entry.',
-        format('<C></B/16>%s',
-               Slithernix::Cdk.chtype2Char(scrollp.item[scrollp.current_item]))
+        format(
+          '<C></B/16>%s',
+          Slithernix::Cdk.chtype2Char(scrollp.item[scrollp.current_item]),
+        ),
       ]
-      if scrollp.screen.popupDialog(mesg, mesg.size, buttons,
-                                    buttons.size) == 1
+      if scrollp.screen.popupDialog(mesg, mesg.size, buttons, buttons.size) == 1
         front = phone_data.record[0...position] || []
         back = phone_data.record[position + 1..] || []
         phone_data.record = front + back
@@ -958,9 +1265,21 @@ class Rolodex
     end
 
     # Create the scrolling list.
-    rolo_list = Slithernix::Cdk::Widget::Scroll.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, Slithernix::Cdk::NONE,
-                                                    height, 50, title, mesg, mesg.size, false, Curses::A_REVERSE,
-                                                    true, false)
+    rolo_list = Slithernix::Cdk::Widget::Scroll.new(
+      screen,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::NONE,
+      height,
+      50,
+      title,
+      mesg,
+      mesg.size,
+      false,
+      Curses::A_REVERSE,
+      true,
+      false,
+    )
 
     # This is a callback to the group list scrolling list.
     group_info_cb = lambda do |_cdk_type, scrollp, group_list, _key|
@@ -997,9 +1316,21 @@ class Rolodex
   # This allows the user to add a rolo group to the list.
   def self.addRolodexGroup(screen, group_list, group_count)
     # Create the name widget.
-    new_name = Slithernix::Cdk::Widget::Entry.new(screen, Slithernix::Cdk::CENTER, 8,
-                                                  '<C></B/29>New Group Name', '</B/29>   Name: ',
-                                                  Curses::A_NORMAL, '_'.ord, :MIXED, 20, 2, 256, true, false)
+    new_name = Slithernix::Cdk::Widget::Entry.new(
+      screen,
+      Slithernix::Cdk::CENTER,
+      8,
+      '<C></B/29>New Group Name',
+      '</B/29>   Name: ',
+      Curses::A_NORMAL,
+      '_'.ord,
+      :MIXED,
+      20,
+      2,
+      256,
+      true,
+      false,
+    )
 
     # Get the name.
     new_group_name = new_name.activate([])
@@ -1017,8 +1348,10 @@ class Rolodex
       next unless new_group_name == group.name
 
       mesg = [
-        format('<C></B/16>Sorry the group (%s) already exists.',
-               new_group_name)
+        format(
+          '<C></B/16>Sorry the group (%s) already exists.',
+          new_group_name,
+        )
       ]
       screen.popupLabel(mesg, mesg.size)
       new_name.destroy
@@ -1030,9 +1363,21 @@ class Rolodex
     group_list[group_count].name = new_group_name
 
     # Create the description widget.
-    new_desc = Slithernix::Cdk::Widget::Entry.new(screen, Slithernix::Cdk::CENTER, 13,
-                                                  '<C></B/29>Group Description', '</B/29>Description: ',
-                                                  Curses::A_NORMAL, '_'.ord, :MIXED, 20, 2, 256, true, false)
+    new_desc = Slithernix::Cdk::Widget::Entry.new(
+      screen,
+      Slithernix::Cdk::CENTER,
+      13,
+      '<C></B/29>Group Description',
+      '</B/29>Description: ',
+      Curses::A_NORMAL,
+      '_'.ord,
+      :MIXED,
+      20,
+      2,
+      256,
+      true,
+      false,
+    )
 
     # Get the description.
     desc = new_desc.activate([])
@@ -1045,8 +1390,11 @@ class Rolodex
                                    end
 
     # Create the DBM filename.
-    group_list[group_count].dbm = format('%s/%s.phl', @@gdbm_dir,
-                                         group_list[group_count].name)
+    group_list[group_count].dbm = format(
+      '%s/%s.phl',
+      @@gdbm_dir,
+      group_list[group_count].name,
+    )
 
     # Increment the group count.
     group_count += 1
@@ -1094,11 +1442,8 @@ class Rolodex
   end
 
   def self.main
-    # Set up CDK
     curses_win = Curses.init_screen
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
-
-    # Set up CDK colors
     Slithernix::Cdk::Draw.initCDKColor
 
     # Create the menu lists.
@@ -1129,21 +1474,37 @@ class Rolodex
 
     # Set up the sub-menu sizes and their locations
     sub_menu_size = [5, 4, 2, 3]
-    menu_locations = [Slithernix::Cdk::LEFT, Slithernix::Cdk::LEFT,
-                      Slithernix::Cdk::LEFT, Slithernix::Cdk::RIGHT]
+    menu_locations = [
+      Slithernix::Cdk::LEFT, Slithernix::Cdk::LEFT,
+      Slithernix::Cdk::LEFT, Slithernix::Cdk::RIGHT,
+    ]
 
     # Create the menu.
-    rolodex_menu = Slithernix::Cdk::Widget::Menu.new(cdkscreen, menulist, menulist.size,
-                                                     sub_menu_size, menu_locations, Slithernix::Cdk::TOP,
-                                                     Curses::A_BOLD | Curses::A_UNDERLINE, Curses::A_REVERSE)
+    rolodex_menu = Slithernix::Cdk::Widget::Menu.new(
+      cdkscreen,
+      menulist,
+      menulist.size,
+      sub_menu_size,
+      menu_locations,
+      Slithernix::Cdk::TOP,
+      Curses::A_BOLD | Curses::A_UNDERLINE,
+      Curses::A_REVERSE,
+    )
 
     # Create teh title.
     title = [
       '<C></U>Cdk Rolodex',
       '<C></B/24>Written By Chris Sauro (orignal by Mike Glover)',
     ]
-    rolodex_title = Slithernix::Cdk::Widget::Label.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                                       title, title.size, false, false)
+    rolodex_title = Slithernix::Cdk::Widget::Label.new(
+      cdkscreen,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::CENTER,
+      title,
+      title.size,
+      false,
+      false,
+    )
 
     # This is a callback to the menu widget. It allows the user to
     # ask for help about any sub-menu item.
@@ -1218,7 +1579,7 @@ class Rolodex
     end
 
     # Make the rolodex directory.
-    FileUtils.mkdir_p(@@gdbm_dir, 0o755)
+    FileUtils.mkdir_p(@@gdbm_dir, mode: 0755)
 
     group_list = []
 
@@ -1318,22 +1679,33 @@ class Rolodex
           end
         else
           # Get the number of the group to open.
-          group = Rolodex.pickRolodexGroup(cdkscreen,
-                                           '<C></B/29>Open Rolodex Group', group_list, group_count)
+          group = Rolodex.pickRolodexGroup(
+            cdkscreen,
+            '<C></B/29>Open Rolodex Group',
+            group_list,
+            group_count,
+          )
           # Make sure a group was picked.
           if group >= 0
             # Set the global variable @@g_current_group
             @@g_current_group = group_list[group].name.clone
 
             # Try to open the DBM file and read the contents.
-            Rolodex.useRolodexGroup(cdkscreen, group_list[group].name,
-                                    group_list[group].desc, group_list[group].dbm)
+            Rolodex.useRolodexGroup(
+              cdkscreen,
+              group_list[group].name,
+              group_list[group].desc,
+              group_list[group].dbm,
+            )
           end
         end
       when 102
         # Delete the group chosen.
-        group_count = Rolodex.deleteRolodexGroup(cdkscreen,
-                                                 group_list, group_count)
+        group_count = Rolodex.deleteRolodexGroup(
+          cdkscreen,
+          group_list,
+          group_count,
+        )
       when 200
         # Print Phone Number Group.
         Rolodex.printGroupNumbers(cdkscreen, group_list, group_count)

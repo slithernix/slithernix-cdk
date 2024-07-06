@@ -31,8 +31,17 @@ class TemplateExample < Example
     Slithernix::Cdk::Draw.initCDKColor
 
     # Declare the template.
-    phone_number = Slithernix::Cdk::Widget::Template.new(cdkscreen, params.x_value, params.y_value,
-                                                         title, label, plate, overlay, params.box, params.shadow)
+    phone_number = Slithernix::Cdk::Widget::Template.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value,
+      title,
+      label,
+      plate,
+      overlay,
+      params.box,
+      params.shadow,
+    )
 
     if phone_number.nil?
       # Exit CDK.

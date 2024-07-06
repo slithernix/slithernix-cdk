@@ -76,8 +76,8 @@ module Slithernix
     KEY_RETURN = "\012".ord
     KEY_TAB = "\t".ord
 
-    ALL_SCREENS = [].freeze
-    ALL_OBJECTS = [].freeze
+    ALL_SCREENS = []
+    ALL_OBJECTS = []
 
     # ACS constants have been removed from ruby curses, putting them here
     # note that this is garbage and likely to break all over the place.

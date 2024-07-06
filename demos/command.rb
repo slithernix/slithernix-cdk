@@ -44,7 +44,7 @@ class Command
       '',
       '<C>Type </B>help<!B> to get help.'
     ]
-    command = ''
+    command = String.new
     prompt = '</B/24>Command >'
     title = '<C></B/5>Command Output Window'
 

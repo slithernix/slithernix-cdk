@@ -6,8 +6,7 @@ module Slithernix
   module Cdk
     class Widget
       class ItemList < Slithernix::Cdk::Widget
-        def initialize(cdkscreen, xplace, yplace, title, label, item, count,
-                       default_item, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, title, label, item, count, default_item, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -396,19 +395,25 @@ module Slithernix
               # Copy the item to the list.
               lentmp = []
               postmp = []
-              new_items << Slithernix::Cdk.char2Chtype(item[x], lentmp,
-                                                       postmp)
+              new_items << Slithernix::Cdk.char2Chtype(
+                item[x],
+                lentmp,
+                postmp
+              )
               new_len << lentmp[0]
               new_pos << postmp[0]
-              if (new_items[0]).zero?
+              if (new_items[0])&.size&.zero?
                 status = false
                 break
               end
               field_width = [field_width, new_len[x]].max
 
               # Now we need to justify the strings.
-              new_pos[x] = Slithernix::Cdk.justifyString(field_width + 1,
-                                                         new_len[x], new_pos[x])
+              new_pos[x] = Slithernix::Cdk.justifyString(
+                field_width + 1,
+                new_len[x],
+                new_pos[x],
+              )
             end
 
             if status

@@ -6,8 +6,7 @@ module Slithernix
   module Cdk
     class Widget
       class Template < Slithernix::Cdk::Widget
-        def initialize(cdkscreen, xplace, yplace, title, label, plate,
-                       overlay, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, title, label, plate, overlay, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -104,9 +103,10 @@ module Slithernix
 
           # Set up the info field.
           @plate_len = plate.size
-          @info = ''
+          @info = ''.dup
           # Copy the plate to the template
-          @plate = plate.clone
+          #@plate = plate.clone
+          @plate = plate.dup
 
           # Set up the rest of the structure.
           @screen = cdkscreen
@@ -145,7 +145,8 @@ module Slithernix
                 failed = true
               end
             else
-              test = @info.clone
+              #test = @info.clone
+              test = @info.dup
               if input == Curses::KEY_BACKSPACE
                 if mark.zero?
                   failed = true
@@ -312,8 +313,12 @@ module Slithernix
 
             # Should we call a post-process?
             if !complete && @post_process_func
-              @post_process_func.call(:Template, self, @post_process_data,
-                                      input)
+              @post_process_func.call(
+                :Template,
+                self,
+                @post_process_data,
+                input,
+              )
             end
           end
 
@@ -356,7 +361,7 @@ module Slithernix
 
         # Return a mixture of the plate-overlay and field-info
         def mix
-          mixed_string = ''
+          mixed_string = String.new
           plate_pos = 0
           info_pos = 0
 
@@ -365,7 +370,7 @@ module Slithernix
             while plate_pos < @plate_len && info_pos < @info.size
               mixed_string << if Slithernix::Cdk::Widget::Template.isPlateChar(@plate[plate_pos])
                               then info_pos += 1
-                                   @info[info_pos - 1]
+                                @info[info_pos - 1]
                               else
                                 @plate[plate_pos]
                               end
