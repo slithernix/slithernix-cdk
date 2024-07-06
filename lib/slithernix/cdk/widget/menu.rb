@@ -126,7 +126,7 @@ module Slithernix
             @input_window = @title_win[@current_title]
 
             # Start taking input from the keyboard.
-            while true
+            loop do
               input = getch([])
 
               # Inject the character into the widget.

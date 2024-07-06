@@ -156,7 +156,7 @@ module Slithernix
           draw(@box)
 
           if actions.nil? or actions.size.zero?
-            while true
+            loop do
               input = getch([])
 
               # Inject the character into the widget.

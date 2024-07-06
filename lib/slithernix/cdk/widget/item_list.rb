@@ -121,7 +121,7 @@ module Slithernix
           if actions.nil? || actions.size.zero?
             input = 0
 
-            while true
+            loop do
               input = getch([])
 
               # Inject the character into the widget.

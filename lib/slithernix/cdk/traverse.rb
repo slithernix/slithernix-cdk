@@ -42,7 +42,7 @@ module Slithernix
         n = getFocusIndex(screen)
         first = n
 
-        while true
+        loop do
           n += 1
           n = 0 if n >= screen.widget_count
           curwidg = screen.widget[n]
@@ -65,7 +65,7 @@ module Slithernix
         n = getFocusIndex(screen)
         first = n
 
-        while true
+        loop do
           n -= 1
           n = screen.widget_count - 1 if n.negative?
           curwidg = screen.widget[n]
@@ -89,7 +89,7 @@ module Slithernix
         n = getFocusIndex(screen)
         first = n
 
-        while true
+        loop do
           n += 1
           n = 0 if n >= screen.widget_count
 

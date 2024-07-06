@@ -266,7 +266,7 @@ module Slithernix
                 end
 
                 # Start looking for the common base characters.
-                while true
+                loop do
                   secondary_matches = 0
                   (index...index + matches).each do |x|
                     if list[index][base_chars] == list[x][base_chars]
@@ -479,7 +479,7 @@ module Slithernix
           draw(@box)
 
           if actions.nil? || actions.size.zero?
-            while true
+            loop do
               input = @entry_field.getch([])
 
               # Inject the character into the widget.

@@ -182,7 +182,7 @@ module Slithernix
             code = getch(function_key)
           else
             # Only exit when a specific key is hit
-            while true
+            loop do
               code = getch(function_key)
               break if code == key
             end

@@ -70,7 +70,7 @@ class CDKScreenExample < Example
                                                  6, buttons, 2, Curses::A_REVERSE, true, true, false)
 
     # Do this forever... (almost)
-    while true
+    loop do
       # Draw the first screen.
       cdkscreen1.draw
       label1.wait(' ')

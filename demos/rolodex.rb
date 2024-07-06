@@ -335,7 +335,7 @@ class Rolodex
                                                     20, 2, 256, true, false)
 
     # Get the phone information.
-    while true
+    loop do
       # Draw the widget on the screen.
       name_entry.draw(name_entry.box)
       address_entry.draw(address_entry.box)
@@ -421,7 +421,7 @@ class Rolodex
                                                     20, 2, 256, true, false)
 
     # Get the phone information.
-    while true
+    loop do
       # Draw the widget on the screen.
       name_entry.draw(name_entry.box)
       phone_template.draw(phone_template.box)
@@ -1260,7 +1260,7 @@ class Rolodex
     end
 
     # Loop until we are done.
-    while true
+    loop do
       # Activate the menu.
       selection = rolodex_menu.activate([])
 

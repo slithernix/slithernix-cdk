@@ -364,7 +364,7 @@ module Slithernix
           draw(@box)
 
           # Do this until KEY_ENTER is hit.
-          while true
+          loop do
             refresh = false
 
             input = getch([])
@@ -523,14 +523,10 @@ module Slithernix
 
         # This searches the document looking for the given word.
         def getAndStorePattern(screen)
-          temp = ''
-
-          # Check the direction.
-          temp = if @search_direction == Slithernix::Cdk::Widget::Viewer::UP
-                   '</5>Search Up  : <!5>'
-                 else
-                   '</5>Search Down: <!5>'
-                 end
+          temp = '</5>Search Down: <!5>'
+          if @search_direction == Slithernix::Cdk::Widget::Viewer::UP
+            temp = '</5>Search Up  : <!5>'
+          end
 
           # Pop up the entry field.
           get_pattern = Slithernix::Cdk::Widget::Entry.new(

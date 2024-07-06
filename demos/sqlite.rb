@@ -261,7 +261,7 @@ class SQLiteDemo
     # Display the introduction window.
     SQLiteDemo.intro(@@gp_cdk_screen)
 
-    while true
+    loop do
       # Get the command.
       command = command_entry.activate([]).strip
       upper = command.upcase

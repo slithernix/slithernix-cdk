@@ -31,7 +31,7 @@ class StopSign
                                                    sign, 3, true, true)
 
     # Do this until they hit q or escape.
-    while true
+    loop do
       title.draw(false)
       stop_sign.draw(true)
 
