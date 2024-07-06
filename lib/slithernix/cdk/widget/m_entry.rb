@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../widget'
 
 module Slithernix
@@ -124,7 +126,7 @@ module Slithernix
               Slithernix::Cdk.Beep
             else
               mentry.info = mentry.info[0...cursor_pos] + newchar.chr +
-                            mentry.info[cursor_pos..-1]
+                            mentry.info[cursor_pos..]
               mentry.current_col += 1
 
               mentry.drawField
@@ -163,12 +165,10 @@ module Slithernix
 
         # This actually activates the mentry widget...
         def activate(actions)
-          input = 0
-
           # Draw the mentry widget.
           draw(@box)
 
-          if actions.size.zero?
+          if actions.empty?
             while true
               input = getch([])
 
@@ -315,12 +315,12 @@ module Slithernix
               when Curses::KEY_BACKSPACE, Curses::KEY_DC
                 if @disp_type == :VIEWONLY
                   Slithernix::Cdk.Beep
-                elsif @info.length.zero?
+                elsif @info.empty?
                   Slithernix::Cdk.Beep
                 elsif input == Curses::KEY_DC
                   cursor_pos = getCursorPos
                   if cursor_pos < @info.size
-                    @info = @info[0...cursor_pos] + @info[cursor_pos + 1..-1]
+                    @info = @info[0...cursor_pos] + @info[cursor_pos + 1..]
                     drawField
                   else
                     Slithernix::Cdk.Beep
@@ -330,11 +330,11 @@ module Slithernix
                   rtmp = [redraw]
                   hKL = self.KEY_LEFT(mtmp, rtmp)
                   moved = mtmp[0]
-                  rtmp = [redraw]
+                  [redraw]
                   if hKL
                     cursor_pos = getCursorPos
                     if cursor_pos < @info.size
-                      @info = @info[0...cursor_pos] + @info[cursor_pos + 1..-1]
+                      @info = @info[0...cursor_pos] + @info[cursor_pos + 1..]
                       drawField
                     else
                       Slithernix::Cdk.Beep
@@ -351,12 +351,12 @@ module Slithernix
                   drawField
                 end
               when Slithernix::Cdk::ERASE
-                if @info.size != 0
+                unless @info.empty?
                   clean
                   drawField
                 end
               when Slithernix::Cdk::CUT
-                if @info.size.zero?
+                if @info.empty?
                   Slithernix::Cdk.Beep
                 else
                   @@g_paste_buffer = @info.clone
@@ -364,13 +364,13 @@ module Slithernix
                   drawField
                 end
               when Slithernix::Cdk::COPY
-                if @info.size.zero?
+                if @info.empty?
                   Slithernix::Cdk.Beep
                 else
                   @@g_paste_buffer = @info.clone
                 end
               when Slithernix::Cdk::PASTE
-                if @@g_paste_buffer.size.zero?
+                if @@g_paste_buffer.empty?
                   Slithernix::Cdk.Beep
                 else
                   setValue(@@g_paste_buffer)
@@ -485,7 +485,7 @@ module Slithernix
         def setBKattr(attrib)
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
-          @label_win.wbkgd(attrib) unless @label_win.nil?
+          @label_win&.wbkgd(attrib)
         end
 
         # This function erases the multiple line entry field from the screen.
@@ -533,13 +533,12 @@ module Slithernix
           if new_value.size < field_characters
             @top_row = 0
             @current_row = new_value.size / @field_width
-            @current_col = new_value.size % @field_width
           else
             row_used = new_value.size / @field_width
             @top_row = row_used - @rows + 1
             @current_row = @rows - 1
-            @current_col = new_value.size % @field_width
           end
+          @current_col = new_value.size % @field_width
 
           # Redraw the widget.
           drawField

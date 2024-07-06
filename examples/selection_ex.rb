@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'etc'
 require_relative 'example'
 
@@ -88,7 +90,7 @@ class SelectionExample < CLIExample
         params.box,
         !params.shadow,
       )
-      header.activate([]) unless header.nil?
+      header&.activate([])
     end
 
     if params.footer != ''
@@ -102,7 +104,7 @@ class SelectionExample < CLIExample
         params.box,
         !params.shadow,
       )
-      footer.activate([]) unless footer.nil?
+      footer&.activate([])
     end
 
     # Create the selection list.

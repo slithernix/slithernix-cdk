@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../widget'
 
 module Slithernix
@@ -12,8 +14,6 @@ module Slithernix
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
-          box_width = width
-          box_height = height
           button_width = 0
           button_adj = 0
           button_pos = 1
@@ -235,7 +235,7 @@ module Slithernix
           current_line = 0
           x = 0
           while x < list_size && current_line < viewer_size
-            if list[x].size.zero?
+            if list[x].empty?
               @list[current_line] = ''
               @list_len[current_line] = 0
               @list_pos[current_line] = 0
@@ -526,10 +526,10 @@ module Slithernix
         def getAndStorePattern(screen)
           # Not sure why this temp business is here. Perhaps is
           # supposed to be used when searching?
-          #temp = '</5>Search Down: <!5>'
-          #if @search_direction == Slithernix::Cdk::Widget::Viewer::UP
+          # temp = '</5>Search Down: <!5>'
+          # if @search_direction == Slithernix::Cdk::Widget::Viewer::UP
           #  temp = '</5>Search Up  : <!5>'
-          #end
+          # end
 
           # Pop up the entry field.
           get_pattern = Slithernix::Cdk::Widget::Entry.new(
@@ -549,7 +549,7 @@ module Slithernix
           )
 
           # Is there an old search pattern?
-          if @search_pattern.size != 0
+          unless @search_pattern.empty?
             get_pattern.set(
               @search_pattern,
               get_pattern.min,
@@ -574,7 +574,7 @@ module Slithernix
           found = false
 
           # If the pattern is empty then return.
-          if pattern.size != 0
+          unless pattern.empty?
             if direction == Slithernix::Cdk::Widget::Viewer::DOWN
               # Start looking from 'here' down.
               x = @current_top + 1
@@ -761,7 +761,6 @@ module Slithernix
         # This draws the viewer info lines.
         def drawInfo
           temp = ''
-          line_adjust = false
 
           # Clear the window.
           @win.erase

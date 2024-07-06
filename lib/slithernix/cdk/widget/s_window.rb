@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../widget'
 
 module Slithernix
@@ -9,8 +11,6 @@ module Slithernix
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
-          box_width = width
-          box_height = height
           bindings = {
             Slithernix::Cdk::BACKCHAR => Curses::KEY_PPAGE,
             'b' => Curses::KEY_PPAGE,
@@ -169,9 +169,9 @@ module Slithernix
           # If we are at the maximum number of save lines erase the first
           # position and bump everything up one spot
           if (@list_size == @save_lines) && @list_size.positive?
-            @list = @list[1..-1]
-            @list_pos = @list_pos[1..-1]
-            @list_len = @list_len[1..-1]
+            @list = @list[1..]
+            @list_pos = @list_pos[1..]
+            @list_len = @list_len[1..]
             @list_size -= 1
           end
 
@@ -310,7 +310,7 @@ module Slithernix
           # Draw the scrolling list.
           draw(@box)
 
-          if actions.nil? || actions.size.zero?
+          if actions.nil? || actions.empty?
             loop do
               input = getch([])
 
@@ -468,11 +468,7 @@ module Slithernix
         # This draws in the contents of the scrolling window
         def drawList(_box)
           # Determine the last line to draw.
-          last_line = if @list_size < @view_size
-                        @list_size
-                      else
-                        @view_size
-                      end
+          last_line = [@list_size, @view_size].min
 
           # Erase the scrolling window.
           @field_win.erase
@@ -545,7 +541,7 @@ module Slithernix
             unless (ps = IO.popen(command.split, 'r')).nil?
               # Start reading.
               until (temp = ps.gets).nil?
-                temp = temp[0...-1] if temp.size != 0 && temp[-1] == '\n'
+                temp = temp[0...-1] if !temp.empty? && temp[-1] == '\n'
                 # Add the line to the scrolling window.
                 add(temp, insert_pos)
                 count += 1
@@ -569,7 +565,7 @@ module Slithernix
             unless (ps = IO.popen(command.split, 'r')).nil?
               # Start reading.
               until (temp = ps.gets).nil?
-                temp = temp[0...-1] if temp.size != 0 && temp[-1] == '\n'
+                temp = temp[0...-1] if !temp.empty? && temp[-1] == '\n'
                 # Add the line to the scrolling window.
                 add(temp, insert_pos)
                 count += 1
@@ -681,7 +677,7 @@ module Slithernix
           )
 
           # Get the filename to load.
-          filename = fselect.activate([])
+          fselect.activate([])
 
           # Make sure they selected a file.
           if fselect.exit_type == :ESCAPE_HIT

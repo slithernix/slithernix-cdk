@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Slithernix
   module Cdk
     class Screen
@@ -12,7 +14,7 @@ module Slithernix
         window ||= Curses.init_screen
         # Curses.curs_set(0)
         # initialization for the first time
-        if Slithernix::Cdk::ALL_SCREENS.size.zero?
+        if Slithernix::Cdk::ALL_SCREENS.empty?
           # Set up basic curses settings.
           # #ifdef HAVE_SETLOCALE
           # setlocale (LC_ALL, "");
@@ -247,9 +249,7 @@ module Slithernix
               widg.erase
             end
           end
-        end
 
-        (0...@widget_count).each do |x|
           widg = @widget[x]
 
           next unless widg.validObjType(widg.widget_type)
@@ -282,7 +282,7 @@ module Slithernix
 
           widg.erase
           widg.destroy
-          x -= (@widget_count - before)
+          x - (@widget_count - before)
         end
       end
 

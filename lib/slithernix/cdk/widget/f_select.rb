@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../widget'
 
 module Slithernix
@@ -174,7 +176,7 @@ module Slithernix
             current_index = 0
 
             # Make sure the filename is not nil/empty.
-            if filename.nil? || filename.size.zero?
+            if filename.nil? || filename.empty?
               Slithernix::Cdk.Beep
               return true
             end
@@ -213,9 +215,8 @@ module Slithernix
             end
 
             # Create the file list.
-            list = []
-            (0...fselect.file_counter).each do |x|
-              list << fselect.contentToPath(fselect.dir_contents[x])
+            list = (0...fselect.file_counter).map do |x|
+              fselect.contentToPath(fselect.dir_contents[x])
             end
 
             # Look for a unique filename match.
@@ -294,48 +295,6 @@ module Slithernix
           end
 
           # This allows the user to delete a file.
-          delete_file_cb = lambda do |_widget_type, fscroll, fselect|
-            buttons = %w[No Yes]
-
-            # Get the filename which is to be deleted.
-            filename = Slithernix::Cdk.chtype2Char(fscroll.item[fscroll.current_item])
-            filename = filename[0...-1]
-
-            # Create the dialog message.
-            mesg = [
-              '<C>Are you sure you want to delete the file:',
-              format('<C></U>"%s"?', filename)
-            ]
-
-            # Create the dialog box.
-            question = Slithernix::Cdk::Dialog.new(fselect.screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                                   mesg, 2, buttons, 2, Curses::A_REVERSE, true, true, false)
-
-            # If the said yes then try to nuke it.
-            if question.activate([]) == 1
-              # If we were successful, reload the scrolling list.
-              if File.unlink(filename).zero?
-                # Set the file selector information.
-                fselect.set(fselect.pwd, fselect.field_attribute,
-                            fselect.filler_character, fselect.highlight,
-                            fselect.dir_attribute, fselect.file_attribute,
-                            fselect.link_attribute, fselect.sock_attribute, fselect.box)
-              else
-                # Pop up a message.
-                # mesg[0] = copyChar (errorMessage ("<C>Cannot delete file: %s"));
-                # mesg[1] = copyChar (" ");
-                # mesg[2] = copyChar("<C>Press any key to continue.");
-                # popupLabel(ScreenOf (fselect), (CDK_CSTRING2) mesg, 3);
-                # freeCharList (mesg, 3);
-              end
-            end
-
-            # Clean up.
-            question.destroy
-
-            # Redraw the file seoector.
-            fselect.draw(fselect.box)
-          end
 
           # Start of callback functions.
           adjust_scroll_cb = lambda do |_widget_type, _widget, fselect, key|
@@ -478,7 +437,7 @@ module Slithernix
           # Draw the widget.
           draw(@box)
 
-          if actions.nil? || actions.size.zero?
+          if actions.nil? || actions.empty?
             loop do
               input = @entry_field.getch([])
 
@@ -563,11 +522,11 @@ module Slithernix
           if directory&.size&.positive?
             # Try to expand the directory if it starts with a ~
             temp_dir = Slithernix::Cdk::Widget::FSelect.expandTilde(directory)
-            if temp_dir&.size&.positive?
-              new_directory = temp_dir
-            else
-              new_directory = directory.clone
-            end
+            new_directory = if temp_dir&.size&.positive?
+                              temp_dir
+                            else
+                              directory.clone
+                            end
 
             # Change directories.
             if Dir.chdir(new_directory) != 0
@@ -631,7 +590,6 @@ module Slithernix
           # Set the properties of the files.
           (0...@file_counter).each do |x|
             attr = ''
-            mode = '?'
 
             # FIXME(original): access() would give a more correct answer
             # TODO: add error handling
@@ -868,7 +826,7 @@ module Slithernix
         # Currently a wrapper for File.expand_path
         def self.make_pathname(directory, filename)
           if filename == '..'
-            File.expand_path(directory) + '/..'
+            "#{File.expand_path(directory)}/.."
           else
             File.expand_path(filename, directory)
           end
@@ -879,7 +837,7 @@ module Slithernix
           # XXX direct translation of original but might be redundant
           temp_chtype = Slithernix::Cdk.char2Chtype(content, [], [])
           temp_char = Slithernix::Cdk.chtype2Char(temp_chtype)
-          temp_char = temp_char[0..-1]
+          temp_char = temp_char
 
           # Create the pathname.
           Slithernix::Cdk::Widget::FSelect.make_pathname(@pwd,

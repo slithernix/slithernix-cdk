@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'scroller'
 
 module Slithernix
@@ -11,8 +13,6 @@ module Slithernix
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
-          box_width = width
-          box_height = height
           xpos = xplace
           ypos = yplace
           scroll_adjust = 0
@@ -60,11 +60,7 @@ module Slithernix
                        else
                          box_width
                        end
-          @box_height = if box_height > parent_height
-                        then parent_height
-                        else
-                          box_height
-                        end
+          @box_height = [box_height, parent_height].min
 
           setViewSize(list_size)
 
@@ -147,9 +143,9 @@ module Slithernix
 
         # Put the cursor on the currently-selected item's row.
         def fixCursorPosition
-          scrollbar_adj = @scrollbar_placement == LEFT ? 1 : 0
-          ypos = self.SCREEN_YPOS(@current_item - @current_top)
-          xpos = self.SCREEN_XPOS(0) + scrollbar_adj
+          @scrollbar_placement == LEFT ? 1 : 0
+          self.SCREEN_YPOS(@current_item - @current_top)
+          self.SCREEN_XPOS(0)
 
           # Another .move that breaks a bunch of stuff!, BIGLY!!!
           # @input_window.move(ypos, xpos)
@@ -161,7 +157,7 @@ module Slithernix
           # Draw the scrolling list
           draw(@box)
 
-          if actions.nil? || actions.size.zero?
+          if actions.nil? || actions.empty?
             while true
               fixCursorPosition
               input = getch([])
@@ -302,7 +298,7 @@ module Slithernix
 
           Slithernix::Cdk::Draw.writeChtypeAttrib(
             @list_win,
-            screen_pos >= 0 ? screen_pos : 0,
+            [screen_pos, 0].max,
             @current_high,
             @item[@current_item],
             highlight,
@@ -386,7 +382,7 @@ module Slithernix
         def setBKattr(attrib)
           @win.wbkgd(attrib)
           @list_win.wbkgd(attrib)
-          @scrollbar_win.wbkgd(attrib) unless @scrollbar_win.nil?
+          @scrollbar_win&.wbkgd(attrib)
         end
 
         # This function destroys
@@ -451,7 +447,6 @@ module Slithernix
           status = 0
           if list_size.positive?
             widest_item = 0
-            x = 0
             have = 0
             temp = ''
             if allocListArrays(0, list_size)
@@ -533,7 +528,7 @@ module Slithernix
             while k < source.size
               # handle deletions that change the length of number
               if source[k] == '.' && target[k] != '.'
-                source = source[0...k] + source[k + 1..-1]
+                source = source[0...k] + source[k + 1..]
               end
 
               target[k] &= Curses::A_ATTRIBUTES
@@ -544,9 +539,9 @@ module Slithernix
         end
 
         def insertListItem(item)
-          @item = @item[0..item] + @item[item..-1]
-          @item_len = @item_len[0..item] + @item_len[item..-1]
-          @item_pos = @item_pos[0..item] + @item_pos[item..-1]
+          @item = @item[0..item] + @item[item..]
+          @item_len = @item_len[0..item] + @item_len[item..]
+          @item_pos = @item_pos[0..item] + @item_pos[item..]
           true
         end
 
@@ -610,9 +605,9 @@ module Slithernix
           return unless position >= 0 && position < @list_size
 
           # Adjust the list
-          @item = @item[0...position] + @item[position + 1..-1]
-          @item_len = @item_len[0...position] + @item_len[position + 1..-1]
-          @item_pos = @item_pos[0...position] + @item_pos[position + 1..-1]
+          @item = @item[0...position] + @item[position + 1..]
+          @item_len = @item_len[0...position] + @item_len[position + 1..]
+          @item_pos = @item_pos[0...position] + @item_pos[position + 1..]
 
           setViewSize(@list_size - 1)
 
@@ -726,7 +721,7 @@ module Slithernix
           draw(@box)
           ret = -1
 
-          if actions.nil? || actions.size.zero?
+          if actions.nil? || actions.empty?
             loop do
               input = getch([])
 
@@ -969,7 +964,7 @@ module Slithernix
               setExitType(input)
               complete = true
             when ' ', Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
-              @callback.call(self) unless @callback.nil?
+              @callback&.call(self)
               setExitType(Curses::KEY_ENTER)
               ret = 0
               complete = true

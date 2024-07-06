@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'scroller'
 
 module Slithernix
@@ -9,9 +11,6 @@ module Slithernix
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
-          box_width = width
-          box_height = height
-          widest_item = 0
 
           bindings = {
             'g' => Curses::KEY_HOME,
@@ -49,7 +48,6 @@ module Slithernix
           end
 
           # Adjust the box width if there is a scroll bar.
-          scrollbar = false
 
           if [Slithernix::Cdk::LEFT, Slithernix::Cdk::RIGHT].include?(splace)
             box_width += 1
@@ -91,30 +89,28 @@ module Slithernix
           # Is the window nil?
           if @win.nil?
             destroy
-            raise StandardError, "could not create curses window"
+            raise StandardError, 'could not create curses window'
           end
 
           # Turn on the keypad.
           @win.keypad(true)
 
           # Create the scrollbar window.
-          if splace == Slithernix::Cdk::RIGHT
-            @scrollbar_win = @win.subwin(
-              maxViewSize,
-              1,
-              self.SCREEN_YPOS(ypos),
-              xpos + @box_width - @border_size - 1,
-            )
-          elsif splace == Slithernix::Cdk::LEFT
-            @scrollbar_win = @win.subwin(
-              maxViewSize,
-              1,
-              self.SCREEN_YPOS(ypos),
-              self.SCREEN_XPOS(xpos),
-            )
-          else
-            @scrollbar_win = nil
-          end
+          @scrollbar_win = if splace == Slithernix::Cdk::RIGHT
+                             @win.subwin(
+                               maxViewSize,
+                               1,
+                               self.SCREEN_YPOS(ypos),
+                               xpos + @box_width - @border_size - 1,
+                             )
+                           elsif splace == Slithernix::Cdk::LEFT
+                             @win.subwin(
+                               maxViewSize,
+                               1,
+                               self.SCREEN_YPOS(ypos),
+                               self.SCREEN_XPOS(xpos),
+                             )
+                           end
 
           # Set the rest of the variables
           @screen = cdkscreen
@@ -150,9 +146,9 @@ module Slithernix
 
         # Put the cursor on the currently-selected item.
         def fixCursorPosition
-          scrollbar_adj = @scrollbar_placement == Slithernix::Cdk::LEFT ? 1 : 0
-          ypos = self.SCREEN_YPOS(@current_item - @current_top)
-          xpos = self.SCREEN_XPOS(0) + scrollbar_adj
+          @scrollbar_placement == Slithernix::Cdk::LEFT ? 1 : 0
+          self.SCREEN_YPOS(@current_item - @current_top)
+          self.SCREEN_XPOS(0)
 
           # @input_window.move(ypos, xpos)
           @input_window.refresh
@@ -163,7 +159,7 @@ module Slithernix
           # Draw the radio list.
           draw(@box)
 
-          if actions.nil? || actions.size.zero?
+          if actions.nil? || actions.empty?
             while true
               fixCursorPosition
               input = getch([])
@@ -376,7 +372,7 @@ module Slithernix
         # This sets the background attribute of the widget.
         def setBKattr(attrib)
           @win.wbkgd(attrib)
-          @scrollbar_win.wbkgd(attrib) unless @scrollbar_win.nil?
+          @scrollbar_win&.wbkgd(attrib)
         end
 
         def destroyInfo
@@ -531,7 +527,7 @@ module Slithernix
               new_list << Slithernix::Cdk.char2Chtype(list[j], lentmp, postmp)
               new_len << lentmp[0]
               new_pos << postmp[0]
-              if new_list[j].nil? || new_list[j].size.zero?
+              if new_list[j].nil? || new_list[j].empty?
                 status = false
                 break
               end

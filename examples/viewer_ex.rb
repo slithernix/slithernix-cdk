@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require_relative 'example'
 
 class ViewerExample < CLIExample
@@ -180,7 +182,7 @@ class ViewerExample < CLIExample
     )
 
     # Destroy the file selector widget.
-    f_select.destroy unless f_select.nil?
+    f_select&.destroy
 
     # Activate the viewer widget.
     selected = example.activate([])

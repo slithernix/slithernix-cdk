@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'optparse'
 require 'ostruct'
 require_relative '../lib/slithernix/cdk'
@@ -10,14 +12,14 @@ class Appointment
     Curses::A_BOLD,
     Curses::A_REVERSE,
     Curses::A_UNDERLINE,
-  ]
+  ].freeze
 
   AppointmentType = %i[
     BIRTHDAY
     ANNIVERSARY
     APPOINTMENT
     OTHER
-  ]
+  ].freeze
 
   # This reads a given appointment file.
   def self.readAppointmentFile(filename, app_info)
@@ -94,7 +96,7 @@ class Appointment
 
     # Create the appointment book filename.
     if filename == ''
-      home = ENV.fetch('HOME', nil)
+      home = Dir.home
       filename = if home.nil?
                    '.appointment'
                  else
@@ -230,11 +232,12 @@ class Appointment
         year = appointment.year
 
         # Determine the appointment type.
-        type = if appointment.type == :BIRTHDAY
+        type = case appointment.type
+               when :BIRTHDAY
                  'Birthday'
-               elsif appointment.type == :ANNIVERSARY
+               when :ANNIVERSARY
                  'Anniversary'
-               elsif appointment.type == :APPOINTMENT
+               when :APPOINTMENT
                  'Appointment'
                else
                  'Other'

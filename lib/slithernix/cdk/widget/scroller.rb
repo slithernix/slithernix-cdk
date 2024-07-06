@@ -1,12 +1,10 @@
+# frozen_string_literal: true
+
 require_relative '../widget'
 module Slithernix
   module Cdk
     class Widget
       class Scroller < Slithernix::Cdk::Widget
-        def initialize
-          super
-        end
-
         def KEY_UP
           if @list_size.positive?
             if @current_item.positive?

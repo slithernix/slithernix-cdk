@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require_relative 'example'
 
 class Viewer2Example < CLIExample
@@ -99,7 +101,7 @@ class Viewer2Example < CLIExample
                                         button, 2)
 
     # Destroy the file selector widget (do not need filename anymore)
-    f_select.destroy unless f_select.nil?
+    f_select&.destroy
 
     # Check how the person exited from the widget.
     mesg = [

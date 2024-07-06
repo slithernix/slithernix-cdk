@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../widget'
 
 module Slithernix
@@ -132,7 +134,7 @@ module Slithernix
           # Draw the buttonbox box.
           draw(@box)
 
-          if actions.nil? || actions.size.zero?
+          if actions.nil? || actions.empty?
             while true
               input = getch([])
 

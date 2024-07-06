@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'ostruct'
 require_relative '../lib/slithernix/cdk'
 
@@ -15,7 +17,7 @@ class Rolodex
     DATA1: 6,
     DATA2: 7,
     DATA3: 8
-  }
+  }.freeze
   GTypeReverseMap = {
     -1 => :UNKNOWN,
     0 => :VOICE,
@@ -27,7 +29,7 @@ class Rolodex
     6 => :DATA1,
     7 => :DATA2,
     8 => :DATA3
-  }
+  }.freeze
   GLineType = [
     'Voice',
     'Cell',
@@ -38,7 +40,7 @@ class Rolodex
     'First Data Line',
     'Second Data Line',
     'Third Data Line',
-  ]
+  ].freeze
 
   @@g_current_group = ''
   @@grc_file = ''
@@ -51,7 +53,7 @@ class Rolodex
     phone_data = OpenStruct.new
     phone_data.record = []
     phone_data.count = 0
-    phone_count = Rolodex.readPhoneDataFile(group_record.dbm, phone_data)
+    Rolodex.readPhoneDataFile(group_record.dbm, phone_data)
 
     # Create the temporary filename
     temp_filename = if filename == ''
@@ -105,15 +107,14 @@ class Rolodex
 
   # This prints a group's phone numbers.
   def self.printGroupNumbers(screen, group_list, group_count)
-    item_list = []
     choices = [
       'Print to Printer',
       'Print to File',
       "Don't Print",
     ]
 
-    group_list.each do |group|
-      item_list << group.name.clone
+    item_list = group_list.map do |group|
+      group.name.clone
     end
 
     # Set the height of the selection list.
@@ -137,7 +138,7 @@ class Rolodex
 
     # Determine which groups we want to print.
     (0...group_count).each do |x|
-      if (selection_list.selections[x]).zero?
+      if selection_list.selections[x].zero?
         # Create a title.
         mesg = [format('<C></R>Printing Group [%s] to Printer',
                        group_list[x].name)]
@@ -281,10 +282,9 @@ class Rolodex
                                                title_mesg, title_mesg.size, false, false)
     title.draw(false)
 
-    types = []
     # Create the phone line type list.
-    Rolodex::GLineType.each do |type|
-      types << (format('<C></U>%s', type))
+    types = Rolodex::GLineType.map do |type|
+      format('<C></U>%s', type)
     end
 
     # Get the phone line type.
@@ -743,43 +743,41 @@ class Rolodex
   # This displays the information about the phone record.
   def self.displayPhoneInfo(screen, record)
     # Check the type of line it is.
-    if %i[VOICE DATA1 DATA2 DATA3 FAX1 FAX2 FAX2].include?(
+    mesg = if %i[VOICE DATA1 DATA2 DATA3 FAX1 FAX2 FAX2].include?(
       record.line_type
     )
-      # Create the information to display.
-      mesg = [
-        format('<C></U>%s Phone Record',
-               Rolodex::GLineType[Rolodex::GTypeMap[record.line_type]]),
-        format('</B/29>Name        <!B!29>%s', record.name),
-        format('</B/29>Phone Number<!B!29>%s', record.phone_number),
-        format('</B/29>Address     <!B!29>%s', record.address),
-        format('</B/29>City        <!B!29>%s', record.city),
-        format('</B/29>Province    <!B!29>%s', record.province),
-        format('</B/29>Postal Code <!B!29>%s', record.postal_code),
-        format('</B/29>Comment     <!B!29>%s', record.desc),
-      ]
+             # Create the information to display.
+             [
+               format('<C></U>%s Phone Record',
+                      Rolodex::GLineType[Rolodex::GTypeMap[record.line_type]]),
+               format('</B/29>Name        <!B!29>%s', record.name),
+               format('</B/29>Phone Number<!B!29>%s', record.phone_number),
+               format('</B/29>Address     <!B!29>%s', record.address),
+               format('</B/29>City        <!B!29>%s', record.city),
+               format('</B/29>Province    <!B!29>%s', record.province),
+               format('</B/29>Postal Code <!B!29>%s', record.postal_code),
+               format('</B/29>Comment     <!B!29>%s', record.desc),
+             ]
 
-      # Pop the information up on the screen
-      screen.popupLabel(mesg, mesg.size)
-    elsif %i[PAGER CELL].include?(record.line_type)
-      # Create the information to display.
-      mesg = [
-        format('<C></U>%s Phone Record',
-               Rolodex::GLineType[Rolodex::GTypeMap[record.line_type]]),
-        format('</B/29>Name        <!B!29>%s', record.name),
-        format('</B/29>Phone Number<!B!29>%s', record.phone_number),
-        format('</B/29>Comment     <!B!29>%s', record.desc),
-      ]
+           # Pop the information up on the screen
+           elsif %i[PAGER CELL].include?(record.line_type)
+             # Create the information to display.
+             [
+               format('<C></U>%s Phone Record',
+                      Rolodex::GLineType[Rolodex::GTypeMap[record.line_type]]),
+               format('</B/29>Name        <!B!29>%s', record.name),
+               format('</B/29>Phone Number<!B!29>%s', record.phone_number),
+               format('</B/29>Comment     <!B!29>%s', record.desc),
+             ]
 
-      # Pop the information up on the screen.
-      screen.popupLabel(mesg, mesg.size)
-    else
-      mesg = [
-        '<C></R>Error<!R> </U>Unknown Phone Line Type',
-        '<C>Can not display information.',
-      ]
-      screen.popupLabel(mesg, mesg.size)
-    end
+           # Pop the information up on the screen.
+           else
+             [
+               '<C></R>Error<!R> </U>Unknown Phone Line Type',
+               '<C>Can not display information.',
+             ]
+           end
+    screen.popupLabel(mesg, mesg.size)
   end
 
   # This function allows the user to add/delete/modify/save the
@@ -827,11 +825,10 @@ class Rolodex
       return
     end
 
-    index = []
     # Set up the data needed for the scrolling list.
-    phone_data.record.each do |phone_record|
-      index << (format('</B/29>%s (%s)', phone_record.name,
-                       Rolodex::GLineType[Rolodex::GTypeMap[phone_record.line_type]]))
+    index = phone_data.record.map do |phone_record|
+      format('</B/29>%s (%s)', phone_record.name,
+             Rolodex::GLineType[Rolodex::GTypeMap[phone_record.line_type]])
     end
     temp = format('<C>Listing of Group </U>%s', group_name)
     height = [phone_data.count, 5].min + 3
@@ -889,7 +886,7 @@ class Rolodex
       if scrollp.screen.popupDialog(mesg, mesg.size, buttons,
                                     buttons.size) == 1
         front = phone_data.record[0...position] || []
-        back = phone_data.record[position + 1..-1] || []
+        back = phone_data.record[position + 1..] || []
         phone_data.record = front + back
         phone_data.count -= 1
 
@@ -955,10 +952,9 @@ class Rolodex
   def self.pickRolodexGroup(screen, title, group_list, group_count)
     height = [group_count, 5].min + 3
 
-    mesg = []
     # Copy the names of the scrolling list into an array.
-    group_list.each do |group|
-      mesg << (format('<C></B/29>%s', group.name))
+    mesg = group_list.map do |group|
+      format('<C></B/29>%s', group.name)
     end
 
     # Create the scrolling list.
@@ -1166,10 +1162,10 @@ class Rolodex
               when 0
                 '<C>This reads a new rolodex RC file.'
               when 1
-                '<C>This saves the current group information in the ' <<
+                '<C>This saves the current group information in the ' \
                 'default RC file.'
               when 2
-                '<C>This saves the current group information in a new' <<
+                '<C>This saves the current group information in a new' \
                 'RC file.'
               when 3
                 '<C>This exits this program.'
@@ -1204,7 +1200,7 @@ class Rolodex
     cdkscreen.refresh
 
     # Check the value of the HOME env var.
-    home = ENV.fetch('HOME', nil)
+    home = Dir.home
     if home.nil?
       # Set the value of the global rolodex DBM directory.
       @@gdbm_dir = '.rolodex'
@@ -1222,7 +1218,7 @@ class Rolodex
     end
 
     # Make the rolodex directory.
-    Dir.mkdir(@@gdbm_dir, 0o755) unless Dir.exist?(@@gdbm_dir)
+    FileUtils.mkdir_p(@@gdbm_dir, 0o755)
 
     group_list = []
 

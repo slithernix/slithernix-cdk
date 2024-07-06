@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'optparse'
 require 'ostruct'
 require_relative '../lib/slithernix/cdk'

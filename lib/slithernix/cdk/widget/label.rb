@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../widget'
 
 module Slithernix
@@ -11,10 +13,8 @@ module Slithernix
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
           box_width = -2**30 # -INFINITY
-          box_height = 0
           xpos = [xplace]
           ypos = [yplace]
-          x = 0
 
           return nil if rows <= 0
 
@@ -100,11 +100,7 @@ module Slithernix
             @info_len[x] = 0
           end
 
-          @rows = if info_size < @rows
-                  then info_size
-                  else
-                    @rows
-                  end
+          @rows = [info_size, @rows].min
 
           # Copy in the new message.
           (0...@rows).each do |x|

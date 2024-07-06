@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Slithernix
   module Cdk
     module Draw
@@ -116,7 +118,7 @@ module Slithernix
           height = xdiff
           width = ydiff
           xratio = height > width ? 1 : width / height
-          yration = width > height ? width / height : 1
+          width > height ? width / height : 1
           xadj = 0
           yadj = 0
 
@@ -230,8 +232,6 @@ module Slithernix
       # This writes out a chtype string with the given attributes added.
       def self.writeChtypeAttrib(window, xpos, ypos, string, attr, align, start, endn)
         diff = endn - start
-        display = 0
-        x = 0
         if align == Slithernix::Cdk::HORIZONTAL
           # Draw the message on a horizontal axis.
           display = [diff, window.maxx - xpos].min

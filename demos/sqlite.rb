@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'optparse'
 require 'ostruct'
 require 'sqlite3'
@@ -13,7 +15,7 @@ class SQLiteDemo
 
   # This saves the history into RC file.
   def self.saveHistory(history, _count)
-    if (home = ENV.fetch('HOME', nil)).nil?
+    if (home = Dir.home).nil?
       home = '.'
     end
     filename = format('%s/.tawnysqlite.rc', home)
@@ -35,11 +37,8 @@ class SQLiteDemo
 
   # This loads the history into the editor from the RC file.
   def self.loadHistory(history)
-    home = ''
-    filename = ''
-
     # Create the RC filename.
-    if (home = ENV.fetch('HOME', nil)).nil?
+    if (home = Dir.home).nil?
       home = '.'
     end
     filename = format('%s/.tawnysqlite.rc', home)
@@ -115,8 +114,6 @@ class SQLiteDemo
                   SQLiteDemo::GPUsage)
       exit # EXIT_SUCCESS
     end
-
-    dsquery = ''
 
     # Set up the command prompt.
     if prompt == ''

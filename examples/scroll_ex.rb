@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require_relative 'example'
 
 class ScrollExample < CLIExample
@@ -47,7 +49,6 @@ class ScrollExample < CLIExample
   #   -t TEXT title for the widget
   def self.main
     # Declare variables.
-    temp = ''
 
     params = parse(ARGV)
 

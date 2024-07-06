@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require_relative 'example'
 
 class SubwindowExample < CLIExample
@@ -33,7 +35,7 @@ class SubwindowExample < CLIExample
     params = parse(ARGV)
 
     # Start curses
-    curses_win = Curses.init_screen
+    Curses.init_screen
     Curses.curs_set(0)
 
     # Create a basic window.

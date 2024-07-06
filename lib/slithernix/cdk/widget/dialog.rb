@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../widget'
 
 module Slithernix
@@ -16,7 +18,6 @@ module Slithernix
           button_width = 0
           xpos = xplace
           ypos = yplace
-          temp = 0
           buttonadj = 0
           @info = []
           @info_len = []
@@ -119,8 +120,6 @@ module Slithernix
 
         # This lets the user select the button.
         def activate(actions)
-          input = 0
-
           # Draw the dialog box.
           draw(@box)
 
@@ -138,7 +137,7 @@ module Slithernix
 
           @win.refresh
 
-          if actions.nil? || actions.size.zero?
+          if actions.nil? || actions.empty?
             while true
               input = getch([])
 

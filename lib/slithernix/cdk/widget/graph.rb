@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Slithernix
   module Cdk
     class Widget
@@ -47,66 +49,51 @@ module Slithernix
           @win.keypad(true)
 
           # Translate the X axis title string to a chtype array
+          xtitle_len = []
+          xtitle_pos = []
           if xtitle&.size&.positive?
-            xtitle_len = []
-            xtitle_pos = []
             @xtitle = Slithernix::Cdk.char2Chtype(
               xtitle,
               xtitle_len,
               xtitle_pos,
             )
             @xtitle_len = xtitle_len[0]
-            @xtitle_pos = Slithernix::Cdk.justifyString(
-              @box_height,
-              @xtitle_len,
-              xtitle_pos[0],
-            )
           else
-            xtitle_len = []
-            xtitle_pos = []
             @xtitle = Slithernix::Cdk.char2Chtype(
               '<C></5>X Axis',
               xtitle_len,
               xtitle_pos,
             )
             @xtitle_len = title_len[0]
-            @xtitle_pos = Slithernix::Cdk.justifyString(
-              @box_height,
-              @xtitle_len,
-              xtitle_pos[0],
-            )
           end
+          @xtitle_pos = Slithernix::Cdk.justifyString(
+            @box_height,
+            @xtitle_len,
+            xtitle_pos[0],
+          )
 
           # Translate the Y Axis title string to a chtype array
-          if ytitle&.size&.positive?
-            ytitle_len = []
-            ytitle_pos = []
-            @ytitle = Slithernix::Cdk.char2Chtype(
-              ytitle,
-              ytitle_len,
-              ytitle_pos,
-            )
-            @ytitle_len = ytitle_len[0]
-            @ytitle_pos = Slithernix::Cdk.justifyString(
-              @box_width,
-              @ytitle_len,
-              ytitle_pos[0],
-            )
-          else
-            ytitle_len = []
-            ytitle_pos = []
-            @ytitle = Slithernix::Cdk.char2Chtype(
-              '<C></5>Y Axis',
-              ytitle_len,
-              ytitle_pos,
-            )
-            @ytitle_len = ytitle_len[0]
-            @ytitle_pos = Slithernix::Cdk.justifyString(
-              @box_width,
-              @ytitle_len,
-              ytitle_pos[0],
-            )
-          end
+          ytitle_len = []
+          ytitle_pos = []
+          @ytitle = if ytitle&.size&.positive?
+                      Slithernix::Cdk.char2Chtype(
+                        ytitle,
+                        ytitle_len,
+                        ytitle_pos,
+                      )
+                    else
+                      Slithernix::Cdk.char2Chtype(
+                        '<C></5>Y Axis',
+                        ytitle_len,
+                        ytitle_pos,
+                      )
+                    end
+          @ytitle_len = ytitle_len[0]
+          @ytitle_pos = Slithernix::Cdk.justifyString(
+            @box_width,
+            @ytitle_len,
+            ytitle_pos[0],
+          )
 
           @graph_char = 0
           @values = []
@@ -265,7 +252,7 @@ module Slithernix
 
           # Adjust the window if we need to.
           xtmp = [xpos]
-          tymp = [ypos]
+          [ypos]
           Slithernix::Cdk.alignxy(@screen.window, xtmp, ytmp, @box_width,
                                   @box_height)
           xpos = xtmp[0]
@@ -288,7 +275,7 @@ module Slithernix
 
         # Draw the grpah widget
         def draw(box)
-          adj = 2 + (@xtitle.nil? || @xtitle.size.zero? ? 0 : 1)
+          adj = 2 + (@xtitle.nil? || @xtitle.empty? ? 0 : 1)
           spacing = 0
           attrib = ' '.ord | Curses::A_REVERSE
 

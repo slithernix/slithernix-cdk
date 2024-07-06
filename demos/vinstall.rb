@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'optparse'
 require 'fileutils'
 require_relative '../lib/slithernix/cdk'
 
 class Vinstall
-  FPUsage = '-f filename [-s source directory] [-d destination directory]' <<
-            ' [-t title] [-o Output file] [q]'
+  FPUsage = '-f filename [-s source directory] [-d destination directory] ' \
+            '[-t title] [-o Output file] [q]'
 
   # Copy the file.
   def self.copyFile(_cdkscreen, src, dest)
@@ -93,9 +95,7 @@ class Vinstall
     end
 
     # Cycle through what was given to us and save it.
-    file_list.each do |file|
-      file.strip!
-    end
+    file_list.each(&:strip!)
 
     # Set up CDK
     curses_win = Curses.init_screen
@@ -180,8 +180,8 @@ class Vinstall
     end
 
     # Destroy the path entry fields.
-    source_entry.destroy unless source_entry.nil?
-    dest_entry.destroy unless dest_entry.nil?
+    source_entry&.destroy
+    dest_entry&.destroy
 
     # Verify that the source directory is valid.
     if Vinstall.verifyDirectory(cdkscreen, source_dir) != 0
@@ -230,7 +230,6 @@ class Vinstall
     )
 
     # Determine the height of the scrolling window.
-    swndow_height = 3
     swindow_height = Curses.lines - 13 if Curses.lines >= 16
 
     # Create the scrolling window.

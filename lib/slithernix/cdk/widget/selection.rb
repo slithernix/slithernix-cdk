@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'scroller'
 
 module Slithernix
@@ -9,10 +11,8 @@ module Slithernix
         def initialize(cdkscreen, xplace, yplace, splace, height, width,
                        title, list, list_size, choices, choice_count, highlight, box, shadow)
           super()
-          widest_item = -1
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
-          box_width = width
           bindings = {
             'g' => Curses::KEY_HOME,
             '1' => Curses::KEY_HOME,
@@ -153,13 +153,13 @@ module Slithernix
 
         # Put the cursor on the currently-selected item.
         def fixCursorPosition
-          scrollbar_adj = if @scrollbar_placement == Slithernix::Cdk::LEFT
+          if @scrollbar_placement == Slithernix::Cdk::LEFT
                           then 1
-                          else
-                            0
-                          end
-          ypos = self.SCREEN_YPOS(@current_item - @current_top)
-          xpos = self.SCREEN_XPOS(0) + scrollbar_adj
+          else
+            0
+          end
+          self.SCREEN_YPOS(@current_item - @current_top)
+          self.SCREEN_XPOS(0)
 
           # Don't know why this was set up here, since this moves the window -- snake 2024
           # @input_window.move(ypos, xpos)
@@ -171,7 +171,7 @@ module Slithernix
           # Draw the selection list
           draw(@box)
 
-          if actions.nil? || actions.size.zero?
+          if actions.nil? || actions.empty?
             while true
               fixCursorPosition
               input = getch([])
@@ -383,7 +383,7 @@ module Slithernix
         # This sets the background attribute of the widget.
         def setBKattr(attrib)
           @win.wbkgd(attrib)
-          @scrollbar_win.wbkgd(attrib) unless @scrollbar_win.nil?
+          @scrollbar_win&.wbkgd(attrib)
         end
 
         def destroyInfo

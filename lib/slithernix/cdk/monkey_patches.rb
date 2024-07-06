@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # I hate this but, whatever
 module Curses
   def self.napms(ms)
@@ -6,7 +8,11 @@ module Curses
 
   def self.unctrl(ch)
     raise Curses::Error, 'Input is not an Integer' unless ch.is_a?(Integer)
-    raise Curses::Error, 'Input is out of ASCII range' if ch.negative? || ch > 127
+
+    if ch.negative? || ch > 127
+      raise Curses::Error,
+            'Input is out of ASCII range'
+    end
 
     if (32..126).include?(ch)
       ch.chr

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../widget'
 
 module Slithernix
@@ -186,7 +188,6 @@ module Slithernix
         end
 
         def layoutWidget(xpos, ypos)
-          cdkscreen = @screen
           parent_width = @screen.window.maxx
 
           Slithernix::Cdk::Widget::Marquee.discardWin(@win)

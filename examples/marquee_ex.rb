@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require_relative 'example'
 
 class MarqueeExample < Example
@@ -73,7 +75,6 @@ class MarqueeExample < Example
   # This program demonstrates the Cdk marquee widget.
   def self.main
     # Declare variables.
-    temp = ''
 
     params = parse(ARGV)
 

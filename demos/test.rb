@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'curses'
 require 'open3'
 require 'pty'
@@ -53,7 +55,6 @@ module Util
             current_escape_sequence
           ).call(current_escape_sequence)
           current_escape_sequence = ''
-          in_escape_sequence = false
           next
         end
       end
@@ -172,7 +173,7 @@ module Util
     y_pos = 0
     x_pos = 0
 
-    pastel = Pastel.new
+    Pastel.new
     curses_window.addstr("Hit CTRL-B then CTRL-C to terminate an unresponsive process\n")
     y_pos += 1
     exit_status = 1
@@ -300,7 +301,7 @@ module Util
   end
 
   def self.close_curses_window
-    @pry_window.close if @pry_window
+    @pry_window&.close
     Curses.close_screen
   end
 end

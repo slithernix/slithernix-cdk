@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'etc'
 require_relative 'example'
 
@@ -14,9 +16,6 @@ class BindExample < Example
   end
 
   def self.main
-    title = "<C>Enter a\n<C>directory name."
-    label = '</U/5>Directory:<!U!5>'
-
     params = parse(ARGV)
 
     # Set up CDK.
@@ -50,7 +49,6 @@ class BindExample < Example
     end
 
     dialog_help_cb = lambda do |_cdktype, dialog, _client_data, _key|
-      mesg = []
       # Check which button we are on
       if dialog.current_button.zero?
         mesg = [

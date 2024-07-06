@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../widget'
 
 module Slithernix
@@ -18,7 +20,6 @@ module Slithernix
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
-          box_height = 0
           box_width = 0
           max_row_title_width = 0
           row_space = [0, rspace].max
@@ -139,7 +140,7 @@ module Slithernix
 
           if @win.nil?
             destroy
-            raise StandardError, "could not start curses window"
+            raise StandardError, 'could not start curses window'
           end
 
           # Make the subwindows in the pop-up.
@@ -301,7 +302,7 @@ module Slithernix
         def activate(actions)
           draw(@box)
 
-          if actions.nil? || actions.size.zero?
+          if actions.nil? || actions.empty?
             while true
               @input_window = self.CurMatrixCell
               @input_window.keypad(true)
@@ -396,11 +397,10 @@ module Slithernix
                     @ccol = 1
 
                     # Shift the rows...
+                    @row += 1
                     if @crow == @vrows
-                      @row += 1
                       @trow += 1
                     else
-                      @row += 1
                       @crow += 1
                     end
                     redrawTitles(true, true)
@@ -434,11 +434,10 @@ module Slithernix
                     @ccol = @vcols
 
                     # Shift the rows...
+                    @row -= 1
                     if @crow == 1
-                      @row -= 1
                       @trow -= 1
                     else
-                      @row -= 1
                       @crow -= 1
                     end
                     redrawTitles(true, true)
@@ -519,7 +518,7 @@ module Slithernix
                 jumpToCell(-1, -1)
                 draw(@box)
               when Slithernix::Cdk::PASTE
-                if @@g_paste_buffer.size.zero? ||
+                if @@g_paste_buffer.empty? ||
                    @@g_paste_buffer.size > @colwidths[@ccol]
                   Slithernix::Cdk.Beep
                 else
@@ -599,10 +598,8 @@ module Slithernix
               end
 
               # Should we call a post-process?
-              unless @post_process_func.nil?
-                @post_process_func.call(:Matrix, self, @post_process_data,
-                                        input)
-              end
+              @post_process_func&.call(:Matrix, self, @post_process_data,
+                                       input)
             end
           end
 
@@ -944,7 +941,9 @@ module Slithernix
 
         # This cleans one cell in the matrix widget.
         def cleanCell(row, col)
-          return unless row.positive? && row <= @rows && col > col && col <= @cols
+          unless row.positive? && row <= @rows && col > col && col <= @cols
+            return
+          end
 
           @info[row][col] =
             ''

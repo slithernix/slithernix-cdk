@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'curses'
 require 'pathname'
 require 'pry-remote'
@@ -74,8 +76,8 @@ module Slithernix
     KEY_RETURN = "\012".ord
     KEY_TAB = "\t".ord
 
-    ALL_SCREENS = []
-    ALL_OBJECTS = []
+    ALL_SCREENS = [].freeze
+    ALL_OBJECTS = [].freeze
 
     # ACS constants have been removed from ruby curses, putting them here
     # note that this is garbage and likely to break all over the place.
@@ -282,7 +284,7 @@ module Slithernix
       if tmpattr != newattr
         while tmpattr != newattr
           found = false
-          table.keys.each do |key|
+          table.each_key do |key|
             next unless (table[key] & tmpattr) != (table[key] & newattr)
 
             found = true
@@ -518,7 +520,7 @@ module Slithernix
           from += 1
         end
 
-        result << attrib if result.size.zero?
+        result << attrib if result.empty?
         to[0] = used
       else
         result = []
@@ -567,10 +569,8 @@ module Slithernix
     def self.chtype2Char(string)
       newstring = ''
 
-      unless string.nil?
-        string.each do |char|
-          newstring << self.CharOf(char)
-        end
+      string&.each do |char|
+        newstring << self.CharOf(char)
       end
 
       newstring
@@ -605,8 +605,6 @@ module Slithernix
 
     # This opens the current directory and reads the contents.
     def self.getDirectoryContents(directory, list)
-      counter = 0
-
       # Open the directory.
       Dir.foreach(directory) do |filename|
         next if filename == '.'
@@ -773,7 +771,7 @@ module Slithernix
       widget.setValue(init_value)
 
       # Get the string.
-      value = widget.activate([])
+      widget.activate([])
 
       # Make sure they exited normally.
       if widget.exit_type != :NORMAL
@@ -812,14 +810,12 @@ module Slithernix
 
     # This returns a selected value in a list
     def self.getListindex(screen, title, list, list_size, numbers)
-      selected = -1
       height = 10
       width = -1
-      len = 0
 
       # Determine the height of the list.
       if list_size < 10
-        height = list_size + (title.size.zero? ? 2 : 3)
+        height = list_size + (title.empty? ? 2 : 3)
       end
 
       # Determine the width of the list.
@@ -856,7 +852,6 @@ module Slithernix
     # This allows the user to view information.
     def self.viewInfo(screen, title, info, count, buttons, button_count,
                       interpret)
-      selected = -1
 
       # Create the file viewer to view the file selected.
       viewer = Slithernix::Cdk::Viewer.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, -6, -16,
@@ -882,7 +877,6 @@ module Slithernix
     # This allows the user to view a file.
     def self.viewFile(screen, title, filename, buttons, button_count)
       info = []
-      result = 0
 
       # Open the file and read the contents.
       lines = readFile(filename, info)

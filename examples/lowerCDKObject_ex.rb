@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require_relative 'example'
 
 class LowerCDKObjectExample < Example
@@ -57,7 +59,7 @@ class LowerCDKObjectExample < Example
 
     cdkscreen.refresh
 
-    while (ch = STDIN.getc.chr) != 'q'
+    while (ch = $stdin.getc.chr) != 'q'
       case ch
       when '1'
         Slithernix::Cdk::Screen.lowerCDKObject(:Label, label1)

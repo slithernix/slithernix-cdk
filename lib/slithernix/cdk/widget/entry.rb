@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../widget'
 
 module Slithernix
@@ -13,7 +15,6 @@ module Slithernix
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
           field_width = f_width
-          box_width = 0
           xpos = xplace
           ypos = yplace
 
@@ -126,7 +127,7 @@ module Slithernix
                 entry.left_char += 1 if entry.info.size < entry.max
               else
                 front = (entry.info[0...(entry.screen_col + entry.left_char)] or '')
-                back = (entry.info[(entry.screen_col + entry.left_char)..-1] or '')
+                back = (entry.info[(entry.screen_col + entry.left_char)..] or '')
                 entry.info = front + plainchar.chr + back
                 entry.screen_col += 1
               end
@@ -155,7 +156,7 @@ module Slithernix
           # Draw the widget.
           draw(@box)
 
-          if actions.nil? || actions.size.zero?
+          if actions.nil? || actions.empty?
             loop do
               input = getch([])
 
@@ -275,7 +276,7 @@ module Slithernix
 
                   if curr_pos >= 0 && @info.size.positive?
                     if curr_pos < @info.size
-                      @info = @info[0...curr_pos] + @info[curr_pos + 1..-1]
+                      @info = @info[0...curr_pos] + @info[curr_pos + 1..]
                       success = true
                     elsif input == Curses::KEY_BACKSPACE
                       @info = @info[0...-1]
@@ -300,12 +301,12 @@ module Slithernix
                 setExitType(input)
                 complete = true
               when Slithernix::Cdk::ERASE
-                if @info.size != 0
+                unless @info.empty?
                   clean
                   drawField
                 end
               when Slithernix::Cdk::CUT
-                if @info.size.zero?
+                if @info.empty?
                   Slithernix::Cdk.Beep
                 else
                   @@g_paste_buffer = @info.clone
@@ -313,7 +314,7 @@ module Slithernix
                   drawField
                 end
               when Slithernix::Cdk::COPY
-                if @info.size.zero?
+                if @info.empty?
                   Slithernix::Cdk.Beep
                 else
                   @@g_paste_buffer = @info.clone
@@ -515,7 +516,7 @@ module Slithernix
         def setBKattr(attrib)
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
-          @label_win.wbkgd(attrib) unless @label_win.nil?
+          @label_win&.wbkgd(attrib)
         end
 
         # This sets the attribute of the entry field.

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../widget'
 
 module Slithernix
@@ -13,8 +15,6 @@ module Slithernix
         def initialize(cdkscreen, menu_list, menu_items, subsize,
                        menu_location, menu_pos, title_attr, subtitle_attr)
           super()
-
-          right_count = menu_items - 1
           rightloc = cdkscreen.window.maxx
           leftloc = 0
           xpos = cdkscreen.window.begx
@@ -53,7 +53,6 @@ module Slithernix
                    rightcount -= 1
                    rightcount + 1
                  end
-            x2 = 0
             y1 = menu_pos == Slithernix::Cdk::BOTTOM ? ymax - 1 : 0
             y2 = if menu_pos == Slithernix::Cdk::BOTTOM
                  then ymax - subsize[x] - 2
@@ -122,7 +121,7 @@ module Slithernix
           drawSubwin
 
           # If the input string is empty this is an interactive activate.
-          if actions.nil? || actions.size.zero?
+          if actions.nil? || actions.empty?
             @input_window = @title_win[@current_title]
 
             # Start taking input from the keyboard.

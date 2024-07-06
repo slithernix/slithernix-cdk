@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../widget'
 
 module Slithernix
@@ -126,7 +128,8 @@ module Slithernix
           return unless @view_type != :NONE
 
           if @orient == Slithernix::Cdk::VERTICAL
-            if @stats_pos == Slithernix::Cdk::LEFT || @stats_pos == Slithernix::Cdk::BOTTOM
+            case @stats_pos
+            when Slithernix::Cdk::LEFT, Slithernix::Cdk::BOTTOM
               # Set the low label attributes.
               @low_string = @low.to_s
               @lowx = 1
@@ -136,20 +139,18 @@ module Slithernix
               @high_string = @high.to_s
               @highx = 1
               @highy = @title_lines + 1
-
-              string = ''
               # Set the current value attributes.
               string = if @view_type == :PERCENT
                        then format('%3.1f%%', 1.0 * @percent * 100)
                        elsif @view_type == :FRACTION
-                         string = format('%d/%d', @value, @high)
+                         format('%d/%d', @value, @high)
                        else
-                         string = @value.to_s
+                         @value.to_s
                        end
               @cur_string = string
               @curx = 1
               @cury = ((@field_height - string.size) / 2) + @title_lines + 1
-            elsif @stats_pos == Slithernix::Cdk::CENTER
+            when Slithernix::Cdk::CENTER
               # Set the lower label attributes
               @low_string = @low.to_s
               @lowx = (@field_width / 2) + 1
@@ -172,7 +173,7 @@ module Slithernix
               @cur_string = string
               @curx = (@field_width / 2) + 1
               @cury = ((@field_height - string.size) / 2) + @title_lines + 1
-            elsif @stats_pos == Slithernix::Cdk::RIGHT || @stats_pos == Slithernix::Cdk::TOP
+            when Slithernix::Cdk::RIGHT, Slithernix::Cdk::TOP
               # Set the low label attributes.
               @low_string = @low.to_s
               @lowx = @field_width
@@ -326,7 +327,6 @@ module Slithernix
         # Draw the widget.
         def draw(box)
           battr = 0
-          bchar = 0
           fattr = @filler & Curses::A_ATTRIBUTES
           hist_x = @title_lines + 1
           hist_y = @bar_size

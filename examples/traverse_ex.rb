@@ -1,12 +1,14 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require_relative 'example'
 
 class TraverseExample < Example
   MY_MAX = 3
-  YES_NO = %w[Yes NO]
+  YES_NO = %w[Yes NO].freeze
   MONTHS = %w[Jan Feb Mar Apr May Jun Jul Aug Sep
-              Oct Nov Dec]
-  CHOICES = ['[ ]', '[*]']
+              Oct Nov Dec].freeze
+  CHOICES = ['[ ]', '[*]'].freeze
   # Exercise all widget except
   #     CDKMENU
   #     CDKTRAVERSE
@@ -41,7 +43,7 @@ class TraverseExample < Example
     ['Template',        :Template],
     ['UScale',          :UScale],
     ['USlider',         :USlider],
-  ]
+  ].freeze
   @@all_widgets = [nil] * MY_MAX
 
   def self.make_alphalist(cdkscreen, x, y)
@@ -156,7 +158,6 @@ class TraverseExample < Example
     numrows = 8
     numcols = 5
     coltitle = []
-    rowtitle = []
     cols = numcols
     colwidth = []
     coltypes = []
@@ -165,8 +166,8 @@ class TraverseExample < Example
     vcols = 3
     vrows = 3
 
-    (0..numrows).each do |n|
-      rowtitle << (format('row%d', n))
+    rowtitle = (0..numrows).map do |n|
+      format('row%d', n)
     end
 
     (0..numcols).each do |n|
@@ -377,7 +378,6 @@ class TraverseExample < Example
   # Whenever we get a menu selection, create the selected widget.
   def self.preHandler(_cdktype, widget, _client_data, input)
     screen = nil
-    window = nil
 
     case input
     when Curses::KEY_ENTER, Slithernix::Cdk::KEY_RETURN

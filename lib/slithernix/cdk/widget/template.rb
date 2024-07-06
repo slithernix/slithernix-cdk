@@ -1,18 +1,19 @@
+# frozen_string_literal: true
+
 require_relative '../widget'
 
 module Slithernix
   module Cdk
     class Widget
       class Template < Slithernix::Cdk::Widget
-        def initialize(cdkscreen, xplace, yplace, title, label, plate, overlay, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, title, label, plate,
+                       overlay, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
-          box_width = 0
           box_height = box ? 3 : 1
-          plate_len = 0
 
-          return nil if plate.nil? || plate.size.zero?
+          return nil if plate.nil? || plate.empty?
 
           setBox(box)
 
@@ -127,7 +128,7 @@ module Slithernix
             moveby = false
             amount = 0
             mark = @info_pos
-            have = @info.size
+            @info.size
 
             if input == Curses::KEY_LEFT
               if mark.zero?
@@ -150,7 +151,7 @@ module Slithernix
                   failed = true
                 else
                   front = @info[0...mark - 1] || ''
-                  back = @info[mark..-1] || ''
+                  back = @info[mark..] || ''
                   test = front + back
                   change = true
                   amount = -1
@@ -158,7 +159,7 @@ module Slithernix
               elsif input == Curses::KEY_DC
                 if mark < @info.size
                   front = @info[0...mark] || ''
-                  back = @info[mark + 1..-1] || ''
+                  back = @info[mark + 1..] || ''
                   test = front + back
                   change = true
                   amount = 0
@@ -211,7 +212,7 @@ module Slithernix
         def activate(actions)
           draw(@box)
 
-          if actions.nil? || actions.size.zero?
+          if actions.nil? || actions.empty?
             while true
               input = getch([])
 
@@ -466,7 +467,7 @@ module Slithernix
         def setBKattr(attrib)
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
-          @label_win.wbkgd(attrib) unless @label_win.nil?
+          @label_win&.wbkgd(attrib)
         end
 
         # Destroy this widget.
@@ -503,8 +504,6 @@ module Slithernix
 
         # Set the value given to the template.
         def setValue(new_value)
-          len = 0
-
           # Just to be sure, let's make sure the new value isn't nil
           if new_value.nil?
             clean

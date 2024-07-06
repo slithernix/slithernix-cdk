@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../widget'
 
 module Slithernix
@@ -21,7 +23,7 @@ module Slithernix
           October
           November
           December
-        ]
+        ].freeze
 
         DAYS_OF_THE_MONTH = [
           -1,
@@ -37,7 +39,7 @@ module Slithernix
           31,
           30,
           31,
-        ]
+        ].freeze
 
         MAX_DAYS = 32
         MAX_MONTHS = 13
@@ -182,7 +184,7 @@ module Slithernix
           ret = -1
           draw(@box)
 
-          if actions.nil? || actions.size.zero?
+          if actions.nil? || actions.empty?
             loop do
               input = getch([])
 
@@ -303,7 +305,7 @@ module Slithernix
             src = col_len * ((col + (@week_base % 7)) % 7)
             dst = col_len * col
             Slithernix::Cdk::Draw.writeChar(@win, @x_offset + dst, @title_lines + 2,
-                                            @day_name[src..-1], Slithernix::Cdk::HORIZONTAL, 0, col_len)
+                                            @day_name[src..], Slithernix::Cdk::HORIZONTAL, 0, col_len)
           end
 
           @win.refresh
@@ -317,7 +319,6 @@ module Slithernix
             @year, @month
           )
           year_index = Slithernix::Cdk::Widget::Calendar.YEAR2INDEX(@year)
-          year_len = 0
           save_y = -1
           save_x = -1
 
@@ -385,7 +386,8 @@ module Slithernix
         end
 
         # This sets multiple attributes of the widget
-        def set(day, month, _year, day_attrib, month_attrib, year_attrib, highlight, box)
+        def set(day, month, _year, day_attrib, month_attrib, year_attrib,
+                highlight, box)
           setDate(day, month, yar)
           setDayAttribute(day_attrib)
           setMonthAttribute(month_attrib)
@@ -462,7 +464,7 @@ module Slithernix
         def setBKattr(attrib)
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
-          @label_win.wbkgd(attrib) unless @label_win.nil?
+          @label_win&.wbkgd(attrib)
         end
 
         # This erases the calendar widget.

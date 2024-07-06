@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../widget'
 
 module Slithernix
@@ -11,8 +13,6 @@ module Slithernix
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
-          box_width = width
-          box_height = height
           label_len = 0
           bindings = {
             Slithernix::Cdk::BACKCHAR => Curses::KEY_PPAGE,
@@ -39,7 +39,7 @@ module Slithernix
           # Translate the label string to a chtype array
           if label.size.positive?
             lentmp = []
-            chtype_label = Slithernix::Cdk.char2Chtype(label, lentmp, [])
+            Slithernix::Cdk.char2Chtype(label, lentmp, [])
             label_len = lentmp[0]
           end
 
@@ -128,11 +128,9 @@ module Slithernix
           complete_word_cb = lambda do |_widget_type, _widget, alphalist, _key|
             entry = alphalist.entry_field
             scrollp = nil
-            selected = -1
-            ret = 0
             alt_words = []
 
-            if entry.info.size.zero?
+            if entry.info.empty?
               Slithernix::Cdk.Beep
               return true
             end
@@ -162,8 +160,6 @@ module Slithernix
             ret = alphalist.list[index + 1][0...len] <=> entry.info
             if ret.zero?
               current_index = index
-              match = 0
-              selected = -1
 
               # Start looking for alternate words
               # FIXME(original): bsearch would be more suitable.
@@ -234,7 +230,7 @@ module Slithernix
           pre_process_entry_field = lambda do |_cdktype, _widget, alphalist, input|
             scrollp = alphalist.scroll_field
             entry = alphalist.entry_field
-            info_len = entry.info.size
+            entry.info.size
             result = 1
             empty = false
 
@@ -251,11 +247,11 @@ module Slithernix
                 pattern.slice!(curr_pos) if curr_pos >= 0
               else
                 front = (pattern[0...curr_pos] or '')
-                back = (pattern[curr_pos..-1] or '')
+                back = (pattern[curr_pos..] or '')
                 pattern = front + input.chr + back
               end
 
-              if pattern.size.zero?
+              if pattern.empty?
                 empty = true
               elsif (index = Slithernix::Cdk.searchList(alphalist.list,
                                                         alphalist.list.size, pattern)) >= 0
@@ -384,8 +380,6 @@ module Slithernix
 
         # This activates the alphalist
         def activate(actions)
-          ret = 0
-
           # Draw the widget.
           draw(@box)
 
@@ -403,8 +397,6 @@ module Slithernix
 
         # This injects a single character into the alphalist.
         def inject(input)
-          ret = -1
-
           # Draw the widget.
           draw(@box)
 

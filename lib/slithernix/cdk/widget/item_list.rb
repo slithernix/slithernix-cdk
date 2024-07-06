@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../widget'
 
 module Slithernix
@@ -9,7 +11,6 @@ module Slithernix
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
-          field_width = 0
 
           unless createList(item, count)
             destroy
@@ -118,7 +119,7 @@ module Slithernix
           draw(@box)
           drawField(true)
 
-          if actions.nil? || actions.size.zero?
+          if actions.nil? || actions.empty?
             input = 0
 
             loop do
@@ -251,7 +252,7 @@ module Slithernix
         def setBKattr(attrib)
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
-          @label_win.wbkgd(attrib) unless @label_win.nil?
+          @label_win&.wbkgd(attrib)
         end
 
         # This function draws the contents of the field.
@@ -395,7 +396,8 @@ module Slithernix
               # Copy the item to the list.
               lentmp = []
               postmp = []
-              new_items << Slithernix::Cdk.char2Chtype(item[x], lentmp, postmp)
+              new_items << Slithernix::Cdk.char2Chtype(item[x], lentmp,
+                                                       postmp)
               new_len << lentmp[0]
               new_pos << postmp[0]
               if (new_items[0]).zero?
@@ -403,10 +405,8 @@ module Slithernix
                 break
               end
               field_width = [field_width, new_len[x]].max
-            end
 
-            # Now we need to justify the strings.
-            (0...count).each do |x|
+              # Now we need to justify the strings.
               new_pos[x] = Slithernix::Cdk.justifyString(field_width + 1,
                                                          new_len[x], new_pos[x])
             end

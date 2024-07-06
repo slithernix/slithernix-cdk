@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'ostruct'
 require 'optparse'
 require_relative '../lib/slithernix/cdk'
@@ -29,8 +31,8 @@ class CdkPryShell
       '<B=Page Down > Scrolls forward one page.',
       '<B=Tab/Escape> Returns to the command line.',
       '',
-      '<C> (</B/24>Refer to the scrolling window online manual ' <<
-        'for more help<!B!24>.)'
+      '<C> (</B/24>Refer to the scrolling window online manual ' \
+      'for more help<!B!24>.)'
     ]
     entry.screen.popupLabel(mesg, mesg.size)
   end
@@ -93,7 +95,7 @@ class CdkPryShell
 
     # Convert the prompt to a chtype and determine its length
     prompt_len = []
-    convert = Slithernix::Cdk.char2Chtype(
+    Slithernix::Cdk.char2Chtype(
       prompt,
       prompt_len,
       []

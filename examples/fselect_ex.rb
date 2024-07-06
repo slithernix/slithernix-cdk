@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'etc'
 require_relative 'example'
 
@@ -99,7 +101,7 @@ class FselectExample < CLIExample
         first = widget.getCurrentItem
 
         FselectExample.fill_undo(widget, first, list[first])
-        list = list[0...first] + list[first + 1..-1]
+        list = list[0...first] + list[first + 1..]
         widget.setContents(list, size - 1)
         widget.scroll_field.setCurrentTop(save)
         widget.setCurrentItem(first)
@@ -122,7 +124,7 @@ class FselectExample < CLIExample
         first -= 1
         if (first + 1).positive?
           FselectExample.fill_undo(widget, first, list[first])
-          list = list[0...first] + list[first + 1..-1]
+          list = list[0...first] + list[first + 1..]
           widget.setContents(list, size - 1)
           widget.scroll_field.setCurrentTop(save)
           widget.setCurrentItem(first)
@@ -167,7 +169,7 @@ class FselectExample < CLIExample
         size = size[0] + 1
         deleted = @@my_undo_list[-1].deleted
         original = @@my_user_list[@@my_undo_list[-1].original]
-        newlist = oldlist[0..deleted - 1] + [original] + oldlist[deleted..-1]
+        newlist = oldlist[0..deleted - 1] + [original] + oldlist[deleted..]
         widget.setContents(newlist, size)
         widget.scroll_field.setCurrentTop(@@my_undo_list[-1].topline)
         widget.setCurrentItem(@@my_undo_list[-1].position)

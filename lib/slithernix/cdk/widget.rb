@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Slithernix
   module Cdk
     class Widget
@@ -192,7 +194,7 @@ module Slithernix
             temp.each do |line|
               len = []
               align = []
-              holder = Slithernix::Cdk.char2Chtype(line, len, align)
+              Slithernix::Cdk.char2Chtype(line, len, align)
               max_width = [len[0], max_width].max
             end
             box_width = [box_width, max_width + (2 * @border_size)].max
@@ -339,7 +341,7 @@ module Slithernix
 
       def unbind(type, key)
         widg = bindableObject(type)
-        widg.binding_list.delete(key) unless widg.nil?
+        widg&.binding_list&.delete(key)
       end
 
       def cleanBindings(type)

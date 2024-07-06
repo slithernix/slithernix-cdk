@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require_relative 'example'
 
 class RaiseCDKObjectExample < Example
@@ -107,7 +109,7 @@ class RaiseCDKObjectExample < Example
 
     cdkscreen.refresh
 
-    while (ch = STDIN.getc.chr) != 'q'
+    while (ch = $stdin.getc.chr) != 'q'
       case ch
       when '1'
         Slithernix::Cdk::Screen.raiseCDKObject(:Label, label1)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Slithernix
   module Cdk
     module Traverse
@@ -256,14 +258,14 @@ module Slithernix
       # Save data in widget on a screen
       def self.saveDataCDKScreen(screen)
         screen.widget.each do |widget|
-          widget.saveData unless widget.nil?
+          widget&.saveData
         end
       end
 
       # Refresh data in widget on a screen
       def self.refreshDataCDKScreen(screen)
         screen.widget.each do |widget|
-          widget.refreshData unless widget.nil?
+          widget&.refreshData
         end
       end
     end

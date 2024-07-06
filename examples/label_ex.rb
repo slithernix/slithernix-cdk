@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require_relative 'example'
 
 class LabelExample < Example
@@ -15,7 +17,6 @@ class LabelExample < Example
   # This program demonstrates the Cdk label widget.
   def self.main
     # Declare variables.
-    mesg = []
 
     params = parse(ARGV)
 

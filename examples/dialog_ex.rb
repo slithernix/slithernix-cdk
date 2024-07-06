@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require_relative 'example'
 
 class DialogExample < Example
@@ -62,11 +64,11 @@ class DialogExample < Example
         '<C>Press any key to continue.'
       ]
       cdkscreen.popupLabel(mesg, 3)
-    elsif mesg = [
+    elsif (mesg = [
       format('<C>You selected button #%d', selection),
       '',
       '<C>Press any key to continue.'
-    ]
+    ])
       cdkscreen.popupLabel(mesg, 3)
     end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../widget'
 
 module Slithernix
@@ -144,7 +146,7 @@ module Slithernix
           # Draw the widget.
           draw(@box)
 
-          if actions.nil? || actions.size.zero?
+          if actions.nil? || actions.empty?
             while true
               input = getch([])
 
@@ -269,19 +271,11 @@ module Slithernix
         end
 
         def self.Decrement(value, by)
-          if value - by < value
-            value - by
-          else
-            value
-          end
+          [value - by, value].min
         end
 
         def self.Increment(value, by)
-          if value + by > value
-            value + by
-          else
-            value
-          end
+          [value + by, value].max
         end
 
         # This function injects a single character into the widget.
@@ -458,7 +452,7 @@ module Slithernix
           # Set the widget's background attribute.
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
-          @label_win.wbkgd(attrib) unless @label_win.nil?
+          @label_win&.wbkgd(attrib)
         end
 
         # This function destroys the widget.
