@@ -524,10 +524,12 @@ module Slithernix
 
         # This searches the document looking for the given word.
         def getAndStorePattern(screen)
-          temp = '</5>Search Down: <!5>'
-          if @search_direction == Slithernix::Cdk::Widget::Viewer::UP
-            temp = '</5>Search Up  : <!5>'
-          end
+          # Not sure why this temp business is here. Perhaps is
+          # supposed to be used when searching?
+          #temp = '</5>Search Down: <!5>'
+          #if @search_direction == Slithernix::Cdk::Widget::Viewer::UP
+          #  temp = '</5>Search Up  : <!5>'
+          #end
 
           # Pop up the entry field.
           get_pattern = Slithernix::Cdk::Widget::Entry.new(

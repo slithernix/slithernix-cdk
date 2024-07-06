@@ -168,7 +168,7 @@ module Slithernix
         def add(list, insert_pos)
           # If we are at the maximum number of save lines erase the first
           # position and bump everything up one spot
-          if @list_size == @save_lines and @list_size.positive?
+          if (@list_size == @save_lines) && @list_size.positive?
             @list = @list[1..-1]
             @list_pos = @list_pos[1..-1]
             @list_len = @list_len[1..-1]
@@ -429,7 +429,7 @@ module Slithernix
             end
 
             # Should we call a post-process?
-            if !complete and @post_process_func
+            if !complete && @post_process_func
               @post_process_func.call(:SWindow, self, @post_process_data,
                                       input)
             end

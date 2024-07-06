@@ -155,7 +155,7 @@ module Slithernix
           # Draw the widget.
           draw(@box)
 
-          if actions.nil? or actions.size.zero?
+          if actions.nil? || actions.size.zero?
             loop do
               input = getch([])
 
@@ -344,7 +344,7 @@ module Slithernix
               end
             end
 
-            if !complete and @post_process_func
+            if !complete && @post_process_func
               @post_process_func.call(:Entry, self, @post_process_data, input)
             end
           end

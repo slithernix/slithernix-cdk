@@ -234,7 +234,7 @@ module Slithernix
 
       if mask[0] != 0
         from += 1
-      elsif digit?(string[from + 1]) and digit?(string[from + 2])
+      elsif digit?(string[from + 1]) && digit?(string[from + 2])
         mask[0] = Curses::A_BOLD
 
         if Curses.has_colors?
@@ -361,7 +361,7 @@ module Slithernix
             result = [' '.ord, ' '.ord, ' '.ord]
 
             # Pull out the bullet marker.
-            while x < string.size and string[x] != R_MARKER
+            while (x < string.size) && (string[x] != R_MARKER)
               result << (string[x].ord | Curses::A_BOLD)
               x += 1
             end

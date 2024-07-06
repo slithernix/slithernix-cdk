@@ -52,8 +52,8 @@ module Slithernix
           box_height += @title_lines
 
           # Make sure we didn't extend beyond the dimensions of the window.
-          box_width = [ box_width, parent_width ].min
-          box_height = [ box_height, parent_height ].min
+          box_width = [box_width, parent_width].min
+          box_height = [box_height, parent_height].min
           field_width = [
             field_width,
             box_width - @label_len - (2 * @border_size)
@@ -310,7 +310,7 @@ module Slithernix
             end
 
             # Should we call a post-process?
-            if !complete and @post_process_func
+            if !complete && @post_process_func
               @post_process_func.call(:Template, self, @post_process_data,
                                       input)
             end

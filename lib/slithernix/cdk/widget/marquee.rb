@@ -34,7 +34,7 @@ module Slithernix
           message = []
           first_time = true
 
-          return -1 if mesg.nil? or mesg == ''
+          return -1 if mesg.nil? || (mesg == '')
 
           # Keep the box info, setting BorderOf()
           setBox(box)

@@ -367,7 +367,7 @@ module Slithernix
             limitCurrentValue
 
             # Should we call a post-process?
-            if !complete and @post_process_func
+            if !complete && @post_process_func
               @post_process_func.call(:Slider, self, @post_process_data, input)
             end
           end

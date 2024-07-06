@@ -69,7 +69,7 @@ module Util
     terminal_capabilities = {}
 
     infocmp_output.each_line do |line|
-      next if line.start_with? '#' or !line.start_with?(/\s/)
+      next if line.start_with?('#') || !line.start_with?(/\s/)
 
       line.chomp! ",\n"
       line.strip!

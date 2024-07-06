@@ -266,7 +266,7 @@ module Slithernix
             end
 
             # Should we do a post-process?
-            if !complete and @post_process_func
+            if !complete && @post_process_func
               @post_process_func.call(:Calendar, self, @post_process_data,
                                       input)
             end
