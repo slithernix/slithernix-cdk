@@ -3,17 +3,17 @@ module Slithernix
     module Draw
       # Set up all basic BG/FG color pairs based on what Curses supports
       def self.initCDKColor
-        if Curses.has_colors?
-          Curses.start_color
-          limit = [Curses.colors, 256].min
+        return unless Curses.has_colors?
 
-          # Create color pairs for all combinations of foreground and background colors
-          pair = 1
-          (0...limit).each do |fg|
-            (0...limit).each do |bg|
-              Curses.init_pair(pair, fg, bg)
-              pair += 1
-            end
+        Curses.start_color
+        limit = [Curses.colors, 256].min
+
+        # Create color pairs for all combinations of foreground and background colors
+        pair = 1
+        (0...limit).each do |fg|
+          (0...limit).each do |bg|
+            Curses.init_pair(pair, fg, bg)
+            pair += 1
           end
         end
       end
@@ -123,22 +123,22 @@ module Slithernix
           # Set the vars
           x = startx
           y = starty
-          while x!= endx && y != endy
+          while x != endx && y != endy
             # Add the char to the window
             window.mvwaddch(y, x, line)
 
             # Make the x and y adjustments.
-            if xadj != xratio
+            if xadj == xratio
+              xadj = 0
+            else
               x = xdiff < 0 ? x - 1 : x + 1
               xadj += 1
-            else
-              xadj = 0
             end
-            if yadj != yratio
+            if yadj == yratio
+              yadj = 0
+            else
               y = ydiff < 0 ? y - 1 : y + 1
               yadj += 1
-            else
-              yadj = 0
             end
           end
         end
@@ -146,32 +146,37 @@ module Slithernix
 
       # This draws a shadow around a window.
       def self.drawShadow(shadow_win)
-        unless shadow_win.nil?
-          x_hi = shadow_win.maxx - 1
-          y_hi = shadow_win.maxy - 1
+        return if shadow_win.nil?
 
-          # Draw the line on the bottom.
-          shadow_win.mvwhline(y_hi, 1, Slithernix::Cdk::ACS_HLINE | Curses::A_DIM, x_hi)
+        x_hi = shadow_win.maxx - 1
+        y_hi = shadow_win.maxy - 1
 
-          # Draw the line on the right.
-          shadow_win.mvwvline(0, x_hi, Slithernix::Cdk::ACS_VLINE | Curses::A_DIM, y_hi)
+        # Draw the line on the bottom.
+        shadow_win.mvwhline(y_hi, 1,
+                            Slithernix::Cdk::ACS_HLINE | Curses::A_DIM, x_hi)
 
-          shadow_win.mvwaddch(0, x_hi, Slithernix::Cdk::ACS_URCORNER | Curses::A_DIM)
-          shadow_win.mvwaddch(y_hi, 0, Slithernix::Cdk::ACS_LLCORNER | Curses::A_DIM)
-          shadow_win.mvwaddch(y_hi, x_hi, Slithernix::Cdk::ACS_LRCORNER | Curses::A_DIM)
-          shadow_win.refresh
-        end
+        # Draw the line on the right.
+        shadow_win.mvwvline(0, x_hi,
+                            Slithernix::Cdk::ACS_VLINE | Curses::A_DIM, y_hi)
+
+        shadow_win.mvwaddch(0, x_hi,
+                            Slithernix::Cdk::ACS_URCORNER | Curses::A_DIM)
+        shadow_win.mvwaddch(y_hi, 0,
+                            Slithernix::Cdk::ACS_LLCORNER | Curses::A_DIM)
+        shadow_win.mvwaddch(y_hi, x_hi,
+                            Slithernix::Cdk::ACS_LRCORNER | Curses::A_DIM)
+        shadow_win.refresh
       end
 
       # Write a string of blanks using writeChar()
       def self.writeBlanks(window, xpos, ypos, align, start, endn)
-        if start < endn
-          want = (endn - start) + 1000
-          blanks = ''
+        return unless start < endn
 
-          Slithernix::Cdk.cleanChar(blanks, want - 1, ' ')
-          writeChar(window, xpos, ypos, blanks, align, start, endn)
-        end
+        want = (endn - start) + 1000
+        blanks = ''
+
+        Slithernix::Cdk.cleanChar(blanks, want - 1, ' ')
+        writeChar(window, xpos, ypos, blanks, align, start, endn)
       end
 
       # This writes out a char string with no attributes
@@ -190,7 +195,7 @@ module Slithernix
 
       # This writes out a char string with attributes
       def self.writeCharAttrib(window, xpos, ypos, string, attr, align,
-          start, endn)
+                               start, endn)
         display = endn - start
 
         if align == Slithernix::Cdk::HORIZONTAL
@@ -223,7 +228,7 @@ module Slithernix
       end
 
       # This writes out a chtype string with the given attributes added.
-      def self.writeChtypeAttrib(window, xpos, ypos, string, attr,align, start, endn)
+      def self.writeChtypeAttrib(window, xpos, ypos, string, attr, align, start, endn)
         diff = endn - start
         display = 0
         x = 0

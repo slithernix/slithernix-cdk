@@ -34,4 +34,3 @@ ensure
   # Ensure to close curses properly
   Curses.close_screen
 end
-

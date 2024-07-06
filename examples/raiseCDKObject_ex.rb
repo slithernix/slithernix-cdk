@@ -2,21 +2,21 @@
 require_relative 'example'
 
 class RaiseCDKObjectExample < Example
-  def RaiseCDKObjectExample.MY_LABEL(widg)
+  def self.MY_LABEL(widg)
     widg.screen_index | 0x30 | Curses::A_UNDERLINE | Curses::A_BOLD
   end
 
-  def RaiseCDKObjectExample.parse_opts(opts, param)
+  def self.parse_opts(opts, param)
     opts.banner = 'Usage: raiseCDKObject_ex.rb [options]'
 
     param.x_value = Slithernix::Cdk::CENTER
     param.y_value = Slithernix::Cdk::BOTTOM
     param.box = true
     param.shadow = false
-    super(opts, param)
+    super
   end
 
-  def RaiseCDKObjectExample.main
+  def self.main
     # Declare variables.
     params = parse(ARGV)
 
@@ -25,69 +25,73 @@ class RaiseCDKObjectExample < Example
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     mesg1 = [
-        "label1 label1 label1 label1 label1 label1 label1",
-        "label1 label1 label1 label1 label1 label1 label1",
-        "label1 label1 label1 label1 label1 label1 label1",
-        "label1 label1 label1 label1 label1 label1 label1",
-        "label1 label1 label1 label1 label1 label1 label1",
-        "label1 label1 label1 label1 label1 label1 label1",
-        "label1 label1 label1 label1 label1 label1 label1",
-        "label1 label1 label1 label1 label1 label1 label1",
-        "label1 label1 label1 label1 label1 label1 label1",
-        "label1 label1 label1 label1 label1 label1 label1"
+      'label1 label1 label1 label1 label1 label1 label1',
+      'label1 label1 label1 label1 label1 label1 label1',
+      'label1 label1 label1 label1 label1 label1 label1',
+      'label1 label1 label1 label1 label1 label1 label1',
+      'label1 label1 label1 label1 label1 label1 label1',
+      'label1 label1 label1 label1 label1 label1 label1',
+      'label1 label1 label1 label1 label1 label1 label1',
+      'label1 label1 label1 label1 label1 label1 label1',
+      'label1 label1 label1 label1 label1 label1 label1',
+      'label1 label1 label1 label1 label1 label1 label1'
     ]
-    label1 = Slithernix::Cdk::Widget::Label.new(cdkscreen, 10, 4, mesg1, 10, true, false)
+    label1 = Slithernix::Cdk::Widget::Label.new(cdkscreen, 10, 4, mesg1, 10,
+                                                true, false)
     label1.setULchar('1'.ord | Curses::A_BOLD)
 
     mesg2 = [
-        "label2 label2 label2 label2 label2 label2 label2",
-        "label2 label2 label2 label2 label2 label2 label2",
-        "label2 label2 label2 label2 label2 label2 label2",
-        "label2 label2 label2 label2 label2 label2 label2",
-        "label2 label2 label2 label2 label2 label2 label2",
-        "label2 label2 label2 label2 label2 label2 label2",
-        "label2 label2 label2 label2 label2 label2 label2",
-        "label2 label2 label2 label2 label2 label2 label2",
-        "label2 label2 label2 label2 label2 label2 label2",
-        "label2 label2 label2 label2 label2 label2 label2"
+      'label2 label2 label2 label2 label2 label2 label2',
+      'label2 label2 label2 label2 label2 label2 label2',
+      'label2 label2 label2 label2 label2 label2 label2',
+      'label2 label2 label2 label2 label2 label2 label2',
+      'label2 label2 label2 label2 label2 label2 label2',
+      'label2 label2 label2 label2 label2 label2 label2',
+      'label2 label2 label2 label2 label2 label2 label2',
+      'label2 label2 label2 label2 label2 label2 label2',
+      'label2 label2 label2 label2 label2 label2 label2',
+      'label2 label2 label2 label2 label2 label2 label2'
     ]
-    label2 = Slithernix::Cdk::Widget::Label.new(cdkscreen, 8, 8, mesg2, 10, true, false)
+    label2 = Slithernix::Cdk::Widget::Label.new(cdkscreen, 8, 8, mesg2, 10,
+                                                true, false)
     label2.setULchar('2'.ord | Curses::A_BOLD)
 
     mesg3 = [
-        "label3 label3 label3 label3 label3 label3 label3",
-        "label3 label3 label3 label3 label3 label3 label3",
-        "label3 label3 label3 label3 label3 label3 label3",
-        "label3 label3 label3 label3 label3 label3 label3",
-        "label3 label3 label3 label3 label3 label3 label3",
-        "label3 label3 label3 label3 label3 label3 label3",
-        "label3 label3 label3 label3 label3 label3 label3",
-        "label3 label3 label3 label3 label3 label3 label3",
-        "label3 label3 label3 label3 label3 label3 label3",
-        "label3 label3 label3 label3 label3 label3 label3"
+      'label3 label3 label3 label3 label3 label3 label3',
+      'label3 label3 label3 label3 label3 label3 label3',
+      'label3 label3 label3 label3 label3 label3 label3',
+      'label3 label3 label3 label3 label3 label3 label3',
+      'label3 label3 label3 label3 label3 label3 label3',
+      'label3 label3 label3 label3 label3 label3 label3',
+      'label3 label3 label3 label3 label3 label3 label3',
+      'label3 label3 label3 label3 label3 label3 label3',
+      'label3 label3 label3 label3 label3 label3 label3',
+      'label3 label3 label3 label3 label3 label3 label3'
     ]
-    label3 = Slithernix::Cdk::Widget::Label.new(cdkscreen, 6, 12, mesg3, 10, true, false)
+    label3 = Slithernix::Cdk::Widget::Label.new(cdkscreen, 6, 12, mesg3, 10,
+                                                true, false)
     label3.setULchar('3'.ord | Curses::A_BOLD)
 
     mesg4 = [
-        "label4 label4 label4 label4 label4 label4 label4",
-        "label4 label4 label4 label4 label4 label4 label4",
-        "label4 label4 label4 label4 label4 label4 label4",
-        "label4 label4 label4 label4 label4 label4 label4",
-        "label4 label4 label4 label4 label4 label4 label4",
-        "label4 label4 label4 label4 label4 label4 label4",
-        "label4 label4 label4 label4 label4 label4 label4",
-        "label4 label4 label4 label4 label4 label4 label4",
-        "label4 label4 label4 label4 label4 label4 label4",
-        "label4 label4 label4 label4 label4 label4 label4"
+      'label4 label4 label4 label4 label4 label4 label4',
+      'label4 label4 label4 label4 label4 label4 label4',
+      'label4 label4 label4 label4 label4 label4 label4',
+      'label4 label4 label4 label4 label4 label4 label4',
+      'label4 label4 label4 label4 label4 label4 label4',
+      'label4 label4 label4 label4 label4 label4 label4',
+      'label4 label4 label4 label4 label4 label4 label4',
+      'label4 label4 label4 label4 label4 label4 label4',
+      'label4 label4 label4 label4 label4 label4 label4',
+      'label4 label4 label4 label4 label4 label4 label4'
     ]
-    label4 = Slithernix::Cdk::Widget::Label.new(cdkscreen, 4, 16, mesg4, 10, true, false)
+    label4 = Slithernix::Cdk::Widget::Label.new(cdkscreen, 4, 16, mesg4, 10,
+                                                true, false)
     label4.setULchar('4'.ord | Curses::A_BOLD)
 
-    mesg = ["</B>#<!B> - raise </U>label#<!U>, </B>r<!B> - </U>redraw<!U>, "]
-    mesg[0] << "</B>q<!B> - </U>quit<!U>"
+    mesg = ['</B>#<!B> - raise </U>label#<!U>, </B>r<!B> - </U>redraw<!U>, ']
+    mesg[0] << '</B>q<!B> - </U>quit<!U>'
     instruct = Slithernix::Cdk::Widget::Label.new(cdkscreen, params.x_value, params.y_value,
-                              mesg, 1, params.box, params.shadow)
+                                                  mesg, 1, params.box, params.shadow)
 
     instruct.setULchar(' '.ord | Curses::A_NORMAL)
     instruct.setURchar(' '.ord | Curses::A_NORMAL)
@@ -135,7 +139,7 @@ class RaiseCDKObjectExample < Example
     instruct.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
-    #ExitProgram (EXIT_SUCCESS);
+    # ExitProgram (EXIT_SUCCESS);
   end
 end
 

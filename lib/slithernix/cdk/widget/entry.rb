@@ -5,11 +5,10 @@ module Slithernix
     class Widget
       class Entry < Slithernix::Cdk::Widget
         attr_accessor :info, :left_char, :screen_col
-        attr_reader :win, :box_height, :box_width, :max, :field_width
-        attr_reader :min, :max
+        attr_reader :win, :box_height, :box_width, :max, :field_width, :min
 
         def initialize(cdkscreen, xplace, yplace, title, label, field_attr, filler,
-            disp_type, f_width, min, max, box, shadow)
+                       disp_type, f_width, min, max, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -19,12 +18,13 @@ module Slithernix
           ypos = yplace
 
           setBox(box)
-          box_height = @border_size * 2 + 1
+          box_height = (@border_size * 2) + 1
 
           # If the field_width is a negative value, the field_width will be
           # COLS-field_width, otherwise the field_width will be the given width.
-          field_width = Slithernix::Cdk.setWidgetDimension(parent_width, field_width, 0)
-          box_width = field_width + 2 * @border_size
+          field_width = Slithernix::Cdk.setWidgetDimension(parent_width,
+                                                           field_width, 0)
+          box_width = field_width + (2 * @border_size)
 
           # Set some basic values of the entry field.
           @label = 0
@@ -32,7 +32,7 @@ module Slithernix
           @label_win = nil
 
           # Translate the label string to a chtype array
-          if !(label.nil?) && label.size > 0
+          if !label.nil? && label.size > 0
             label_len = [@label_len]
             @label = Slithernix::Cdk.char2Chtype(label, label_len, [])
             @label_len = label_len[0]
@@ -49,12 +49,13 @@ module Slithernix
           box_width = [box_width, parent_width].min
           box_height = [box_height, parent_height].min
           field_width = [field_width,
-              box_width - @label_len - 2 * @border_size].min
+                         box_width - @label_len - (2 * @border_size)].min
 
           # Rejustify the x and y positions if we need to.
           xtmp = [xpos]
           ytmp = [ypos]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
+                                  box_height)
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -68,8 +69,8 @@ module Slithernix
 
           # Make the field window.
           @field_win = @win.subwin(1, field_width,
-              ypos + @title_lines + @border_size,
-              xpos + @label_len + horizontal_adjust + @border_size)
+                                   ypos + @title_lines + @border_size,
+                                   xpos + @label_len + horizontal_adjust + @border_size)
 
           if @field_win.nil?
             destroy
@@ -78,10 +79,10 @@ module Slithernix
           @field_win.keypad(true)
 
           # make the label win, if we need to
-          if !(label.nil?) && label.size > 0
+          if !label.nil? && label.size > 0
             @label_win = @win.subwin(1, @label_len,
-                ypos + @title_lines + @border_size,
-                xpos + horizontal_adjust + @border_size)
+                                     ypos + @title_lines + @border_size,
+                                     xpos + horizontal_adjust + @border_size)
           end
 
           # cleanChar (entry->info, max + 3, '\0');
@@ -108,22 +109,23 @@ module Slithernix
           @box_height = box_height
           @disp_type = disp_type
           @callbackfn = lambda do |entry, character|
-            plainchar = Slithernix::Cdk::Display.filterByDisplayType(entry, character)
+            plainchar = Slithernix::Cdk::Display.filterByDisplayType(entry,
+                                                                     character)
 
             if plainchar == Curses::Error || entry.info.size >= entry.max
               Slithernix::Cdk.Beep
             else
               # Update the screen and pointer
-              if entry.screen_col != entry.field_width - 1
-                front = (entry.info[0...(entry.screen_col + entry.left_char)] or '')
-                back = (entry.info[(entry.screen_col + entry.left_char)..-1] or '')
-                entry.info = front + plainchar.chr + back
-                entry.screen_col += 1
-              else
+              if entry.screen_col == entry.field_width - 1
                 # Update the character pointer.
                 entry.info << plainchar
                 # Do not update the pointer if it's the last character
                 entry.left_char += 1 if entry.info.size < entry.max
+              else
+                front = (entry.info[0...(entry.screen_col + entry.left_char)] or '')
+                back = (entry.info[(entry.screen_col + entry.left_char)..-1] or '')
+                entry.info = front + plainchar.chr + back
+                entry.screen_col += 1
               end
 
               # Update the entry field.
@@ -134,7 +136,7 @@ module Slithernix
           # Do we want a shadow?
           if shadow
             @shadow_win = cdkscreen.window.subwin(box_height, box_width,
-                ypos + 1, xpos + 1)
+                                                  ypos + 1, xpos + 1)
           end
 
           cdkscreen.register(:Entry, self)
@@ -200,7 +202,7 @@ module Slithernix
           setExitType(0)
 
           # Refresh the widget field. This seems useless?
-          #self.drawField
+          # self.drawField
 
           unless @pre_process_func.nil?
             pp_return = @pre_process_func.call(
@@ -247,7 +249,7 @@ module Slithernix
                   drawField
                 else
                   @screen_col -= 1
-                  #@field_win.move(0, @screen_col)
+                  # @field_win.move(0, @screen_col)
                 end
               when Curses::KEY_RIGHT
                 if curr_pos >= @info.size
@@ -259,7 +261,7 @@ module Slithernix
                 else
                   # Move right.
                   @screen_col += 1
-                  #@field_win.move(0, @screen_col)
+                  # @field_win.move(0, @screen_col)
                 end
               when Curses::KEY_BACKSPACE, Curses::KEY_DC
                 if @disp_type == :VIEWONLY
@@ -270,7 +272,7 @@ module Slithernix
 
                   if curr_pos >= 0 && @info.size > 0
                     if curr_pos < @info.size
-                      @info = @info[0...curr_pos] + @info[curr_pos+1..-1]
+                      @info = @info[0...curr_pos] + @info[curr_pos + 1..-1]
                       success = true
                     elsif input == Curses::KEY_BACKSPACE
                       @info = @info[0...-1]
@@ -300,25 +302,25 @@ module Slithernix
                   drawField
                 end
               when Slithernix::Cdk::CUT
-                if @info.size != 0
+                if @info.size == 0
+                  Slithernix::Cdk.Beep
+                else
                   @@g_paste_buffer = @info.clone
                   clean
                   drawField
-                else
-                  Slithernix::Cdk.Beep
                 end
               when Slithernix::Cdk::COPY
-                if @info.size != 0
-                  @@g_paste_buffer = @info.clone
-                else
+                if @info.size == 0
                   Slithernix::Cdk.Beep
+                else
+                  @@g_paste_buffer = @info.clone
                 end
               when Slithernix::Cdk::PASTE
-                if @@g_paste_buffer != 0
+                if @@g_paste_buffer == 0
+                  Slithernix::Cdk.Beep
+                else
                   setValue(@@g_paste_buffer)
                   drawField
-                else
-                  Slithernix::Cdk.Beep
                 end
               when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
                 if @info.size >= @min
@@ -339,7 +341,7 @@ module Slithernix
               end
             end
 
-            if !complete && !(@post_process_func.nil?)
+            if !complete && !@post_process_func.nil?
               @post_process_func.call(:Entry, self, @post_process_data, input)
             end
           end
@@ -354,7 +356,7 @@ module Slithernix
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @field_win, @label_win, @shadow_win]
           move_specific(xplace, yplace, relative, refresh_flag,
-              windows, [])
+                        windows, [])
         end
 
         # This erases the information in the entry field and redraws
@@ -390,7 +392,7 @@ module Slithernix
           # Draw in the label to the widget.
           unless @label_win.nil?
             Slithernix::Cdk::Draw.writeChtype(@label_win, 0, 0, @label, Slithernix::Cdk::HORIZONTAL, 0,
-                             @label_len)
+                                              @label_len)
             @label_win.refresh
           end
 
@@ -402,7 +404,7 @@ module Slithernix
           @field_win.mvwhline(0, 0, @filler.ord, @field_width)
 
           # If there is information in the field then draw it in.
-          if !(@info.nil?) && @info.size > 0
+          if !@info.nil? && @info.size > 0
             # Redraw the field.
             if Slithernix::Cdk::Display.isHiddenDisplayType(@disp_type)
               (@left_char...@info.size).each do |x|
@@ -410,10 +412,11 @@ module Slithernix
               end
             else
               (@left_char...@info.size).each do |x|
-                @field_win.mvwaddch(0, x - @left_char, @info[x].ord | @field_attr)
+                @field_win.mvwaddch(0, x - @left_char,
+                                    @info[x].ord | @field_attr)
               end
             end
-            #@field_win.move(0, @screen_col)
+            # @field_win.move(0, @screen_col)
           end
 
           @field_win.refresh
@@ -421,12 +424,12 @@ module Slithernix
 
         # This erases an entry widget from the screen.
         def erase
-          if validCDKObject
-            Slithernix::Cdk.eraseCursesWindow(@field_win)
-            Slithernix::Cdk.eraseCursesWindow(@label_win)
-            Slithernix::Cdk.eraseCursesWindow(@win)
-            Slithernix::Cdk.eraseCursesWindow(@shadow_win)
-          end
+          return unless validCDKObject
+
+          Slithernix::Cdk.eraseCursesWindow(@field_win)
+          Slithernix::Cdk.eraseCursesWindow(@label_win)
+          Slithernix::Cdk.eraseCursesWindow(@win)
+          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
         end
 
         # This destroys an entry widget.
@@ -444,7 +447,7 @@ module Slithernix
         end
 
         # This sets specific attributes of the entry field.
-        def set(value, min, max, box)
+        def set(value, min, max, _box)
           setValue(value)
           setMin(min)
           setMax(max)
@@ -497,7 +500,7 @@ module Slithernix
         end
 
         # This sets the character to use when a hidden type is used.
-        def setHiddenChar(hidden_characer)
+        def setHiddenChar(_hidden_characer)
           @hidden = hidden_character
         end
 
@@ -526,7 +529,7 @@ module Slithernix
         end
 
         def focus
-          #@field_win.move(0, @screen_col)
+          # @field_win.move(0, @screen_col)
           @field_win.refresh
         end
 

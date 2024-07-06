@@ -2,7 +2,7 @@
 require_relative 'example'
 
 class PositionExample < Example
-  def PositionExample.parse_opts(opts, param)
+  def self.parse_opts(opts, param)
     opts.banner = 'Usage: position_ex.rb [options]'
 
     param.x_value = Slithernix::Cdk::CENTER
@@ -11,7 +11,7 @@ class PositionExample < Example
     param.shadow = false
     param.w_value = 40
 
-    super(opts, param)
+    super
 
     opts.on('-w WIDTH', OptionParser::DecimalInteger, 'Field width') do |w|
       param.w_value = w
@@ -19,8 +19,8 @@ class PositionExample < Example
   end
 
   # This demonstrates the positioning of a Cdk entry field widget.
-  def PositionExample.main
-    label = "</U/5>Directory:<!U!5> "
+  def self.main
+    label = '</U/5>Directory:<!U!5> '
     params = parse(ARGV)
 
     # Set up CDK
@@ -53,8 +53,8 @@ class PositionExample < Example
       cdkscreen.destroy
       Slithernix::Cdk::Screen.endCDK
 
-      puts "Cannot create the entry box. Is the window too small?"
-      exit  # EXIT_FAILURE
+      puts 'Cannot create the entry box. Is the window too small?'
+      exit # EXIT_FAILURE
     end
 
     # Let the user move the widget around the window.
@@ -67,17 +67,17 @@ class PositionExample < Example
     # Tell them what they typed.
     if directory.exit_type == :ESCAPE_HIT
       mesg = [
-        "<C>You hit escape. No information passed back.",
-        "",
-        "<C>Press any key to continue."
+        '<C>You hit escape. No information passed back.',
+        '',
+        '<C>Press any key to continue.'
       ]
       cdkscreen.popupLabel(mesg, 3)
     elsif directory.exit_type == :NORMAL
       mesg = [
-        "<C>You typed in the following",
-        "<C>%.*s" % [236, info],  # FIXME magic number
-        "",
-        "<C>Press any key to continue."
+        '<C>You typed in the following',
+        format('<C>%.*s', 236, info), # FIXME: magic number
+        '',
+        '<C>Press any key to continue.'
       ]
 
       cdkscreen.popupLabel(mesg, 4)
@@ -86,7 +86,7 @@ class PositionExample < Example
     directory.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
-    #ExitProgram (EXIT_SUCCESS);
+    # ExitProgram (EXIT_SUCCESS);
   end
 end
 

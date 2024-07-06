@@ -2,7 +2,7 @@
 require_relative '../lib/slithernix/cdk'
 
 class StopSign
-  def StopSign.main
+  def self.main
     # Set up CDK
     curses_win = Curses.init_screen
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
@@ -12,23 +12,23 @@ class StopSign
 
     # Set the labels up.
     mesg = [
-        '<C><#HL(40)>',
-        '<C>Press </B/16>r<!B!16> for the </B/16>red light',
-        '<C>Press </B/32>y<!B!32> for the </B/32>yellow light',
-        '<C>Press </B/24>g<!B!24> for the </B/24>green light',
-        '<C><#HL(40)>',
+      '<C><#HL(40)>',
+      '<C>Press </B/16>r<!B!16> for the </B/16>red light',
+      '<C>Press </B/32>y<!B!32> for the </B/32>yellow light',
+      '<C>Press </B/24>g<!B!24> for the </B/24>green light',
+      '<C><#HL(40)>',
     ]
     sign = [
-        ' <#DI> ',
-        ' <#DI> ',
-        ' <#DI> ',
+      ' <#DI> ',
+      ' <#DI> ',
+      ' <#DI> ',
     ]
 
     # Declare the labels.
     title = Slithernix::Cdk::Widget::Label.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::TOP,
-                           mesg, 5, false, false)
+                                               mesg, 5, false, false)
     stop_sign = Slithernix::Cdk::Widget::Label.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                               sign, 3, true, true)
+                                                   sign, 3, true, true)
 
     # Do this until they hit q or escape.
     while true
@@ -36,17 +36,17 @@ class StopSign
       stop_sign.draw(true)
 
       key = stop_sign.getch([])
-      if key == Slithernix::Cdk::KEY_ESC || key == 'q' || key == 'Q'
+      if [Slithernix::Cdk::KEY_ESC, 'q', 'Q'].include?(key)
         break
-      elsif key == 'r' || key == 'R'
+      elsif %w[r R].include?(key)
         sign[0] = ' </B/16><#DI> '
         sign[1] = ' o '
         sign[2] = ' o '
-      elsif key == 'y' || key == 'Y'
+      elsif %w[y Y].include?(key)
         sign[0] = ' o '
         sign[1] = ' </B/32><#DI> '
         sign[2] = ' o '
-      elsif key == 'g' || key == 'G'
+      elsif %w[g G].include?(key)
         sign[0] = ' o '
         sign[1] = ' o '
         sign[2] = ' </B/24><#DI> '
@@ -61,7 +61,7 @@ class StopSign
     stop_sign.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
-    #ExitProgram (EXIT_SUCCESS);
+    # ExitProgram (EXIT_SUCCESS);
   end
 end
 

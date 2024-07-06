@@ -2,15 +2,18 @@ module Slithernix
   module Cdk
     class Widget
       class Graph < Slithernix::Cdk::Widget
-        def initialize(cdkscreen, xplace, yplace, height, width, title, xtitle, ytitle)
+        def initialize(cdkscreen, xplace, yplace, height, width, title,
+                       xtitle, ytitle)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
 
           setBox(false)
 
-          box_height = Slithernix::Cdk.setWidgetDimension(parent_height, height, 3)
-          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width, 0)
+          box_height = Slithernix::Cdk.setWidgetDimension(parent_height,
+                                                          height, 3)
+          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width,
+                                                         0)
           box_width = setTitle(title, box_width)
           box_height += @title_lines
           box_width = [parent_width, box_width].min
@@ -19,7 +22,8 @@ module Slithernix
           # Rejustify the x and y positions if we need to
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
+                                  box_height)
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -43,35 +47,41 @@ module Slithernix
           @win.keypad(true)
 
           # Translate the X axis title string to a chtype array
-          if !(xtitle.nil?) && xtitle.size > 0
+          if !xtitle.nil? && xtitle.size > 0
             xtitle_len = []
             xtitle_pos = []
-            @xtitle = Slithernix::Cdk.char2Chtype(xtitle, xtitle_len, xtitle_pos)
+            @xtitle = Slithernix::Cdk.char2Chtype(xtitle, xtitle_len,
+                                                  xtitle_pos)
             @xtitle_len = xtitle_len[0]
             @xtitle_pos = Slithernix::Cdk.justifyString(@box_height,
                                                         @xtitle_len, xtitle_pos[0])
           else
             xtitle_len = []
             xtitle_pos = []
-            @xtitle = Slithernix::Cdk.char2Chtype("<C></5>X Axis", xtitle_len, xtitle_pos)
+            @xtitle = Slithernix::Cdk.char2Chtype('<C></5>X Axis', xtitle_len,
+                                                  xtitle_pos)
             @xtitle_len = title_len[0]
             @xtitle_pos = Slithernix::Cdk.justifyString(@box_height,
                                                         @xtitle_len, xtitle_pos[0])
           end
 
           # Translate the Y Axis title string to a chtype array
-          if !(ytitle.nil?) && ytitle.size > 0
+          if !ytitle.nil? && ytitle.size > 0
             ytitle_len = []
             ytitle_pos = []
-            @ytitle = Slithernix::Cdk.char2Chtype(ytitle, ytitle_len, ytitle_pos)
+            @ytitle = Slithernix::Cdk.char2Chtype(ytitle, ytitle_len,
+                                                  ytitle_pos)
             @ytitle_len = ytitle_len[0]
-            @ytitle_pos = Slithernix::Cdk.justifyString(@box_width, @ytitle_len, ytitle_pos[0])
+            @ytitle_pos = Slithernix::Cdk.justifyString(@box_width,
+                                                        @ytitle_len, ytitle_pos[0])
           else
             ytitle_len = []
             ytitle_pos = []
-            @ytitle = Slithernix::Cdk.char2Chtype("<C></5>Y Axis", ytitle_len, ytitle_pos)
+            @ytitle = Slithernix::Cdk.char2Chtype('<C></5>Y Axis', ytitle_len,
+                                                  ytitle_pos)
             @ytitle_len = ytitle_len[0]
-            @ytitle_pos = Slithernix::Cdk.justifyString(@box_width, @ytitle_len, ytitle_pos[0])
+            @ytitle_pos = Slithernix::Cdk.justifyString(@box_width,
+                                                        @ytitle_len, ytitle_pos[0])
           end
 
           @graph_char = 0
@@ -81,7 +91,7 @@ module Slithernix
         end
 
         # This was added for the builder.
-        def activate(actions)
+        def activate(_actions)
           draw(@box)
         end
 
@@ -110,7 +120,7 @@ module Slithernix
           # Make sure everything is happy.
           return false if count < 0
 
-          if !(@values.nil?) && @values.size > 0
+          if !@values.nil? && @values.size > 0
             @values = []
             @count = 0
           end
@@ -232,7 +242,8 @@ module Slithernix
           # Adjust the window if we need to.
           xtmp = [xpos]
           tymp = [ypos]
-          Slithernix::Cdk.alignxy(@screen.window, xtmp, ytmp, @box_width, @box_height)
+          Slithernix::Cdk.alignxy(@screen.window, xtmp, ytmp, @box_width,
+                                  @box_height)
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -253,7 +264,7 @@ module Slithernix
 
         # Draw the grpah widget
         def draw(box)
-          adj = 2 + ((@xtitle.nil? || @xtitle.size == 0) ? 0 : 1)
+          adj = 2 + (@xtitle.nil? || @xtitle.size == 0 ? 0 : 1)
           spacing = 0
           attrib = ' '.ord | Curses::A_REVERSE
 
@@ -282,7 +293,7 @@ module Slithernix
           drawTitle(@win)
 
           # Draw in the X axis title.
-          if !(@xtitle.nil?) && @xtitle.size > 0
+          if !@xtitle.nil? && @xtitle.size > 0
             Slithernix::Cdk::Draw.writeChtype(
               @win,
               0,
@@ -296,7 +307,7 @@ module Slithernix
           end
 
           # Draw in the X axis high value
-          temp = "%d" % [@maxx]
+          temp = format('%d', @maxx)
           Slithernix::Cdk::Draw.writeCharAttrib(
             @win,
             1,
@@ -309,7 +320,7 @@ module Slithernix
           )
 
           # Draw in the X axis low value.
-          temp = "%d" % [@minx]
+          temp = format('%d', @minx)
           Slithernix::Cdk::Draw.writeCharAttrib(
             @win,
             1,
@@ -322,7 +333,7 @@ module Slithernix
           )
 
           # Draw in the Y axis title
-          if !(@ytitle.nil?) && @ytitle.size > 0
+          if !@ytitle.nil? && @ytitle.size > 0
             Slithernix::Cdk::Draw.writeChtype(
               @win,
               @ytitle_pos,
@@ -335,7 +346,7 @@ module Slithernix
           end
 
           # Draw in the Y axis high value.
-          temp = "%d" % [@count]
+          temp = format('%d', @count)
           Slithernix::Cdk::Draw.writeCharAttrib(
             @win,
             @box_width - temp.size - adj,
@@ -352,11 +363,11 @@ module Slithernix
             @win,
             3,
             @box_height - 2,
-            "0",
+            '0',
             attrib,
             Slithernix::Cdk::HORIZONTAL,
             0,
-            "0".size
+            '0'.size
           )
 
           # If the count is zero then there aren't any points.
@@ -365,7 +376,7 @@ module Slithernix
             return
           end
 
-          spacing = (@box_width - 3) / @count  # FIXME magic number (TITLE_LM)
+          spacing = (@box_width - 3) / @count # FIXME: magic number (TITLE_LM)
 
           # Draw in the graph line/plot points.
           (0...@count).each do |y|
@@ -373,19 +384,19 @@ module Slithernix
             # Add the marker on the Y axis.
             @win.mvwaddch(
               @box_height - 3,
-              (y + 1) * spacing + adj,
+              ((y + 1) * spacing) + adj,
               Slithernix::Cdk::ACS_TTEE,
             )
 
             # If this is a plot graph, all we do is draw a dot.
             if @display_type == :PLOT
               xpos = @box_height - 4 - colheight
-              ypos = (y + 1) * spacing + adj
+              ypos = ((y + 1) * spacing) + adj
               @win.mvwaddch(xpos, ypos, @graph_char[y])
             else
-              (0..@yscale).each do |x|
+              (0..@yscale).each do |_x|
                 xpos = @box_height - 3
-                ypos = (y + 1) * spacing - adj
+                ypos = ((y + 1) * spacing) - adj
                 Slithernix::Cdk::Draw.drawLine(
                   @win,
                   ypos,
@@ -401,7 +412,8 @@ module Slithernix
           # Draw in the axis corners.
           @win.mvwaddch(@title_lines, 2, Slithernix::Cdk::ACS_URCORNER)
           @win.mvwaddch(@box_height - 3, 2, Slithernix::Cdk::ACS_LLCORNER)
-          @win.mvwaddch(@box_height - 3, @box_width, Slithernix::Cdk::ACS_URCORNER)
+          @win.mvwaddch(@box_height - 3, @box_width,
+                        Slithernix::Cdk::ACS_URCORNER)
 
           # Refresh and lets see it
           @win.refresh

@@ -7,7 +7,7 @@ require_relative '../lib/slithernix/cdk/util'
 class CdkPryShell
   MAXHISTORY = 5000
 
-  def CdkPryShell.help(entry)
+  def self.help(entry)
     # Create the help message.
     mesg = [
       '<C></B/29>Help',
@@ -30,12 +30,12 @@ class CdkPryShell
       '<B=Tab/Escape> Returns to the command line.',
       '',
       '<C> (</B/24>Refer to the scrolling window online manual ' <<
-          'for more help<!B!24>.)'
+        'for more help<!B!24>.)'
     ]
     entry.screen.popupLabel(mesg, mesg.size)
   end
 
-  def CdkPryShell.main
+  def self.main
     intro_mesg = [
       '<C></B/16>Little CdkPryShell Interface',
       '',
@@ -83,7 +83,7 @@ class CdkPryShell
       cdkscreen,
       Slithernix::Cdk::CENTER,
       Slithernix::Cdk::TOP - (Curses.lines / 2),
-      Curses.lines / 2 - 4,
+      (Curses.lines / 2) - 4,
       -2,
       pry_window_title,
       1000,
@@ -119,7 +119,7 @@ class CdkPryShell
     )
 
     # Create the key bindings.
-    history_up_cb = lambda do |cdktype, entry, history, key|
+    history_up_cb = lambda do |_cdktype, entry, history, _key|
       # Make sure we don't go out of bounds
       if history.current == 0
         Slithernix::Cdk.Beep
@@ -135,7 +135,7 @@ class CdkPryShell
       false
     end
 
-    history_down_cb = lambda do |cdktype, entry, history, key|
+    history_down_cb = lambda do |_cdktype, entry, history, _key|
       # Make sure we don't go out of bounds
       if history.current == @count
         Slithernix::Cdk.Beep
@@ -158,7 +158,7 @@ class CdkPryShell
       false
     end
 
-    view_history_cb = lambda do |cdktype, entry, swindow, key|
+    view_history_cb = lambda do |_cdktype, entry, swindow, _key|
       # Let them play...
       swindow.activate([])
 
@@ -167,15 +167,15 @@ class CdkPryShell
       false
     end
 
-    list_history_cb = lambda do |cdktype, entry, history, key|
+    list_history_cb = lambda do |_cdktype, entry, history, _key|
       height = history.count < 10 ? history.count + 3 : 13
 
       # No history, no list.
       if history.count == 0
         # Popup a little message telling the user there are no comands.
         mesg = [
-            '<C></B/16>No CdkPryShells Entered',
-            '<C>No History',
+          '<C></B/16>No CdkPryShells Entered',
+          '<C>No History',
         ]
         entry.screen.popupLabel(mesg, 2)
 
@@ -220,7 +220,7 @@ class CdkPryShell
       false
     end
 
-    jump_window_cb = lambda do |cdktype, entry, swindow, key|
+    jump_window_cb = lambda do |_cdktype, entry, swindow, _key|
       # Ask them which line they want to jump to.
       scale = Slithernix::Cdk::Widget::Scale.new(
         entry.screen, Slithernix::Cdk::CENTER,
@@ -254,9 +254,12 @@ class CdkPryShell
 
     command_entry.bind(:Entry, Curses::KEY_UP, history_up_cb, history)
     command_entry.bind(:Entry, Curses::KEY_DOWN, history_down_cb, history)
-    command_entry.bind(:Entry, Slithernix::Cdk::KEY_TAB, view_history_cb, playground_window)
-    command_entry.bind(:Entry, Slithernix::Cdk.CTRL('^'), list_history_cb, history)
-    command_entry.bind(:Entry, Slithernix::Cdk.CTRL('G'), jump_window_cb, playground_window)
+    command_entry.bind(:Entry, Slithernix::Cdk::KEY_TAB, view_history_cb,
+                       playground_window)
+    command_entry.bind(:Entry, Slithernix::Cdk.CTRL('^'), list_history_cb,
+                       history)
+    command_entry.bind(:Entry, Slithernix::Cdk.CTRL('G'), jump_window_cb,
+                       playground_window)
 
     # Draw the screen.
     cdkscreen.refresh
@@ -273,8 +276,8 @@ class CdkPryShell
       upper = command.upcase
 
       # Check the output of the command
-      if ['QUIT', 'EXIT', 'Q', 'E'].include?(upper) ||
-          command_entry.exit_type == :ESCAPE_HIT
+      if %w[QUIT EXIT Q E].include?(upper) ||
+         command_entry.exit_type == :ESCAPE_HIT
         # All done.
         command_entry.destroy
         playground_window.destroy
@@ -283,7 +286,7 @@ class CdkPryShell
 
         Slithernix::Cdk::Screen.endCDK
 
-        exit  # EXIT_SUCCESS
+        exit # EXIT_SUCCESS
       elsif command == 'clear'
         # Keep the history.
         history.command << command
@@ -322,7 +325,8 @@ class CdkPryShell
         pry_window.jumpToLine(Slithernix::Cdk::BOTTOM)
 
         # Insert a line providing the command.
-        pry_window.add('CdkPryShell: </R>%s' % [command], Slithernix::Cdk::BOTTOM)
+        pry_window.add(format('CdkPryShell: </R>%s', command),
+                       Slithernix::Cdk::BOTTOM)
 
         # Run the command
         pry_window.exec_interactive(command, Slithernix::Cdk::BOTTOM)

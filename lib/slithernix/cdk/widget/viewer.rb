@@ -7,7 +7,8 @@ module Slithernix
         DOWN = 0
         UP = 1
 
-        def initialize(cdkscreen, xplace, yplace, height, width, buttons, button_count, button_highlight, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, height, width, buttons,
+                       button_count, button_highlight, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -23,13 +24,14 @@ module Slithernix
             'f' => Curses::KEY_NPAGE,
             'F' => Curses::KEY_NPAGE,
             '|' => Curses::KEY_HOME,
-            '$' => Curses::KEY_END,
+            '$' => Curses::KEY_END
           }
 
           bindings[Slithernix::Cdk::FORCHAR] = Curses::KEY_NPAGE,
-          bindings[Slithernix::Cdk::BACKCHAR] = Curses::KEY_PPAGE,
+                                               bindings[Slithernix::Cdk::BACKCHAR] =
+                                                 Curses::KEY_PPAGE,
 
-          setBox(box)
+                                               setBox(box)
 
           box_height = Slithernix::Cdk.setWidgetDimension(
             parent_height,
@@ -134,7 +136,8 @@ module Slithernix
         end
 
         # This function sets various attributes of the widget.
-        def set(title, list, list_size, button_highlight, attr_interp, show_line_info, box)
+        def set(title, list, list_size, button_highlight, attr_interp,
+                show_line_info, box)
           setTitle(title)
           setHighlight(button_highlight)
           setInfoLine(show_line_info)
@@ -177,7 +180,7 @@ module Slithernix
             (0...list.size).each do |y|
               if list[y] == "\t".ord
                 begin
-                  t  << ' '
+                  t << ' '
                   len += 1
                 end while (len & 7) != 0
               elsif Slithernix::Cdk.CharOf(list[y].ord).match(/^[[:print:]]$/)
@@ -211,11 +214,11 @@ module Slithernix
           if list.size > 0 && interpret
             (0...list_size).each do |x|
               filename = ''
-              if Slithernix::Cdk.checkForLink(list[x], filename) == 1
-                file_contents = []
-                file_len = Slithernix::Cdk.readFile(filename, file_contents)
-                viewer_size += (file_len - 1) if file_len >= 0
-              end
+              next unless Slithernix::Cdk.checkForLink(list[x], filename) == 1
+
+              file_contents = []
+              file_len = Slithernix::Cdk.readFile(filename, file_contents)
+              viewer_size += (file_len - 1) if file_len >= 0
             end
           end
 
@@ -258,6 +261,7 @@ module Slithernix
                   file_len = [file_len, viewer_size - current_line].min
                   (0...file_len).each do |file_line|
                     break if current_line >= viewer_size
+
                     setupLine(false, file_contents[file_line], current_line)
                     @characters += @list_len[current_line]
                     current_line += 1
@@ -269,25 +273,25 @@ module Slithernix
                 current_line += 1
               end
             end
-            x+= 1
+            x += 1
           end
 
           # Determine how many characters we can shift to the right before
           # all the items have been viewer off the screen.
-          if @widest_line > @box_width
-            @max_left_char = (@widest_line - @box_width) + 1
-          else
-            @max_left_char = 0
-          end
+          @max_left_char = if @widest_line > @box_width
+                             (@widest_line - @box_width) + 1
+                           else
+                             0
+                           end
 
           # Set up the needed vars for the viewer list.
           @in_progress = false
           @list_size = viewer_size
-          if @list_size <= @view_size
-            @max_top_line = 0
-          else
-            @max_top_line = @list_size - 1
-          end
+          @max_top_line = if @list_size <= @view_size
+                            0
+                          else
+                            @list_size - 1
+                          end
           @list_size
         end
 
@@ -334,19 +338,19 @@ module Slithernix
 
         def PatternNotFound(pattern)
           temp_info = [
-              "</U/5>Pattern '%s' not found.<!U!5>" % pattern,
+            "</U/5>Pattern '%s' not found.<!U!5>" % pattern,
           ]
           popUpLabel(temp_info)
         end
 
         # This function actually controls the viewer...
-        def activate(actions)
+        def activate(_actions)
           # Create the information about the file stats.
           file_info = [
             '</5>      </U>File Statistics<!U>     <!5>',
             '</5>                          <!5>',
-            '</5/R>Character Count:<!R> %-4d     <!5>' % @characters,
-            '</5/R>Line Count     :<!R> %-4d     <!5>' % @list_size,
+            format('</5/R>Character Count:<!R> %-4d     <!5>', @characters),
+            format('</5/R>Line Count     :<!R> %-4d     <!5>', @list_size),
             '</5>                          <!5>',
             '<C></5>Press Any Key To Continue.<!5>'
           ]
@@ -364,7 +368,7 @@ module Slithernix
             refresh = false
 
             input = getch([])
-            if !checkBind(:Viewer, input)
+            unless checkBind(:Viewer, input)
               case input
               when Slithernix::Cdk::KEY_TAB
                 if @button_count > 1
@@ -418,22 +422,22 @@ module Slithernix
                 end
               when Curses::KEY_PPAGE
                 if @current_top > 0
-                  if @current_top - (@view_size - 1) > 0
-                    @current_top = @current_top - (@view_size - 1)
-                  else
-                    @current_top = 0
-                  end
+                  @current_top = if @current_top - (@view_size - 1) > 0
+                                   @current_top - (@view_size - 1)
+                                 else
+                                   0
+                                 end
                   refresh = true
                 else
                   Slithernix::Cdk.Beep
                 end
               when Curses::KEY_NPAGE
                 if @current_top < @max_top_line
-                  if @current_top + @view_size < @max_top_line
-                    @current_top = @current_top + (@view_size - 1)
-                  else
-                    @current_top = @max_top_line
-                  end
+                  @current_top = if @current_top + @view_size < @max_top_line
+                                   @current_top + (@view_size - 1)
+                                 else
+                                   @max_top_line
+                                 end
                   refresh = true
                 else
                   Slithernix::Cdk.Beep
@@ -469,14 +473,14 @@ module Slithernix
               when '?'
                 @search_direction = Slithernix::Cdk::Widget::Viewer::UP
                 getAndStorePattern(@screen)
-                if !searchForWord(@search_pattern, @search_direction)
+                unless searchForWord(@search_pattern, @search_direction)
                   self.PatternNotFound(@search_pattern)
                 end
                 refresh = true
               when '/'
-                @search_direction = Slithernix::Cdk::Widget::Viewer:DOWN
+                @search_direction = Slithernix::Cdk::Widget::Viewer :DOWN
                 getAndStorePattern(@screen)
-                if !searchForWord(@search_pattern, @search_direction)
+                unless searchForWord(@search_pattern, @search_direction)
                   self.PatternNotFound(@search_pattern)
                 end
                 refresh = true
@@ -485,10 +489,11 @@ module Slithernix
                   temp_info[0] = '</5>There is no pattern in the buffer.<!5>'
                   popUpLabel(temp_info)
                 elsif !searchForWord(@search_pattern,
-                    if input == 'n'
-                    then @search_direction
-                    else 1 - @search_direction
-                    end)
+                                     if input == 'n'
+                                     then @search_direction
+                                     else
+                                       1 - @search_direction
+                                     end)
                   self.PatternNotFound(@search_pattern)
                 end
                 refresh = true
@@ -521,11 +526,11 @@ module Slithernix
           temp = ''
 
           # Check the direction.
-          if @search_direction == Slithernix::Cdk::Widget::Viewer::UP
-            temp = '</5>Search Up  : <!5>'
-          else
-            temp = '</5>Search Down: <!5>'
-          end
+          temp = if @search_direction == Slithernix::Cdk::Widget::Viewer::UP
+                   '</5>Search Up  : <!5>'
+                 else
+                   '</5>Search Down: <!5>'
+                 end
 
           # Pop up the entry field.
           get_pattern = Slithernix::Cdk::Widget::Entry.new(
@@ -597,7 +602,7 @@ module Slithernix
             else
               # Start looking from 'here' up.
               x = @current_top - 1
-              while ! found && x >= 0
+              while !found && x >= 0
                 y = 0
                 pos = 0
                 while y < @list[x].size
@@ -748,10 +753,10 @@ module Slithernix
 
         # This function erases the viewer widget from the screen.
         def erase
-          if validCDKObject
-            Slithernix::Cdk.eraseCursesWindow(@win)
-            Slithernix::Cdk.eraseCursesWindow(@shadow_win)
-          end
+          return unless validCDKObject
+
+          Slithernix::Cdk.eraseCursesWindow(@win)
+          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
         end
 
         # This draws the viewer info lines.
@@ -767,17 +772,14 @@ module Slithernix
           # Draw in the current line at the top.
           if @show_line_info == true
             # Set up the info line and draw it.
-            if @in_progress
-              temp = 'processing...'
-            elsif @list_size != 0
-              temp = '%d/%d %2.0f%%' % [
-                @current_top + 1,
-                @list_size,
-                (((1.0 * @current_top) + 1) / @list_size) * 100,
-              ]
-            else
-              temp = '%d/%d %2.0f%%' % [0, 0, 0.0]
-            end
+            temp = if @in_progress
+                     'processing...'
+                   elsif @list_size != 0
+                     format('%d/%d %2.0f%%', @current_top + 1, @list_size,
+                            (((1.0 * @current_top) + 1) / @list_size) * 100)
+                   else
+                     format('%d/%d %2.0f%%', 0, 0, 0.0)
+                   end
 
             # The list_adjust variable tells us if we have to shift down one
             # line because the person asked for the line X of Y line at the

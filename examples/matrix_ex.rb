@@ -2,7 +2,7 @@
 require_relative 'example'
 
 class MatrixExample < Example
-  def MatrixExample.parse_opts(opts, param)
+  def self.parse_opts(opts, param)
     opts.banner = 'Usage: matrix_ex.rb [options]'
 
     param.x_value = Slithernix::Cdk::CENTER
@@ -10,12 +10,12 @@ class MatrixExample < Example
     param.box = true
     param.shadow = true
     param.title =
-        "<C>This is the CDK\n<C>matrix widget.\n<C><#LT><#HL(30)><#RT>"
+      "<C>This is the CDK\n<C>matrix widget.\n<C><#LT><#HL(30)><#RT>"
     param.cancel_title = false
     param.cancel_row = false
     param.cancel_col = false
 
-    super(opts, param)
+    super
 
     opts.on('-T TITLE', String, 'Matrix title') do |title|
       param.title = title
@@ -35,7 +35,7 @@ class MatrixExample < Example
   end
 
   # This program demonstrates the Cdk calendar widget.
-  def MatrixExample.main
+  def self.main
     rows = 8
     cols = 5
     vrows = 3
@@ -53,16 +53,16 @@ class MatrixExample < Example
     coltitle = []
     unless params.cancel_col
       coltitle = ['', '</B/5>Course', '</B/33>Lec 1', '</B/33>Lec 2',
-          '</B/33>Lec 3', '</B/7>Flag']
+                  '</B/33>Lec 3', '</B/7>Flag']
     end
     colwidth = [0, 7, 7, 7, 7, 1]
-    colvalue = [:UMIXED, :UMIXED, :UMIXED, :UMIXED, :UMIXED, :UMIXED]
+    colvalue = %i[UMIXED UMIXED UMIXED UMIXED UMIXED UMIXED]
 
     rowtitle = []
     unless params.cancel_row
       rowtitle << ''
       (1..rows).each do |x|
-        rowtitle << '<C></B/6>Course %d' % [x]
+        rowtitle << (format('<C></B/6>Course %d', x))
       end
     end
 
@@ -95,7 +95,7 @@ class MatrixExample < Example
       Slithernix::Cdk::Screen.endCDK
 
       puts 'Cannot create the matrix widget. Is the window too small?'
-      exit  # EXIT_FAILURE
+      exit # EXIT_FAILURE
     end
 
     # Activate the matrix
@@ -104,20 +104,20 @@ class MatrixExample < Example
     # Check if the user hit escape or not.
     if course_list.exit_type == :ESCAPE_HIT
       mesg = [
-          '<C>You hit escape. No information passed back.',
-          '',
-          '<C>Press any key to continue.'
+        '<C>You hit escape. No information passed back.',
+        '',
+        '<C>Press any key to continue.'
       ]
       cdkscreen.popupLabel(mesg, 3)
     elsif course_list.exit_type == :NORMAL
       mesg = [
-          '<L>You exited the matrix normally',
-          'Current cell (%d,%d)' % [course_list.crow, course_list.ccol],
-          '<L>To get the contents of the matrix cell, you can',
-          '<L>use getCell():',
-          course_list.getCell(course_list.crow, course_list.ccol),
-          '',
-          '<C>Press any key to continue.'
+        '<L>You exited the matrix normally',
+        format('Current cell (%d,%d)', course_list.crow, course_list.ccol),
+        '<L>To get the contents of the matrix cell, you can',
+        '<L>use getCell():',
+        course_list.getCell(course_list.crow, course_list.ccol),
+        '',
+        '<C>Press any key to continue.'
       ]
       cdkscreen.popupLabel(mesg, 7)
     end
@@ -126,7 +126,7 @@ class MatrixExample < Example
     course_list.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
-    #ExitProgram (EXIT_SUCCESS);
+    # ExitProgram (EXIT_SUCCESS);
   end
 end
 

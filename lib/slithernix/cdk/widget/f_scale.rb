@@ -5,7 +5,7 @@ module Slithernix
     class Widget
       class FScale < Slithernix::Cdk::Widget::Scale
         def initialize(cdkscreen, xplace, yplace, title, label, field_attr,
-            field_width, start, low, high, inc, fast_inc, digits, box, shadow)
+                       field_width, start, low, high, inc, fast_inc, digits, box, shadow)
           @digits = digits
           super(
             cdkscreen,
@@ -30,8 +30,8 @@ module Slithernix
 
           # Draw the value in the field.
           digits = [@digits, 30].min
-          format = '%%.%if' % [digits]
-          temp = format % [@current]
+          format = format('%%.%if', digits)
+          temp = format(format, @current)
 
           Slithernix::Cdk::Draw.writeCharAttrib(
             @field_win,

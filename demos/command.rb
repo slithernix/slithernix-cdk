@@ -6,7 +6,7 @@ require_relative '../lib/slithernix/cdk'
 class Command
   MAXHISTORY = 5000
 
-  def Command.help(entry)
+  def self.help(entry)
     # Create the help message.
     mesg = [
       '<C></B/29>Help',
@@ -29,12 +29,12 @@ class Command
       '<B=Tab/Escape> Returns to the command line.',
       '',
       '<C> (</B/24>Refer to the scrolling window online manual ' <<
-          'for more help<!B!24>.)'
+        'for more help<!B!24>.)'
     ]
     entry.screen.popupLabel(mesg, mesg.size)
   end
 
-  def Command.main
+  def self.main
     intro_mesg = [
       '<C></B/16>Little Command Interface',
       '',
@@ -105,7 +105,7 @@ class Command
     )
 
     # Create the key bindings.
-    history_up_cb = lambda do |cdktype, entry, history, key|
+    history_up_cb = lambda do |_cdktype, entry, history, _key|
       # Make sure we don't go out of bounds
       if history.current == 0
         Slithernix::Cdk.Beep
@@ -121,7 +121,7 @@ class Command
       false
     end
 
-    history_down_cb = lambda do |cdktype, entry, history, key|
+    history_down_cb = lambda do |_cdktype, entry, history, _key|
       # Make sure we don't go out of bounds
       if history.current == @count
         Slithernix::Cdk.Beep
@@ -144,7 +144,7 @@ class Command
       false
     end
 
-    view_history_cb = lambda do |cdktype, entry, swindow, key|
+    view_history_cb = lambda do |_cdktype, entry, swindow, _key|
       # Let them play...
       swindow.activate([])
 
@@ -153,7 +153,7 @@ class Command
       false
     end
 
-    list_history_cb = lambda do |cdktype, entry, history, key|
+    list_history_cb = lambda do |_cdktype, entry, history, _key|
       height = history.count < 10 ? history.count + 3 : 13
 
       # No history, no list.
@@ -206,7 +206,7 @@ class Command
       false
     end
 
-    jump_window_cb = lambda do |cdktype, entry, swindow, key|
+    jump_window_cb = lambda do |_cdktype, entry, swindow, _key|
       # Ask them which line they want to jump to.
       scale = Slithernix::Cdk::Widget::Scale.new(
         entry.screen, Slithernix::Cdk::CENTER,
@@ -240,9 +240,12 @@ class Command
 
     command_entry.bind(:Entry, Curses::KEY_UP, history_up_cb, history)
     command_entry.bind(:Entry, Curses::KEY_DOWN, history_down_cb, history)
-    command_entry.bind(:Entry, Slithernix::Cdk::KEY_TAB, view_history_cb, command_output)
-    command_entry.bind(:Entry, Slithernix::Cdk.CTRL('^'), list_history_cb, history)
-    command_entry.bind(:Entry, Slithernix::Cdk.CTRL('G'), jump_window_cb, command_output)
+    command_entry.bind(:Entry, Slithernix::Cdk::KEY_TAB, view_history_cb,
+                       command_output)
+    command_entry.bind(:Entry, Slithernix::Cdk.CTRL('^'), list_history_cb,
+                       history)
+    command_entry.bind(:Entry, Slithernix::Cdk.CTRL('G'), jump_window_cb,
+                       command_output)
 
     # Draw the screen.
     cdkscreen.refresh
@@ -259,8 +262,8 @@ class Command
       upper = command.upcase
 
       # Check the output of the command
-      if ['QUIT', 'EXIT', 'Q', 'E'].include?(upper) ||
-          command_entry.exit_type == :ESCAPE_HIT
+      if %w[QUIT EXIT Q E].include?(upper) ||
+         command_entry.exit_type == :ESCAPE_HIT
         # All done.
         command_entry.destroy
         command_output.destroy
@@ -268,7 +271,7 @@ class Command
 
         Slithernix::Cdk::Screen.endCDK
 
-        exit  # EXIT_SUCCESS
+        exit # EXIT_SUCCESS
       elsif command == 'clear'
         # Keep the history.
         history.command << command
@@ -306,7 +309,8 @@ class Command
         command_output.jumpToLine(Slithernix::Cdk::BOTTOM)
 
         # Insert a line providing the command.
-        command_output.add('Command: </R>%s' % [command], Slithernix::Cdk::BOTTOM)
+        command_output.add(format('Command: </R>%s', command),
+                           Slithernix::Cdk::BOTTOM)
 
         # Run the command
         command_output.exec(command, Slithernix::Cdk::BOTTOM)

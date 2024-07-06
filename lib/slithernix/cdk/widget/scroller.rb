@@ -4,18 +4,18 @@ module Slithernix
     class Widget
       class Scroller < Slithernix::Cdk::Widget
         def initialize
-          super()
+          super
         end
 
         def KEY_UP
           if @list_size > 0
             if @current_item > 0
               if @current_high == 0
-                if @current_top != 0
+                if @current_top == 0
+                  Slithernix::Cdk.Beep
+                else
                   @current_top -= 1
                   @current_item -= 1
-                else
-                  Slithernix::Cdk.Beep
                 end
               else
                 @current_item -= 1
@@ -129,7 +129,7 @@ module Slithernix
         end
 
         def maxViewSize
-          @box_height - (2 * @border_size + @title_lines)
+          @box_height - ((2 * @border_size) + @title_lines)
         end
 
         # Set variables that depend upon the list_size
@@ -148,7 +148,8 @@ module Slithernix
             @step = 1.0 * maxViewSize / @list_size
             @toggle_size = if @list_size > maxViewSize
                            then 1
-                           else @step.ceil
+                           else
+                             @step.ceil
                            end
           else
             @step = 1
@@ -179,7 +180,7 @@ module Slithernix
         end
 
         def setCurrentItem(item)
-          setPosition(item);
+          setPosition(item)
         end
       end
     end

@@ -121,7 +121,7 @@ module Slithernix
 
     # This sets a blank string to be len of the given characer.
     def self.cleanChar(s, len, character)
-      s << character * len
+      s << (character * len)
     end
 
     def self.cleanChtype(s, len, character)
@@ -134,7 +134,7 @@ module Slithernix
     # window is an Curses::WINDOW widget
     # xpos, ypos is an array with exactly one value, an integer
     # box_width, box_height is an integer
-    def self.alignxy (window, xpos, ypos, box_width, box_height)
+    def self.alignxy(window, xpos, ypos, box_width, box_height)
       first = window.begx
       last = window.maxx
       if (gap = (last - box_width)) < 0
@@ -183,7 +183,7 @@ module Slithernix
     # This takes a string, a field width, and a justification type
     # and returns the adjustment to make, to fill the justification
     # requirement
-    def self.justifyString (box_width, mesg_length, justify)
+    def self.justifyString(box_width, mesg_length, justify)
       # make sure the message isn't longer than the width
       # if it is, return 0
       return 0 if mesg_length >= box_width
@@ -204,8 +204,8 @@ module Slithernix
     # This reads a file and sticks it into the list provided.
     def self.readFile(filename, array)
       begin
-        fd = File.new(filename, "r")
-      rescue
+        fd = File.new(filename, 'r')
+      rescue StandardError
         return -1
       end
 
@@ -221,20 +221,20 @@ module Slithernix
       array.size
     end
 
-    def self.encodeAttribute (string, from, mask)
+    def self.encodeAttribute(string, from, mask)
       mask << 0
       case string[from + 1]
-        when 'B' then mask[0] = Curses::A_BOLD
-        when 'D' then mask[0] = Curses::A_DIM
-        when 'K' then mask[0] = Curses::A_BLINK
-        when 'R' then mask[0] = Curses::A_REVERSE
-        when 'S' then mask[0] = Curses::A_STANDOUT
-        when 'U' then mask[0] = Curses::A_UNDERLINE
+      when 'B' then mask[0] = Curses::A_BOLD
+      when 'D' then mask[0] = Curses::A_DIM
+      when 'K' then mask[0] = Curses::A_BLINK
+      when 'R' then mask[0] = Curses::A_REVERSE
+      when 'S' then mask[0] = Curses::A_STANDOUT
+      when 'U' then mask[0] = Curses::A_UNDERLINE
       end
 
       if mask[0] != 0
         from += 1
-      elsif digit?(string[from+1]) and digit?(string[from + 2])
+      elsif digit?(string[from + 1]) and digit?(string[from + 2])
         mask[0] = Curses::A_BOLD
 
         if Curses.has_colors?
@@ -283,46 +283,43 @@ module Slithernix
         while tmpattr != newattr
           found = false
           table.keys.each do |key|
-            if (table[key] & tmpattr) != (table[key] & newattr)
-              found = true
-              result << Slithernix::Cdk::L_MARKER
-              if (table[key] & tmpattr).nonzero?
-                result << '!'
-                tmpattr &= ~(table[key])
-              else
-                result << '/'
-                tmpattr |= table[key]
-              end
-              result << key
-              break
-            end
-          end
-          # XXX: Only checks if terminal has colours not if colours are started
-          if Curses.has_colors?
-            if (tmpattr & Curses::A_COLOR) != (newattr & Curses::A_COLOR)
-              oldpair = Curses.PAIR_NUMBER(tmpattr)
-              newpair = Curses.PAIR_NUMBER(newattr)
-              unless found
-                found = true
-                result << Slithernix::Cdk::L_MARKER
-              end
-              if newpair.zero?
-                result << '!'
-                result << oldpair.to_s
-              else
-                result << '/'
-                result << newpair.to_s
-              end
-              tmpattr &= ~(Curses::A_COLOR)
-              newattr &= ~(Curses::A_COLOR)
-            end
-          end
+            next unless (table[key] & tmpattr) != (table[key] & newattr)
 
-          if found
-            result << Slithernix::Cdk::R_MARKER
-          else
+            found = true
+            result << Slithernix::Cdk::L_MARKER
+            if (table[key] & tmpattr).nonzero?
+              result << '!'
+              tmpattr &= ~(table[key])
+            else
+              result << '/'
+              tmpattr |= table[key]
+            end
+            result << key
             break
           end
+          # XXX: Only checks if terminal has colours not if colours are started
+          if Curses.has_colors? && ((tmpattr & Curses::A_COLOR) != (newattr & Curses::A_COLOR))
+            oldpair = Curses.PAIR_NUMBER(tmpattr)
+            newpair = Curses.PAIR_NUMBER(newattr)
+            unless found
+              found = true
+              result << Slithernix::Cdk::L_MARKER
+            end
+            if newpair.zero?
+              result << '!'
+              result << oldpair.to_s
+            else
+              result << '/'
+              result << newpair.to_s
+            end
+            tmpattr &= ~Curses::A_COLOR
+            newattr &= ~Curses::A_COLOR
+          end
+
+          break unless found
+
+          result << Slithernix::Cdk::R_MARKER
+
         end
       end
 
@@ -332,7 +329,7 @@ module Slithernix
     # This function takes a string, full of format markers and translates
     # them into a chtype array.  This is better suited to curses because
     # curses uses chtype almost exclusively
-    def self.char2Chtype (string, to, align)
+    def self.char2Chtype(string, to, align)
       to << 0
       align << LEFT
       result = []
@@ -379,7 +376,7 @@ module Slithernix
 
             while from < string.size && string[from] != Curses.R_MARKER
               if digit?(string[from])
-                adjust = adjust * 10 + string[from].to_i
+                adjust = (adjust * 10) + string[from].to_i
                 x += 1
               end
               from += 1
@@ -402,25 +399,7 @@ module Slithernix
         from = start
         while from < string.size
           # Are we inside a format marker?
-          unless inside_marker
-            if string[from] == L_MARKER &&
-                ['/', '!', '#'].include?(string[from + 1])
-              inside_marker = true
-            elsif string[from] == "\\" && string[from + 1] == L_MARKER
-              from += 1
-              result << (string[from].ord | attrib)
-              used += 1
-              from += 1
-            elsif string[from] == "\t"
-              begin
-                result << ' '
-                used += 1
-              end while (used & 7).nonzero?
-            else
-              result << (string[from].ord | attrib)
-              used += 1
-            end
-          else
+          if inside_marker
             case string[from]
             when R_MARKER
               inside_marker = false
@@ -471,19 +450,19 @@ module Slithernix
                 end
               else
                 case [string[from + 1], string[from + 2]]
-                when ['D', 'I']
+                when %w[D I]
                   last_char = Slithernix::Cdk::ACS_DIAMOND
-                when ['C', 'B']
+                when %w[C B]
                   last_char = Slithernix::Cdk::ACS_CKBOARD
-                when ['D', 'G']
+                when %w[D G]
                   last_char = Slithernix::Cdk::ACS_DEGREE
-                when ['P', 'M']
+                when %w[P M]
                   last_char = Slithernix::Cdk::ACS_PLMINUS
-                when ['B', 'U']
+                when %w[B U]
                   last_char = Slithernix::Cdk::ACS_BULLET
-                when ['S', '1']
+                when %w[S 1]
                   last_char = Slithernix::Cdk::ACS_S1
-                when ['S', '9']
+                when %w[S 9]
                   last_char = Slithernix::Cdk::ACS_S9
                 end
               end
@@ -505,7 +484,7 @@ module Slithernix
                   end
                 end
               end
-              (0...adjust).each do |x|
+              (0...adjust).each do |_x|
                 result << (last_char | attrib)
                 used += 1
               end
@@ -518,6 +497,22 @@ module Slithernix
               from = encodeAttribute(string, from, mask)
               attrib &= ~(mask[0])
             end
+          elsif string[from] == L_MARKER &&
+                ['/', '!', '#'].include?(string[from + 1])
+            inside_marker = true
+          elsif string[from] == '\\' && string[from + 1] == L_MARKER
+            from += 1
+            result << (string[from].ord | attrib)
+            used += 1
+            from += 1
+          elsif string[from] == "\t"
+            begin
+              result << ' '
+              used += 1
+            end while (used & 7).nonzero?
+          else
+            result << (string[from].ord | attrib)
+            used += 1
           end
           from += 1
         end
@@ -531,7 +526,7 @@ module Slithernix
     end
 
     # Compare a regular string to a chtype string
-    def self.cmpStrChstr (str, chstr)
+    def self.cmpStrChstr(str, chstr)
       i = 0
       r = 0
 
@@ -549,6 +544,7 @@ module Slithernix
         elsif str[r].ord > chstr[r]
           return 1
         end
+
         i += 1
       end
 
@@ -602,7 +598,7 @@ module Slithernix
     # This returns the length of the integer.
     #
     # Currently a wrapper maintained for easy of porting.
-    def self.intlen (value)
+    def self.intlen(value)
       value.to_str.size
     end
 
@@ -613,6 +609,7 @@ module Slithernix
       # Open the directory.
       Dir.foreach(directory) do |filename|
         next if filename == '.'
+
         list << filename
       end
 
@@ -647,7 +644,7 @@ module Slithernix
     end
 
     # This function checks to see if a link has been requested
-    def self.checkForLink (line, filename)
+    def self.checkForLink(line, filename)
       f_pos = 0
       x = 3
       return -1 if line.nil?
@@ -656,6 +653,7 @@ module Slithernix
       if line[0] == L_MARKER && line[1] == 'F' && line[2] == '='
         while x < line.size
           break if line[x] == R_MARKER
+
           if f_pos < CDK_PATHMAX
             filename << line[x]
             f_pos += 1
@@ -670,7 +668,7 @@ module Slithernix
     # slash
     # For now this function is just a wrapper for File.basename kept for ease of
     # porting and will be completely replaced in the future
-    def self.baseName (pathname)
+    def self.baseName(pathname)
       File.basename(pathname)
     end
 
@@ -678,16 +676,16 @@ module Slithernix
     # last slash
     # For now this function is just a wrapper for File.dirname kept for ease of
     # porting and will be completely replaced in the future
-    def self.dirName (pathname)
+    def self.dirName(pathname)
       File.dirname(pathname)
     end
 
     # If the dimension is a negative value, the dimension will be the full
     # height/width of the parent window - the value of the dimension. Otherwise,
     # the dimension will be the given value.
-    def self.setWidgetDimension (parent_dim, proposed_dim, adjustment)
+    def self.setWidgetDimension(parent_dim, proposed_dim, adjustment)
       # If the user passed in FULL, return the parents size
-      if proposed_dim == FULL or proposed_dim == 0
+      if [FULL, 0].include?(proposed_dim)
         parent_dim
       elsif proposed_dim >= 0
         # if they gave a positive value, return it
@@ -697,20 +695,18 @@ module Slithernix
         else
           proposed_dim + adjustment
         end
-      else
+      elsif parent_dim + proposed_dim < 0
         # if they gave a negative value then return the dimension
         # of the parent plus the value given
         #
-        if parent_dim + proposed_dim < 0
-          parent_dim
-        else
-          parent_dim + proposed_dim
-        end
+        parent_dim
+      else
+        parent_dim + proposed_dim
       end
     end
 
     # This safely erases a given window
-    def self.eraseCursesWindow (window)
+    def self.eraseCursesWindow(window)
       return if window.nil?
 
       window.erase
@@ -718,7 +714,7 @@ module Slithernix
     end
 
     # This safely deletes a given window.
-    def self.deleteCursesWindow (window)
+    def self.deleteCursesWindow(window)
       return if window.nil?
 
       eraseCursesWindow(window)
@@ -729,7 +725,7 @@ module Slithernix
     # We do not use mvwin(), because it does not (usually) move subwindows.
     # This just didn't work as it was. Maybe this mvwin() comment is no longer
     # accurate but for now, leaving in the usage of window.move.
-    def self.moveCursesWindow (window, xdiff, ydiff)
+    def self.moveCursesWindow(window, xdiff, ydiff)
       return if window.nil?
 
       xpos = window.begx + xdiff
@@ -738,20 +734,20 @@ module Slithernix
       old_window = window
       window.move(ypos, xpos)
       begin
-        #window = Curses::Window.new(old_window.begy, old_window.begx, ypos, xpos)
+        # window = Curses::Window.new(old_window.begy, old_window.begx, ypos, xpos)
         old_window.erase
-        #window
-      rescue
+        # window
+      rescue StandardError
         self.Beep
       end
     end
 
     def self.digit?(character)
-      !(character.match(/^[[:digit:]]$/).nil?)
+      !character.match(/^[[:digit:]]$/).nil?
     end
 
     def self.alpha?(character)
-      !(character.match(/^[[:alpha:]]$/).nil?)
+      !character.match(/^[[:alpha:]]$/).nil?
     end
 
     def self.isChar(c)
@@ -763,17 +759,14 @@ module Slithernix
     end
 
     def self.Version
-      "%d.%d - %d" % [
-        Slithernix::Cdk::VERSION_MAJOR,
-        Slithernix::Cdk::VERSION_MINOR,
-        Slithernix::Cdk::VERSION_PATCH,
-      ]
+      format('%d.%d - %d', Slithernix::Cdk::VERSION_MAJOR,
+             Slithernix::Cdk::VERSION_MINOR, Slithernix::Cdk::VERSION_PATCH)
     end
 
     def self.getString(screen, title, label, init_value)
       # Create the widget.
       widget = Slithernix::Cdk::Entry.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, title, label,
-                              Curses::A_NORMAL, '.', :MIXED, 40, 0, 5000, true, false)
+                                          Curses::A_NORMAL, '.', :MIXED, 40, 0, 5000, true, false)
 
       # Set the default value.
       widget.setValue(init_value)
@@ -797,8 +790,8 @@ module Slithernix
     def self.selectFile(screen, title)
       # Create the file selector.
       fselect = Slithernix::Cdk::FSelect.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, -4, -20,
-                                 title, 'File: ', Curses::A_NORMAL, '_', Curses::A_REVERSE,
-                                 '</5>', '</48>', '</N>', '</N>', true, false)
+                                             title, 'File: ', Curses::A_NORMAL, '_', Curses::A_REVERSE,
+                                             '</5>', '</48>', '</N>', '</N>', true, false)
 
       # Let the user play.
       filename = fselect.activate([])
@@ -838,8 +831,8 @@ module Slithernix
 
       # Create the scrolling list.
       scrollp = Slithernix::Cdk::Scroll.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, Slithernix::Cdk::RIGHT,
-                                height, width, title, list, list_size, numbers, Curses::A_REVERSE,
-                                true, false)
+                                            height, width, title, list, list_size, numbers, Curses::A_REVERSE,
+                                            true, false)
 
       # Check if we made the lsit.
       if scrollp.nil?
@@ -861,12 +854,12 @@ module Slithernix
 
     # This allows the user to view information.
     def self.viewInfo(screen, title, info, count, buttons, button_count,
-                     interpret)
+                      interpret)
       selected = -1
 
       # Create the file viewer to view the file selected.
       viewer = Slithernix::Cdk::Viewer.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, -6, -16,
-                               buttons, button_count, Curses::A_REVERSE, true, true)
+                                           buttons, button_count, Curses::A_REVERSE, true, true)
 
       # Set up the viewer title, and the contents to the widget.
       viewer.set(title, info, count, Curses::A_REVERSE, interpret, true, true)
@@ -895,12 +888,11 @@ module Slithernix
 
       # If we couldn't read the file, return an error.
       if lines == -1
-        result = lines
+        lines
       else
-        result = viewInfo(screen, title, info, lines, buttons,
-                              button_count, true)
+        viewInfo(screen, title, info, lines, buttons,
+                 button_count, true)
       end
-      result
     end
   end
 end

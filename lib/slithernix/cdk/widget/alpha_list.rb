@@ -7,7 +7,7 @@ module Slithernix
         attr_reader :scroll_field, :entry_field, :list
 
         def initialize(cdkscreen, xplace, yplace, height, width, title, label,
-            list, list_size, filler_char, highlight, box, shadow)
+                       list, list_size, filler_char, highlight, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -16,10 +16,10 @@ module Slithernix
           label_len = 0
           bindings = {
             Slithernix::Cdk::BACKCHAR => Curses::KEY_PPAGE,
-            Slithernix::Cdk::FORCHAR  => Curses::KEY_NPAGE,
+            Slithernix::Cdk::FORCHAR => Curses::KEY_NPAGE
           }
 
-          if !createList(list, list_size)
+          unless createList(list, list_size)
             destroy
             return nil
           end
@@ -28,11 +28,13 @@ module Slithernix
 
           # If the height is a negative value, the height will be ROWS-height,
           # otherwise the height will be the given height.
-          box_height = Slithernix::Cdk.setWidgetDimension(parent_height, height, 0)
+          box_height = Slithernix::Cdk.setWidgetDimension(parent_height,
+                                                          height, 0)
 
           # If the width is a negative value, the width will be COLS-width,
           # otherwise the width will be the given width.
-          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width, 0)
+          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width,
+                                                         0)
 
           # Translate the label string to a chtype array
           if label.size > 0
@@ -44,7 +46,8 @@ module Slithernix
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
+                                  box_height)
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -70,13 +73,14 @@ module Slithernix
           # Do we want a shadow?
           if shadow
             @shadow_win = Curses::Window.new(box_height, box_width,
-                ypos + 1, xpos + 1)
+                                             ypos + 1, xpos + 1)
           end
 
           # Create the entry field.
           temp_width = if Slithernix::Cdk::Widget::AlphaList.isFullWidth(width)
                        then Slithernix::Cdk::FULL
-                       else box_width - 2 - label_len
+                       else
+                         box_width - 2 - label_len
                        end
 
           @entry_field = Slithernix::Cdk::Widget::Entry.new(
@@ -103,7 +107,7 @@ module Slithernix
           @entry_field.setLRchar(Slithernix::Cdk::ACS_RTEE)
 
           # Callback functions
-          adjust_alphalist_cb = lambda do |widget_type, widget, alphalist, key|
+          adjust_alphalist_cb = lambda do |_widget_type, _widget, alphalist, key|
             scrollp = alphalist.scroll_field
             entry = alphalist.entry_field
 
@@ -121,7 +125,7 @@ module Slithernix
             false
           end
 
-          complete_word_cb = lambda do |widget_type, widget, alphalist, key|
+          complete_word_cb = lambda do |_widget_type, _widget, alphalist, _key|
             entry = alphalist.entry_field
             scrollp = nil
             selected = -1
@@ -164,7 +168,7 @@ module Slithernix
               # Start looking for alternate words
               # FIXME(original): bsearch would be more suitable.
               while current_index < alphalist.list.size &&
-                  (alphalist.list[current_index][0...len] <=> entry.info) == 0
+                    (alphalist.list[current_index][0...len] <=> entry.info) == 0
                 alt_words << alphalist.list[current_index]
                 current_index += 1
               end
@@ -180,7 +184,7 @@ module Slithernix
                 Slithernix::Cdk::RIGHT,
                 height,
                 -30,
-                "<C></B/5>Possible Matches.",
+                '<C></B/5>Possible Matches.',
                 alt_words,
                 alt_words.size,
                 true,
@@ -213,7 +217,7 @@ module Slithernix
               entry.set(alt_words[match], entry.min, entry.max, entry.box)
 
               # Move the highlight bar down to the selected value.
-              (0...selected).each do |x|
+              (0...selected).each do |_x|
                 alphalist.injectMyScroller(Curses::KEY_DOWN)
               end
 
@@ -227,7 +231,7 @@ module Slithernix
             true
           end
 
-          pre_process_entry_field = lambda do |cdktype, widget, alphalist, input|
+          pre_process_entry_field = lambda do |_cdktype, _widget, alphalist, input|
             scrollp = alphalist.scroll_field
             entry = alphalist.entry_field
             info_len = entry.info.size
@@ -235,10 +239,10 @@ module Slithernix
             empty = false
 
             if alphalist.isBind(:AlphaList, input)
-              result = 1  # Don't try to use this key in editing
+              result = 1 # Don't try to use this key in editing
             elsif (Slithernix::Cdk.isChar(input) &&
                 input.chr.match(/^[[:alnum:][:punct:]]$/)) ||
-                [Curses::KEY_BACKSPACE, Curses::KEY_DC].include?(input)
+                  [Curses::KEY_BACKSPACE, Curses::KEY_DC].include?(input)
               index = 0
               curr_pos = entry.screen_col + entry.left_char
               pattern = entry.info.clone
@@ -254,9 +258,9 @@ module Slithernix
               if pattern.size == 0
                 empty = true
               elsif (index = Slithernix::Cdk.searchList(alphalist.list,
-                                            alphalist.list.size, pattern)) >= 0
+                                                        alphalist.list.size, pattern)) >= 0
                 # XXX: original uses n scroll downs/ups for <10 positions change
-                  scrollp.setPosition(index)
+                scrollp.setPosition(index)
                 alphalist.drawMyScroller
               else
                 Slithernix::Cdk.Beep
@@ -274,10 +278,14 @@ module Slithernix
 
           # Set the key bindings for the entry field.
           @entry_field.bind(:Entry, Curses::KEY_UP, adjust_alphalist_cb, self)
-          @entry_field.bind(:Entry, Curses::KEY_DOWN, adjust_alphalist_cb, self)
-          @entry_field.bind(:Entry, Curses::KEY_NPAGE, adjust_alphalist_cb, self)
-          @entry_field.bind(:Entry, Curses::KEY_PPAGE, adjust_alphalist_cb, self)
-          @entry_field.bind(:Entry, Slithernix::Cdk::KEY_TAB, complete_word_cb, self)
+          @entry_field.bind(:Entry, Curses::KEY_DOWN, adjust_alphalist_cb,
+                            self)
+          @entry_field.bind(:Entry, Curses::KEY_NPAGE, adjust_alphalist_cb,
+                            self)
+          @entry_field.bind(:Entry, Curses::KEY_PPAGE, adjust_alphalist_cb,
+                            self)
+          @entry_field.bind(:Entry, Slithernix::Cdk::KEY_TAB,
+                            complete_word_cb, self)
 
           # Set up the post-process function for the entry field.
           @entry_field.setPreProcess(pre_process_entry_field, self)
@@ -287,7 +295,8 @@ module Slithernix
           temp_height = @entry_field.win.maxy - @border_size
           temp_width = if Slithernix::Cdk::Widget::AlphaList.isFullWidth(width)
                        then Slithernix::Cdk::FULL
-                       else box_width - 1
+                       else
+                         box_width - 1
                        end
 
           @scroll_field = Slithernix::Cdk::Widget::Scroll.new(
@@ -319,13 +328,13 @@ module Slithernix
 
         # This erases the alphalist from the screen.
         def erase
-          if validCDKObject
-            @scroll_field.erase
-            @entry_field.erase
+          return unless validCDKObject
 
-            Slithernix::Cdk.eraseCursesWindow(@shadow_win)
-            Slithernix::Cdk.eraseCursesWindow(@win)
-          end
+          @scroll_field.erase
+          @entry_field.erase
+
+          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
+          Slithernix::Cdk.eraseCursesWindow(@win)
         end
 
         # This moves the alphalist field to the given location.
@@ -333,7 +342,7 @@ module Slithernix
           windows = [@win, @shadow_win]
           subwidgets = [@entry_field, @scroll_field]
           move_specific(xplace, yplace, relative, refresh_flag,
-              windows, subwidgets)
+                        windows, subwidgets)
         end
 
         # The alphalist's focus resides in the entry widget. But the scroll widget
@@ -362,7 +371,7 @@ module Slithernix
         end
 
         # This draws the alphalist widget.
-        def draw(box)
+        def draw(_box)
           # Does this widget have a shadow?
           Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
@@ -388,6 +397,7 @@ module Slithernix
 
           # Determine the exit status.
           return ret if @exit_type != :EARLY_EXIT
+
           0
         end
 
@@ -421,11 +431,11 @@ module Slithernix
 
         # This function sets the information inside the alphalist.
         def setContents(list, list_size)
-          return if !createList(list, list_size)
+          return unless createList(list, list_size)
 
           # Set the information in the scrolling list.
           @scroll_field.set(@list, @list_size, false,
-              @scroll_field.highlight, @scroll_field.box)
+                            @scroll_field.highlight, @scroll_field.box)
 
           # Clean out the entry field.
           setCurrentItem(0)
@@ -448,10 +458,10 @@ module Slithernix
         end
 
         def setCurrentItem(item)
-          if @list_size != 0
-            @scroll_field.setCurrentItem(item)
-            @entry_field.setValue(@list[@scroll_field.getCurrentItem])
-          end
+          return unless @list_size != 0
+
+          @scroll_field.setCurrentItem(item)
+          @entry_field.setValue(@list[@scroll_field.getCurrentItem])
         end
 
         # This sets the filler character of the entry field of the alphalist.

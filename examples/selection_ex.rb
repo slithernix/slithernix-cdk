@@ -3,14 +3,14 @@ require 'etc'
 require_relative 'example'
 
 class SelectionExample < CLIExample
-  def SelectionExample.parse_opts(opts, params)
+  def self.parse_opts(opts, params)
     opts.banner = 'Usage: selection_ex.rb [options]'
 
     # default values
     params.box = true
     params.shadow = false
 
-    params.header =  ''
+    params.header = ''
     params.footer = ''
 
     params.x_value = Slithernix::Cdk::CENTER
@@ -20,10 +20,10 @@ class SelectionExample < CLIExample
     params.box = true
     params.c = false
     params.spos = Slithernix::Cdk::RIGHT
-    params.title = "<C></5>Pick one or more accounts."
+    params.title = '<C></5>Pick one or more accounts.'
     params.shadow = false
 
-    super(opts, params)
+    super
 
     opts.on('-c', 'create the data after the widget') do
       params.c = true
@@ -38,7 +38,7 @@ class SelectionExample < CLIExample
     end
 
     opts.on('-s SPOS', OptionParser::DecimalInteger,
-        'location for the scrollbar') do |spos|
+            'location for the scrollbar') do |spos|
       params.spos = spos
     end
 
@@ -55,10 +55,10 @@ class SelectionExample < CLIExample
   #   -h TEXT title for a header label
   #   -s SPOS location for the scrollbar
   #   -t TEXT title for the widget
-  def SelectionExample.main
+  def self.main
     choices = [
-        "   ",
-        "-->"
+      '   ',
+      '-->'
     ]
 
     item = []
@@ -127,7 +127,7 @@ class SelectionExample < CLIExample
       cdkscreen.destroyCDKScreen
       Slithernix::Cdk::Screen.endCDK
 
-      puts "Cannot make selection list.  Is the window too small?"
+      puts 'Cannot make selection list.  Is the window too small?'
       exit
     end
 
@@ -145,15 +145,15 @@ class SelectionExample < CLIExample
       ]
       cdkscreen.popupLabel(mesg, 3)
     elsif selection.exit_type == :NORMAL
-      mesg = ["<C>Here are the accounts you selected."]
+      mesg = ['<C>Here are the accounts you selected.']
       (0...item.size).each do |x|
         if selection.selections[x] == 1
-          mesg << "<C></5>%.*s" % [236, item[x]]  # FIXME magic number
+          mesg << (format('<C></5>%.*s', 236, item[x])) # FIXME: magic number
         end
       end
       cdkscreen.popupLabel(mesg, mesg.size)
     else
-      mesg = ["<C>Unknown failure."]
+      mesg = ['<C>Unknown failure.']
       cdkscreen.popupLabel(mesg, mesg.size)
     end
 

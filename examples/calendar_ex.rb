@@ -2,7 +2,7 @@
 require_relative 'example'
 
 class CalendarExample < Example
-  def CalendarExample.parse_opts(opts, param)
+  def self.parse_opts(opts, param)
     opts.banner = 'Usage: calendar_ex.rb [options]'
 
     param.x_value = Slithernix::Cdk::CENTER
@@ -15,7 +15,7 @@ class CalendarExample < Example
     param.week_base = 0
     param.title = "<C></U>CDK Calendar Widget\n<C>Demo"
 
-    super(opts, param)
+    super
 
     opts.on('-d DAY', OptionParser::DecimalInteger, 'Starting day') do |d|
       param.day = d
@@ -39,7 +39,7 @@ class CalendarExample < Example
   end
 
   # This program demonstrates the Cdk calendar widget.
-  def CalendarExample.main
+  def self.main
     params = parse(ARGV)
 
     # Get the current dates and set the default values for the
@@ -61,12 +61,12 @@ class CalendarExample < Example
 
     # Declare the calendar widget.
     calendar = Slithernix::Cdk::Widget::Calendar.new(cdkscreen, params.x_value, params.y_value,
-                                 params.title, params.day, params.month, params.year,
-                                 Curses.color_pair(16) | Curses::A_BOLD,
-                                 Curses.color_pair(24) | Curses::A_BOLD,
-                                 Curses.color_pair(32) | Curses::A_BOLD,
-                                 Curses.color_pair(40) | Curses::A_REVERSE,
-                                 params.box, params.shadow)
+                                                     params.title, params.day, params.month, params.year,
+                                                     Curses.color_pair(16) | Curses::A_BOLD,
+                                                     Curses.color_pair(24) | Curses::A_BOLD,
+                                                     Curses.color_pair(32) | Curses::A_BOLD,
+                                                     Curses.color_pair(40) | Curses::A_REVERSE,
+                                                     params.box, params.shadow)
 
     if calendar.nil?
       # Exit CDK.
@@ -74,18 +74,18 @@ class CalendarExample < Example
       Slithernix::Cdk::Screen.endCDK
 
       puts 'Cannot create the calendar. Is the window too small?'
-      exit  # EXIT_FAILURE
+      exit # EXIT_FAILURE
     end
 
     # This adds a marker ot the calendar.
-    create_calendar_mark = lambda do |widget_type, calendar, client_data, key|
+    create_calendar_mark = lambda do |_widget_type, calendar, _client_data, _key|
       calendar.setMarker(calendar.day, calendar.month, calendar.year)
       calendar.draw(calendar.box)
       false
     end
 
     # This removes a marker from the calendar.
-    remove_calendar_mark = lambda do |widget_type, calendar, client_data, key|
+    remove_calendar_mark = lambda do |_widget_type, calendar, _client_data, _key|
       calendar.removeMarker(calendar.day, calendar.month, calendar.year)
       calendar.draw(calendar.box)
       false
@@ -105,17 +105,17 @@ class CalendarExample < Example
     # Check which day they selected.
     if calendar.exit_type == :ESCAPE_HIT
       mesg = [
-          '<C>You hit escape. No date selected.',
-          '',
-          '<C>Press any key to continue.'
+        '<C>You hit escape. No date selected.',
+        '',
+        '<C>Press any key to continue.'
       ]
       cdkscreen.popupLabel(mesg, 3)
     elsif calendar.exit_type == :NORMAL
       mesg = [
-          'You selected the following date',
-          '<C></B/16>%02d/%02d/%d (dd/mm/yyyy)' % [
-              calendar.day, calendar.month, calendar.year],
-          '<C>Press any key to continue.'
+        'You selected the following date',
+        format('<C></B/16>%02d/%02d/%d (dd/mm/yyyy)', calendar.day,
+               calendar.month, calendar.year),
+        '<C>Press any key to continue.'
       ]
       cdkscreen.popupLabel(mesg, 3)
     end
@@ -126,7 +126,7 @@ class CalendarExample < Example
     Slithernix::Cdk::Screen.endCDK
     $stdout.flush
     puts 'Selected Time: %s' % ret_val.ctime
-    #ExitProgram (EXIT_SUCCESS);
+    # ExitProgram (EXIT_SUCCESS);
   end
 end
 

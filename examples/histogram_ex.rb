@@ -2,7 +2,7 @@
 require_relative 'example'
 
 class HistogramExample < CLIExample
-  def HistogramExample.parse_opts(opts, params)
+  def self.parse_opts(opts, params)
     opts.banner = 'Usage: histogram_ex.rb [options]'
 
     # default values
@@ -16,16 +16,16 @@ class HistogramExample < CLIExample
     params.h_value = 1
     params.w_value = -2
 
-    super(opts, params)
+    super
 
-    if params.y_value != false
-      params.y_vol = params.y_value
-      params.y_bass = params.y_value
-      params.y_treb = params.y_value
-    end
+    return unless params.y_value != false
+
+    params.y_vol = params.y_value
+    params.y_bass = params.y_value
+    params.y_treb = params.y_value
   end
 
-  def HistogramExample.main
+  def self.main
     params = parse(ARGV)
 
     # Set up CDK
@@ -35,41 +35,40 @@ class HistogramExample < CLIExample
     Slithernix::Cdk::Draw.initCDKColor
 
     # Create the histogram widgets.
-    volume_title = "<C></5>Volume<!5>"
-    bass_title = "<C></5>Bass  <!5>"
-    treble_title = "<C></5>Treble<!5>"
+    volume_title = '<C></5>Volume<!5>'
+    bass_title = '<C></5>Bass  <!5>'
+    treble_title = '<C></5>Treble<!5>'
     box = params.box
 
     volume = Slithernix::Cdk::Widget::Histogram.new(cdkscreen, params.x_value, params.y_vol,
-                                params.h_value, params.w_value, Slithernix::Cdk::HORIZONTAL, volume_title,
-                                box, params.shadow)
+                                                    params.h_value, params.w_value, Slithernix::Cdk::HORIZONTAL, volume_title,
+                                                    box, params.shadow)
 
     # Is the volume null?
     if volume.nil?
       cdkscreen.destroy
       Slithernix::Cdk::Screen.endCDK
 
-      puts "Cannot make volume histogram.  Is the window big enough?"
-      exit #EXIT_FAILURE
+      puts 'Cannot make volume histogram.  Is the window big enough?'
+      exit # EXIT_FAILURE
     end
 
     bass = Slithernix::Cdk::Widget::Histogram.new(cdkscreen, params.x_value, params.y_bass,
-                              params.h_value, params.w_value, Slithernix::Cdk::HORIZONTAL, bass_title,
-                              box, params.shadow)
+                                                  params.h_value, params.w_value, Slithernix::Cdk::HORIZONTAL, bass_title,
+                                                  box, params.shadow)
 
     if bass.nil?
       volume.destroy
       cdkscreen.destroy
       Slithernix::Cdk::Screen.endCDK
 
-      puts "Cannot make bass histogram.  Is the window big enough?"
+      puts 'Cannot make bass histogram.  Is the window big enough?'
       exit  # EXIT_FAILURE
     end
 
-
     treble = Slithernix::Cdk::Widget::Histogram.new(cdkscreen, params.x_value, params.y_treb,
-                                params.h_value, params.w_value, Slithernix::Cdk::HORIZONTAL, treble_title,
-                                box, params.shadow)
+                                                    params.h_value, params.w_value, Slithernix::Cdk::HORIZONTAL, treble_title,
+                                                    box, params.shadow)
 
     if treble.nil?
       volume.destroy
@@ -77,7 +76,7 @@ class HistogramExample < CLIExample
       cdkscreen.destroy
       Slithernix::Cdk::Screen.endCDK
 
-      puts "Cannot make treble histogram.  Is the window big enough?"
+      puts 'Cannot make treble histogram.  Is the window big enough?'
       exit  # EXIT_FAILURE
     end
 
@@ -147,7 +146,7 @@ class HistogramExample < CLIExample
     treble.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
-    exit  # EXIT_SUCCESS
+    exit # EXIT_SUCCESS
   end
 end
 

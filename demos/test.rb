@@ -34,19 +34,15 @@ module Util
   ESCAPE_PREFIX = "\u0002" # Ctrl-B
   ESCAPE_SUFFIX = "\u0003" # Ctrl-C
 
-  def self.curses_method(escape_sequence)
+  def self.curses_method(escape_sequence); end
 
-  end
-
-  def self.valid_escape_sequence(escape_sequence)
-
-  end
+  def self.valid_escape_sequence(escape_sequence); end
 
   def self.process_line(line)
-    processed_line = ""
-    current_escape_sequence = ""
+    processed_line = ''
+    current_escape_sequence = ''
 
-    line.each_char.to_a.each_with_index do |ch, i|
+    line.each_char.to_a.each_with_index do |ch, _i|
       in_escape_sequence = true if ch == "\e"
       in_escape_sequence = false if ch =~ /\s/
 
@@ -56,7 +52,7 @@ module Util
           processed_line << curses_method(
             current_escape_sequence
           ).call(current_escape_sequence)
-          current_escape_sequence = ""
+          current_escape_sequence = ''
           in_escape_sequence = false
           next
         end
@@ -70,10 +66,11 @@ module Util
 
   def self.load_terminal_capabilities(infocmp_output: nil)
     infocmp_output ||= `infocmp -1 -q`
-    terminal_capabilities = { }
+    terminal_capabilities = {}
 
     infocmp_output.each_line do |line|
-      next if line.start_with? '#' or !line.start_with? /\s/
+      next if line.start_with? '#' or !line.start_with?(/\s/)
+
       line.chomp! ",\n"
       line.strip!
       delimiter = line.include?('#') ? '#' : '='
@@ -102,35 +99,34 @@ module Util
     # ;? - Optional semicolon separator
     # )? - End of non-capturing group (parameters are optional)
     # [a-zA-Z] - Final ANSI escape sequence letter (e.g., m for color)
-    regex_pattern = "\\e\\[ (?: \\d+ ;? )* [a-zA-Z]"
+    regex_pattern = '\\e\\[ (?: \\d+ ;? )* [a-zA-Z]'
 
     # Construct the full regex pattern by combining the escaped ANSI code and the pattern
-    regex = /#{escaped_code}(#{regex_pattern})/
+    /#{escaped_code}(#{regex_pattern})/
 
     # Return the compiled regular expression
-    regex
   end
 
   def self.termcap_to_curses(cap)
     {
-      "bold" => Proc.new { Curses.attron(Curses::A_BOLD) },
-      "blink" => Proc.new { Curses.attron(Curses::A_BLINK) },
-      "clear" => Proc.new { Curses.clear },
-      "cup" => Proc.new { |row, col| Curses.setpos(row, col) },
-      "cuu1" => Proc.new { Curses.stdscr.up },
-      "cud1" => Proc.new { Curses.stdscr.down },
-      "cuf1" => Proc.new { Curses.stdscr.right },
-      "cub1" => Proc.new { Curses.stdscr.left },
+      'bold' => proc { Curses.attron(Curses::A_BOLD) },
+      'blink' => proc { Curses.attron(Curses::A_BLINK) },
+      'clear' => proc { Curses.clear },
+      'cup' => proc { |row, col| Curses.setpos(row, col) },
+      'cuu1' => proc { Curses.stdscr.up },
+      'cud1' => proc { Curses.stdscr.down },
+      'cuf1' => proc { Curses.stdscr.right },
+      'cub1' => proc { Curses.stdscr.left }
       # Add more mappings as needed
     }[cap]
   end
 
   def self.extract_color_code_from_escape_sequence(sequence)
-    color_regex = /\e\[(\d+);(?:\d+;)?(?:\d+)?m/
+    color_regex = /\e\[(\d+);(?:\d+;)?(?:\d*)m/
     match = sequence.match(color_regex)
     return nil unless match
-    color_code = match[1].to_i
-    color_code
+
+    match[1].to_i
   end
 
   def self.convert_terminal_color_to_curses(color_code)
@@ -144,41 +140,37 @@ module Util
   end
 
   def self.process_terminal_output(output)
-    result = output.dup
-
-
-
-    result
+    output.dup
   end
 
-  def self.regular_character?(char)
-    #return true if char.match?(/[ -~]/)
-    #return true if "\n\r\t".include?(char)
-    #false
+  def self.regular_character?(_char)
+    # return true if char.match?(/[ -~]/)
+    # return true if "\n\r\t".include?(char)
+    # false
     true
   end
 
   def self.is_process_alive?(pid)
-    begin
-      Process.kill(0, pid)
-      true
-    rescue Errno::ESRCH
-      false
-    rescue Errno::EPERM
-      true
-    end
+    Process.kill(0, pid)
+    true
+  rescue Errno::ESRCH
+    false
+  rescue Errno::EPERM
+    true
   end
 
   def self.is_thread_dead_or_dying?(t)
-    ["aborting", false, nil].include?(t.status)
+    ['aborting', false, nil].include?(t.status)
   end
 
-  def self.execute_command(env: {}, cmd:, log: nil, interactive: false, curses_window: nil)
-    raise ExecutionException, "You must pass cmd to this method" if cmd.nil?
+  def self.execute_command(cmd:, env: {}, log: nil, interactive: false, curses_window: nil)
+    raise ExecutionException, 'You must pass cmd to this method' if cmd.nil?
+
     log&.debug "Executing command: #{cmd} with env #{env}"
 
     curses_window ||= setup_curses_window
-    y_pos, x_pos = 0, 0
+    y_pos = 0
+    x_pos = 0
 
     pastel = Pastel.new
     curses_window.addstr("Hit CTRL-B then CTRL-C to terminate an unresponsive process\n")
@@ -190,47 +182,46 @@ module Util
     curses_window.setpos(y_pos, x_pos)
     begin
       PTY.spawn(env, cmd) do |stdout, stdin, pid|
-        #system "stty raw -echo"
+        # system "stty raw -echo"
 
         reader = Thread.new do
-          begin
-            loop do
-              break if stdout.closed?
-              break unless is_process_alive?(pid)
+          loop do
+            break if stdout.closed?
+            break unless is_process_alive?(pid)
 
-              # Char by Char (incompatible with unicode)
-              #out_ch = stdout.read_nonblock(1)
-              #if regular_character? out_ch
-              #  curses_window.addch out_ch
-              #  x_pos += 1 unless out_ch == "\n"
-              #  y_pos += 1 if out_ch == "\n"
-              #end
+            # Char by Char (incompatible with unicode)
+            # out_ch = stdout.read_nonblock(1)
+            # if regular_character? out_ch
+            #  curses_window.addch out_ch
+            #  x_pos += 1 unless out_ch == "\n"
+            #  y_pos += 1 if out_ch == "\n"
+            # end
 
-              # Whole String
-              #output = process_output_with_color(stdout.read_nonblock(1024))
-              #output = process_terminal_output(stdout.read_nonblock(1024))
-              stdout.read_nonblock(1024).each_line do |line|
-                line = process_line(line)
-                next if line.empty?
-                curses_window.addstr(line)
-                x_pos += line.size
-                y_pos += 1
-              end
-              #output.each_char do |c|
-              #  if regular_character? c
-              #    curses_window.addch c
-              #    x_pos += 1 if (c != "\n" and c != "")
-              #    y_pos += 1 if (c == "\n" or c == "")
-              #  end
-              #end
+            # Whole String
+            # output = process_output_with_color(stdout.read_nonblock(1024))
+            # output = process_terminal_output(stdout.read_nonblock(1024))
+            stdout.read_nonblock(1024).each_line do |line|
+              line = process_line(line)
+              next if line.empty?
 
-              curses_window.setpos(y_pos, x_pos)
-              curses_window.refresh
-            rescue IO::WaitReadable
-              retry
-            rescue EOFError, Errno::EIO
-              break
+              curses_window.addstr(line)
+              x_pos += line.size
+              y_pos += 1
             end
+            # output.each_char do |c|
+            #  if regular_character? c
+            #    curses_window.addch c
+            #    x_pos += 1 if (c != "\n" and c != "")
+            #    y_pos += 1 if (c == "\n" or c == "")
+            #  end
+            # end
+
+            curses_window.setpos(y_pos, x_pos)
+            curses_window.refresh
+          rescue IO::WaitReadable
+            retry
+          rescue EOFError, Errno::EIO
+            break
           end
         end
 
@@ -241,7 +232,8 @@ module Util
               break if stdout.closed?
               break unless is_process_alive?(pid)
               break if is_thread_dead_or_dying?(reader)
-              #char = $stdin.read_nonblock(1)
+
+              # char = $stdin.read_nonblock(1)
               char = curses_window.get_char
               if buffer.empty? && char == ESCAPE_PREFIX
                 buffer << char
@@ -271,7 +263,7 @@ module Util
         end
       end
     rescue PTY::ChildExited
-      log&.error "The child exited unexpectedly!"
+      log&.error 'The child exited unexpectedly!'
       exit_status = -43
     ensure
       system "stty #{original_stty}"
@@ -315,8 +307,8 @@ end
 
 pry_window = Util.setup_curses_window
 synchronized_pry_window = SynchronizedWindow.new(pry_window)
-#Util.execute_command(cmd: 'pry --no-pager --no-color', interactive: true, curses_window: synchronized_pry_window)
-Util.execute_command(cmd: 'bash', interactive: true, curses_window: synchronized_pry_window)
-#Util.execute_command(cmd: 'bash -l', interactive: true, curses_window: pry_window)
+# Util.execute_command(cmd: 'pry --no-pager --no-color', interactive: true, curses_window: synchronized_pry_window)
+Util.execute_command(cmd: 'bash', interactive: true,
+                     curses_window: synchronized_pry_window)
+# Util.execute_command(cmd: 'bash -l', interactive: true, curses_window: pry_window)
 Util.close_curses_window
-

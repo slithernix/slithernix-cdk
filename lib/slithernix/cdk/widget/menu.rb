@@ -8,10 +8,10 @@ module Slithernix
         MAX_MENU_ITEMS = 30
         MAX_SUB_ITEMS = 98
 
-        attr_reader :current_title, :current_subtitle
-        attr_reader :sublist
+        attr_reader :current_title, :current_subtitle, :sublist
 
-        def initialize(cdkscreen, menu_list, menu_items, subsize, menu_location, menu_pos, title_attr, subtitle_attr)
+        def initialize(cdkscreen, menu_list, menu_items, subsize,
+                       menu_location, menu_pos, title_attr, subtitle_attr)
           super()
 
           right_count = menu_items - 1
@@ -39,11 +39,11 @@ module Slithernix
           @title_win = [nil] * menu_items
           @title = [''] * menu_items
           @title_len = [0] * menu_items
-          @sublist = (1..menu_items).map {[nil] * subsize.max}.compact
-          @sublist_len = (1..menu_items).map {
-              [0] * subsize.max}.compact
+          @sublist = (1..menu_items).map { [nil] * subsize.max }.compact
+          @sublist_len = (1..menu_items).map do
+            [0] * subsize.max
+          end.compact
           @subsize = [0] * menu_items
-
 
           # Create the pull down menus.
           (0...menu_items).each do |x|
@@ -57,7 +57,8 @@ module Slithernix
             y1 = menu_pos == Slithernix::Cdk::BOTTOM ? ymax - 1 : 0
             y2 = if menu_pos == Slithernix::Cdk::BOTTOM
                  then ymax - subsize[x] - 2
-                 else Slithernix::Cdk::Widget::Menu::TITLELINES
+                 else
+                   Slithernix::Cdk::Widget::Menu::TITLELINES
                  end
             high = subsize[x] + Slithernix::Cdk::Widget::Menu::TITLELINES
 
@@ -71,25 +72,27 @@ module Slithernix
               y0 = y - Slithernix::Cdk::Widget::Menu::TITLELINES
               sublist_len = []
               @sublist[x1][y0] = Slithernix::Cdk.char2Chtype(menu_list[x][y],
-                                                 sublist_len, [])
+                                                             sublist_len, [])
               @sublist_len[x1][y0] = sublist_len[0]
               max = [max, sublist_len[0]].max
             end
 
-            if menu_location[x] == Slithernix::Cdk::LEFT
-              x2 = leftloc
-            else
-              x2 = (rightloc -= max + 2)
-            end
+            x2 = if menu_location[x] == Slithernix::Cdk::LEFT
+                   leftloc
+                 else
+                   (rightloc -= max + 2)
+                 end
 
             title_len = []
-            @title[x1] = Slithernix::Cdk.char2Chtype(menu_list[x][0], title_len, [])
+            @title[x1] =
+              Slithernix::Cdk.char2Chtype(menu_list[x][0], title_len, [])
             @title_len[x1] = title_len[0]
-            @subsize[x1] = subsize[x] - Slithernix::Cdk::Widget::Menu::TITLELINES
+            @subsize[x1] =
+              subsize[x] - Slithernix::Cdk::Widget::Menu::TITLELINES
             @title_win[x1] = cdkscreen.window.subwin(Slithernix::Cdk::Widget::Menu::TITLELINES,
                                                      @title_len[x1] + 2, ypos + y1, xpos + x2)
             @pull_win[x1] = cdkscreen.window.subwin(high, max + 2,
-                ypos + y2, xpos + x2)
+                                                    ypos + y2, xpos + x2)
             if @title_win[x1].nil? || @pull_win[x1].nil?
               destroy
               return nil
@@ -131,7 +134,7 @@ module Slithernix
               return ret if @exit_type != :EARLY_EXIT
             end
           else
-            actions.each do |action|
+            actions.each do |_action|
               return ret if @exit_type != :EARLY_EXIT
             end
           end
@@ -143,68 +146,70 @@ module Slithernix
 
         def drawTitle(item)
           Slithernix::Cdk::Draw.writeChtype(@title_win[item], 0, 0, @title[item],
-                           Slithernix::Cdk::HORIZONTAL, 0, @title_len[item])
+                                            Slithernix::Cdk::HORIZONTAL, 0, @title_len[item])
         end
 
         def drawItem(item, offset)
           Slithernix::Cdk::Draw.writeChtype(@pull_win[@current_title], 1,
-                           item + Slithernix::Cdk::Widget::Menu::TITLELINES - offset,
-                           @sublist[@current_title][item],
-                           Slithernix::Cdk::HORIZONTAL, 0, @sublist_len[@current_title][item])
+                                            item + Slithernix::Cdk::Widget::Menu::TITLELINES - offset,
+                                            @sublist[@current_title][item],
+                                            Slithernix::Cdk::HORIZONTAL, 0, @sublist_len[@current_title][item])
         end
 
         # Highlight the current sub-menu item
         def selectItem(item, offset)
           Slithernix::Cdk::Draw.writeChtypeAttrib(@pull_win[@current_title], 1,
-                                 item + Slithernix::Cdk::Widget::Menu::TITLELINES - offset,
-                                 @sublist[@current_title][item], @subtitle_attr,
-                                 Slithernix::Cdk::HORIZONTAL, 0, @sublist_len[@current_title][item])
+                                                  item + Slithernix::Cdk::Widget::Menu::TITLELINES - offset,
+                                                  @sublist[@current_title][item], @subtitle_attr,
+                                                  Slithernix::Cdk::HORIZONTAL, 0, @sublist_len[@current_title][item])
         end
 
         def withinSubmenu(step)
           next_item = Slithernix::Cdk::Widget::Menu.wrapped(@current_subtitle + step,
-                                        @subsize[@current_title])
+                                                            @subsize[@current_title])
 
-          if next_item != @current_subtitle
-            ymax = @screen.window.maxy
+          return unless next_item != @current_subtitle
 
-            if 1 + @pull_win[@current_title].begy + @subsize[@current_title] >=
-                ymax
-              @current_subtitle = next_item
-              drawSubwin
-            else
-              # Erase the old subtitle.
-              drawItem(@current_subtitle, 0)
+          ymax = @screen.window.maxy
 
-              # Set the values
-              @current_subtitle = next_item
+          if 1 + @pull_win[@current_title].begy + @subsize[@current_title] >=
+             ymax
+            @current_subtitle = next_item
+            drawSubwin
+          else
+            # Erase the old subtitle.
+            drawItem(@current_subtitle, 0)
 
-              # Draw the new sub-title.
-              selectItem(@current_subtitle, 0)
+            # Set the values
+            @current_subtitle = next_item
 
-              @pull_win[@current_title].refresh
-            end
+            # Draw the new sub-title.
+            selectItem(@current_subtitle, 0)
 
-            @input_window = @title_win[@current_title]
+            @pull_win[@current_title].refresh
           end
+
+          @input_window = @title_win[@current_title]
         end
 
         def acrossSubmenus(step)
-          next_item = Slithernix::Cdk::Widget::Menu.wrapped(@current_title + step, @menu_items)
+          next_item = Slithernix::Cdk::Widget::Menu.wrapped(
+            @current_title + step, @menu_items
+          )
 
-          if next_item != @current_title
-            # Erase the menu sub-window.
-            eraseSubwin
-            @screen.refresh
+          return unless next_item != @current_title
 
-            # Set the values.
-            @current_title = next_item
-            @current_subtitle = 0
+          # Erase the menu sub-window.
+          eraseSubwin
+          @screen.refresh
 
-            # Draw the new menu sub-window.
-            drawSubwin
-            @input_window = @title_win[@current_title]
-          end
+          # Set the values.
+          @current_title = next_item
+          @current_subtitle = 0
+
+          # Draw the new menu sub-window.
+          drawSubwin
+          @input_window = @title_win[@current_title]
         end
 
         # Inject a character into the menu widget.
@@ -242,7 +247,7 @@ module Slithernix
               when Curses::KEY_ENTER, Slithernix::Cdk::KEY_RETURN
                 cleanUpMenu
                 setExitType(input)
-                @last_selection = @current_title * 100 + @current_subtitle
+                @last_selection = (@current_title * 100) + @current_subtitle
                 ret = @last_selection
                 complete = true
               when Slithernix::Cdk::KEY_ESC
@@ -261,12 +266,12 @@ module Slithernix
             end
 
             # Should we call a post-process?
-            if !complete && !(@post_process_func.nil?)
+            if !complete && !@post_process_func.nil?
               @post_process_func.call(:Menu, self, @post_process_data, input)
             end
           end
 
-          setExitType(0) if !complete
+          setExitType(0) unless complete
 
           @result_data = ret
           ret
@@ -287,7 +292,8 @@ module Slithernix
 
           # Box the window
           @pull_win[@current_title]
-          @pull_win[@current_title].box(Slithernix::Cdk::ACS_VLINE, Slithernix::Cdk::ACS_HLINE)
+          @pull_win[@current_title].box(Slithernix::Cdk::ACS_VLINE,
+                                        Slithernix::Cdk::ACS_HLINE)
           if @menu_pos == Slithernix::Cdk::BOTTOM
             @pull_win[@current_title].mvwaddch(@subsize[@current_title] + 1,
                                                0, Slithernix::Cdk::ACS_LTEE)
@@ -305,8 +311,8 @@ module Slithernix
 
           # Highlight the title.
           Slithernix::Cdk::Draw.writeChtypeAttrib(@title_win[@current_title], 0, 0,
-                                 @title[@current_title], @title_attr, Slithernix::Cdk::HORIZONTAL,
-                                 0, @title_len[@current_title])
+                                                  @title[@current_title], @title_attr, Slithernix::Cdk::HORIZONTAL,
+                                                  0, @title_len[@current_title])
           @title_win[@current_title].refresh
         end
 
@@ -320,7 +326,7 @@ module Slithernix
         end
 
         # Draw the menu.
-        def draw(box)
+        def draw(_box)
           # Draw in the menu titles.
           (0...@menu_items).each do |x|
             drawTitle(x)
@@ -335,7 +341,7 @@ module Slithernix
             windows << @title_win[x]
           end
           move_specific(xplace, yplace, relative, refresh_flag,
-              windows, [])
+                        windows, [])
         end
 
         # Set the background attribute of the widget.
@@ -363,13 +369,13 @@ module Slithernix
 
         # Erase the menu widget from the screen.
         def erase
-          if validCDKObject
-            (0...@menu_items).each do |x|
-              @title_win[x].erase
-              @title_win[x].refresh
-              @pull_win[x].erase
-              @pull_win[x].refresh
-            end
+          return unless validCDKObject
+
+          (0...@menu_items).each do |x|
+            @title_win[x].erase
+            @title_win[x].refresh
+            @pull_win[x].erase
+            @pull_win[x].refresh
           end
         end
 
@@ -381,9 +387,11 @@ module Slithernix
 
         # Set the current menu item to highlight.
         def setCurrentItem(menuitem, submenuitem)
-          @current_title = Slithernix::Cdk::Widget::Menu.wrapped(menuitem, @menu_items)
+          @current_title = Slithernix::Cdk::Widget::Menu.wrapped(menuitem,
+                                                                 @menu_items)
           @current_subtitle = Slithernix::Cdk::Widget::Menu.wrapped(
-              submenuitem, @subsize[@current_title])
+            submenuitem, @subsize[@current_title]
+          )
         end
 
         def getCurrentItem(menu_item, submenu_item)

@@ -1,8 +1,8 @@
 module Slithernix
   module Cdk
     class Widget
-      attr_accessor :screen_index, :screen, :has_focus, :is_visible, :box
-      attr_accessor :ULChar, :URChar, :LLChar, :LRChar, :HZChar, :VTChar, :BXAttr
+      attr_accessor :screen_index, :screen, :has_focus, :is_visible, :box,
+                    :ULChar, :URChar, :LLChar, :LRChar, :HZChar, :VTChar, :BXAttr
       attr_reader :binding_list, :accepts_focus, :exit_type, :border_size
 
       @@g_paste_buffer = ''
@@ -36,7 +36,7 @@ module Slithernix
         self.class.name.to_sym
       end
 
-      def validObjType(type)
+      def validObjType(_type)
         # dummy version for now
         true
       end
@@ -49,11 +49,9 @@ module Slithernix
         n + @border_size + @title_lines
       end
 
-      def draw(a)
-      end
+      def draw(a); end
 
-      def erase
-      end
+      def erase; end
 
       def move(xplace, yplace, relative, refresh_flag)
         move_specific(
@@ -66,7 +64,8 @@ module Slithernix
         )
       end
 
-      def move_specific(xplace, yplace, relative, refresh_flag, windows, subwidgets)
+      def move_specific(xplace, yplace, relative, refresh_flag, windows,
+                        subwidgets)
         current_x = @win.begx
         current_y = @win.begy
         xpos = xplace
@@ -112,8 +111,7 @@ module Slithernix
         draw(@box) if refresh_flag
       end
 
-      def inject(a)
-      end
+      def inject(a); end
 
       def setBox(box)
         @box = box
@@ -124,20 +122,15 @@ module Slithernix
         @box
       end
 
-      def focus
-      end
+      def focus; end
 
-      def unfocus
-      end
+      def unfocus; end
 
-      def saveData
-      end
+      def saveData; end
 
-      def refreshData
-      end
+      def refreshData; end
 
-      def destroy
-      end
+      def destroy; end
 
       # Set the widget's upper-left-corner line-drawing character.
       def setULchar(ch)
@@ -189,7 +182,7 @@ module Slithernix
       end
 
       # Set the widget's title.
-      def setTitle (title, box_width)
+      def setTitle(title, box_width)
         if title
           temp = title.split("\n")
           @title_lines = temp.size
@@ -202,7 +195,7 @@ module Slithernix
               holder = Slithernix::Cdk.char2Chtype(line, len, align)
               max_width = [len[0], max_width].max
             end
-            box_width = [box_width, max_width + 2 * @border_size].max
+            box_width = [box_width, max_width + (2 * @border_size)].max
           else
             box_width = -(box_width - 1)
           end
@@ -229,7 +222,7 @@ module Slithernix
       end
 
       # Draw the widget's title
-      def drawTitle(win)
+      def drawTitle(_win)
         (0...@title_lines).each do |x|
           Draw.writeChtype(
             @win,
@@ -249,13 +242,13 @@ module Slithernix
       end
 
       # Set data for preprocessing
-      def setPreProcess (fn, data)
+      def setPreProcess(fn, data)
         @pre_process_func = fn
         @pre_process_data = data
       end
 
       # Set data for postprocessing
-      def setPostProcess (fn, data)
+      def setPostProcess(fn, data)
         @post_process_func = fn
         @post_process_data = data
       end
@@ -289,11 +282,11 @@ module Slithernix
         test = bindableObject(cdktype)
         result = @input_window.getch
 
-        if result.ord >= 0 && !(test.nil?) && test.binding_list.include?(result) &&
-            test.binding_list[result][0] == :getc
+        if result.ord >= 0 && !test.nil? && test.binding_list.include?(result) &&
+           test.binding_list[result][0] == :getc
           result = test.binding_list[result][1]
-        elsif test.nil? || !(test.binding_list.include?(result)) ||
-            test.binding_list[result][0].nil?
+        elsif test.nil? || !test.binding_list.include?(result) ||
+              test.binding_list[result][0].nil?
           case result
           when "\r", "\n"
             result = Curses::KEY_ENTER
@@ -330,7 +323,7 @@ module Slithernix
       def bindableObject(cdktype)
         if cdktype != widget_type
           nil
-        elsif [:FSelect, :AlphaList].include?(widget_type)
+        elsif %i[FSelect AlphaList].include?(widget_type)
           @entry_field
         else
           self
@@ -339,9 +332,9 @@ module Slithernix
 
       def bind(type, key, function, data)
         widg = bindableObject(type)
-        if key.ord < Curses::KEY_MAX && !(widg.nil?)
-          widg.binding_list[key] = [function, data] if key.ord != 0
-        end
+        return unless key.ord < Curses::KEY_MAX && !widg.nil?
+
+        widg.binding_list[key] = [function, data] if key.ord != 0
       end
 
       def unbind(type, key)
@@ -351,7 +344,7 @@ module Slithernix
 
       def cleanBindings(type)
         widg = bindableObject(type)
-        widg.binding_list.clear if !(widg.nil?) && !(widg.binding_list.nil?)
+        widg.binding_list.clear if !widg.nil? && !widg.binding_list.nil?
       end
 
       # This checks to see if the binding for the key exists:
@@ -360,15 +353,14 @@ module Slithernix
       # bindings.
       def checkBind(type, key)
         widg = bindableObject(type)
-        if !(widg.nil?) && widg.binding_list.include?(key)
+        if !widg.nil? && widg.binding_list.include?(key)
           function = widg.binding_list[key][0]
           data = widg.binding_list[key][1]
 
-          if function == :getc
-            return data
-          else
-            return function.call(type, widg, data, key)
-          end
+          return data if function == :getc
+
+          return function.call(type, widg, data, key)
+
         end
         false
       end
@@ -394,8 +386,9 @@ module Slithernix
         end_y = beg_y + @screen.window.maxy
 
         # Let them move the widget around until they hit return.
-        while !([Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER].include?(
-            key = getch([])))
+        until [Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER].include?(
+          key = getch([])
+        )
           case key
           when Curses::KEY_UP, '8'
             if win.begy > beg_y
@@ -441,7 +434,7 @@ module Slithernix
             end
           when '3'
             if (win.begx + win.maxx) < end_x &&
-                (win.begy + win.maxy) < end_y
+               (win.begy + win.maxy) < end_y
               move(1, 1, true, true)
             else
               Slithernix::Cdk.Beep

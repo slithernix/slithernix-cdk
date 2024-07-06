@@ -2,7 +2,7 @@
 require_relative 'example'
 
 class MentryExample < Example
-  def MentryExample.parse_opts(opts, param)
+  def self.parse_opts(opts, param)
     opts.banner = 'Usage: mentry_ex.rb [options]'
 
     param.x_value = Slithernix::Cdk::CENTER
@@ -13,7 +13,7 @@ class MentryExample < Example
     param.h = 5
     param.rows = 20
 
-    super(opts, param)
+    super
 
     opts.on('-w WIDTH', OptionParser::DecimalInteger, 'Field width') do |w|
       param.w = w
@@ -30,9 +30,9 @@ class MentryExample < Example
 
   # This demonstrates the positioning of a Cdk multiple-line entry
   # field widget.
-  def MentryExample.main
-    label = "</R>Message"
-    title = "<C></5>Enter a message.<!5>"
+  def self.main
+    label = '</R>Message'
+    title = '<C></5>Enter a message.<!5>'
 
     params = parse(ARGV)
 
@@ -44,8 +44,8 @@ class MentryExample < Example
     Slithernix::Cdk::Draw.initCDKColor
 
     widget = Slithernix::Cdk::Widget::MEntry.new(cdkscreen, params.x_value, params.y_value,
-                             title, label, Curses::A_BOLD, '.', :MIXED, params.w, params.h,
-                             params.rows, 0, params.box, params.shadow)
+                                                 title, label, Curses::A_BOLD, '.', :MIXED, params.w, params.h,
+                                                 params.rows, 0, params.box, params.shadow)
 
     # Is the widget nil?
     if widget.nil?
@@ -53,7 +53,7 @@ class MentryExample < Example
       cdkscreen.destroy
       Slithernix::Cdk::Screen.endCDK
 
-      puts "Cannot create CDK widget. Is the window too small?"
+      puts 'Cannot create CDK widget. Is the window too small?'
       exit
     end
 
@@ -74,8 +74,8 @@ class MentryExample < Example
     Slithernix::Cdk::Screen.endCDK
 
     puts "\n\n"
-    puts "Your message was : <%s>" % [info]
-    #ExitProgram (EXIT_SUCCESS);
+    puts format('Your message was : <%s>', info)
+    # ExitProgram (EXIT_SUCCESS);
   end
 end
 

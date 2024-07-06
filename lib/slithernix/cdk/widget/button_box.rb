@@ -7,7 +7,7 @@ module Slithernix
         attr_reader :current_button
 
         def initialize(cdkscreen, x_pos, y_pos, height, width, title, rows, cols,
-            buttons, button_count, highlight, box, shadow)
+                       buttons, button_count, highlight, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -31,31 +31,34 @@ module Slithernix
 
           # If the height is a negative value, the height will be
           # ROWS-height, otherwise the height will be the given height.
-          box_height = Slithernix::Cdk.setWidgetDimension(parent_height, height, rows + 1)
+          box_height = Slithernix::Cdk.setWidgetDimension(parent_height,
+                                                          height, rows + 1)
 
           # If the width is a negative value, the width will be
           # COLS-width, otherwise the width will be the given width.
-          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width, 0)
+          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width,
+                                                         0)
 
           box_width = setTitle(title, box_width)
 
           # Translate the buttons string to a chtype array
           (0...button_count).each do |x|
             button_len = []
-            @button << Slithernix::Cdk.char2Chtype(buttons[x], button_len , [])
+            @button << Slithernix::Cdk.char2Chtype(buttons[x], button_len, [])
             @button_len << button_len[0]
           end
 
           # Set the button positions.
-          (0...cols).each do |x|
+          (0...cols).each do |_x|
             max_col_width = -2**31
 
             # Look for the widest item in this column.
-            (0...rows).each do |y|
-              if current_button < button_count
-                max_col_width = [@button_len[current_button], max_col_width].max
-                current_button += 1
-              end
+            (0...rows).each do |_y|
+              next unless current_button < button_count
+
+              max_col_width = [@button_len[current_button],
+                               max_col_width].max
+              current_button += 1
             end
 
             # Keep the maximum column width for this column.
@@ -71,7 +74,8 @@ module Slithernix
           # Now we have to readjust the x and y positions
           xtmp = [x_pos]
           ytmp = [y_pos]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
+                                  box_height)
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -185,7 +189,7 @@ module Slithernix
                   @current_button += @rows
                 end
               when Curses::KEY_UP
-                if @current_button -1 < first_button
+                if @current_button - 1 < first_button
                   @current_button = last_button
                 else
                   @current_button -= 1
@@ -212,7 +216,7 @@ module Slithernix
               end
             end
 
-            if !complete && !(@post_process_func.nil?)
+            if !complete && !@post_process_func.nil?
               @post_process_func.call(:ButtonBox, self, @post_process_data,
                                       input)
             end
@@ -276,7 +280,7 @@ module Slithernix
             (0...@cols).each do |x|
               row = @title_lines + @border_size
 
-              (0...@rows).each do |y|
+              (0...@rows).each do |_y|
                 attr = @button_attrib
                 if current_button == @current_button
                   attr = @highlight
@@ -303,18 +307,18 @@ module Slithernix
           end
 
           # This seems to just cause the window display to be all messed up
-          #if cur_row >= 0 && cur_col >= 0
+          # if cur_row >= 0 && cur_col >= 0
           #  @win.move(cur_row, cur_col)
-          #end
+          # end
           @win.refresh
         end
 
         # This erases the buttonbox box from the screen.
         def erase
-          if validCDKObject
-            Slithernix::Cdk.eraseCursesWindow(@win)
-            Slithernix::Cdk.eraseCursesWindow(@shadow_win)
-          end
+          return unless validCDKObject
+
+          Slithernix::Cdk.eraseCursesWindow(@win)
+          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
         end
 
         # This destroys the widget

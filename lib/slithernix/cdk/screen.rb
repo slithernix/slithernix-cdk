@@ -1,8 +1,8 @@
 module Slithernix
   module Cdk
     class Screen
-      attr_accessor :widget_focus, :widget_count, :widget_limit, :widget, :window
-      attr_accessor :exit_status
+      attr_accessor :widget_focus, :widget_count, :widget_limit, :widget,
+                    :window, :exit_status
 
       NOEXIT = 0
       EXITOK = 1
@@ -10,7 +10,7 @@ module Slithernix
 
       def initialize(window = nil)
         window ||= Curses.init_screen
-        #Curses.curs_set(0)
+        # Curses.curs_set(0)
         # initialization for the first time
         if Slithernix::Cdk::ALL_SCREENS.size == 0
           # Set up basic curses settings.
@@ -38,43 +38,43 @@ module Slithernix
           @widget.concat(Array.new(@widget_limit - @widget.size, nil))
         end
 
-        if widget.validObjType(cdktype)
-          setScreenIndex(@widget_count, widget)
-          @widget_count += 1
-        end
+        return unless widget.validObjType(cdktype)
+
+        setScreenIndex(@widget_count, widget)
+        @widget_count += 1
       end
 
       # This removes an widget from the CDK screen.
       def self.unregister(cdktype, widget)
-        if widget.validObjType(cdktype) && widget.screen_index >= 0
-          screen = widget.screen
+        return unless widget.validObjType(cdktype) && widget.screen_index >= 0
 
-          unless screen.nil?
-            index = widget.screen_index
-            widget.screen_index = -1
+        screen = widget.screen
 
-            # Resequence the widgets
-            (index...screen.widget_count - 1).each do |x|
-              screen.setScreenIndex(x, screen.widget[x+1])
-            end
+        return if screen.nil?
 
-            if screen.widget_count <= 1
-              # if no more widgets, remove the array
-              screen.widget = []
-              screen.widget_count = 0
-              screen.widget_limit = 0
-            else
-              screen.widget[screen.widget_count] = nil
-              screen.widget_count -= 1
+        index = widget.screen_index
+        widget.screen_index = -1
 
-              # Update the widget-focus
-              if screen.widget_focus == index
-                screen.widget_focus -= 1
-                Traverse.setCDKFocusNext(screen)
-              elsif screen.widget_focus > index
-                screen.widget_focus -= 1
-              end
-            end
+        # Resequence the widgets
+        (index...screen.widget_count - 1).each do |x|
+          screen.setScreenIndex(x, screen.widget[x + 1])
+        end
+
+        if screen.widget_count <= 1
+          # if no more widgets, remove the array
+          screen.widget = []
+          screen.widget_count = 0
+          screen.widget_limit = 0
+        else
+          screen.widget[screen.widget_count] = nil
+          screen.widget_count -= 1
+
+          # Update the widget-focus
+          if screen.widget_focus == index
+            screen.widget_focus -= 1
+            Traverse.setCDKFocusNext(screen)
+          elsif screen.widget_focus > index
+            screen.widget_focus -= 1
           end
         end
       end
@@ -90,38 +90,38 @@ module Slithernix
       end
 
       def swapCDKIndices(n1, n2)
-        if n1 != n2 && validIndex(n1) && validIndex(n2)
-          o1 = @widget[n1]
-          o2 = @widget[n2]
-          setScreenIndex(n1, o2)
-          setScreenIndex(n2, o1)
+        return unless n1 != n2 && validIndex(n1) && validIndex(n2)
 
-          if @widget_focus == n1
-            @widget_focus = n2
-          elsif @widget_focus == n2
-            @widget_focus = n1
-          end
+        o1 = @widget[n1]
+        o2 = @widget[n2]
+        setScreenIndex(n1, o2)
+        setScreenIndex(n2, o1)
+
+        if @widget_focus == n1
+          @widget_focus = n2
+        elsif @widget_focus == n2
+          @widget_focus = n1
         end
       end
 
       # This 'brings' a CDK widget to the top of the stack.
       def self.raiseCDKObject(cdktype, widget)
-        if widget.validObjType(cdktype)
-          screen = widget.screen
-          screen.swapCDKIndices(widget.screen_index, screen.widget_count - 1)
-        end
+        return unless widget.validObjType(cdktype)
+
+        screen = widget.screen
+        screen.swapCDKIndices(widget.screen_index, screen.widget_count - 1)
       end
 
       # This 'lowers' a widget.
       def self.lowerCDKObject(cdktype, widget)
-        if widget.validObjType(cdktype)
-          widget.screen.swapCDKIndices(widget.screen_index, 0)
-        end
+        return unless widget.validObjType(cdktype)
+
+        widget.screen.swapCDKIndices(widget.screen_index, 0)
       end
 
       # This pops up a message.
       def popupLabel(mesg, count)
-        #Create the label.
+        # Create the label.
         popup = Slithernix::Cdk::Widget::Label.new(
           self,
           CENTER,
@@ -133,7 +133,7 @@ module Slithernix
         )
 
         old_state = Curses.curs_set(0)
-        #Draw it on the screen
+        # Draw it on the screen
         popup.draw(true)
 
         # Wait for some input.
@@ -150,7 +150,7 @@ module Slithernix
       end
 
       # This pops up a message
-      def popupLabelAttrib(mesg, count, attrib)
+      def popupLabelAttrib(mesg, count, _attrib)
         # Create the label.
         popup = Slithernix::Cdk::Widget::Label.new(
           self,
@@ -252,11 +252,11 @@ module Slithernix
         (0...@widget_count).each do |x|
           widg = @widget[x]
 
-          if widg.validObjType(widg.widget_type)
-            widg.has_focus = (x == focused)
+          next unless widg.validObjType(widg.widget_type)
 
-            widg.draw(widg.box) if widg.is_visible
-          end
+          widg.has_focus = (x == focused)
+
+          widg.draw(widg.box) if widg.is_visible
         end
       end
 
@@ -278,11 +278,11 @@ module Slithernix
           widg = @widget[x]
           before = @widget_count
 
-          if widg.validObjType(widg.widget_type)
-            widg.erase
-            widg.destroy
-            x -= (@widget_count - before)
-          end
+          next unless widg.validObjType(widg.widget_type)
+
+          widg.erase
+          widg.destroy
+          x -= (@widget_count - before)
         end
       end
 

@@ -2,7 +2,7 @@
 require_relative 'example'
 
 class SliderExample < Example
-  def SliderExample.parse_opts(opts, param)
+  def self.parse_opts(opts, param)
     opts.banner = 'Usage: slider_ex.rb [options]'
 
     param.x_value = Slithernix::Cdk::CENTER
@@ -13,7 +13,7 @@ class SliderExample < Example
     param.low = 1
     param.inc = 1
     param.width = 50
-    super(opts, param)
+    super
 
     opts.on('-h HIGH', OptionParser::DecimalInteger, 'High value') do |h|
       param.high = h
@@ -33,7 +33,7 @@ class SliderExample < Example
   end
 
   # This program demonstrates the Cdk slider widget.
-  def SliderExample.main
+  def self.main
     # Declare variables.
     title = '<C></U>Enter a value'
     label = '</B>Current Value:'
@@ -48,10 +48,10 @@ class SliderExample < Example
 
     # Create the widget
     widget = Slithernix::Cdk::Widget::Slider.new(cdkscreen, params.x_value, params.y_value,
-                             title, label,
-                             Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord,
-                             params.width, params.low, params.low, params.high, params.inc,
-                             (params.inc * 2), params.box, params.shadow)
+                                                 title, label,
+                                                 Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord,
+                                                 params.width, params.low, params.low, params.high, params.inc,
+                                                 (params.inc * 2), params.box, params.shadow)
 
     # Is the widget nll?
     if widget.nil?
@@ -59,8 +59,8 @@ class SliderExample < Example
       cdkscreen.destroy
       Slithernix::Cdk::Screen.endCDK
 
-      puts "Cannot make the widget. Is the window too small?"
-      exit  # EXIT_FAILURE
+      puts 'Cannot make the widget. Is the window too small?'
+      exit # EXIT_FAILURE
     end
 
     # Activate the widget.
@@ -69,16 +69,16 @@ class SliderExample < Example
     # Check the exit value of the widget.
     if widget.exit_type == :ESCAPE_HIT
       mesg = [
-          '<C>You hit escape. No value selected.',
-          '',
-          '<C>Press any key to continue.',
+        '<C>You hit escape. No value selected.',
+        '',
+        '<C>Press any key to continue.',
       ]
       cdkscreen.popupLabel(mesg, 3)
     elsif widget.exit_type == :NORMAL
       mesg = [
-          '<C>You selected %d' % selection,
-          '',
-          '<C>Press any key to continue.',
+        '<C>You selected %d' % selection,
+        '',
+        '<C>Press any key to continue.',
       ]
       cdkscreen.popupLabel(mesg, 3)
     end
@@ -87,7 +87,7 @@ class SliderExample < Example
     widget.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
-    #ExitProgram (EXIT_SUCCESS);
+    # ExitProgram (EXIT_SUCCESS);
   end
 end
 

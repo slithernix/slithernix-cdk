@@ -4,36 +4,37 @@ module Slithernix
   module Cdk
     class Widget
       class FSelect < Slithernix::Cdk::Widget
-        attr_reader :scroll_field, :entry_field
-        attr_reader :dir_attribute, :file_attribute, :link_attribute, :highlight
-        attr_reader :sock_attribute, :field_attribute, :filler_character
-        attr_reader :dir_contents, :file_counter, :pwd, :pathname
+        attr_reader :scroll_field, :entry_field, :dir_attribute,
+                    :file_attribute, :link_attribute, :highlight, :sock_attribute, :field_attribute, :filler_character, :dir_contents, :file_counter, :pwd, :pathname
 
         def initialize(cdkscreen, xplace, yplace, height, width, title, label,
-            field_attribute, filler_char, highlight, d_attribute, f_attribute,
-            l_attribute, s_attribute, box, shadow)
+                       field_attribute, filler_char, highlight, d_attribute, f_attribute,
+                       l_attribute, s_attribute, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
           bindings = {
             Slithernix::Cdk::BACKCHAR => Curses::KEY_PPAGE,
-            Slithernix::Cdk::FORCHAR  => Curses::KEY_NPAGE,
+            Slithernix::Cdk::FORCHAR => Curses::KEY_NPAGE
           }
 
           setBox(box)
 
           # If the height is a negative value the height will be ROWS-height,
           # otherwise the height will be the given height
-          box_height = Slithernix::Cdk.setWidgetDimension(parent_height, height, 0)
+          box_height = Slithernix::Cdk.setWidgetDimension(parent_height,
+                                                          height, 0)
 
           # If the width is a negative value, the width will be COLS-width,
           # otherwise the width will be the given width.
-          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width, 0)
+          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width,
+                                                         0)
 
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
+                                  box_height)
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -83,11 +84,12 @@ module Slithernix
 
           temp_width = if Slithernix::Cdk::Widget::FSelect.isFullWidth(width)
                        then Slithernix::Cdk::FULL
-                       else box_width - 2 - label_len
+                       else
+                         box_width - 2 - label_len
                        end
           @entry_field = Slithernix::Cdk::Widget::Entry.new(cdkscreen, @win.begx, @win.begy,
-                                        title, label, field_attribute, filler_char, :MIXED, temp_width,
-                                        0, 512, box, false)
+                                                            title, label, field_attribute, filler_char, :MIXED, temp_width,
+                                                            0, 512, box, false)
 
           # Make sure the widget was created.
           if @entry_field.nil?
@@ -101,7 +103,7 @@ module Slithernix
 
           # This is a callback to the scrolling list which displays information
           # about the current file.  (and the whole directory as well)
-          display_file_info_cb = lambda do |widget_type, entry, fselect, key|
+          display_file_info_cb = lambda do |_widget_type, entry, fselect, _key|
             # Get the file name.
             filename = fselect.entry_field.info
 
@@ -110,20 +112,19 @@ module Slithernix
             file_stat = File.stat(filename)
 
             # Determine the file type
-            filetype = case
-                       when file_stat.symlink?
+            filetype = if file_stat.symlink?
                          'Symbolic Link'
-                       when file_stat.socket?
+                       elsif file_stat.socket?
                          'Socket'
-                       when file_stat.file?
+                       elsif file_stat.file?
                          'Regular File'
-                       when file_stat.directory?
+                       elsif file_stat.directory?
                          'Directory'
-                       when file_stat.chardev?
+                       elsif file_stat.chardev?
                          'Character Device'
-                       when file_stat.blockdev?
+                       elsif file_stat.blockdev?
                          'Block Device'
-                       when file_stat.ftype == 'fif'
+                       elsif file_stat.ftype == 'fif'
                          'FIFO Device'
                        else
                          'Unknown'
@@ -138,20 +139,22 @@ module Slithernix
 
             # Create the message.
             mesg = [
-                'Directory  : </U>%s' % [fselect.pwd],
-                'Filename   : </U>%s' % [filename],
-                'Owner      : </U>%s<!U> (%d)' % [pw_ent.name, file_stat.uid],
-                'Group      : </U>%s<!U> (%d)' % [gr_ent.name, file_stat.gid],
-                'Permissions: </U>%s<!U> (%o)' % [string_mode, int_mode],
-                'Size       : </U>%ld<!U> bytes' % [file_stat.size],
-                'Last Access: </U>%s' % [file_stat.atime],
-                'Last Change: </U>%s' % [file_stat.ctime],
-                'File Type  : </U>%s' % [filetype]
+              format('Directory  : </U>%s', fselect.pwd),
+              format('Filename   : </U>%s', filename),
+              format('Owner      : </U>%s<!U> (%d)', pw_ent.name,
+                     file_stat.uid),
+              format('Group      : </U>%s<!U> (%d)', gr_ent.name,
+                     file_stat.gid),
+              format('Permissions: </U>%s<!U> (%o)', string_mode, int_mode),
+              format('Size       : </U>%ld<!U> bytes', file_stat.size),
+              format('Last Access: </U>%s', file_stat.atime),
+              format('Last Change: </U>%s', file_stat.ctime),
+              format('File Type  : </U>%s', filetype)
             ]
 
             # Create the pop up label.
             info_label = Slithernix::Cdk::Label.new(entry.screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                        mesg, 9, true, false)
+                                                    mesg, 9, true, false)
             info_label.draw(true)
             info_label.getch([])
 
@@ -163,7 +166,7 @@ module Slithernix
           end
 
           # This tries to complete the filename
-          complete_filename_cb = lambda do |widget_type, widget, fselect, key|
+          complete_filename_cb = lambda do |_widget_type, _widget, fselect, _key|
             scrollp = fselect.scroll_field
             entry = fselect.entry_field
             filename = entry.info.clone
@@ -187,7 +190,7 @@ module Slithernix
             is_directory = Dir.exist?(filename)
             # if (chdir (fselect->pwd) != 0)
             #    return FALSE;
-            #Dir.chdir(fselect.pwd)
+            # Dir.chdir(fselect.pwd)
 
             # XXX original: isDirectory ? mydirname : filename
             fselect.set(
@@ -216,7 +219,8 @@ module Slithernix
             end
 
             # Look for a unique filename match.
-            index = Slithernix::Cdk.searchList(list, fselect.file_counter, filename)
+            index = Slithernix::Cdk.searchList(list, fselect.file_counter,
+                                               filename)
 
             # If the index is less than zero, return we didn't find a match.
             if index < 0
@@ -244,19 +248,19 @@ module Slithernix
 
               # Ok, we found a match, is the next item similar?
               if index + 1 < fselect.file_counter && index + 1 < list.size &&
-                  list[index + 1][0..([filename.size, list[index + 1].size].min)] ==
-                  filename
+                 list[index + 1][0..([filename.size,
+                                      list[index + 1].size].min)] ==
+                 filename
                 current_index = index
                 base_chars = filename.size
                 matches = 0
 
                 # Determine the number of files which match.
                 while current_index < fselect.file_counter
-                  if current_index + 1 < list.size
-                    if list[current_index][0..(
-                        [filename.size, list[current_index].size].max)] == filename
-                      matches += 1
-                    end
+                  if current_index + 1 < list.size && (list[current_index][0..(
+                        [filename.size,
+                         list[current_index].size].max)] == filename)
+                    matches += 1
                   end
                   current_index += 1
                 end
@@ -290,8 +294,8 @@ module Slithernix
           end
 
           # This allows the user to delete a file.
-          delete_file_cb = lambda do |widget_type, fscroll, fselect|
-            buttons = ['No', 'Yes']
+          delete_file_cb = lambda do |_widget_type, fscroll, fselect|
+            buttons = %w[No Yes]
 
             # Get the filename which is to be deleted.
             filename = Slithernix::Cdk.chtype2Char(fscroll.item[fscroll.current_item])
@@ -299,13 +303,13 @@ module Slithernix
 
             # Create the dialog message.
             mesg = [
-                '<C>Are you sure you want to delete the file:',
-                '<C></U>"%s"?' % [filename]
+              '<C>Are you sure you want to delete the file:',
+              format('<C></U>"%s"?', filename)
             ]
 
             # Create the dialog box.
             question = Slithernix::Cdk::Dialog.new(fselect.screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                       mesg, 2, buttons, 2, Curses::A_REVERSE, true, true, false)
+                                                   mesg, 2, buttons, 2, Curses::A_REVERSE, true, true, false)
 
             # If the said yes then try to nuke it.
             if question.activate([]) == 1
@@ -313,9 +317,9 @@ module Slithernix
               if File.unlink(filename) == 0
                 # Set the file selector information.
                 fselect.set(fselect.pwd, fselect.field_attribute,
-                    fselect.filler_character, fselect.highlight,
-                    fselect.dir_attribute, fselect.file_attribute,
-                    fselect.link_attribute, fselect.sock_attribute, fselect.box)
+                            fselect.filler_character, fselect.highlight,
+                            fselect.dir_attribute, fselect.file_attribute,
+                            fselect.link_attribute, fselect.sock_attribute, fselect.box)
               else
                 # Pop up a message.
                 # mesg[0] = copyChar (errorMessage ("<C>Cannot delete file: %s"));
@@ -334,7 +338,7 @@ module Slithernix
           end
 
           # Start of callback functions.
-          adjust_scroll_cb = lambda do |widget_type, widget, fselect, key|
+          adjust_scroll_cb = lambda do |_widget_type, _widget, fselect, key|
             scrollp = fselect.scroll_field
             entry = fselect.entry_field
 
@@ -344,10 +348,12 @@ module Slithernix
 
               # Get the currently highlighted filename.
               current = Slithernix::Cdk.chtype2Char(scrollp.item[scrollp.current_item])
-              #current = CDK.chtype2String(scrollp.item[scrollp.current_item])
+              # current = CDK.chtype2String(scrollp.item[scrollp.current_item])
               current = current[0...-1]
 
-              temp = Slithernix::Cdk::Widget::FSelect.make_pathname(fselect.pwd, current)
+              temp = Slithernix::Cdk::Widget::FSelect.make_pathname(
+                fselect.pwd, current
+              )
 
               # Set the value in the entry field.
               entry.setValue(temp)
@@ -364,8 +370,10 @@ module Slithernix
           @entry_field.bind(:Entry, Curses::KEY_PPAGE, adjust_scroll_cb, self)
           @entry_field.bind(:Entry, Curses::KEY_DOWN, adjust_scroll_cb, self)
           @entry_field.bind(:Entry, Curses::KEY_NPAGE, adjust_scroll_cb, self)
-          @entry_field.bind(:Entry, Slithernix::Cdk::KEY_TAB, complete_filename_cb, self)
-          @entry_field.bind(:Entry, Slithernix::Cdk.CTRL('^'), display_file_info_cb, self)
+          @entry_field.bind(:Entry, Slithernix::Cdk::KEY_TAB,
+                            complete_filename_cb, self)
+          @entry_field.bind(:Entry, Slithernix::Cdk.CTRL('^'),
+                            display_file_info_cb, self)
 
           # Put the current working directory in the entry field.
           @entry_field.setValue(@pwd)
@@ -374,12 +382,13 @@ module Slithernix
           temp_height = @entry_field.win.maxy - @border_size
           temp_width = if Slithernix::Cdk::Widget::FSelect.isFullWidth(width)
                        then Slithernix::Cdk::FULL
-                       else box_width - 1
+                       else
+                         box_width - 1
                        end
           @scroll_field = Slithernix::Cdk::Widget::Scroll.new(cdkscreen,
-                                          @win.begx, @win.begy + temp_height, Slithernix::Cdk::RIGHT,
-                                          box_height - temp_height, temp_width, '', @dir_contents,
-                                          @file_counter, false, @highlight, box, false)
+                                                              @win.begx, @win.begy + temp_height, Slithernix::Cdk::RIGHT,
+                                                              box_height - temp_height, temp_width, '', @dir_contents,
+                                                              @file_counter, false, @highlight, box, false)
 
           # Set the lower left/right characters of the entry field.
           @scroll_field.setULchar(Slithernix::Cdk::ACS_LTEE)
@@ -405,11 +414,11 @@ module Slithernix
 
         # This erases the file selector from the screen.
         def erase
-          if validCDKObject
-            @scroll_field.erase
-            @entry_field.erase
-            Slithernix::Cdk.eraseCursesWindow(@win)
-          end
+          return unless validCDKObject
+
+          @scroll_field.erase
+          @entry_field.erase
+          Slithernix::Cdk.eraseCursesWindow(@win)
         end
 
         # This moves the fselect field to the given location.
@@ -418,7 +427,7 @@ module Slithernix
           subwidgets = [@entry_field, @scroll_field]
 
           move_specific(xplace, yplace, relative, refresh_flag,
-              windows, subwidgets)
+                        windows, subwidgets)
         end
 
         # The fselect's focus resides in the entry widget. But the scroll widget
@@ -448,7 +457,7 @@ module Slithernix
         end
 
         # This draws the file selector widget.
-        def draw(box)
+        def draw(_box)
           # Draw in the shadow if we need to.
           Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
@@ -505,20 +514,13 @@ module Slithernix
           return 0 if @exit_type == :EARLY_EXIT
 
           # Can we change into the directory
-          #file = Dir.chdir(filename)
-          #if Dir.chdir(@pwd) != 0
+          # file = Dir.chdir(filename)
+          # if Dir.chdir(@pwd) != 0
           #  return 0
-          #end
+          # end
 
           # If it's not a directory, return the filename.
-          if !Dir.exist?(filename)
-            # It's a regular file, create the full path
-            @pathname = filename.clone
-
-            # Return the complete pathname.
-            ret = @pathname
-            complete = true
-          else
+          if Dir.exist?(filename)
             # Set the file selector information.
             set(filename, @field_attribute, @filler_character, @highlight,
                 @dir_attribute, @file_attribute, @link_attribute, @sock_attribute,
@@ -526,9 +528,16 @@ module Slithernix
 
             # Redraw the scrolling list.
             drawMyScroller
+          else
+            # It's a regular file, create the full path
+            @pathname = filename.clone
+
+            # Return the complete pathname.
+            ret = @pathname
+            complete = true
           end
 
-          setExitType(0) if !complete
+          setExitType(0) unless complete
 
           @result_data = ret
           ret
@@ -536,7 +545,7 @@ module Slithernix
 
         # This function sets the information inside the file selector.
         def set(directory, field_attrib, filler, highlight, dir_attribute,
-            file_attribute, link_attribute, sock_attribute, box)
+                file_attribute, link_attribute, sock_attribute, _box)
           fscroll = @scroll_field
           fentry = @entry_field
           new_directory = ''
@@ -551,7 +560,7 @@ module Slithernix
           setHighlight(highlight)
 
           # Only do the directory stuff if the directory is not nil.
-          if !(directory.nil?) && directory.size > 0
+          if !directory.nil? && directory.size > 0
             # Try to expand the directory if it starts with a ~
             if (temp_dir = Slithernix::Cdk::Widget::FSelect.expandTilde(directory)).size > 0
               new_directory = temp_dir
@@ -565,10 +574,10 @@ module Slithernix
 
               # Could not get into the directory, pop up a little message.
               mesg = [
-                  '<C>Could not change into %s' % [new_directory],
-                  '<C></U>%s' % ['Unknown reason.'],  # errorMessage(format)
-                  ' ',
-                  '<C>Press Any Key To Continue.'
+                format('<C>Could not change into %s', new_directory),
+                format('<C></U>%s', 'Unknown reason.'), # errorMessage(format)
+                ' ',
+                '<C>Press Any Key To Continue.'
               ]
 
               # Pop up a message.
@@ -626,26 +635,25 @@ module Slithernix
             # FIXME(original): access() would give a more correct answer
             # TODO: add error handling
             file_stat = File.stat(dir_list[x])
-            if file_stat.executable?
-              mode = '*'
-            else
-              mode = ' '
-            end
+            mode = if file_stat.executable?
+                     '*'
+                   else
+                     ' '
+                   end
 
-            case
-            when file_stat.symlink?
+            if file_stat.symlink?
               attr = @link_attribute
               mode = '@'
-            when file_stat.socket?
+            elsif file_stat.socket?
               attr = @sock_attribute
               mode = '&'
-            when file_stat.file?
+            elsif file_stat.file?
               attr = @file_attribute
-            when file_stat.directory?
+            elsif file_stat.directory?
               attr = @dir_attribute
               mode = '/'
             end
-            @dir_contents[x] = '%s%s%s' % [attr, dir_list[x], mode]
+            @dir_contents[x] = format('%s%s%s', attr, dir_list[x], mode)
           end
           true
         end
@@ -664,9 +672,7 @@ module Slithernix
           # If the directory supplied is the same as what is already there, return.
           if @pwd != directory
             # Try to chdir into the given directory.
-            if Dir.chdir(directory) != 0
-              result = 0
-            else
+            if Dir.chdir(directory) == 0
               @pwd = Dir.getwd
 
               # Set the contents of the entry field.
@@ -680,6 +686,8 @@ module Slithernix
               else
                 result = 0
               end
+            else
+              result = 0
             end
           end
           result
@@ -713,10 +721,10 @@ module Slithernix
         # scrolling list.
         def setDirAttribute(attribute)
           # Make sure they are not the same.
-          if @dir_attribute != attribute
-            @dir_attribute = attribute
-            setDirContents
-          end
+          return unless @dir_attribute != attribute
+
+          @dir_attribute = attribute
+          setDirContents
         end
 
         def getDirAttribute
@@ -726,10 +734,10 @@ module Slithernix
         # This sets the attribute of the link attribute in the scrolling list.
         def setLinkAttribute(attribute)
           # Make sure they are not the same.
-          if @link_attribute != attribute
-            @link_attribute = attribute
-            setDirContents
-          end
+          return unless @link_attribute != attribute
+
+          @link_attribute = attribute
+          setDirContents
         end
 
         def getLinkAttribute
@@ -739,10 +747,10 @@ module Slithernix
         # This sets the attribute of the socket attribute in the scrolling list.
         def setSocketAttribute(attribute)
           # Make sure they are not the same.
-          if @sock_attribute != attribute
-            @sock_attribute = attribute
-            setDirContents
-          end
+          return unless @sock_attribute != attribute
+
+          @sock_attribute = attribute
+          setDirContents
         end
 
         def getSocketAttribute
@@ -752,10 +760,10 @@ module Slithernix
         # This sets the attribute of the file attribute in the scrolling list.
         def setFileAttribute(attribute)
           # Make sure they are not the same.
-          if @file_attribute != attribute
-            @file_attribute = attribute
-            setDirContents
-          end
+          return unless @file_attribute != attribute
+
+          @file_attribute = attribute
+          setDirContents
         end
 
         def getFileAttribute
@@ -767,11 +775,11 @@ module Slithernix
           scrollp = @scroll_field
           entry = @entry_field
 
-          return if !createList(list, list_size)
+          return unless createList(list, list_size)
 
           # Set the information in the scrolling list.
           scrollp.set(@dir_contents, @file_counter, false, scrollp.highlight,
-              scrollp.box)
+                      scrollp.box)
 
           # Clean out the entry field.
           setCurrentItem(0)
@@ -793,12 +801,12 @@ module Slithernix
         end
 
         def setCurrentItem(item)
-          if @file_counter != 0
-            @scroll_field.setCurrent(item)
+          return unless @file_counter != 0
 
-            data = contentToPath(@dir_contents[@scroll_field.getCurrentItem])
-            @entry_field.setValue(data)
-          end
+          @scroll_field.setCurrent(item)
+
+          data = contentToPath(@dir_contents[@scroll_field.getCurrentItem])
+          @entry_field.setValue(data)
         end
 
         # These functions set the draw characters of the widget.
@@ -873,9 +881,8 @@ module Slithernix
           temp_char = temp_char[0..-1]
 
           # Create the pathname.
-          result = Slithernix::Cdk::Widget::FSelect.make_pathname(@pwd, temp_char)
-
-          result
+          Slithernix::Cdk::Widget::FSelect.make_pathname(@pwd,
+                                                         temp_char)
         end
 
         # Currently a wrapper for File.expand_path

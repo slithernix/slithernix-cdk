@@ -2,7 +2,7 @@
 require_relative 'example'
 
 class Radio1Example < CLIExample
-  def Radio1Example.parse_opts(opts, params)
+  def self.parse_opts(opts, params)
     opts.banner = 'Usage: radio1_ex.rb [options]'
 
     # default values
@@ -13,12 +13,12 @@ class Radio1Example < CLIExample
     params.h_value = 5
     params.w_value = 20
     params.spos = Slithernix::Cdk::NONE
-    params.title = ""
+    params.title = ''
 
-    super(opts, params)
+    super
 
     opts.on('-s SCROLL_POS', OptionParser::DecimalInteger,
-        'location for the scrollbar') do |spos|
+            'location for the scrollbar') do |spos|
       params.spos = spos
     end
 
@@ -32,14 +32,14 @@ class Radio1Example < CLIExample
   # Options (in addition to normal CLI parameters):
   #   -s SPOS location for the scrollbar
   #   -t TEXT title for the widget
-  def Radio1Example.main
+  def self.main
     params = parse(ARGV)
 
     # Use the current directory list to fill the radio list
     item = [
-        "Choice A",
-        "Choice B",
-        "Choice C",
+      'Choice A',
+      'Choice B',
+      'Choice C',
     ]
 
     # Set up CDK
@@ -51,17 +51,17 @@ class Radio1Example < CLIExample
 
     # Create the radio list.
     radio = Slithernix::Cdk::Widget::Radio.new(cdkscreen,
-                           params.x_value, params.y_value, params.spos,
-                           params.h_value, params.w_value, params.title,
-                           item, 3, '#'.ord | Curses::A_REVERSE, true,
-                           Curses::A_REVERSE, params.box, params.shadow)
+                                               params.x_value, params.y_value, params.spos,
+                                               params.h_value, params.w_value, params.title,
+                                               item, 3, '#'.ord | Curses::A_REVERSE, true,
+                                               Curses::A_REVERSE, params.box, params.shadow)
 
     if radio.nil?
       cdkscreen.destroyCDKScreen
       Slithernix::Cdk::Screen.endCDK
 
-      puts "Cannot make radio widget.  Is the window too small?"
-      exit #EXIT_FAILURE
+      puts 'Cannot make radio widget.  Is the window too small?'
+      exit # EXIT_FAILURE
     end
 
     # Activate the radio widget.
@@ -70,17 +70,17 @@ class Radio1Example < CLIExample
     # Check the exit status of the widget.
     if radio.exit_type == :ESCAPE_HIT
       mesg = [
-          '<C>You hit escape. No item selected',
-          '',
-          '<C>Press any key to continue.'
+        '<C>You hit escape. No item selected',
+        '',
+        '<C>Press any key to continue.'
       ]
       cdkscreen.popupLabel(mesg, 3)
     elsif radio.exit_type == :NORMAL
       mesg = [
-          "<C> You selected the filename",
-          "<C>%.*s" % [236, item[selection]],  # FIXME magic number
-          "",
-          "<C>Press any key to continue"
+        '<C> You selected the filename',
+        format('<C>%.*s', 236, item[selection]), # FIXME: magic number
+        '',
+        '<C>Press any key to continue'
       ]
       cdkscreen.popupLabel(mesg, 4)
     end
@@ -89,7 +89,7 @@ class Radio1Example < CLIExample
     radio.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
-    exit #EXIT_SUCCESS
+    exit # EXIT_SUCCESS
   end
 end
 

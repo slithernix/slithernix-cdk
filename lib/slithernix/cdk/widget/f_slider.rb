@@ -4,7 +4,8 @@ module Slithernix
   module Cdk
     class Widget
       class FSlider < Slithernix::Cdk::Widget::Slider
-        def initialize(cdkscreen, xplace, yplace, title, label, filler, field_width, start, low, high, inc, fast_inc, digits, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, title, label, filler,
+                       field_width, start, low, high, inc, fast_inc, digits, box, shadow)
           @digits = digits
           super(
             cdkscreen,
@@ -40,8 +41,8 @@ module Slithernix
 
           # Draw the value in the field.
           digits = [@digits, 30].min
-          format = '%%.%if' % [digits]
-          temp = format % [@current]
+          format = format('%%.%if', digits)
+          temp = format(format, @current)
 
           Slithernix::Cdk::Draw.writeCharAttrib(
             @field_win,
@@ -60,8 +61,8 @@ module Slithernix
 
         def formattedSize(value)
           digits = [@digits, 30].min
-          format = '%%.%if' % [digits]
-          temp = format % [value]
+          format = format('%%.%if', digits)
+          temp = format(format, value)
           temp.size
         end
 

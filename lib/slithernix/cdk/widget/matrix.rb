@@ -5,16 +5,16 @@ module Slithernix
     class Widget
       class Matrix < Slithernix::Cdk::Widget
         attr_accessor :info
-        attr_reader :colvalues, :row, :col, :colwidths, :filler
-        attr_reader :crow, :ccol
+        attr_reader :colvalues, :row, :col, :colwidths, :filler, :crow, :ccol
+
         MAX_MATRIX_ROWS = 1000
         MAX_MATRIX_COLS = 1000
 
         @@g_paste_buffer = ''
 
         def initialize(cdkscreen, xplace, yplace, rows, cols, vrows, vcols,
-            title, rowtitles, coltitles, colwidths, colvalues, rspace, cspace,
-            filler, dominant, box, box_cell, shadow)
+                       title, rowtitles, coltitles, colwidths, colvalues, rspace, cspace,
+                       filler, dominant, box, box_cell, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -29,8 +29,8 @@ module Slithernix
           have_rowtitles = false
           have_coltitles = false
           bindings = {
-            Slithernix::Cdk::FORCHAR  => Curses::KEY_NPAGE,
-            Slithernix::Cdk::BACKCHAR => Curses::KEY_PPAGE,
+            Slithernix::Cdk::FORCHAR => Curses::KEY_NPAGE,
+            Slithernix::Cdk::BACKCHAR => Curses::KEY_PPAGE
           }
 
           setBox(box)
@@ -42,8 +42,8 @@ module Slithernix
             return nil
           end
 
-          @cell = Array.new(rows + 1) { |i| Array.new(cols + 1)}
-          @info = Array.new(rows + 1) { |i| Array.new(cols + 1) { |i| '' }}
+          @cell = Array.new(rows + 1) { |_i| Array.new(cols + 1) }
+          @info = Array.new(rows + 1) { |_i| Array.new(cols + 1) { |_i| '' } }
 
           # Make sure the number of virtual cells is not larger than the
           # physical size.
@@ -54,10 +54,10 @@ module Slithernix
           @cols = cols
           @colwidths = [0] * (cols + 1)
           @colvalues = [0] * (cols + 1)
-          @coltitle = Array.new(cols + 1) {|i| []}
+          @coltitle = Array.new(cols + 1) { |_i| [] }
           @coltitle_len = [0] * (cols + 1)
           @coltitle_pos = [0] * (cols + 1)
-          @rowtitle = Array.new(rows + 1) {|i| []}
+          @rowtitle = Array.new(rows + 1) { |_i| [] }
           @rowtitle_len = [0] * (rows + 1)
           @rowtitle_pos = [0] * (rows + 1)
 
@@ -66,26 +66,24 @@ module Slithernix
           @title_lines = temp.size
 
           # Determine the height of the box.
-          if vrows == 1
-            box_height = 6 + @title_lines
-          else
-            if row_space == 0
-              box_height = 6 + @title_lines + (vrows - 1) * 2
-            else
-              box_height = 3 + @title_lines + vrows * 3 +
-                  (vrows - 1) * (row_space - 1)
-            end
-          end
+          box_height = if vrows == 1
+                         6 + @title_lines
+                       elsif row_space == 0
+                         6 + @title_lines + ((vrows - 1) * 2)
+                       else
+                         3 + @title_lines + (vrows * 3) +
+                           ((vrows - 1) * (row_space - 1))
+                       end
 
           # Determine the maximum row title width.
           (1..rows).each do |x|
-            if !(rowtitles.nil?) && x < rowtitles.size && rowtitles[x].size > 0
+            if !rowtitles.nil? && x < rowtitles.size && rowtitles[x].size > 0
               have_rowtitles = true
             end
             rowtitle_len = []
             rowtitle_pos = []
             @rowtitle[x] = Slithernix::Cdk.char2Chtype((rowtitles[x] || ''),
-                                           rowtitle_len, rowtitle_pos)
+                                                       rowtitle_len, rowtitle_pos)
             @rowtitle_len[x] = rowtitle_len[0]
             @rowtitle_pos[x] = rowtitle_pos[0]
             max_row_title_width = [max_row_title_width, @rowtitle_len[x]].max
@@ -97,7 +95,7 @@ module Slithernix
             # We need to rejustify the row title cell info.
             (1..rows).each do |x|
               @rowtitle_pos[x] = Slithernix::Cdk.justifyString(@maxrt,
-                                                   @rowtitle_len[x], @rowtitle_pos[x])
+                                                               @rowtitle_len[x], @rowtitle_pos[x])
             end
           else
             @maxrt = 0
@@ -120,7 +118,8 @@ module Slithernix
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
+                                  box_height)
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -143,16 +142,17 @@ module Slithernix
 
           # Copy the titles into the structrue.
           (1..cols).each do |x|
-            if !(coltitles.nil?) && x < coltitles.size && coltitles[x].size > 0
+            if !coltitles.nil? && x < coltitles.size && coltitles[x].size > 0
               have_coltitles = true
             end
             coltitle_len = []
             coltitle_pos = []
             @coltitle[x] = Slithernix::Cdk.char2Chtype(coltitles[x] || '',
-                                           coltitle_len, coltitle_pos)
+                                                       coltitle_len, coltitle_pos)
             @coltitle_len[x] = coltitle_len[0]
             @coltitle_pos[x] = @border_size + Slithernix::Cdk.justifyString(
-                colwidths[x], @coltitle_len[x], coltitle_pos[0])
+              colwidths[x], @coltitle_len[x], coltitle_pos[0]
+            )
             @colwidths[x] = colwidths[x]
           end
 
@@ -230,7 +230,8 @@ module Slithernix
           @shadow_win = nil
           @callbackfn = lambda do |matrix, input|
             disptype = matrix.colvalues[matrix.col]
-            plainchar = Slithernix::Cdk::Display.filterByDisplayType(disptype, input)
+            plainchar = Slithernix::Cdk::Display.filterByDisplayType(disptype,
+                                                                     input)
             charcount = matrix.info[matrix.row][matrix.col].size
 
             if plainchar == Curses::Error
@@ -240,23 +241,25 @@ module Slithernix
             else
               # Update the screen.
               matrix.CurMatrixCell.move(1,
-                  matrix.info[matrix.row][matrix.col].size + 1)
+                                        matrix.info[matrix.row][matrix.col].size + 1)
               matrix.CurMatrixCell.addch(
-                  if Slithernix::Cdk::Display.isHiddenDisplayType(disptype)
-                  then matrix.filler
-                  else plainchar
-                  end)
+                if Slithernix::Cdk::Display.isHiddenDisplayType(disptype)
+                then matrix.filler
+                else
+                  plainchar
+                end
+              )
               matrix.CurMatrixCell.refresh
 
               # Update the info string
               matrix.info[matrix.row][matrix.col] =
-                  matrix.info[matrix.row][matrix.col][0...charcount] +
-                  plainchar.chr
+                matrix.info[matrix.row][matrix.col][0...charcount] +
+                plainchar.chr
             end
           end
 
           # Make room for the cell information.
-          (1..rows).each do |x|
+          (1..rows).each do |_x|
             (1..cols).each do |y|
               @colvalues[y] = colvalues[y]
               @colwidths[y] = colwidths[y]
@@ -269,7 +272,7 @@ module Slithernix
           # Do we want a shadow?
           if shadow
             @shadow_win = Curses::Window.new(box_height, box_width,
-                ypos + 1, xpos + 1)
+                                             ypos + 1, xpos + 1)
           end
 
           # Set up the key bindings.
@@ -359,12 +362,7 @@ module Slithernix
                   @info[@row][@col] = @info[@row][@col][0...charcount]
                 end
               when Curses::KEY_RIGHT, Slithernix::Cdk::KEY_TAB
-                if @ccol != @vcols
-                  # We are moving to the right...
-                  @col += 1
-                  @ccol += 1
-                  moved_cell = true
-                else
+                if @ccol == @vcols
                   # We have to shift the columns to the right.
                   if @col != @cols
                     @lcol += 1
@@ -374,38 +372,36 @@ module Slithernix
                     redrawTitles(false, true) if @rows > @vrows
                     refresh_cells = true
                     moved_cell = true
-                  else
+                  elsif @row == @rows
                     # We are at the far right column, we need to shift
                     # down one row, if we can.
-                    if @row == @rows
-                      Slithernix::Cdk.Beep
-                    else
-                      # Set up the columns info.
-                      @col = 1
-                      @lcol = 1
-                      @ccol = 1
+                    Slithernix::Cdk.Beep
+                  else
+                    # Set up the columns info.
+                    @col = 1
+                    @lcol = 1
+                    @ccol = 1
 
-                      # Shift the rows...
-                      if @crow != @vrows
-                        @row += 1
-                        @crow += 1
-                      else
-                        @row += 1
-                        @trow += 1
-                      end
-                      redrawTitles(true, true)
-                      refresh_cells = true
-                      moved_cell = true
+                    # Shift the rows...
+                    if @crow == @vrows
+                      @row += 1
+                      @trow += 1
+                    else
+                      @row += 1
+                      @crow += 1
                     end
+                    redrawTitles(true, true)
+                    refresh_cells = true
+                    moved_cell = true
                   end
+                else
+                  # We are moving to the right...
+                  @col += 1
+                  @ccol += 1
+                  moved_cell = true
                 end
               when Curses::KEY_LEFT, Curses::KEY_BTAB
-                if @ccol != 1
-                  # We are moving to the left...
-                  @col -= 1
-                  @ccol -= 1
-                  moved_cell = true
-                else
+                if @ccol == 1
                   # Are we at the far left?
                   if @lcol != 1
                     @lcol -= 1
@@ -415,37 +411,38 @@ module Slithernix
                     redrawTitles(false, true) if @cols > @vcols
                     refresh_cells = true
                     moved_cell = true
-                  else
+                  elsif @row == 1
                     # Shift up one line if we can...
-                    if @row == 1
-                      Slithernix::Cdk.Beep
-                    else
-                      # Set up the columns info.
-                      @col = @cols
-                      @lcol = @cols - @vcols + 1
-                      @ccol = @vcols
+                    Slithernix::Cdk.Beep
+                  else
+                    # Set up the columns info.
+                    @col = @cols
+                    @lcol = @cols - @vcols + 1
+                    @ccol = @vcols
 
-                      # Shift the rows...
-                      if @crow != 1
-                        @row -= 1
-                        @crow -= 1
-                      else
-                        @row -= 1
-                        @trow -= 1
-                      end
-                      redrawTitles(true, true)
-                      refresh_cells = true
-                      moved_cell = true
+                    # Shift the rows...
+                    if @crow == 1
+                      @row -= 1
+                      @trow -= 1
+                    else
+                      @row -= 1
+                      @crow -= 1
                     end
+                    redrawTitles(true, true)
+                    refresh_cells = true
+                    moved_cell = true
                   end
+                else
+                  # We are moving to the left...
+                  @col -= 1
+                  @ccol -= 1
+                  moved_cell = true
                 end
               when Curses::KEY_UP
-                if @crow != 1
-                  @row -= 1
-                  @crow -= 1
-                  moved_cell = true
-                else
-                  if @trow != 1
+                if @crow == 1
+                  if @trow == 1
+                    Slithernix::Cdk.Beep
+                  else
                     @trow -= 1
                     @row -= 1
 
@@ -453,17 +450,17 @@ module Slithernix
                     redrawTitles(true, false) if @rows > @vrows
                     refresh_cells = true
                     moved_cell = true
-                  else
-                    Slithernix::Cdk.Beep
                   end
+                else
+                  @row -= 1
+                  @crow -= 1
+                  moved_cell = true
                 end
               when Curses::KEY_DOWN
-                if @crow != @vrows
-                  @row += 1
-                  @crow += 1
-                  moved_cell = true
-                else
-                  if @trow + @vrows - 1 != @rows
+                if @crow == @vrows
+                  if @trow + @vrows - 1 == @rows
+                    Slithernix::Cdk.Beep
+                  else
                     @trow += 1
                     @row += 1
 
@@ -471,13 +468,15 @@ module Slithernix
                     redrawTitles(true, false) if @rows > @vrows
                     refresh_cells = true
                     moved_cell = true
-                  else
-                    Slithernix::Cdk.Beep
                   end
+                else
+                  @row += 1
+                  @crow += 1
+                  moved_cell = true
                 end
               when Curses::KEY_NPAGE
                 if @rows > @vrows
-                  if @trow + (@vrows - 1) * 2 <= @rows
+                  if @trow + ((@vrows - 1) * 2) <= @rows
                     @trow += @vrows - 1
                     @row += @vrows - 1
                     redrawTitles(true, false)
@@ -491,7 +490,7 @@ module Slithernix
                 end
               when Curses::KEY_PPAGE
                 if @rows > @vrows
-                  if @trow - (@vrows - 1) * 2 >= 1
+                  if @trow - ((@vrows - 1) * 2) >= 1
                     @trow -= @vrows - 1
                     @row -= @vrows - 1
                     redrawTitles(true, false)
@@ -508,7 +507,7 @@ module Slithernix
                 draw(@box)
               when Slithernix::Cdk::PASTE
                 if @@g_paste_buffer.size == 0 ||
-                    @@g_paste_buffer.size > @colwidths[@ccol]
+                   @@g_paste_buffer.size > @colwidths[@ccol]
                   Slithernix::Cdk.Beep
                 else
                   self.CurMatrixInfo = @@g_paste_buffer.clone
@@ -524,11 +523,11 @@ module Slithernix
                 cleanCell(@trow + @crow - 1, @lcol + @ccol - 1)
                 drawCurCell
               when Curses::KEY_ENTER, Slithernix::Cdk::KEY_RETURN
-                if !@box_cell
-                  Slithernix::Cdk::Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
-                      ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
-                else
+                if @box_cell
                   drawOldCell
+                else
+                  Slithernix::Cdk::Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
+                                                ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
                 end
                 self.CurMatrixCell.refresh
                 setExitType(input)
@@ -538,11 +537,11 @@ module Slithernix
                 setExitType(input)
                 complete = true
               when Slithernix::Cdk::KEY_ESC
-                if !@box_cell
-                  Slithernix::Cdk::Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
-                      ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
-                else
+                if @box_cell
                   drawOldCell
+                else
+                  Slithernix::Cdk::Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
+                                                ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
                 end
                 self.CurMatrixCell.refresh
                 setExitType(input)
@@ -555,15 +554,15 @@ module Slithernix
               end
             end
 
-            if !complete
+            unless complete
               # Did we change cells?
               if moved_cell
                 # un-highlight the old box
-                if !@box_cell
-                  Slithernix::Cdk::Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
-                      ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
-                else
+                if @box_cell
                   drawOldCell
+                else
+                  Slithernix::Cdk::Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
+                                                ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
                 end
                 @cell[@oldcrow][@oldccol].refresh
 
@@ -588,12 +587,13 @@ module Slithernix
 
               # Should we call a post-process?
               unless @post_process_func.nil?
-                @post_process_func.call(:Matrix, self, @post_process_data, input)
+                @post_process_func.call(:Matrix, self, @post_process_data,
+                                        input)
               end
             end
           end
 
-          if !complete
+          unless complete
             # Set the variables we need.
             @oldcrow = @crow
             @oldccol = @ccol
@@ -626,7 +626,8 @@ module Slithernix
           (1..@colwidths[@ccol]).each do |x|
             ch = if x <= infolen && !Slithernix::Cdk::Display.isHiddenDisplayType(disptype)
                  then Slithernix::Cdk.CharOf(@info[@row][@col][x - 1])
-                 else @filler
+                 else
+                   @filler
                  end
             self.CurMatrixCell.mvwaddch(1, x, ch.ord | highlight)
           end
@@ -646,7 +647,7 @@ module Slithernix
 
           windows << @shadow_win
           move_specific(xplace, yplace, relative, refresh_flag,
-             windows, [])
+                        windows, [])
         end
 
         # This draws a cell within a matrix.
@@ -668,8 +669,9 @@ module Slithernix
           # Draw in the cell info.
           (1..@colwidths[col]).each do |x|
             ch = if x <= infolen && !Slithernix::Cdk::Display.isHiddenDisplayType(disptype)
-                 then Slithernix::Cdk.CharOf(@info[vrow][vcol][x-1]).ord | highlight
-                 else @filler
+                 then Slithernix::Cdk.CharOf(@info[vrow][vcol][x - 1]).ord | highlight
+                 else
+                   @filler
                  end
             @cell[row][col].mvwaddch(1, x, ch.ord | highlight)
           end
@@ -678,51 +680,51 @@ module Slithernix
           @cell[row][col].refresh
 
           # Only draw the box iff the user asked for a box.
-          return if !box
+          return unless box
 
           # If the value of the column spacing is greater than 0 then these
           # are independent boxes
           if @col_space != 0 && @row_space != 0
             Slithernix::Cdk::Draw.attrbox(@cell[row][col], Slithernix::Cdk::ACS_ULCORNER,
-                         Slithernix::Cdk::ACS_URCORNER, Slithernix::Cdk::ACS_LLCORNER,
-                         Slithernix::Cdk::ACS_LRCORNER, Slithernix::Cdk::ACS_HLINE,
-                         Slithernix::Cdk::ACS_VLINE, attr)
+                                          Slithernix::Cdk::ACS_URCORNER, Slithernix::Cdk::ACS_LLCORNER,
+                                          Slithernix::Cdk::ACS_LRCORNER, Slithernix::Cdk::ACS_HLINE,
+                                          Slithernix::Cdk::ACS_VLINE, attr)
             return
           end
           if @col_space != 0 && @row_space == 0
             if row == 1
               Slithernix::Cdk::Draw.attrbox(@cell[row][col], Slithernix::Cdk::ACS_ULCORNER,
-                           Slithernix::Cdk::ACS_URCORNER, Slithernix::Cdk::ACS_LTEE,
-                           Slithernix::Cdk::ACS_RTEE, Slithernix::Cdk::ACS_HLINE,
-                           Slithernix::Cdk::ACS_VLINE, attr)
+                                            Slithernix::Cdk::ACS_URCORNER, Slithernix::Cdk::ACS_LTEE,
+                                            Slithernix::Cdk::ACS_RTEE, Slithernix::Cdk::ACS_HLINE,
+                                            Slithernix::Cdk::ACS_VLINE, attr)
               return
             elsif row > 1 && row < rows
               Slithernix::Cdk::Draw.attrbox(@cell[row][col], Slithernix::Cdk::ACS_LTEE, Slithernix::Cdk::ACS_RTEE,
-                           Slithernix::Cdk::ACS_LTEE, Slithernix::Cdk::ACS_RTEE, Slithernix::Cdk::ACS_HLINE,
-                           Slithernix::Cdk::ACS_VLINE, attr)
+                                            Slithernix::Cdk::ACS_LTEE, Slithernix::Cdk::ACS_RTEE, Slithernix::Cdk::ACS_HLINE,
+                                            Slithernix::Cdk::ACS_VLINE, attr)
               return
             elsif row == rows
               Slithernix::Cdk::Draw.attrbox(@cell[row][col], Slithernix::Cdk::ACS_LTEE, Slithernix::Cdk::ACS_RTEE,
-                           Slithernix::Cdk::ACS_LLCORNER, Slithernix::Cdk::ACS_LRCORNER, Slithernix::Cdk::ACS_HLINE,
-                           Slithernix::Cdk::ACS_VLINE, attr)
+                                            Slithernix::Cdk::ACS_LLCORNER, Slithernix::Cdk::ACS_LRCORNER, Slithernix::Cdk::ACS_HLINE,
+                                            Slithernix::Cdk::ACS_VLINE, attr)
               return
             end
           end
           if @col_space == 0 && @row_space != 0
             if col == 1
               Slithernix::Cdk::Draw.attrbox(@cell[row][col], Slithernix::Cdk::ACS_ULCORNER,
-                           Slithernix::Cdk::ACS_TTEE, Slithernix::Cdk::ACS_LLCORNER, Slithernix::Cdk::ACS_BTEE,
-                           Slithernix::Cdk::ACS_HLINE, Slithernix::Cdk::ACS_VLINE, attr)
+                                            Slithernix::Cdk::ACS_TTEE, Slithernix::Cdk::ACS_LLCORNER, Slithernix::Cdk::ACS_BTEE,
+                                            Slithernix::Cdk::ACS_HLINE, Slithernix::Cdk::ACS_VLINE, attr)
               return
             elsif col > 1 && col < cols
               Slithernix::Cdk::Draw.attrbox(@cell[row][col], Slithernix::Cdk::ACS_TTEE, Slithernix::Cdk::ACS_TTEE,
-                           Slithernix::Cdk::ACS_BTEE, Slithernix::Cdk::ACS_BTEE, Slithernix::Cdk::ACS_HLINE,
-                           Slithernix::Cdk::ACS_VLINE, attr)
+                                            Slithernix::Cdk::ACS_BTEE, Slithernix::Cdk::ACS_BTEE, Slithernix::Cdk::ACS_HLINE,
+                                            Slithernix::Cdk::ACS_VLINE, attr)
               return
             elsif col == cols
               Slithernix::Cdk::Draw.attrbox(@cell[row][col], Slithernix::Cdk::ACS_TTEE,
-                           Slithernix::Cdk::ACS_URCORNER, Slithernix::Cdk::ACS_BTEE, Slithernix::Cdk::ACS_LRCORNER,
-                           Slithernix::Cdk::ACS_HLINE, Slithernix::Cdk::ACS_VLINE, attr)
+                                            Slithernix::Cdk::ACS_URCORNER, Slithernix::Cdk::ACS_BTEE, Slithernix::Cdk::ACS_LRCORNER,
+                                            Slithernix::Cdk::ACS_HLINE, Slithernix::Cdk::ACS_VLINE, attr)
               return
             end
           end
@@ -732,52 +734,52 @@ module Slithernix
             if col == 1
               # Draw the top left corner
               Slithernix::Cdk::Draw.attrbox(@cell[row][col], Slithernix::Cdk::ACS_ULCORNER,
-                           Slithernix::Cdk::ACS_TTEE, Slithernix::Cdk::ACS_LTEE, Slithernix::Cdk::ACS_PLUS,
-                           Slithernix::Cdk::ACS_HLINE, Slithernix::Cdk::ACS_VLINE, attr)
+                                            Slithernix::Cdk::ACS_TTEE, Slithernix::Cdk::ACS_LTEE, Slithernix::Cdk::ACS_PLUS,
+                                            Slithernix::Cdk::ACS_HLINE, Slithernix::Cdk::ACS_VLINE, attr)
             elsif col > 1 && col < cols
               # Draw the top middle box
               Slithernix::Cdk::Draw.attrbox(@cell[row][col], Slithernix::Cdk::ACS_TTEE, Slithernix::Cdk::ACS_TTEE,
-                           Slithernix::Cdk::ACS_PLUS, Slithernix::Cdk::ACS_PLUS, Slithernix::Cdk::ACS_HLINE,
-                           Slithernix::Cdk::ACS_VLINE, attr)
+                                            Slithernix::Cdk::ACS_PLUS, Slithernix::Cdk::ACS_PLUS, Slithernix::Cdk::ACS_HLINE,
+                                            Slithernix::Cdk::ACS_VLINE, attr)
             elsif col == cols
               # Draw the top right corner
               Slithernix::Cdk::Draw.attrbox(@cell[row][col], Slithernix::Cdk::ACS_TTEE,
-                           Slithernix::Cdk::ACS_URCORNER, Slithernix::Cdk::ACS_PLUS, Slithernix::Cdk::ACS_RTEE,
-                           Slithernix::Cdk::ACS_HLINE, Slithernix::Cdk::ACS_VLINE, attr)
+                                            Slithernix::Cdk::ACS_URCORNER, Slithernix::Cdk::ACS_PLUS, Slithernix::Cdk::ACS_RTEE,
+                                            Slithernix::Cdk::ACS_HLINE, Slithernix::Cdk::ACS_VLINE, attr)
             end
           elsif row > 1 && row < rows
             if col == 1
               # Draw the middle left box
               Slithernix::Cdk::Draw.attrbox(@cell[row][col], Slithernix::Cdk::ACS_LTEE, Slithernix::Cdk::ACS_PLUS,
-                           Slithernix::Cdk::ACS_LTEE, Slithernix::Cdk::ACS_PLUS, Slithernix::Cdk::ACS_HLINE,
-                           Slithernix::Cdk::ACS_VLINE, attr)
+                                            Slithernix::Cdk::ACS_LTEE, Slithernix::Cdk::ACS_PLUS, Slithernix::Cdk::ACS_HLINE,
+                                            Slithernix::Cdk::ACS_VLINE, attr)
             elsif col > 1 && col < cols
               # Draw the middle box
               Slithernix::Cdk::Draw.attrbox(@cell[row][col], Slithernix::Cdk::ACS_PLUS, Slithernix::Cdk::ACS_PLUS,
-                           Slithernix::Cdk::ACS_PLUS, Slithernix::Cdk::ACS_PLUS, Slithernix::Cdk::ACS_HLINE,
-                           Slithernix::Cdk::ACS_VLINE, attr)
+                                            Slithernix::Cdk::ACS_PLUS, Slithernix::Cdk::ACS_PLUS, Slithernix::Cdk::ACS_HLINE,
+                                            Slithernix::Cdk::ACS_VLINE, attr)
             elsif col == cols
               # Draw the middle right box
               Slithernix::Cdk::Draw.attrbox(@cell[row][col], Slithernix::Cdk::ACS_PLUS, Slithernix::Cdk::ACS_RTEE,
-                           Slithernix::Cdk::ACS_PLUS, Slithernix::Cdk::ACS_RTEE, Slithernix::Cdk::ACS_HLINE,
-                           Slithernix::Cdk::ACS_VLINE, attr)
+                                            Slithernix::Cdk::ACS_PLUS, Slithernix::Cdk::ACS_RTEE, Slithernix::Cdk::ACS_HLINE,
+                                            Slithernix::Cdk::ACS_VLINE, attr)
             end
           elsif row == rows
             if col == 1
               # Draw the bottom left corner
               Slithernix::Cdk::Draw.attrbox(@cell[row][col], Slithernix::Cdk::ACS_LTEE, Slithernix::Cdk::ACS_PLUS,
-                           Slithernix::Cdk::ACS_LLCORNER, Slithernix::Cdk::ACS_BTEE, Slithernix::Cdk::ACS_HLINE,
-                           Slithernix::Cdk::ACS_VLINE, attr)
+                                            Slithernix::Cdk::ACS_LLCORNER, Slithernix::Cdk::ACS_BTEE, Slithernix::Cdk::ACS_HLINE,
+                                            Slithernix::Cdk::ACS_VLINE, attr)
             elsif col > 1 && col < cols
               # Draw the bottom middle box
               Slithernix::Cdk::Draw.attrbox(@cell[row][col], Slithernix::Cdk::ACS_PLUS, Slithernix::Cdk::ACS_PLUS,
-                           Slithernix::Cdk::ACS_BTEE, Slithernix::Cdk::ACS_BTEE, Slithernix::Cdk::ACS_HLINE,
-                           Slithernix::Cdk::ACS_VLINE, attr)
+                                            Slithernix::Cdk::ACS_BTEE, Slithernix::Cdk::ACS_BTEE, Slithernix::Cdk::ACS_HLINE,
+                                            Slithernix::Cdk::ACS_VLINE, attr)
             elsif col == cols
               # Draw the bottom right corner
               Slithernix::Cdk::Draw.attrbox(@cell[row][col], Slithernix::Cdk::ACS_PLUS, Slithernix::Cdk::ACS_RTEE,
-                           Slithernix::Cdk::ACS_BTEE, Slithernix::Cdk::ACS_LRCORNER, Slithernix::Cdk::ACS_HLINE,
-                           Slithernix::Cdk::ACS_VLINE, attr)
+                                            Slithernix::Cdk::ACS_BTEE, Slithernix::Cdk::ACS_LRCORNER, Slithernix::Cdk::ACS_HLINE,
+                                            Slithernix::Cdk::ACS_VLINE, attr)
             end
           end
 
@@ -786,27 +788,27 @@ module Slithernix
 
         def drawEachColTitle
           (1..@vcols).each do |x|
-            unless @cell[0][x].nil?
-              @cell[0][x].erase
-              Slithernix::Cdk::Draw.writeChtype(@cell[0][x],
-                               @coltitle_pos[@lcol + x - 1], 0,
-                               @coltitle[@lcol + x - 1], Slithernix::Cdk::HORIZONTAL, 0,
-                               @coltitle_len[@lcol + x - 1])
-              @cell[0][x].refresh
-            end
+            next if @cell[0][x].nil?
+
+            @cell[0][x].erase
+            Slithernix::Cdk::Draw.writeChtype(@cell[0][x],
+                                              @coltitle_pos[@lcol + x - 1], 0,
+                                              @coltitle[@lcol + x - 1], Slithernix::Cdk::HORIZONTAL, 0,
+                                              @coltitle_len[@lcol + x - 1])
+            @cell[0][x].refresh
           end
         end
 
         def drawEachRowTitle
           (1..@vrows).each do |x|
-            unless @cell[x][0].nil?
-              @cell[x][0].erase
-              Slithernix::Cdk::Draw.writeChtype(@cell[x][0],
-                               @rowtitle_pos[@trow + x - 1], 1,
-                               @rowtitle[@trow + x - 1], Slithernix::Cdk::HORIZONTAL, 0,
-                               @rowtitle_len[@trow + x - 1])
-              @cell[x][0].refresh
-            end
+            next if @cell[x][0].nil?
+
+            @cell[x][0].erase
+            Slithernix::Cdk::Draw.writeChtype(@cell[x][0],
+                                              @rowtitle_pos[@trow + x - 1], 1,
+                                              @rowtitle[@trow + x - 1], Slithernix::Cdk::HORIZONTAL, 0,
+                                              @rowtitle_len[@trow + x - 1])
+            @cell[x][0].refresh
           end
         end
 
@@ -815,7 +817,7 @@ module Slithernix
           (1..@vrows).each do |x|
             (1..@vcols).each do |y|
               drawCell(x, y, @trow + x - 1, @lcol + y - 1,
-                  Curses::A_NORMAL, @box_cell)
+                       Curses::A_NORMAL, @box_cell)
             end
           end
         end
@@ -826,7 +828,7 @@ module Slithernix
 
         def drawOldCell
           drawCell(@oldcrow, @oldccol, @oldvrow, @oldvcol,
-              Curses::A_NORMAL, @box_cell)
+                   Curses::A_NORMAL, @box_cell)
         end
 
         # This function draws the matrix widget.
@@ -877,23 +879,23 @@ module Slithernix
 
         # This function erases the matrix widget from the screen.
         def erase
-          if validCDKObject
-            # Clear the matrix cells.
-            Slithernix::Cdk.eraseCursesWindow(@cell[0][0])
-            (1..@vrows).each do |x|
-              Slithernix::Cdk.eraseCursesWindow(@cell[x][0])
-            end
-            (1..@vcols).each do |x|
-              Slithernix::Cdk.eraseCursesWindow(@cell[0][x])
-            end
-            (1..@vrows).each do |x|
-              (1..@vcols).each do |y|
-                Slithernix::Cdk.eraseCursesWindow(@cell[x][y])
-              end
-            end
-            Slithernix::Cdk.eraseCursesWindow(@shadow_win)
-            Slithernix::Cdk.eraseCursesWindow(@win)
+          return unless validCDKObject
+
+          # Clear the matrix cells.
+          Slithernix::Cdk.eraseCursesWindow(@cell[0][0])
+          (1..@vrows).each do |x|
+            Slithernix::Cdk.eraseCursesWindow(@cell[x][0])
           end
+          (1..@vcols).each do |x|
+            Slithernix::Cdk.eraseCursesWindow(@cell[0][x])
+          end
+          (1..@vrows).each do |x|
+            (1..@vcols).each do |y|
+              Slithernix::Cdk.eraseCursesWindow(@cell[x][y])
+            end
+          end
+          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
+          Slithernix::Cdk.eraseCursesWindow(@win)
         end
 
         # Set the callback function
@@ -902,14 +904,15 @@ module Slithernix
         end
 
         # This function sets the values of the matrix widget.
-        def setCells(info, rows, maxcols, sub_size)
+        def setCells(_info, rows, _maxcols, sub_size)
           rows = @rows if rows > @rows
 
           # Copy in the new info.
           (1..rows).each do |x|
             (1..@cols).each do |y|
               if x <= rows && y <= sub_size[x]
-                @info[x][y] = @info[x][y][0..[@colwidths[y], @info[x][y].size].min]
+                @info[x][y] =
+                  @info[x][y][0..[@colwidths[y], @info[x][y].size].min]
               else
                 cleanCell(x, y)
               end
@@ -928,7 +931,10 @@ module Slithernix
 
         # This cleans one cell in the matrix widget.
         def cleanCell(row, col)
-          @info[row][col] = '' if row > 0 && row <= @rows && col > col <= @cols
+          return unless row > 0 && row <= @rows && col > col && col <= @cols
+
+          @info[row][col] =
+            ''
         end
 
         # This allows us to hyper-warp to a cell
@@ -940,8 +946,8 @@ module Slithernix
           if (row == -1) || (row > @rows)
             # Create the row scale widget.
             scale = Slithernix::Cdk::Scale.new(@screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                   '<C>Jump to which row.', '</5/B>Row: ', Curses::A_NORMAL,
-                                   5, 1, 1, @rows, 1, 1, true, false)
+                                               '<C>Jump to which row.', '</5/B>Row: ', Curses::A_NORMAL,
+                                               5, 1, 1, @rows, 1, 1, true, false)
 
             # Activate the scale and get the row.
             new_row = scale.activate([])
@@ -952,8 +958,8 @@ module Slithernix
           if (col == -1) || (col > @cols)
             # Create the column scale widget.
             scale = Slithernix::Cdk::Scale.new(@screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                   '<C>Jump to which column', '</5/B>Col: ', Curses::A_NORMAL,
-                                   5, 1, 1, @cols, 1, 1, true, false)
+                                               '<C>Jump to which column', '</5/B>Col: ', Curses::A_NORMAL,
+                                               5, 1, 1, @cols, 1, 1, true, false)
 
             # Activate the scale and get the column.
             new_col = scale.activate([])
@@ -985,18 +991,16 @@ module Slithernix
               @trow = 1
               @crow = newrow
               @row = newrow
+            elsif row_shift + @vrows < @rows
+              @trow += row_shift
+              @crow = 1
+              @row += row_shift
+            # Just shift down by row_shift
             else
-              if row_shift + @vrows < @rows
-                # Just shift down by row_shift
-                @trow += row_shift
-                @crow = 1
-                @row += row_shift
-              else
-                # We need to munge the values
-                @trow = @rows - @vrows + 1
-                @crow = row_shift + @vrows - @rows + 1
-                @row = newrow
-              end
+              # We need to munge the values
+              @trow = @rows - @vrows + 1
+              @crow = row_shift + @vrows - @rows + 1
+              @row = newrow
             end
           elsif row_shift < 0
             # We are moving up.
@@ -1004,18 +1008,16 @@ module Slithernix
               @trow = 1
               @row = newrow
               @crow = newrow
+            elsif row_shift + @vrows > 1
+              @trow += row_shift
+              @row += row_shift
+              @crow = 1
+            # Just shift up by row_shift...
             else
-              if row_shift + @vrows > 1
-                # Just shift up by row_shift...
-                @trow += row_shift
-                @row += row_shift
-                @crow = 1
-              else
-                # We need to munge the values
-                @trow = 1
-                @crow = 1
-                @row = 1
-              end
+              # We need to munge the values
+              @trow = 1
+              @crow = 1
+              @row = 1
             end
           end
 
@@ -1026,17 +1028,15 @@ module Slithernix
               @lcol = 1
               @ccol = newcol
               @col = newcol
+            elsif col_shift + @vcols < @cols
+              @lcol += col_shift
+              @ccol = 1
+              @col += col_shift
             else
-              if col_shift + @vcols < @cols
-                @lcol += col_shift
-                @ccol = 1
-                @col += col_shift
-              else
-                # We need to munge with the values
-                @lcol = @cols - @vcols + 1
-                @ccol = col_shift + @vcols - @cols + 1
-                @col = newcol
-              end
+              # We need to munge with the values
+              @lcol = @cols - @vcols + 1
+              @ccol = col_shift + @vcols - @cols + 1
+              @col = newcol
             end
           elsif col_shift < 0
             # We are moving left.
@@ -1044,17 +1044,15 @@ module Slithernix
               @lcol = 1
               @col = newcol
               @ccol = newcol
+            elsif col_shift + @vcols > 1
+              @lcol += col_shift
+              @col += col_shift
+              @ccol = 1
+            # Just shift left by col_shift
             else
-              if col_shift + @vcols > 1
-                # Just shift left by col_shift
-                @lcol += col_shift
-                @col += col_shift
-                @ccol = 1
-              else
-                @lcol = 1
-                @col = 1
-                @ccol = 1
-              end
+              @lcol = 1
+              @col = 1
+              @ccol = 1
             end
           end
 
@@ -1090,6 +1088,7 @@ module Slithernix
         def getCell(row, col)
           # Make sure the row/col combination is within the matrix.
           return 0 if row > @rows || col > @cols || row <= 0 || col <= 0
+
           @info[row][col]
         end
 
@@ -1103,9 +1102,9 @@ module Slithernix
 
         def focusCurrent
           Slithernix::Cdk::Draw.attrbox(self.CurMatrixCell, Slithernix::Cdk::ACS_ULCORNER,
-                       Slithernix::Cdk::ACS_URCORNER, Slithernix::Cdk::ACS_LLCORNER,
-                       Slithernix::Cdk::ACS_LRCORNER, Slithernix::Cdk::ACS_HLINE,
-                       Slithernix::Cdk::ACS_VLINE, Curses::A_BOLD)
+                                        Slithernix::Cdk::ACS_URCORNER, Slithernix::Cdk::ACS_LLCORNER,
+                                        Slithernix::Cdk::ACS_LRCORNER, Slithernix::Cdk::ACS_HLINE,
+                                        Slithernix::Cdk::ACS_VLINE, Curses::A_BOLD)
           self.CurMatrixCell.refresh
           highlightCell
         end
@@ -1122,7 +1121,7 @@ module Slithernix
         # This sets the background attribute of the widget.
         def setBKattr(attrib)
           @win.wbkgd(attrib)
-          (0..@vrows).each do |x|
+          (0..@vrows).each do |_x|
             (0..@vcols).each do |y|
               # wbkgd (MATRIX_CELL (widget, x, y), attrib);
             end

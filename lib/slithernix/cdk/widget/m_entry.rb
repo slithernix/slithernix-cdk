@@ -8,7 +8,7 @@ module Slithernix
         attr_reader :disp_type, :field_width, :rows, :field_win
 
         def initialize(cdkscreen, xplace, yplace, title, label, field_attr,
-            filler, disp_type, f_width, f_rows, logical_rows, min, box, shadow)
+                       filler, disp_type, f_width, f_rows, logical_rows, min, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -19,11 +19,13 @@ module Slithernix
 
           # If the field_width is a negative value, the field_width will be
           # COLS-field_width, otherwise the field_width will be the given width.
-          field_width = Slithernix::Cdk.setWidgetDimension(parent_width, field_width, 0)
+          field_width = Slithernix::Cdk.setWidgetDimension(parent_width,
+                                                           field_width, 0)
 
           # If the field_rows is a negative value, the field_rows will be
           # ROWS-field_rows, otherwise the field_rows will be the given rows.
-          field_rows = Slithernix::Cdk.setWidgetDimension(parent_width, field_rows, 0)
+          field_rows = Slithernix::Cdk.setWidgetDimension(parent_width,
+                                                          field_rows, 0)
           box_height = field_rows + 2
 
           # Set some basic values of the mentry field
@@ -54,7 +56,8 @@ module Slithernix
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
+                                  box_height)
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -70,12 +73,12 @@ module Slithernix
           # Create the label window.
           if @label.size > 0
             @label_win = @win.subwin(field_rows, @label_len + 2,
-                ypos + @title_lines + 1, xpos + horizontal_adjust + 1)
+                                     ypos + @title_lines + 1, xpos + horizontal_adjust + 1)
           end
 
           # make the field window.
           @field_win = @win.subwin(field_rows, field_width,
-              ypos + @title_lines + 1, xpos + @label_len + horizontal_adjust + 1)
+                                   ypos + @title_lines + 1, xpos + @label_len + horizontal_adjust + 1)
 
           # Turn on the keypad.
           @field_win.keypad(true)
@@ -113,13 +116,15 @@ module Slithernix
           # creating a new function and calling that one the mentry activation.
           mentry_callback = lambda do |mentry, character|
             cursor_pos = mentry.getCursorPos
-            newchar = Slithernix::Cdk::Display.filterByDisplayType(mentry.disp_type, character)
+            newchar = Slithernix::Cdk::Display.filterByDisplayType(
+              mentry.disp_type, character
+            )
 
             if newchar == Curses::Error
               Slithernix::Cdk.Beep
             else
               mentry.info = mentry.info[0...cursor_pos] + newchar.chr +
-                  mentry.info[cursor_pos..-1]
+                            mentry.info[cursor_pos..-1]
               mentry.current_col += 1
 
               mentry.drawField
@@ -139,7 +144,7 @@ module Slithernix
                   mentry.drawField
                 end
                 # REMEMBER THIS, this line causes a widget to appear in the top left
-                #mentry.field_win.move(mentry.current_row, mentry.current_col)
+                # mentry.field_win.move(mentry.current_row, mentry.current_col)
                 mentry.field_win.refresh
               end
             end
@@ -149,7 +154,7 @@ module Slithernix
           # Do we need to create a shadow.
           if shadow
             @shadow_win = Curses::Window.new(box_height, box_width,
-                ypos + 1, xpos + 1)
+                                             ypos + 1, xpos + 1)
           end
 
           # Register
@@ -221,7 +226,7 @@ module Slithernix
         end
 
         def getCursorPos
-          (@current_row + @top_row) * @field_width + @current_col
+          ((@current_row + @top_row) * @field_width) + @current_col
         end
 
         # This injects a character into the widget.
@@ -262,7 +267,8 @@ module Slithernix
                 if @info.size < field_characters
                   redraw = setTopRow(0)
                   moved = setCurPos(
-                      @info.size / @field_width, @info.size % @field_width)
+                    @info.size / @field_width, @info.size % @field_width
+                  )
                 else
                   redraw = setTopRow(@info.size / @field_width, @rows + 1)
                   moved = setCurPos(@rows - 1, @info.size % @field_width)
@@ -397,18 +403,18 @@ module Slithernix
               if redraw
                 drawField
               elsif moved
-                #@field_win.move(@current_row, @current_col)
+                # @field_win.move(@current_row, @current_col)
                 @field_win.refresh
               end
             end
 
             # Should we do a post-process?
-            if !complete && !(@post_process_func.nil?)
+            if !complete && !@post_process_func.nil?
               @post_process_func.call(:MEntry, self, @post_process_data, input)
             end
           end
 
-          setExitType(0) if !complete
+          setExitType(0) unless complete
 
           @result_data = ret
           ret
@@ -416,10 +422,10 @@ module Slithernix
 
         # This moves the mentry field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
-          raise "WTF"
+          raise 'WTF'
           windows = [@win, @field_win, @label_win, @shadow_win]
           move_specific(xplace, yplace, relative, refresh_flag,
-              windows, [])
+                        windows, [])
         end
 
         # This function redraws the multiple line entry field.
@@ -448,7 +454,7 @@ module Slithernix
           end
 
           # Refresh the screen.
-          #@field_win.move(@current_row, @current_col)
+          # @field_win.move(@current_row, @current_col)
           @field_win.refresh
         end
 
@@ -466,7 +472,7 @@ module Slithernix
           # Draw in the label to the widget.
           unless @label_win.nil?
             Slithernix::Cdk::Draw.writeChtype(@label_win, 0, 0, @label, Slithernix::Cdk::HORIZONTAL,
-                             0, @label_len)
+                                              0, @label_len)
             @label_win.refresh
           end
 
@@ -483,12 +489,12 @@ module Slithernix
 
         # This function erases the multiple line entry field from the screen.
         def erase
-          if validCDKObject
-            Slithernix::Cdk.eraseCursesWindow(@field_win)
-            Slithernix::Cdk.eraseCursesWindow(@label_win)
-            Slithernix::Cdk.eraseCursesWindow(@win)
-            Slithernix::Cdk.eraseCursesWindow(@shadow_win)
-          end
+          return unless validCDKObject
+
+          Slithernix::Cdk.eraseCursesWindow(@field_win)
+          Slithernix::Cdk.eraseCursesWindow(@label_win)
+          Slithernix::Cdk.eraseCursesWindow(@win)
+          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
         end
 
         # This function destroys a multiple line entry field widget.
@@ -583,7 +589,7 @@ module Slithernix
         end
 
         def focus
-          #@field_win.move(0, @current_col)
+          # @field_win.move(0, @current_col)
           @field_win.refresh
         end
 

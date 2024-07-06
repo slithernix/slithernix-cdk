@@ -2,20 +2,20 @@
 require_relative 'example'
 
 class EntryExample < Example
-  def EntryExample.parse_opts(opts, param)
+  def self.parse_opts(opts, param)
     opts.banner = 'Usage: dialog_ex.rb [options]'
 
     param.x_value = Slithernix::Cdk::CENTER
     param.y_value = Slithernix::Cdk::CENTER
     param.box = true
     param.shadow = false
-    super(opts, param)
+    super
   end
 
   # This program demonstrates the Cdk dialog widget.
-  def EntryExample.main
+  def self.main
     title = "<C>Enter a\n<C>directory name."
-    label = "</U/5>Directory:<!U!5>"
+    label = '</U/5>Directory:<!U!5>'
 
     params = parse(ARGV)
 
@@ -43,7 +43,7 @@ class EntryExample < Example
       params.shadow,
     )
 
-    xxxcb = lambda do |cdktype, widget, client_data, key|
+    xxxcb = lambda do |_cdktype, _widget, _client_data, _key|
       true
     end
 
@@ -55,7 +55,7 @@ class EntryExample < Example
       cdkscreen.destroy
       Slithernix::Cdk::Screen.endCDK
 
-      puts "Cannot create the entry box. Is the window too small?"
+      puts 'Cannot create the entry box. Is the window too small?'
       exit
     end
 
@@ -71,26 +71,26 @@ class EntryExample < Example
 
     # Tell them what they typed.
     case directory.exit_type
-      when :ESCAPE_HIT
-        mesg = [
-          "<C>You hit escape. No information passed back.",
-          "",
-          "<C>Press any key to continue."
-        ]
-      when :NORMAL
-        mesg = [
-          "<C>You typed in the following",
-          "<C>(%.*s)" % [246, info],  # FIXME: magic number
-          "",
-          "<C>Press any key to continue."
-        ]
+    when :ESCAPE_HIT
+      mesg = [
+        '<C>You hit escape. No information passed back.',
+        '',
+        '<C>Press any key to continue.'
+      ]
+    when :NORMAL
+      mesg = [
+        '<C>You typed in the following',
+        format('<C>(%.*s)', 246, info), # FIXME: magic number
+        '',
+        '<C>Press any key to continue.'
+      ]
     end
 
     directory.destroy
     cdkscreen.popupLabel(mesg, mesg.size)
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
-    exit  # EXIT_SUCCESS
+    exit # EXIT_SUCCESS
   end
 end
 

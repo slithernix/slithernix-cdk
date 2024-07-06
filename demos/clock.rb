@@ -3,7 +3,7 @@ require 'optparse'
 require_relative '../lib/slithernix/cdk'
 
 class Clock
-  def Clock.main
+  def self.main
     box_label = OptionParser.getopts('b')['b']
 
     # Set up CDK
@@ -15,7 +15,7 @@ class Clock
 
     # Set the labels up.
     mesg = [
-        '</1/B>HH:MM:SS',
+      '</1/B>HH:MM:SS',
     ]
 
     # Declare the labels.
@@ -37,8 +37,8 @@ class Clock
       # End curses...
       Slithernix::Cdk.endCDK
 
-      puts "Cannot create the label. Is the window too small?"
-      exit  # EXIT_FAILURE
+      puts 'Cannot create the label. Is the window too small?'
+      exit # EXIT_FAILURE
     end
 
     Curses.curs_set(0)
@@ -51,11 +51,8 @@ class Clock
 
       # Put the current time in a string.
       mesg = [
-        '<C></B/29>%02d:%02d:%02d' % [
-          current_time.hour,
-          current_time.min,
-          current_time.sec,
-        ]
+        format('<C></B/29>%02d:%02d:%02d', current_time.hour,
+               current_time.min, current_time.sec)
       ]
 
       # Set the label contents
@@ -73,7 +70,7 @@ class Clock
     demo.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
-    #ExitProgram (EXIT_SUCCESS);
+    # ExitProgram (EXIT_SUCCESS);
   end
 end
 

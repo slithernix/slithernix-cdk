@@ -5,13 +5,13 @@ module Slithernix
     class Widget
       class ItemList < Slithernix::Cdk::Widget
         def initialize(cdkscreen, xplace, yplace, title, label, item, count,
-            default_item, box, shadow)
+                       default_item, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
           field_width = 0
 
-          if !createList(item, count)
+          unless createList(item, count)
             destroy
             return nil
           end
@@ -25,7 +25,7 @@ module Slithernix
           @label_win = nil
 
           # Translate the label string to a chtype array
-          if !(label.nil?) && label.size > 0
+          if !label.nil? && label.size > 0
             label_len = []
             @label = Slithernix::Cdk.char2Chtype(label, label_len, [])
             @label_len = label_len[0]
@@ -33,7 +33,7 @@ module Slithernix
 
           # Set the box width. Allow an extra char in field width for cursor
           field_width = maximumFieldWidth + 1
-          box_width = field_width + @label_len + 2 * @border_size
+          box_width = field_width + @label_len + (2 * @border_size)
           box_width = setTitle(title, box_width)
           box_height += @title_lines
 
@@ -45,7 +45,8 @@ module Slithernix
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
+                                  box_height)
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -59,8 +60,8 @@ module Slithernix
           # Make the label window if there was a label.
           if @label.size > 0
             @label_win = @win.subwin(1, @label_len,
-                ypos + @border_size + @title_lines,
-                xpos + @border_size)
+                                     ypos + @border_size + @title_lines,
+                                     xpos + @border_size)
 
             if @label_win.nil?
               destroy
@@ -71,9 +72,10 @@ module Slithernix
           @win.keypad(true)
 
           # Make the field window.
-          if !createFieldWin(
-              ypos + @border_size + @title_lines,
-              xpos + @label_len + @border_size)
+          unless createFieldWin(
+            ypos + @border_size + @title_lines,
+            xpos + @label_len + @border_size
+          )
             destroy
             return nil
           end
@@ -97,7 +99,7 @@ module Slithernix
           # Do we want a shadow?
           if shadow
             @shadow_win = Curses::Window.new(box_height, box_width,
-                ypos + 1, xpos + 1)
+                                             ypos + 1, xpos + 1)
             if @shadow_win.nil?
               destroy
               return nil
@@ -201,12 +203,13 @@ module Slithernix
             end
 
             # Should we call a post-process?
-            if !complete && !(@post_process_func.nil?)
-              @post_process_func.call(:ItemList, self, @post_process_data, input)
+            if !complete && !@post_process_func.nil?
+              @post_process_func.call(:ItemList, self, @post_process_data,
+                                      input)
             end
           end
 
-          if !complete
+          unless complete
             drawField(true)
             setExitType(0)
           end
@@ -219,7 +222,7 @@ module Slithernix
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @field_win, @label_win, @shadow_win]
           move_specific(xplace, yplace, relative, refresh_flag,
-              windows, [])
+                        windows, [])
         end
 
         # This draws the widget on the screen.
@@ -232,7 +235,7 @@ module Slithernix
           # Draw in the label to the widget.
           unless @label_win.nil?
             Slithernix::Cdk::Draw.writeChtype(@label_win, 0, 0, @label, Slithernix::Cdk::HORIZONTAL,
-                             0, @label.size)
+                                              0, @label.size)
           end
 
           # Box the widget if asked.
@@ -277,12 +280,12 @@ module Slithernix
 
         # This function removes the widget from the screen.
         def erase
-          if validCDKObject
-            Slithernix::Cdk.eraseCursesWindow(@field_win)
-            Slithernix::Cdk.eraseCursesWindow(@label_win)
-            Slithernix::Cdk.eraseCursesWindow(@win)
-            Slithernix::Cdk.eraseCursesWindow(@shadow_win)
-          end
+          return unless validCDKObject
+
+          Slithernix::Cdk.eraseCursesWindow(@field_win)
+          Slithernix::Cdk.eraseCursesWindow(@label_win)
+          Slithernix::Cdk.eraseCursesWindow(@win)
+          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
         end
 
         def destroyInfo
@@ -315,26 +318,26 @@ module Slithernix
 
         # This function sets the contents of the list
         def setValues(item, count, default_item)
-          if createList(item, count)
-            old_width = @field_width
+          return unless createList(item, count)
 
-            # Set the default item.
-            if default_item >= 0 && default_item < @list_size
-              @current_item = default_item
-              @default_item = default_item
-            end
+          old_width = @field_width
 
-            # This will not resize the outer windows but can still make a usable
-            # field width if the title made the outer window wide enough
-            updateFieldWidth
-            if @field_width > old_width
-              createFieldWin(@field_win.begy, @field_win.begx)
-            end
-
-            # Draw the field.
-            erase
-            draw(@box)
+          # Set the default item.
+          if default_item >= 0 && default_item < @list_size
+            @current_item = default_item
+            @default_item = default_item
           end
+
+          # This will not resize the outer windows but can still make a usable
+          # field width if the title made the outer window wide enough
+          updateFieldWidth
+          if @field_width > old_width
+            createFieldWin(@field_win.begy, @field_win.begx)
+          end
+
+          # Draw the field.
+          erase
+          draw(@box)
         end
 
         def getValues(size)
@@ -345,9 +348,9 @@ module Slithernix
         # This sets the default/current item of the itemlist
         def setCurrentItem(current_item)
           # Set the default item.
-          if current_item >= 0 && current_item < @list_size
-            @current_item = current_item
-          end
+          return unless current_item >= 0 && current_item < @list_size
+
+          @current_item = current_item
         end
 
         def getCurrentItem
@@ -357,13 +360,13 @@ module Slithernix
         # This sets the default item in the list.
         def setDefaultItem(default_item)
           # Make sure the item is in the correct range.
-          if default_item < 0
-            @default_item = 0
-          elsif default_item >= @list_size
-            @default_item = @list_size - 1
-          else
-            @default_item = default_item
-          end
+          @default_item = if default_item < 0
+                            0
+                          elsif default_item >= @list_size
+                            @list_size - 1
+                          else
+                            default_item
+                          end
         end
 
         def getDefaultItem
@@ -405,7 +408,7 @@ module Slithernix
             # Now we need to justify the strings.
             (0...count).each do |x|
               new_pos[x] = Slithernix::Cdk.justifyString(field_width + 1,
-                                             new_len[x], new_pos[x])
+                                                         new_len[x], new_pos[x])
             end
 
             if status
@@ -432,14 +435,12 @@ module Slithernix
           (0...@list_size).each do |x|
             max_width = [max_width, @item_len[x]].max
           end
-          max_width = [max_width, 0].max
-
-          max_width
+          [max_width, 0].max
         end
 
         def updateFieldWidth
           want = maximumFieldWidth + 1
-          have = @box_width - @label_len - 2 * @border_size
+          have = @box_width - @label_len - (2 * @border_size)
           @field_width = [want, have].min
         end
 

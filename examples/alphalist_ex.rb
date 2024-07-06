@@ -6,7 +6,7 @@ class AlphalistExample < CLIExample
   @@my_undo_list = []
   @@my_user_list = []
 
-  def AlphalistExample.getUserList(list)
+  def self.getUserList(list)
     while (ent = Etc.getpwent)
       list << ent.name
     end
@@ -16,7 +16,7 @@ class AlphalistExample < CLIExample
     list.size
   end
 
-  def AlphalistExample.fill_undo(widget, deleted, data)
+  def self.fill_undo(widget, deleted, data)
     top = widget.scroll_field.getCurrentTop
     item = widget.getCurrentItem
 
@@ -35,7 +35,7 @@ class AlphalistExample < CLIExample
     end
   end
 
-  def AlphalistExample.parse_opts(opts, params)
+  def self.parse_opts(opts, params)
     opts.banner = 'Usage: alpha_ex.rb [options]'
 
     # default values
@@ -47,7 +47,7 @@ class AlphalistExample < CLIExample
     params.w_value = 0
     params.c = false
 
-    super(opts, params)
+    super
 
     opts.on('-c', 'create the data after the widget') do
       params.c = true
@@ -58,10 +58,10 @@ class AlphalistExample < CLIExample
   #
   # Options (in addition to normal CLI parameters):
   #   -c      create the data after the widget
-  def AlphalistExample.main
+  def self.main
     params = parse(ARGV)
     title = "<C></B/24>Alpha List\n<C>Title"
-    label = "</B>Account: "
+    label = '</B>Account: '
     word = ''
     user_list = []
 
@@ -69,8 +69,8 @@ class AlphalistExample < CLIExample
     user_size = AlphalistExample.getUserList(user_list)
 
     if user_size <= 0
-      $stderr.puts "Cannot get user list"
-      exit  # EXIT_FAILURE
+      warn 'Cannot get user list'
+      exit # EXIT_FAILURE
     end
 
     @@my_user_list = user_list.clone
@@ -103,12 +103,11 @@ class AlphalistExample < CLIExample
       cdkscreen.destroy
       Slithernix::Cdk::Screen.endCDK
 
-      $stderr.puts "Cannot create widget."
-      exit #EXIT_FAILURE
+      warn 'Cannot create widget.'
+      exit # EXIT_FAILURE
     end
 
-
-    do_delete = lambda do |cdktype, widget, alpha_list, key|
+    do_delete = lambda do |_cdktype, widget, _alpha_list, _key|
       size = []
       list = widget.getContents(size)
       size = size[0]
@@ -119,7 +118,7 @@ class AlphalistExample < CLIExample
         first = widget.getCurrentItem
 
         AlphalistExample.fill_undo(widget, first, list[first])
-        list = list[0...first] + list[first+1..-1]
+        list = list[0...first] + list[first + 1..-1]
         widget.setContents(list, size - 1)
         widget.scroll_field.setCurrentTop(save)
         widget.setCurrentItem(first)
@@ -129,7 +128,7 @@ class AlphalistExample < CLIExample
       result
     end
 
-    do_delete1 = lambda do |cdktype, widget, alpha_list, key|
+    do_delete1 = lambda do |_cdktype, widget, _alpha_list, _key|
       size = []
       list = widget.getContents(size)
       size = size[0]
@@ -142,7 +141,7 @@ class AlphalistExample < CLIExample
         first -= 1
         if first + 1 > 0
           AlphalistExample.fill_undo(widget, first, list[first])
-          list = list[0...first] + list[first+1..-1]
+          list = list[0...first] + list[first + 1..-1]
           widget.setContents(list, size - 1)
           widget.scroll_field.setCurrentTop(save)
           widget.setCurrentItem(first)
@@ -153,7 +152,7 @@ class AlphalistExample < CLIExample
       result
     end
 
-    do_help = lambda do |cdktype, widget, client_data, key|
+    do_help = lambda do |_cdktype, _widget, _client_data, _key|
       message = [
         'Alpha List tests:',
         '',
@@ -167,7 +166,7 @@ class AlphalistExample < CLIExample
       true
     end
 
-    do_reload = lambda do |cdktype, widget, alpha_list, key|
+    do_reload = lambda do |_cdktype, widget, _alpha_list, _key|
       result = false
 
       if @@my_user_list.size > 0
@@ -179,7 +178,7 @@ class AlphalistExample < CLIExample
       result
     end
 
-    do_undo = lambda do |cdktype, widget, alpha_list, key|
+    do_undo = lambda do |_cdktype, widget, _alpha_list, _key|
       result = false
       if @@my_undo_list.size > 0
         size = []
@@ -187,7 +186,7 @@ class AlphalistExample < CLIExample
         size = size[0] + 1
         deleted = @@my_undo_list[-1].deleted
         original = @@my_user_list[@@my_undo_list[-1].original]
-        newlist = oldlist[0..deleted-1] + [original] + oldlist[deleted..-1]
+        newlist = oldlist[0..deleted - 1] + [original] + oldlist[deleted..-1]
         widget.setContents(newlist, size)
         widget.scroll_field.setCurrentTop(@@my_undo_list[-1].topline)
         widget.setCurrentItem(@@my_undo_list[-1].position)
@@ -200,9 +199,12 @@ class AlphalistExample < CLIExample
 
     alpha_list.bind(:AlphaList, '?', do_help, nil)
     alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(1), do_help, nil)
-    alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(2), do_delete, alpha_list)
-    alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(3), do_delete1, alpha_list)
-    alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(4), do_reload, alpha_list)
+    alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(2), do_delete,
+                    alpha_list)
+    alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(3), do_delete1,
+                    alpha_list)
+    alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(4), do_reload,
+                    alpha_list)
     alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(5), do_undo, alpha_list)
 
     alpha_list.setContents(user_list, user_size) if params.c
@@ -221,11 +223,11 @@ class AlphalistExample < CLIExample
     elsif alpha_list.exit_type == :NORMAL
       mesg = [
         '<C>You selected the following',
-        "<C>(%.*s)" % [246, word],  # FIXME magic number
+        format('<C>(%.*s)', 246, word), # FIXME: magic number
         '',
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 4);
+      cdkscreen.popupLabel(mesg, 4)
     end
 
     # Clean up.

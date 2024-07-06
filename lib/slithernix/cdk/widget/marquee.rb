@@ -85,21 +85,19 @@ module Slithernix
                 first_char += 1
                 view_size -= 1
               end
+            elsif start_pos > @border_size
+              last_char += 1
+              view_size += 1
+              start_pos -= 1
+            elsif last_char < mesg_length[0] + padding
+              first_char += 1
+              last_char += 1
+              start_pos = @border_size
+              view_size = view_limit
             else
-              if start_pos > @border_size
-                last_char += 1
-                view_size += 1
-                start_pos -= 1
-              elsif last_char < mesg_length[0] + padding
-                first_char += 1
-                last_char += 1
-                start_pos = @border_size
-                view_size = view_limit
-              else
-                start_pos = @border_size
-                first_char += 1
-                view_size -= 1
-              end
+              start_pos = @border_size
+              first_char += 1
+              view_size -= 1
             end
 
             # OK, let's check if we have to start over.
@@ -162,10 +160,10 @@ module Slithernix
 
         # This erases the widget.
         def erase
-          if validCDKObject
-            Slithernix::Cdk.eraseCursesWindow(@win)
-            Slithernix::Cdk.eraseCursesWindow(@shadow_win)
-          end
+          return unless validCDKObject
+
+          Slithernix::Cdk.eraseCursesWindow(@win)
+          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
         end
 
         # This sets the widget box attribute.
@@ -216,27 +214,27 @@ module Slithernix
 
           window = Curses::Window.new(box_height, box_width, ytmp[0], xtmp[0])
 
-          unless window.nil?
-            @win = window
-            @box_height = box_height
-            @box_width = box_width
+          return if window.nil?
 
-            @win.keypad(true)
+          @win = window
+          @box_height = box_height
+          @box_width = box_width
 
-            # Do we want a shadow?
-            if @shadow
-              @shadow_win = @screen.window.subwin(box_height, box_width,
-                  ytmp[0] + 1, xtmp[0] + 1)
-            end
-          end
+          @win.keypad(true)
+
+          # Do we want a shadow?
+          return unless @shadow
+
+          @shadow_win = @screen.window.subwin(box_height, box_width,
+                                              ytmp[0] + 1, xtmp[0] + 1)
         end
 
         def self.discardWin(winp)
-          unless winp.nil?
-            winp.erase
-            winp.refresh
-            winp.close
-          end
+          return if winp.nil?
+
+          winp.erase
+          winp.refresh
+          winp.close
         end
       end
     end

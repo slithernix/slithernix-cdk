@@ -4,7 +4,7 @@ require_relative 'example'
 class ItemlistExample < Example
   MONTHS = 12
 
-  def ItemlistExample.parse_opts(opts, param)
+  def self.parse_opts(opts, param)
     opts.banner = 'Usage: itemlist_ex.rb [options]'
 
     param.x_value = Slithernix::Cdk::CENTER
@@ -13,7 +13,7 @@ class ItemlistExample < Example
     param.shadow = false
     param.c = false
 
-    super(opts, param)
+    super
 
     opts.on('-c', 'create the data after the widget') do
       param.c = true
@@ -24,9 +24,9 @@ class ItemlistExample < Example
   #
   # Options (in addition to minimal CLI parameters):
   #      -c      create the data after the widget
-  def ItemlistExample.main
-    title = "<C>Pick A Month"
-    label = "</U/5>Month:"
+  def self.main
+    title = '<C>Pick A Month'
+    label = '</U/5>Month:'
     params = parse(ARGV)
 
     # Get the current date and set the default month to the current month.
@@ -41,18 +41,18 @@ class ItemlistExample < Example
 
     # Create the choice list.
     info = [
-        "<C></5>January",
-        "<C></5>February",
-        "<C></B/19>March",
-        "<C></5>April",
-        "<C></5>May",
-        "<C></K/5>June",
-        "<C></12>July",
-        "<C></5>August",
-        "<C></5>September",
-        "<C></32>October",
-        "<C></5>November",
-        "<C></11>December"
+      '<C></5>January',
+      '<C></5>February',
+      '<C></B/19>March',
+      '<C></5>April',
+      '<C></5>May',
+      '<C></K/5>June',
+      '<C></12>July',
+      '<C></5>August',
+      '<C></5>September',
+      '<C></32>October',
+      '<C></5>November',
+      '<C></11>December'
     ]
 
     # Create the itemlist widget.
@@ -75,7 +75,7 @@ class ItemlistExample < Example
       cdkscreen.destroy
       Slithernix::Cdk::Screen.endCDK
 
-      puts "Cannot create the itemlist box. Is the window too small?"
+      puts 'Cannot create the itemlist box. Is the window too small?'
       exit
     end
 
@@ -87,25 +87,26 @@ class ItemlistExample < Example
     # Check how they exited from the widget.
     if monthlist.exit_type == :ESCAPE_HIT
       mesg = [
-        "<C>You hit escape. No item selected.",
-        "",
-        "<C>Press any key to continue."
+        '<C>You hit escape. No item selected.',
+        '',
+        '<C>Press any key to continue.'
       ]
       monthlist.screen.popupLabel(mesg, 3)
     elsif monthlist.exit_type == :NORMAL
       human_count_choice = choice + 1
       suffix = case human_count_choice
-        when 1 then 'st'
-        when 2 then 'nd'
-        when 3 then 'rd'
-        else 'th'
-      end
+               when 1 then 'st'
+               when 2 then 'nd'
+               when 3 then 'rd'
+               else 'th'
+               end
 
       mesg = [
-        "<C>You selected the %d%s item which is" % [human_count_choice, suffix],
+        format('<C>You selected the %d%s item which is', human_count_choice,
+               suffix),
         info[choice],
-        "",
-        "<C>Press any key to continue."
+        '',
+        '<C>Press any key to continue.'
       ]
 
       monthlist.screen.popupLabel(mesg, 4)
@@ -115,7 +116,7 @@ class ItemlistExample < Example
     monthlist.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
-    #ExitProgram (EXIT_SUCCESS);
+    # ExitProgram (EXIT_SUCCESS);
   end
 end
 

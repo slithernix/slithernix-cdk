@@ -3,13 +3,13 @@ require_relative 'example'
 
 class ScrollExample < CLIExample
   @@count = 0
-  def ScrollExample.newLabel(prefix)
-    result = "%s%d" % [prefix, @@count]
+  def self.newLabel(prefix)
+    result = format('%s%d', prefix, @@count)
     @@count += 1
     result
   end
 
-  def ScrollExample.parse_opts(opts, params)
+  def self.parse_opts(opts, params)
     opts.banner = 'Usage: scroll_ex.rb [options]'
 
     # default values
@@ -21,16 +21,16 @@ class ScrollExample < CLIExample
     params.w_value = 50
     params.c = false
     params.spos = Slithernix::Cdk::RIGHT
-    params.title = "<C></5>Pick a file"
+    params.title = '<C></5>Pick a file'
 
-    super(opts, params)
+    super
 
     opts.on('-c', 'create the data after the widget') do
       params.c = true
     end
 
     opts.on('-s SCROLL_POS', OptionParser::DecimalInteger,
-        'location for the scrollbar') do |spos|
+            'location for the scrollbar') do |spos|
       params.spos = spos
     end
 
@@ -45,7 +45,7 @@ class ScrollExample < CLIExample
   #   -c      create the data after the widget
   #   -s SPOS location for the scrollbar
   #   -t TEXT title for the widget
-  def ScrollExample.main
+  def self.main
     # Declare variables.
     temp = ''
 
@@ -60,7 +60,7 @@ class ScrollExample < CLIExample
 
     # Use the current directory list to fill the radio list
     item = []
-    count = Slithernix::Cdk.getDirectoryContents(".", item)
+    count = Slithernix::Cdk.getDirectoryContents('.', item)
 
     # Create the scrolling list.
     scroll_list = Slithernix::Cdk::Widget::Scroll.new(
@@ -83,33 +83,33 @@ class ScrollExample < CLIExample
       cdkscreen.destroyCDKScreen
       Slithernix::Cdk::Screen.endCDK
 
-      puts "Cannot make scrolling list.  Is the window too small?"
+      puts 'Cannot make scrolling list.  Is the window too small?'
       exit
     end
 
     scroll_list.setItems(item, count, true) if params.c
 
-    addItemCB = lambda do |type, widget, client_data, input|
-      widget.addItem(ScrollExample.newLabel("add"))
+    addItemCB = lambda do |_type, widget, _client_data, _input|
+      widget.addItem(ScrollExample.newLabel('add'))
       widget.screen.refresh
       true
     end
 
-    insItemCB = lambda do |type, widget, client_data, input|
-      widget.insertItem(ScrollExample.newLabel("insert"))
+    insItemCB = lambda do |_type, widget, _client_data, _input|
+      widget.insertItem(ScrollExample.newLabel('insert'))
       widget.screen.refresh
       true
     end
 
-    delItemCB = lambda do |type, widget, client_data, input|
+    delItemCB = lambda do |_type, widget, _client_data, _input|
       widget.deleteItem(widget.getCurrentItem)
       widget.screen.refresh
       true
     end
 
     scroll_list.bind(:Scroll, 'a', addItemCB, nil)
-    scroll_list.bind(:Scroll, 'i', insItemCB, nil);
-    scroll_list.bind(:Scroll, 'd', delItemCB, nil);
+    scroll_list.bind(:Scroll, 'i', insItemCB, nil)
+    scroll_list.bind(:Scroll, 'd', delItemCB, nil)
 
     # Activate the scrolling list.
     selection = scroll_list.activate('')
@@ -126,8 +126,8 @@ class ScrollExample < CLIExample
       the_item = Slithernix::Cdk.chtype2Char(scroll_list.item[selection])
       msg = [
         '<C>You selected the following file',
-        "<C>%.*s" % [236, the_item],  # FIXME magic number
-        "<C>Press any key to continue."
+        format('<C>%.*s', 236, the_item), # FIXME: magic number
+        '<C>Press any key to continue.'
       ]
     end
 

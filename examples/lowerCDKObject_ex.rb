@@ -2,17 +2,17 @@
 require_relative 'example'
 
 class LowerCDKObjectExample < Example
-  def LowerCDKObjectExample.parse_opts(opts, param)
+  def self.parse_opts(opts, param)
     opts.banner = 'Usage: lowerCDKObject_ex.rb [options]'
 
     param.x_value = Slithernix::Cdk::CENTER
     param.y_value = Slithernix::Cdk::BOTTOM
     param.box = false
     param.shadow = false
-    super(opts, param)
+    super
   end
 
-  def LowerCDKObjectExample.main
+  def self.main
     # Declare variables.
     params = parse(ARGV)
 
@@ -21,37 +21,39 @@ class LowerCDKObjectExample < Example
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     mesg1 = [
-        "label1 label1 label1 label1 label1 label1 label1",
-        "label1 label1 label1 label1 label1 label1 label1",
-        "label1 label1 label1 label1 label1 label1 label1",
-        "label1 label1 label1 label1 label1 label1 label1",
-        "label1 label1 label1 label1 label1 label1 label1",
-        "label1 label1 label1 label1 label1 label1 label1",
-        "label1 label1 label1 label1 label1 label1 label1",
-        "label1 label1 label1 label1 label1 label1 label1",
-        "label1 label1 label1 label1 label1 label1 label1",
-        "label1 label1 label1 label1 label1 label1 label1"
+      'label1 label1 label1 label1 label1 label1 label1',
+      'label1 label1 label1 label1 label1 label1 label1',
+      'label1 label1 label1 label1 label1 label1 label1',
+      'label1 label1 label1 label1 label1 label1 label1',
+      'label1 label1 label1 label1 label1 label1 label1',
+      'label1 label1 label1 label1 label1 label1 label1',
+      'label1 label1 label1 label1 label1 label1 label1',
+      'label1 label1 label1 label1 label1 label1 label1',
+      'label1 label1 label1 label1 label1 label1 label1',
+      'label1 label1 label1 label1 label1 label1 label1'
     ]
-    label1 = Slithernix::Cdk::Widget::Label.new(cdkscreen, 8, 5, mesg1, 10, true, false)
+    label1 = Slithernix::Cdk::Widget::Label.new(cdkscreen, 8, 5, mesg1, 10,
+                                                true, false)
 
     mesg2 = [
-        "label2 label2 label2 label2 label2 label2 label2",
-        "label2 label2 label2 label2 label2 label2 label2",
-        "label2 label2 label2 label2 label2 label2 label2",
-        "label2 label2 label2 label2 label2 label2 label2",
-        "label2 label2 label2 label2 label2 label2 label2",
-        "label2 label2 label2 label2 label2 label2 label2",
-        "label2 label2 label2 label2 label2 label2 label2",
-        "label2 label2 label2 label2 label2 label2 label2",
-        "label2 label2 label2 label2 label2 label2 label2",
-        "label2 label2 label2 label2 label2 label2 label2"
+      'label2 label2 label2 label2 label2 label2 label2',
+      'label2 label2 label2 label2 label2 label2 label2',
+      'label2 label2 label2 label2 label2 label2 label2',
+      'label2 label2 label2 label2 label2 label2 label2',
+      'label2 label2 label2 label2 label2 label2 label2',
+      'label2 label2 label2 label2 label2 label2 label2',
+      'label2 label2 label2 label2 label2 label2 label2',
+      'label2 label2 label2 label2 label2 label2 label2',
+      'label2 label2 label2 label2 label2 label2 label2',
+      'label2 label2 label2 label2 label2 label2 label2'
     ]
-    label2 = Slithernix::Cdk::Widget::Label.new(cdkscreen, 14, 9, mesg2, 10, true, false)
+    label2 = Slithernix::Cdk::Widget::Label.new(cdkscreen, 14, 9, mesg2, 10,
+                                                true, false)
 
-    mesg = ["</B>1<!B> - lower </U>label1<!U>, </B>2<!B> - lower "]
-    mesg[0] << "</U>label2<!U>, </B>q<!B> - </U>quit<!U>"
+    mesg = ['</B>1<!B> - lower </U>label1<!U>, </B>2<!B> - lower ']
+    mesg[0] << '</U>label2<!U>, </B>q<!B> - </U>quit<!U>'
     instruct = Slithernix::Cdk::Widget::Label.new(cdkscreen, params.x_value, params.y_value,
-                              mesg, 1, params.box, params.shadow)
+                                                  mesg, 1, params.box, params.shadow)
 
     cdkscreen.refresh
 
@@ -73,7 +75,7 @@ class LowerCDKObjectExample < Example
     instruct.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
-    #ExitProgram (EXIT_SUCCESS);
+    # ExitProgram (EXIT_SUCCESS);
   end
 end
 

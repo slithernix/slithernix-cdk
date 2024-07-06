@@ -4,7 +4,8 @@ module Slithernix
   module Cdk
     class Widget
       class Radio < Slithernix::Cdk::Widget::Scroller
-        def initialize(cdkscreen, xplace, yplace, splace, height, width, title, list, list_size, choice_char, def_item, highlight, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, splace, height, width,
+                       title, list, list_size, choice_char, def_item, highlight, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -14,33 +15,35 @@ module Slithernix
 
           bindings = {
             Slithernix::Cdk::BACKCHAR => Curses::KEY_PPAGE,
-            Slithernix::Cdk::FORCHAR  => Curses::KEY_NPAGE,
+            Slithernix::Cdk::FORCHAR => Curses::KEY_NPAGE,
             'g' => Curses::KEY_HOME,
             '1' => Curses::KEY_HOME,
             'G' => Curses::KEY_END,
             '<' => Curses::KEY_HOME,
-            '>' => Curses::KEY_END,
+            '>' => Curses::KEY_END
           }
 
           setBox(box)
 
           # If the height is a negative value, height will be ROWS-height,
           # otherwise the height will be the given height.
-          box_height = Slithernix::Cdk.setWidgetDimension(parent_height, height, 0)
+          box_height = Slithernix::Cdk.setWidgetDimension(parent_height,
+                                                          height, 0)
 
           # If the width is a negative value, the width will be COLS-width,
           # otherwise the width will be the given width.
-          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width, 5)
+          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width,
+                                                         5)
 
           box_width = setTitle(title, box_width)
 
           # Set the box height.
           if @title_lines > box_height
-            box_height = @title_lines + [list_size, 8].min + 2 * @border_size
+            box_height = @title_lines + [list_size, 8].min + (2 * @border_size)
           end
 
           # Adjust the box width if there is a scroll bar.
-          if splace == Slithernix::Cdk::LEFT || splace == Slithernix::Cdk::RIGHT
+          if [Slithernix::Cdk::LEFT, Slithernix::Cdk::RIGHT].include?(splace)
             box_width += 1
             @scrollbar = true
           else
@@ -65,7 +68,8 @@ module Slithernix
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, @box_width, @box_height)
+          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, @box_width,
+                                  @box_height)
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -84,10 +88,10 @@ module Slithernix
           # Create the scrollbar window.
           if splace == Slithernix::Cdk::RIGHT
             @scrollbar_win = @win.subwin(maxViewSize, 1,
-                self.SCREEN_YPOS(ypos), xpos + @box_width - @border_size - 1)
+                                         self.SCREEN_YPOS(ypos), xpos + @box_width - @border_size - 1)
           elsif splace == Slithernix::Cdk::LEFT
             @scrollbar_win = @win.subwin(maxViewSize, 1,
-                self.SCREEN_YPOS(ypos), self.SCREEN_XPOS(xpos))
+                                         self.SCREEN_YPOS(ypos), self.SCREEN_XPOS(xpos))
           else
             @scrollbar_win = nil
           end
@@ -113,7 +117,7 @@ module Slithernix
           # Do we need to create the shadow?
           if shadow
             @shadow_win = Curses::Window.new(box_height, box_width + 1,
-                ypos + 1, xpos + 1)
+                                             ypos + 1, xpos + 1)
           end
 
           # Setup the key bindings
@@ -130,7 +134,7 @@ module Slithernix
           ypos = self.SCREEN_YPOS(@current_item - @current_top)
           xpos = self.SCREEN_XPOS(0) + scrollbar_adj
 
-          #@input_window.move(ypos, xpos)
+          # @input_window.move(ypos, xpos)
           @input_window.refresh
         end
 
@@ -226,12 +230,12 @@ module Slithernix
             end
 
             # Should we call a post-process?
-            if !complete && !(@post_process_func.nil?)
+            if !complete && !@post_process_func.nil?
               @post_process_func.call(:Radio, self, @post_process_data, input)
             end
           end
 
-          if !complete
+          unless complete
             drawList(@box)
             setExitType(0)
           end
@@ -245,13 +249,13 @@ module Slithernix
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @scrollbar_win, @shadow_win]
           move_specific(xplace, yplace, relative, refresh_flag,
-              windows, subwidgets)
+                        windows, subwidgets)
         end
 
         # This function draws the radio widget.
-        def draw(box)
+        def draw(_box)
           # Do we need to draw in the shadow?
-          Slithernix::Cdk::Draw.drawShadow(@shadow_win) if !(@shadow_win.nil?)
+          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
 
           drawTitle(@win)
 
@@ -267,37 +271,37 @@ module Slithernix
           # Draw the list
           (0...@view_size).each do |j|
             k = j + @current_top
-            if k < @list_size
-              xpos = self.SCREEN_XPOS(0)
-              ypos = self.SCREEN_YPOS(j)
+            next unless k < @list_size
 
-              screen_pos = self.SCREENPOS(k, scrollbar_adj)
+            xpos = self.SCREEN_XPOS(0)
+            ypos = self.SCREEN_YPOS(j)
 
-              # Draw the empty string.
-              Slithernix::Cdk::Draw.writeBlanks(@win, xpos, ypos, Slithernix::Cdk::HORIZONTAL, 0,
-                               @box_width - @border_size)
+            screen_pos = self.SCREENPOS(k, scrollbar_adj)
 
-              # Draw the line.
-              Slithernix::Cdk::Draw.writeChtype(
-                @win,
-                screen_pos >= 0 ? screen_pos : 1,
-                ypos,
-                @item[k],
-                Slithernix::Cdk::HORIZONTAL,
-                screen_pos >= 0 ? 0 : (1 - screen_pos),
-                @item_len[k],
-              )
+            # Draw the empty string.
+            Slithernix::Cdk::Draw.writeBlanks(@win, xpos, ypos, Slithernix::Cdk::HORIZONTAL, 0,
+                                              @box_width - @border_size)
 
-              # Draw the selected choice
-              xpos += scrollbar_adj
-              @win.mvwaddch(ypos, xpos, @left_box_char)
-              @win.mvwaddch(
-                ypos,
-                xpos + 1,
-                k == @selected_item ? @choice_char : ' '.ord,
-              )
-              @win.mvwaddch(ypos, xpos + 2, @right_box_char)
-            end
+            # Draw the line.
+            Slithernix::Cdk::Draw.writeChtype(
+              @win,
+              screen_pos >= 0 ? screen_pos : 1,
+              ypos,
+              @item[k],
+              Slithernix::Cdk::HORIZONTAL,
+              screen_pos >= 0 ? 0 : (1 - screen_pos),
+              @item_len[k],
+            )
+
+            # Draw the selected choice
+            xpos += scrollbar_adj
+            @win.mvwaddch(ypos, xpos, @left_box_char)
+            @win.mvwaddch(
+              ypos,
+              xpos + 1,
+              k == @selected_item ? @choice_char : ' '.ord,
+            )
+            @win.mvwaddch(ypos, xpos + 2, @right_box_char)
           end
 
           # Highlight the current item
@@ -374,10 +378,10 @@ module Slithernix
 
         # This function erases the radio widget
         def erase
-          if validCDKObject
-            Slithernix::Cdk.eraseCursesWindow(@win)
-            Slithernix::Cdk.eraseCursesWindow(@shadow_win)
-          end
+          return unless validCDKObject
+
+          Slithernix::Cdk.eraseCursesWindow(@win)
+          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
         end
 
         # This sets various attributes of the radio list.
@@ -507,7 +511,9 @@ module Slithernix
                 status = false
                 break
               end
-              new_pos[j] = Slithernix::Cdk.justifyString(box_width, new_len[j], new_pos[j]) + 3
+              new_pos[j] =
+                Slithernix::Cdk.justifyString(box_width, new_len[j],
+                                              new_pos[j]) + 3
               widest_item = [widest_item, new_len[j]].max
             end
             if status
@@ -524,13 +530,14 @@ module Slithernix
         # Determine how many characters we can shift to the right
         # before all the items have been scrolled off the screen.
         def AvailableWidth
-          @box_width - 2 * @border_size - 3
+          @box_width - (2 * @border_size) - 3
         end
 
         def updateViewWidth(widest)
           @max_left_char = if @box_width > widest
                            then 0
-                           else widest - self.AvailableWidth
+                           else
+                             widest - self.AvailableWidth
                            end
         end
 

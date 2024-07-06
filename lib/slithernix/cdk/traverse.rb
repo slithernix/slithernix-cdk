@@ -43,14 +43,14 @@ module Slithernix
         first = n
 
         while true
-          n+= 1
+          n += 1
           n = 0 if n >= screen.widget_count
           curwidg = screen.widget[n]
           if curwidg&.accepts_focus
             result = curwidg
             break
-          else
-            break if n == first
+          elsif n == first
+            break
           end
         end
 
@@ -119,7 +119,7 @@ module Slithernix
       end
 
       def self.traverseCDKOnce(screen, curwidg, key_code,
-          function_key, func_menu_key)
+                               function_key, func_menu_key)
         case key_code
         when Curses::KEY_BTAB
           switchFocus(setCDKFocusPrevious(screen), curwidg)
@@ -161,18 +161,18 @@ module Slithernix
 
           screen.exit_status = Slithernix::Cdk::Screen::NOEXIT
 
-          while !((curwidg = getCDKFocusCurrent(screen)).nil?) &&
-              screen.exit_status == Slithernix::Cdk::Screen::NOEXIT
+          while !(curwidg = getCDKFocusCurrent(screen)).nil? &&
+                screen.exit_status == Slithernix::Cdk::Screen::NOEXIT
             function = []
             key = curwidg.getch(function)
 
-            # TODO look at more direct way to do this
+            # TODO: look at more direct way to do this
             check_menu_key = lambda do |key_code, function_key|
               checkMenuKey(key_code, function_key)
             end
 
             traverseCDKOnce(screen, curwidg, key,
-                function[0], check_menu_key)
+                            function[0], check_menu_key)
           end
 
           if screen.exit_status == Slithernix::Cdk::Screen::EXITOK
@@ -182,8 +182,6 @@ module Slithernix
         end
         result
       end
-
-      private
 
       def self.limitFocusIndex(screen, value)
         if value >= screen.widget_count || value < 0
@@ -203,10 +201,10 @@ module Slithernix
 
       def self.unsetFocus(widg)
         Curses.curs_set(0)
-        unless widg.nil?
-          widg.has_focus = false
-          widg.unfocus
-        end
+        return if widg.nil?
+
+        widg.has_focus = false
+        widg.unfocus
       end
 
       def self.setFocus(widg)
@@ -233,7 +231,7 @@ module Slithernix
         done = false
 
         switchFocus(menu, oldwidg)
-        while !done
+        until done
           key = menu.getch([])
 
           case key

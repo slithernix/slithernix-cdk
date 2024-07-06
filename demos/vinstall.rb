@@ -5,10 +5,10 @@ require_relative '../lib/slithernix/cdk'
 
 class Vinstall
   FPUsage = '-f filename [-s source directory] [-d destination directory]' <<
-      ' [-t title] [-o Output file] [q]'
+            ' [-t title] [-o Output file] [q]'
 
   # Copy the file.
-  def Vinstall.copyFile(cdkscreen, src, dest)
+  def self.copyFile(_cdkscreen, src, dest)
     # TODO: error handling
     FileUtils.cp(src, dest)
     :OK
@@ -16,31 +16,31 @@ class Vinstall
 
   # This makes sure the given directory exists.  If it doesn't then it will
   # make it.
-  def Vinstall.verifyDirectory(cdkscreen, directory)
+  def self.verifyDirectory(cdkscreen, directory)
     status = 0
-    buttons = [
-      'Yes',
-      'No',
+    buttons = %w[
+      Yes
+      No
     ]
     unless Dir.exist?(directory)
       # Create the question.
       mesg = [
         '<C>The directory',
-        '<C>%.256s' % [directory],
+        format('<C>%.256s', directory),
         '<C>Does not exist. Do you want to',
         '<C>create it?',
       ]
 
       # Ask them if they want to create the directory.
       if cdkscreen.popupDialog(mesg, mesg.size, buttons, buttons.size) == 0
-        # TODO error handling
-        if Dir.mkdir(directory, 0755) != 0
+        # TODO: error handling
+        if Dir.mkdir(directory, 0o755) != 0
           # Create the error message.
           error = [
-              '<C>Could not create the directory',
-              '<C>%.256s' % [directory],
-              #'<C>%.256s' % [strerror (errno)]
-              '<C>Check the permissions and try again.',
+            '<C>Could not create the directory',
+            format('<C>%.256s', directory),
+            # '<C>%.256s' % [strerror (errno)]
+            '<C>Check the permissions and try again.',
           ]
 
           # Pop up the error message.
@@ -61,7 +61,7 @@ class Vinstall
     status
   end
 
-  def Vinstall.main
+  def self.main
     source_path = ''
     dest_path = ''
     filename = ''
@@ -80,15 +80,16 @@ class Vinstall
 
     # Make sure we have everything we need.
     if filename == ''
-      $stderr.puts 'Usage: %s %s' % [File.basename($PROGRAM_NAME), Vinstall::FPUsage]
-      exit  # EXIT_FAILURE
+      warn format('Usage: %s %s', File.basename($PROGRAM_NAME),
+                  Vinstall::FPUsage)
+      exit # EXIT_FAILURE
     end
 
     file_list = []
     # Open the file list file and read it in.
     count = Slithernix::Cdk.readFile(filename, file_list)
     if count == 0
-      $stderr.puts '%s: Input filename <%s> is empty.' % [ARGV[0], filename]
+      warn format('%s: Input filename <%s> is empty.', ARGV[0], filename)
     end
 
     # Cycle through what was given to us and save it.
@@ -106,7 +107,12 @@ class Vinstall
     # Create the title label.
     title_mesg = [
       '<C></32/B<#HL(30)>',
-      title == '' ? '<C></32/B>CDK Installer' : '<C></32/B>%.256s' % [title],
+      if title == ''
+        '<C></32/B>CDK Installer'
+      else
+        format('<C></32/B>%.256s',
+               title)
+      end,
       '<C></32/B><#HL(30)>'
     ]
     title_win = Slithernix::Cdk::Widget::Label.new(
@@ -183,7 +189,7 @@ class Vinstall
       title_win.destroy
       cdkscreen.destroy
       Slithernix::Cdk::Screen.endCDK
-      exit  # EXIT_FAILURE
+      exit # EXIT_FAILURE
     end
 
     # Verify that the destination directory is valid.
@@ -191,7 +197,7 @@ class Vinstall
       title_win.destroy
       cdkscreen.destroy
       Slithernix::Cdk::Screen.endCDK
-      exit  # EXIT_FAILURE
+      exit # EXIT_FAILURE
     end
 
     # Create the histogram.
@@ -254,26 +260,28 @@ class Vinstall
       # If the 'file' list file has 2 columns, the first is the source
       # filename, the second being the destination
       files = file_list[x].split
-      old_path = '%s/%s' % [source_dir, file_list[x]]
-      new_path = '%s/%s' % [dest_dir, file_list[x]]
+      old_path = format('%s/%s', source_dir, file_list[x])
+      new_path = format('%s/%s', dest_dir, file_list[x])
       if files.size == 2
         # Create the correct paths.
-        old_path = '%s/%s' % [source_dir, files[0]]
-        new_path = '%s/%s' % [dest_dir, files[1]]
+        old_path = format('%s/%s', source_dir, files[0])
+        new_path = format('%s/%s', dest_dir, files[1])
       end
 
       # Copy the file from the source to the destiation.
       ret = Vinstall.copyFile(cdkscreen, old_path, new_path)
       temp = ''
       if ret == :CanNotOpenSource
-        temp = '</16>Error: Can not open source file "%.256s"<!16>' % [old_path]
+        temp = format('</16>Error: Can not open source file "%.256s"<!16>',
+                      old_path)
         errors += 1
       elsif ret == :CanNotOpenDest
-        temp = '</16>Error: Can not open destination file "%.256s"<!16>' %
-            [new_path]
+        temp = format(
+          '</16>Error: Can not open destination file "%.256s"<!16>', new_path
+        )
         errors += 1
       else
-        temp = '</25>%.256s -> %.256s' % [old_path, new_path]
+        temp = format('</25>%.256s -> %.256s', old_path, new_path)
       end
 
       # Add the message to the scrolling window.
@@ -293,9 +301,9 @@ class Vinstall
     if errors > 0
       # Create the information for the dialog box.
       buttons = [
-          'Look At Errors Now',
-          'Save Output To A File',
-          'Ignore Errors',
+        'Look At Errors Now',
+        'Save Output To A File',
+        'Ignore Errors',
       ]
       mesg = [
         '<C>There were errors in the installation.',
@@ -316,27 +324,23 @@ class Vinstall
       elsif ret == 1
         install_output.inject('s')
       end
-    else
+    elsif output != ''
       # If they specified the name of an output file, then save the
       # results of the installation to that file.
-      if output != ''
-        install_output.dump(output)
-      else
-        # Ask them if they want to save the output of the scrolling window.
-        if quiet == false
-          buttons = [
-              'No',
-              'Yes',
-          ]
-          mesg = [
-              '<C>Do you want to save the output of the',
-              '<C>scrolling window to a file?',
-          ]
+      install_output.dump(output)
+    elsif quiet == false
+      # Ask them if they want to save the output of the scrolling window.
+      buttons = %w[
+        No
+        Yes
+      ]
+      mesg = [
+        '<C>Do you want to save the output of the',
+        '<C>scrolling window to a file?',
+      ]
 
-          if cdkscreen.popupDialog(mesg, 2, buttons, 2) == 1
-            install_output.inject('s')
-          end
-        end
+      if cdkscreen.popupDialog(mesg, 2, buttons, 2) == 1
+        install_output.inject('s')
       end
     end
 
@@ -346,7 +350,7 @@ class Vinstall
     install_output.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
-    exit  # EXIT_SUCCESS
+    exit # EXIT_SUCCESS
   end
 end
 

@@ -4,22 +4,22 @@ module Slithernix
       # Given a string, returns the equivalent display type
       def self.char2DisplayType(string)
         table = {
-          "CHAR"     => :CHAR,
-          "HCHAR"    => :HCHAR,
-          "INT"      => :INT,
-          "HINT"     => :HINT,
-          "UCHAR"    => :UCHAR,
-          "LCHAR"    => :LCHAR,
-          "UHCHAR"   => :UHCHAR,
-          "LHCHAR"   => :LHCHAR,
-          "MIXED"    => :MIXED,
-          "HMIXED"   => :HMIXED,
-          "UMIXED"   => :UMIXED,
-          "LMIXED"   => :LMIXED,
-          "UHMIXED"  => :UHMIXED,
-          "LHMIXED"  => :LHMIXED,
-          "VIEWONLY" => :VIEWONLY,
-          0          => :INVALID,
+          'CHAR' => :CHAR,
+          'HCHAR' => :HCHAR,
+          'INT' => :INT,
+          'HINT' => :HINT,
+          'UCHAR' => :UCHAR,
+          'LCHAR' => :LCHAR,
+          'UHCHAR' => :UHCHAR,
+          'LHCHAR' => :LHCHAR,
+          'MIXED' => :MIXED,
+          'HMIXED' => :HMIXED,
+          'UMIXED' => :UMIXED,
+          'LMIXED' => :LMIXED,
+          'UHMIXED' => :UHMIXED,
+          'LHMIXED' => :LHMIXED,
+          'VIEWONLY' => :VIEWONLY,
+          0 => :INVALID
         }
 
         if table.include?(string)
@@ -45,15 +45,19 @@ module Slithernix
         result = input
         if !Slithernix::Cdk.isChar(input)
           result = Curses::Error
-        elsif [:INT, :HINT].include?(type) && !Slithernix::Cdk.digit?(result.chr)
+        elsif %i[INT
+                 HINT].include?(type) && !Slithernix::Cdk.digit?(result.chr)
           result = Curses::Error
-        elsif [:CHAR, :UCHAR, :LCHAR, :UHCHAR, :LHCHAR].include?(type) && Slithernix::Cdk.digit?(result.chr)
+        elsif %i[CHAR UCHAR LCHAR UHCHAR
+                 LHCHAR].include?(type) && Slithernix::Cdk.digit?(result.chr)
           result = Curses::Error
         elsif type == :VIEWONLY
           result = ERR
-        elsif [:UCHAR, :UHCHAR, :UMIXED, :UHMIXED].include?(type) && Slithernix::Cdk.alpha?(result.chr)
+        elsif %i[UCHAR UHCHAR UMIXED
+                 UHMIXED].include?(type) && Slithernix::Cdk.alpha?(result.chr)
           result = result.chr.upcase.ord
-        elsif [:LCHAR, :LHCHAR, :LMIXED, :LHMIXED].include?(type) && Slithernix::Cdk.alpha?(result.chr)
+        elsif %i[LCHAR LHCHAR LMIXED
+                 LHMIXED].include?(type) && Slithernix::Cdk.alpha?(result.chr)
           result = result.chr.downcase.ord
         end
 

@@ -3,9 +3,9 @@ require_relative 'example'
 
 class TraverseExample < Example
   MY_MAX = 3
-  YES_NO = ['Yes', 'NO']
-  MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-      'Oct', 'Nov', 'Dec']
+  YES_NO = %w[Yes NO]
+  MONTHS = %w[Jan Feb Mar Apr May Jun Jul Aug Sep
+              Oct Nov Dec]
   CHOICES = ['[ ]', '[*]']
   # Exercise all widget except
   #     CDKMENU
@@ -46,8 +46,8 @@ class TraverseExample < Example
 
   def self.make_alphalist(cdkscreen, x, y)
     Slithernix::Cdk::AlphaList.new(cdkscreen, x, y, 10, 15, 'AlphaList', '->',
-                              TraverseExample::MONTHS, TraverseExample::MONTHS.size,
-                              '_'.ord, Curses::A_REVERSE, true, false)
+                                   TraverseExample::MONTHS, TraverseExample::MONTHS.size,
+                                   '_'.ord, Curses::A_REVERSE, true, false)
   end
 
   def self.make_button(cdkscreen, x, y)
@@ -56,46 +56,46 @@ class TraverseExample < Example
 
   def self.make_buttonbox(cdkscreen, x, y)
     Slithernix::Cdk::Widget::ButtonBox.new(cdkscreen, x, y, 10, 16, 'ButtonBox', 6, 2,
-                              TraverseExample::MONTHS, TraverseExample::MONTHS.size,
-                              Curses::A_REVERSE, true, false)
+                                           TraverseExample::MONTHS, TraverseExample::MONTHS.size,
+                                           Curses::A_REVERSE, true, false)
   end
 
   def self.make_calendar(cdkscreen, x, y)
     Slithernix::Cdk::Widget::Calendar.new(cdkscreen, x, y, 'Calendar', 25, 1, 2000,
-                             Curses.color_pair(16) | Curses::A_BOLD,
-                             Curses.color_pair(24) | Curses::A_BOLD,
-                             Curses.color_pair(32) | Curses::A_BOLD,
-                             Curses.color_pair(40) | Curses::A_REVERSE,
-                             true, false)
+                                          Curses.color_pair(16) | Curses::A_BOLD,
+                                          Curses.color_pair(24) | Curses::A_BOLD,
+                                          Curses.color_pair(32) | Curses::A_BOLD,
+                                          Curses.color_pair(40) | Curses::A_REVERSE,
+                                          true, false)
   end
 
   def self.make_dialog(cdkscreen, x, y)
     mesg = [
-        'This is a simple dialog box',
-        'Is it simple enough?',
+      'This is a simple dialog box',
+      'Is it simple enough?',
     ]
 
     Slithernix::Cdk::Widget::Dialog.new(cdkscreen, x, y, mesg, mesg.size,
-                           TraverseExample::YES_NO, TraverseExample::YES_NO.size,
-                           Curses.color_pair(2) | Curses::A_REVERSE,
-                           true, true, false)
+                                        TraverseExample::YES_NO, TraverseExample::YES_NO.size,
+                                        Curses.color_pair(2) | Curses::A_REVERSE,
+                                        true, true, false)
   end
 
   def self.make_dscale(cdkscreen, x, y)
     Slithernix::Cdk::DScale.new(cdkscreen, x, y, 'DScale', 'Value',
-                           Curses::A_NORMAL, 15, 0.0, 0.0, 100.0, 1.0, (1.0 * 2.0), 1,
-                           true, false)
+                                Curses::A_NORMAL, 15, 0.0, 0.0, 100.0, 1.0, (1.0 * 2.0), 1,
+                                true, false)
   end
 
   def self.make_entry(cdkscreen, x, y)
     Slithernix::Cdk::Widget::Entry.new(cdkscreen, x, y, '', 'Entry:', Curses::A_NORMAL,
-                          '.'.ord, :MIXED, 40, 0, 256, true, false)
+                                       '.'.ord, :MIXED, 40, 0, 256, true, false)
   end
 
   def self.make_fscale(cdkscreen, x, y)
     Slithernix::Cdk::Widget::FScale.new(cdkscreen, x, y, 'FScale', 'Value',
-                           Curses::A_NORMAL, 15, 0.0, 0.0, 100.0, 1.0, (1.0 * 2.0), 1,
-                           true, false)
+                                        Curses::A_NORMAL, 15, 0.0, 0.0, 100.0, 1.0, (1.0 * 2.0), 1,
+                                        true, false)
   end
 
   def self.make_fslider(cdkscreen, x, y)
@@ -103,28 +103,28 @@ class TraverseExample < Example
     high = 64.0
     inc = 0.1
     Slithernix::Cdk::Widget::FSlider.new(cdkscreen, x, y, 'FSlider', 'Label',
-                            Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord,
-                            20, low, low, high, inc, (inc * 2), 3, true, false)
+                                         Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord,
+                                         20, low, low, high, inc, (inc * 2), 3, true, false)
   end
 
   def self.make_fselect(cdkscreen, x, y)
     Slithernix::Cdk::Widget::FSelect.new(cdkscreen, x, y, 15, 25, 'FSelect', '->',
-                            Curses::A_NORMAL, '_'.ord, Curses::A_REVERSE, '</5>', '</48>',
-                            '</N>', '</N>', true, false)
+                                         Curses::A_NORMAL, '_'.ord, Curses::A_REVERSE, '</5>', '</48>',
+                                         '</N>', '</N>', true, false)
   end
 
   def self.make_graph(cdkscreen, x, y)
     values = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
     graph_chars = '0123456789'
     widget = Slithernix::Cdk::Widget::Graph.new(cdkscreen, x, y, 10, 25, 'title', 'X-axis',
-                            'Y-axis')
+                                                'Y-axis')
     widget.set(values, values.size, graph_chars, true, :PLOT)
     widget
   end
 
   def self.make_histogram(cdkscreen, x, y)
     widget = Slithernix::Cdk::Widget::Histogram.new(cdkscreen, x, y, 1, 20, Slithernix::Cdk::HORIZONTAL,
-                                'Histogram', true, false)
+                                                    'Histogram', true, false)
     widget.set(:PERCENT, Slithernix::Cdk::CENTER, Curses::A_BOLD, 0, 10, 6,
                ' '.ord | Curses::A_REVERSE, true)
     widget
@@ -132,19 +132,21 @@ class TraverseExample < Example
 
   def self.make_itemlist(cdkscreen, x, y)
     Slithernix::Cdk::Widget::ItemList.new(cdkscreen, x, y, '', 'Month',
-                             TraverseExample::MONTHS, TraverseExample::MONTHS.size, 1, true, false)
+                                          TraverseExample::MONTHS, TraverseExample::MONTHS.size, 1, true, false)
   end
 
   def self.make_label(cdkscreen, x, y)
     mesg = [
-        'This is a simple label.',
-        'Is it simple enough?',
+      'This is a simple label.',
+      'Is it simple enough?',
     ]
-    Slithernix::Cdk::Widget::Label.new(cdkscreen, x, y, mesg, mesg.size, true, true)
+    Slithernix::Cdk::Widget::Label.new(cdkscreen, x, y, mesg, mesg.size, true,
+                                       true)
   end
 
   def self.make_marquee(cdkscreen, x, y)
-    widget = Slithernix::Cdk::Widget::Marquee.new(cdkscreen, x, y, 30, true, true)
+    widget = Slithernix::Cdk::Widget::Marquee.new(cdkscreen, x, y, 30, true,
+                                                  true)
     widget.activate('This is a message', 5, 3, true)
     widget.destroy
     nil
@@ -164,30 +166,30 @@ class TraverseExample < Example
     vrows = 3
 
     (0..numrows).each do |n|
-      rowtitle << 'row%d' % [n]
+      rowtitle << (format('row%d', n))
     end
 
     (0..numcols).each do |n|
-      coltitle << 'col%d' % [n]
+      coltitle << (format('col%d', n))
       colwidth << coltitle[n].size
       coltypes << :UCHAR
       maxwidth = colwidth[n] if colwidth[n] > maxwidth
     end
 
     Slithernix::Cdk::Widget::Matrix.new(cdkscreen, x, y, rows, cols, vrows, vcols,
-                           'Matrix', rowtitle, coltitle, colwidth, coltypes, -1, -1, '.'.ord,
-                           Slithernix::Cdk::COL, true, true, false)
+                                        'Matrix', rowtitle, coltitle, colwidth, coltypes, -1, -1, '.'.ord,
+                                        Slithernix::Cdk::COL, true, true, false)
   end
 
   def self.make_mentry(cdkscreen, x, y)
     Slithernix::Cdk::Widget::MEntry.new(cdkscreen, x, y, 'MEntry', 'Label',
-                           Curses::A_BOLD, '.', :MIXED, 20, 5, 20, 0, true, false)
+                                        Curses::A_BOLD, '.', :MIXED, 20, 5, 20, 0, true, false)
   end
 
   def self.make_radio(cdkscreen, x, y)
     Slithernix::Cdk::Widget::Radio.new(cdkscreen, x, y, Slithernix::Cdk::RIGHT, 10, 20, 'Radio',
-                          TraverseExample::MONTHS, TraverseExample::MONTHS.size,
-                          '#'.ord | Curses::A_REVERSE, 1, Curses::A_REVERSE, true, false)
+                                       TraverseExample::MONTHS, TraverseExample::MONTHS.size,
+                                       '#'.ord | Curses::A_REVERSE, 1, Curses::A_REVERSE, true, false)
   end
 
   def self.make_scale(cdkscreen, x, y)
@@ -195,13 +197,13 @@ class TraverseExample < Example
     high = 25
     inc = 2
     Slithernix::Cdk::Widget::Scale.new(cdkscreen, x, y, 'Scale', 'Label',
-                          Curses::A_NORMAL, 5, low, low, high, inc, (inc * 2), true, false)
+                                       Curses::A_NORMAL, 5, low, low, high, inc, (inc * 2), true, false)
   end
 
   def self.make_scroll(cdkscreen, x, y)
     Slithernix::Cdk::Widget::Scroll.new(cdkscreen, x, y, Slithernix::Cdk::RIGHT, 10, 20, 'Scroll',
-                           TraverseExample::MONTHS, TraverseExample::MONTHS.size,
-                           true, Curses::A_REVERSE, true, false)
+                                        TraverseExample::MONTHS, TraverseExample::MONTHS.size,
+                                        true, Curses::A_REVERSE, true, false)
   end
 
   def self.make_slider(cdkscreen, x, y)
@@ -209,22 +211,22 @@ class TraverseExample < Example
     high = 25
     inc = 1
     Slithernix::Cdk::Widget::Slider.new(cdkscreen, x, y, 'Slider', 'Label',
-                           Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord,
-                           20, low, low, high, inc, (inc * 2), true, false)
+                                        Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord,
+                                        20, low, low, high, inc, (inc * 2), true, false)
   end
 
   def self.make_selection(cdkscreen, x, y)
     Slithernix::Cdk::Widget::Selection.new(cdkscreen, x, y, Slithernix::Cdk::NONE, 8, 20,
-                              'Selection', TraverseExample::MONTHS, TraverseExample::MONTHS.size,
-                              TraverseExample::CHOICES, TraverseExample::CHOICES.size,
-                              Curses::A_REVERSE, true, false)
+                                           'Selection', TraverseExample::MONTHS, TraverseExample::MONTHS.size,
+                                           TraverseExample::CHOICES, TraverseExample::CHOICES.size,
+                                           Curses::A_REVERSE, true, false)
   end
 
   def self.make_swindow(cdkscreen, x, y)
     widget = Slithernix::Cdk::Widget::SWindow.new(cdkscreen, x, y, 6, 25,
-                              'SWindow', 100, true, false)
+                                                  'SWindow', 100, true, false)
     (0...30).each do |n|
-      widget.add('Line %d' % [n], Slithernix::Cdk::BOTTOM)
+      widget.add(format('Line %d', n), Slithernix::Cdk::BOTTOM)
     end
     widget.activate([])
     widget
@@ -234,41 +236,42 @@ class TraverseExample < Example
     overlay = '</B/6>(___)<!6> </5>___-____'
     plate = '(###) ###-####'
     widget = Slithernix::Cdk::Widget::Template.new(cdkscreen, x, y, 'Template', 'Label',
-                               plate, overlay, true, false)
+                                                   plate, overlay, true, false)
     widget.activate([])
     widget
   end
 
   def self.make_uscale(cdkscreen, x, y)
     low = 0
-    high = 65535
+    high = 65_535
     inc = 1
     Slithernix::Cdk::UScale.new(cdkscreen, x, y, 'UScale', 'Label',
-                           Curses::A_NORMAL, 5, low, low, high, inc, (inc * 32), true, false)
+                                Curses::A_NORMAL, 5, low, low, high, inc, (inc * 32), true, false)
   end
 
   def self.make_uslider(cdkscreen, x, y)
     low = 0
-    high = 65535
+    high = 65_535
     inc = 1
     Slithernix::Cdk::Widget::USlider.new(cdkscreen, x, y, 'USlider', 'Label',
-                            Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord, 20,
-                            low, low, high, inc, (inc * 32), true, false)
+                                         Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord, 20,
+                                         low, low, high, inc, (inc * 32), true, false)
   end
 
   def self.make_viewer(cdkscreen, x, y)
     button = ['Ok']
     widget = Slithernix::Cdk::Widget::Viewer.new(cdkscreen, x, y, 10, 20, button, 1,
-                             Curses::A_REVERSE, true, false)
+                                                 Curses::A_REVERSE, true, false)
 
     widget.set('Viewer', TraverseExample::MONTHS, TraverseExample::MONTHS.size,
-        Curses::A_REVERSE, false, true, true)
+               Curses::A_REVERSE, false, true, true)
     widget.activate([])
     widget
   end
 
   def self.rebind_esc(widg)
-    widg.bind(widg.widget_type, Slithernix::Cdk::KEY_F(1), :getc, Slithernix::Cdk::KEY_ESC)
+    widg.bind(widg.widget_type, Slithernix::Cdk::KEY_F(1), :getc,
+              Slithernix::Cdk::KEY_ESC)
   end
 
   def self.make_any(cdkscreen, menu, type)
@@ -372,7 +375,7 @@ class TraverseExample < Example
   end
 
   # Whenever we get a menu selection, create the selected widget.
-  def self.preHandler(cdktype, widget, client_data, input)
+  def self.preHandler(_cdktype, widget, _client_data, input)
     screen = nil
     window = nil
 
@@ -398,7 +401,7 @@ class TraverseExample < Example
   end
 
   # This demonstrates the Cdk widget-traversal
-  def TraverseExample.main
+  def self.main
     menulist = [['Left'], ['Center'], ['Right']]
     submenusize = [TraverseExample::MENU_TABLE.size + 1] * 3
     menuloc = [
@@ -436,7 +439,7 @@ class TraverseExample < Example
       Slithernix::Cdk::Screen.endCDK
 
       puts '? Cannot create menus'
-      exit  # EXIT_FAILURE
+      exit # EXIT_FAILURE
     end
     TraverseExample.rebind_esc(menu)
 
@@ -478,7 +481,7 @@ class TraverseExample < Example
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
 
-    exit  # EXIT_SUCCESS
+    exit # EXIT_SUCCESS
   end
 end
 

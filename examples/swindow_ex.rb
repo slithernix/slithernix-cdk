@@ -2,7 +2,7 @@
 require_relative 'example'
 
 class SwindowExample < CLIExample
-  def SwindowExample.parse_opts(opts, params)
+  def self.parse_opts(opts, params)
     opts.banner = 'Usage: swindow_ex.rb [options]'
 
     # default values
@@ -13,11 +13,11 @@ class SwindowExample < CLIExample
     params.h_value = 6
     params.w_value = 65
 
-    super(opts, params)
+    super
   end
 
   # Demonstrate a scrolling-window.
-  def SwindowExample.main
+  def self.main
     title = '<C></5>Error Log'
 
     # Declare variables.
@@ -49,15 +49,16 @@ class SwindowExample < CLIExample
       cdkscreen.destroy
       Slithernix::Cdk::Screen.endCDK
 
-      puts "Cannot create the scrolling window. Is the window too small?"
-      exit  # EXIT_FAILURE
+      puts 'Cannot create the scrolling window. Is the window too small?'
+      exit # EXIT_FAILURE
     end
 
     # Draw the scrolling window.
     swindow.draw(swindow.box)
 
     # Load up the scrolling window.
-    swindow.add('<C></11>TOP: This is the first line.', Slithernix::Cdk::BOTTOM)
+    swindow.add('<C></11>TOP: This is the first line.',
+                Slithernix::Cdk::BOTTOM)
     swindow.add('<C>Sleeping for 1 second.', Slithernix::Cdk::BOTTOM)
     sleep(1)
 
@@ -95,16 +96,16 @@ class SwindowExample < CLIExample
     # Check how the user exited this widget.
     if swindow.exit_type == :ESCAPE_HIT
       mesg = [
-          '<C>You hit escape to leave this widget.',
-          '',
-          '<C>Press any key to continue.',
+        '<C>You hit escape to leave this widget.',
+        '',
+        '<C>Press any key to continue.',
       ]
       cdkscreen.popupLabel(mesg, 3)
     elsif swindow.exit_type == :NORMAL
       mesg = [
-          '<C>You hit return to exit this widget.',
-          '',
-          '<C>Press any key to continue.'
+        '<C>You hit return to exit this widget.',
+        '',
+        '<C>Press any key to continue.'
       ]
       cdkscreen.popupLabel(mesg, 3)
     end

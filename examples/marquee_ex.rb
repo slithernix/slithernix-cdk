@@ -2,7 +2,7 @@
 require_relative 'example'
 
 class MarqueeExample < Example
-  def MarqueeExample.parse_opts(opts, params)
+  def self.parse_opts(opts, params)
     opts.banner = 'Usage: marquee_ex.rb [options]'
 
     # default values
@@ -23,21 +23,21 @@ class MarqueeExample < Example
     params.start_attr = ''
     params.end_attr = ''
 
-    super(opts, params)
+    super
 
     opts.on('-m TEXT', String, 'Sets the message to display in the marquee',
-        'If no message is provided, one will be created.') do |text|
+            'If no message is provided, one will be created.') do |text|
       params.message = text
     end
 
     opts.on('-R COUNT', OptionParser::DecimalInteger,
-        'Repeat the message the given COUNT',
-        'A of -1 repeats the message forever.') do |count|
+            'Repeat the message the given COUNT',
+            'A of -1 repeats the message forever.') do |count|
       params.repeat_count = count
     end
 
     opts.on('-d COUNT', OptionParser::DecimalInteger,
-        'number of milliseconds to delay between repeats.') do |count|
+            'number of milliseconds to delay between repeats.') do |count|
       params.delay = count
     end
 
@@ -71,15 +71,15 @@ class MarqueeExample < Example
   end
 
   # This program demonstrates the Cdk marquee widget.
-  def MarqueeExample.main
+  def self.main
     # Declare variables.
     temp = ''
 
     params = parse(ARGV)
 
     if params.start_attr.size > 0
-      params.start_attr = "<%s>" % [params.start_attr]
-      params.end_attr = "<%s>" % [params.end_attr]
+      params.start_attr = format('<%s>', params.start_attr)
+      params.end_attr = format('<%s>', params.end_attr)
     end
 
     # Set up CDK
@@ -91,8 +91,8 @@ class MarqueeExample < Example
     Slithernix::Cdk::Draw.initCDKColor
 
     scroll_message = Slithernix::Cdk::Widget::Marquee.new(cdkscreen,
-                                      params.x_value, params.y_value, params.width,
-                                      params.box, params.shadow)
+                                                          params.x_value, params.y_value, params.width,
+                                                          params.box, params.shadow)
 
     # Check if the marquee is nil.
     if scroll_message.nil?
@@ -100,7 +100,7 @@ class MarqueeExample < Example
       cdkscreen.destroy
       Slithernix::Cdk::Screen.endCDK
 
-      puts "Cannot create the marquee window.  Is the window too small?"
+      puts 'Cannot create the marquee window.  Is the window too small?'
       exit # EXIT_FAILURE
     end
 
@@ -112,18 +112,16 @@ class MarqueeExample < Example
       # Get the current time
       current_time = Time.new.ctime
 
-      if params.start_attr.size > 0
-        message = "%s%s%s (This Space For Rent) " %
-            [params.start_attr, current_time, params.end_attr]
-      else
-        message = "%s (This Space For Rent)" % [current_time]
-      end
+      message = if params.start_attr.size > 0
+                  format('%s%s%s (This Space For Rent) ', params.start_attr,
+                         current_time, params.end_attr)
+                else
+                  format('%s (This Space For Rent)', current_time)
+                end
+    elsif params.start_attr.size > 0
+      message = format('%s%s%s ', params.start_attr, mesg, params.end_attr)
     else
-      if params.start_attr.size > 0
-        message = "%s%s%s " % [params.start_attr, mesg, params.end_attr]
-      else
-        message = "%s " % [params.message]
-      end
+      message = format('%s ', params.message)
     end
 
     # Run the marquee.

@@ -5,7 +5,7 @@ module Slithernix
     class Widget
       class Template < Slithernix::Cdk::Widget
         def initialize(cdkscreen, xplace, yplace, title, label, plate,
-            overlay, box, shadow)
+                       overlay, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -17,7 +17,7 @@ module Slithernix
 
           setBox(box)
 
-          field_width = plate.size + 2 * @border_size
+          field_width = plate.size + (2 * @border_size)
 
           # Set some basic values of the template field.
           @label = []
@@ -25,14 +25,14 @@ module Slithernix
           @label_win = nil
 
           # Translate the label string to achtype array
-          if !(label.nil?) && label.size > 0
+          if !label.nil? && label.size > 0
             label_len = []
             @label = Slithernix::Cdk.char2Chtype(label, label_len, [])
             @label_len = label_len[0]
           end
 
           # Translate the char * overlay to a chtype array
-          if !(overlay.nil?) && overlay.size > 0
+          if !overlay.nil? && overlay.size > 0
             overlay_len = []
             @overlay = Slithernix::Cdk.char2Chtype(overlay, overlay_len, [])
             @overlay_len = overlay_len[0]
@@ -44,7 +44,7 @@ module Slithernix
           end
 
           # Set the box width.
-          box_width = field_width + @label_len + 2 * @border_size
+          box_width = field_width + @label_len + (2 * @border_size)
 
           old_width = box_width
           box_width = setTitle(title, box_width)
@@ -56,12 +56,13 @@ module Slithernix
           box_width = [box_width, parent_width].min
           box_height = [box_height, parent_height].min
           field_width = [field_width,
-              box_width - @label_len - 2 * @border_size].min
+                         box_width - @label_len - (2 * @border_size)].min
 
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
+                                  box_height)
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -78,14 +79,14 @@ module Slithernix
           # Make the label window.
           if label.size > 0
             @label_win = @win.subwin(1, @label_len,
-                ypos + @title_lines + @border_size,
-                xpos + horizontal_adjust + @border_size)
+                                     ypos + @title_lines + @border_size,
+                                     xpos + horizontal_adjust + @border_size)
           end
 
           # Make the field window
           @field_win = @win.subwin(1, field_width,
-                ypos + @title_lines + @border_size,
-                xpos + @label_len + horizontal_adjust + @border_size)
+                                   ypos + @title_lines + @border_size,
+                                   xpos + @label_len + horizontal_adjust + @border_size)
           @field_win.keypad(true)
 
           # Set up the info field.
@@ -108,7 +109,7 @@ module Slithernix
           @input_window = @win
           @accepts_focus = true
           @shadow = shadow
-          @callbackfn = lambda do |template, input|
+          @callbackfn = lambda do |_template, input|
             failed = false
             change = false
             moveby = false
@@ -117,11 +118,11 @@ module Slithernix
             have = @info.size
 
             if input == Curses::KEY_LEFT
-              if mark != 0
+              if mark == 0
+                failed = true
+              else
                 moveby = true
                 amount = -1
-              else
-                failed = true
               end
             elsif input == Curses::KEY_RIGHT
               if mark < @info.size
@@ -133,19 +134,19 @@ module Slithernix
             else
               test = @info.clone
               if input == Curses::KEY_BACKSPACE
-                if mark != 0
-                  front = @info[0...mark-1] || ''
+                if mark == 0
+                  failed = true
+                else
+                  front = @info[0...mark - 1] || ''
                   back = @info[mark..-1] || ''
                   test = front + back
                   change = true
                   amount = -1
-                else
-                  failed = true
                 end
               elsif input == Curses::KEY_DC
                 if mark < @info.size
                   front = @info[0...mark] || ''
-                  back = @info[mark+1..-1] || ''
+                  back = @info[mark + 1..-1] || ''
                   test = front + back
                   change = true
                   amount = 0
@@ -184,7 +185,7 @@ module Slithernix
           # Do we need to create a shadow?
           if shadow
             @shadow_win = Curses::Window.new(box_height, box_width,
-                ypos + 1, xpos + 1)
+                                             ypos + 1, xpos + 1)
           end
 
           cdkscreen.register(:Template, self)
@@ -293,12 +294,13 @@ module Slithernix
             end
 
             # Should we call a post-process?
-            if !complete && !(@post_process_func.nil?)
-              @post_process_func.call(:Template, self, @post_process_data, input)
+            if !complete && !@post_process_func.nil?
+              @post_process_func.call(:Template, self, @post_process_data,
+                                      input)
             end
           end
 
-          setExitType(0) if !complete
+          setExitType(0) unless complete
 
           @return_data = ret
           ret
@@ -345,8 +347,10 @@ module Slithernix
             mixed_string = ''
             while plate_pos < @plate_len && info_pos < @info.size
               mixed_string << if Slithernix::Cdk::Widget::Template.isPlateChar(@plate[plate_pos])
-                              then info_pos += 1; @info[info_pos - 1]
-                              else @plate[plate_pos]
+                              then info_pos += 1
+                                   @info[info_pos - 1]
+                              else
+                                @plate[plate_pos]
                               end
               plate_pos += 1
             end
@@ -372,7 +376,7 @@ module Slithernix
 
         # Move the template field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
-          windows = [ @win, @label_win, @field_win, @shadow_win ]
+          windows = [@win, @label_win, @field_win, @shadow_win]
           move_specific(
             xplace,
             yplace,
@@ -402,27 +406,29 @@ module Slithernix
           # Draw in the label and the template widget.
           unless @label_win.nil?
             Slithernix::Cdk::Draw.writeChtype(@label_win, 0, 0, @label, Slithernix::Cdk::HORIZONTAL,
-                             0, @label_len)
+                                              0, @label_len)
             @label_win.refresh
           end
 
           # Draw in the template
           if @overlay.size > 0
             Slithernix::Cdk::Draw.writeChtype(@field_win, 0, 0, @overlay, Slithernix::Cdk::HORIZONTAL,
-                             0, @overlay_len)
+                                              0, @overlay_len)
           end
 
           # Adjust the cursor.
           if @info.size > 0
             pos = 0
             (0...[@field_width, @plate.size].min).each do |x|
-              if Slithernix::Cdk::Widget::Template.isPlateChar(@plate[x]) && pos < @info.size
-                field_color = @overlay[x] & Curses::A_ATTRIBUTES
-                @field_win.mvwaddch(0, x, @info[pos].ord | field_color)
-                pos += 1
+              unless Slithernix::Cdk::Widget::Template.isPlateChar(@plate[x]) && pos < @info.size
+                next
               end
+
+              field_color = @overlay[x] & Curses::A_ATTRIBUTES
+              @field_win.mvwaddch(0, x, @info[pos].ord | field_color)
+              pos += 1
             end
-            #@field_win.move(0, @screen_pos)
+            # @field_win.move(0, @screen_pos)
           else
             adjustCursor(1)
           end
@@ -432,11 +438,11 @@ module Slithernix
         # Adjust the cursor for the template
         def adjustCursor(direction)
           while @plate_pos < [@field_width, @plate.size].min &&
-              !Slithernix::Cdk::Widget::Template.isPlateChar(@plate[@plate_pos])
+                !Slithernix::Cdk::Widget::Template.isPlateChar(@plate[@plate_pos])
             @plate_pos += direction
             @screen_pos += direction
           end
-          #@field_win.move(0, @screen_pos)
+          # @field_win.move(0, @screen_pos)
           @field_win.refresh
         end
 
@@ -465,12 +471,12 @@ module Slithernix
 
         # Erase the widget.
         def erase
-          if validCDKObject
-            Slithernix::Cdk.eraseCursesWindow(@field_win)
-            Slithernix::Cdk.eraseCursesWindow(@label_win)
-            Slithernix::Cdk.eraseCursesWindow(@shadow_win)
-            Slithernix::Cdk.eraseCursesWindow(@win)
-          end
+          return unless validCDKObject
+
+          Slithernix::Cdk.eraseCursesWindow(@field_win)
+          Slithernix::Cdk.eraseCursesWindow(@label_win)
+          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
+          Slithernix::Cdk.eraseCursesWindow(@win)
         end
 
         # Set the value given to the template

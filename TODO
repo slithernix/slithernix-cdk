@@ -1,5 +1,19 @@
 SlitherNix CDK TODO List (You can find the original Tawny list below)
 
+* AlphaList/FSelect/Viewer are broken
+
+  Can't use arrows to go up and down, something is broken in Widget#bind it looks like?
+
+* Traverse example can't be exited cleanly
+
+* Subwindow example broken
+
+  Top of the box not working,
+
+* Slider and USlider example is broken now
+
+  Doesn't show the actual slider.
+
 * GNU Readline integration for entry
 
   That way we get shit like history and other readline things, ctrl-w

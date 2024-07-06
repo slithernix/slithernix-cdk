@@ -3,8 +3,8 @@ require_relative 'example'
 
 class ButtonboxExample < Example
   # This program demonstrates the Cdk buttonbox widget.
-  def ButtonboxExample.main
-    buttons = [" OK ", " Cancel "]
+  def self.main
+    buttons = [' OK ', ' Cancel ']
 
     # Set up CDK.
     curses_win = Curses.init_screen
@@ -18,8 +18,8 @@ class ButtonboxExample < Example
       cdkscreen,
       Slithernix::Cdk::CENTER,
       Slithernix::Cdk::CENTER,
-      "<C>Enter a name",
-      "Name ",
+      '<C>Enter a name',
+      'Name ',
       Curses::A_NORMAL,
       '.',
       :MIXED,
@@ -34,7 +34,7 @@ class ButtonboxExample < Example
       cdkscreen.destroy
       Slithernix::Cdk::Screen.endCDK
 
-      $stderr.puts "Cannot create entry-widget"
+      warn 'Cannot create entry-widget'
       exit
     end
 
@@ -59,7 +59,7 @@ class ButtonboxExample < Example
       cdkscreen.destroy
       Slithernix::Cdk::Screen.endCDK
 
-      $stderr.puts "Cannot create buttonbox-widget"
+      warn 'Cannot create buttonbox-widget'
       exit
     end
 
@@ -71,7 +71,7 @@ class ButtonboxExample < Example
 
     # Bind the Tab key in the entry field to send a
     # Tab key to the button box widget.
-    entryCB = lambda do |cdktype, widget, client_data, key|
+    entryCB = lambda do |_cdktype, _widget, client_data, key|
       client_data.inject(key)
       true
     end
@@ -89,10 +89,8 @@ class ButtonboxExample < Example
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
 
-    puts "You typed in (%s) and selected button (%s)" % [
-      info&.size&.positive? ? info : '<null>',
-      buttons[selection]
-    ]
+    puts format('You typed in (%s) and selected button (%s)',
+                info&.size&.positive? ? info : '<null>', buttons[selection])
     exit # EXIT_SUCCESS
   end
 end

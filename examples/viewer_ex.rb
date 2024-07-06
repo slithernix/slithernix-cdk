@@ -2,7 +2,7 @@
 require_relative 'example'
 
 class ViewerExample < CLIExample
-  def ViewerExample.parse_opts(opts, params)
+  def self.parse_opts(opts, params)
     opts.banner = 'Usage: viewer_ex.rb [options]'
 
     # default values
@@ -17,7 +17,7 @@ class ViewerExample < CLIExample
     params.interp = false
     params.link = false
 
-    super(opts, params)
+    super
 
     opts.on('-f FILENAME', String, 'Filename to open') do |f|
       params.filename = f
@@ -37,7 +37,7 @@ class ViewerExample < CLIExample
   end
 
   # Demonstrate a scrolling-window.
-  def ViewerExample.main
+  def self.main
     title = "<C>Pick\n<C>A\n<C>File"
     label = 'File: '
     button = [
@@ -87,7 +87,7 @@ class ViewerExample < CLIExample
         cdkscreen.destroy
         Slithernix::Cdk::Screen.endCDK
 
-        $stderr.puts 'Cannot create fselect-widget'
+        warn 'Cannot create fselect-widget'
         exit
       end
 
@@ -145,7 +145,7 @@ class ViewerExample < CLIExample
       cdkscreen.destroy
       Slithernix::Cdk::Screen.endCDK
 
-      puts "Cannot create the viewer. Is the window too small?"
+      puts 'Cannot create the viewer. Is the window too small?'
       exit
     end
 
@@ -161,13 +161,14 @@ class ViewerExample < CLIExample
       lines = Slithernix::Cdk.readFile(params.filename, info)
       if lines == -1
         Slithernix::Cdk::Screen.endCDK
-        puts 'Could not open "%s"' % [params.filename]
+        puts format('Could not open "%s"', params.filename)
         exit
       end
     end
 
     # Set up the viewer title and the contents to the widget.
-    v_title = '<C></B/21>Filename:<!21></22>%20s<!22!B>' % [params.filename]
+    v_title = format('<C></B/21>Filename:<!21></22>%20s<!22!B>',
+                     params.filename)
     example.set(
       v_title,
       info,
@@ -186,19 +187,18 @@ class ViewerExample < CLIExample
 
     # Check how the person exited from the widget.
     case example.exit_type
-      when :ESCAPE_HIT
-        mesg = [
-          '<C>Escape hit. No Button selected..',
-          '',
-          '<C>Press any key to continue.',
-        ]
-      when :NORMAL
-        mesg = [
-          '<C>You selected button %d' % [selected],
-          '',
-          '<C>Press any key to continue.'
-        ]
-      else
+    when :ESCAPE_HIT
+      mesg = [
+        '<C>Escape hit. No Button selected..',
+        '',
+        '<C>Press any key to continue.',
+      ]
+    when :NORMAL
+      mesg = [
+        format('<C>You selected button %d', selected),
+        '',
+        '<C>Press any key to continue.'
+      ]
     end
 
     cdkscreen.popupLabel(mesg, 3)

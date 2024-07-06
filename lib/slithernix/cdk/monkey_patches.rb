@@ -15,7 +15,7 @@ module Curses
     else
       "^#{(ch + 64).chr}"
     end
-  rescue => e
+  rescue StandardError => e
     raise Curses::Error, "Error in unctrl: #{e.message}"
   end
 
@@ -30,7 +30,7 @@ module Curses
     def mvwhline(y, x, ch, n)
       setpos(y, x)
 
-      n.times do |i|
+      n.times do |_i|
         addch(ch)
       end
     end
@@ -42,7 +42,7 @@ module Curses
 
     def mvwdelch(y, x)
       setpos(y, x)
-      delch()
+      delch
     end
 
     def mvwinsch(y, x, ch)

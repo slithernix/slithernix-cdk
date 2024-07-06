@@ -5,10 +5,11 @@ module Slithernix
     class Widget
       class Dialog < Slithernix::Cdk::Widget
         attr_reader :current_button
+
         MIN_DIALOG_WIDTH = 10
 
         def initialize(cdkscreen, xplace, yplace, mesg, rows, button_label,
-            button_count, highlight, separator, box, shadow)
+                       button_count, highlight, separator, box, shadow)
           super()
           box_width = Dialog::MIN_DIALOG_WIDTH
           max_message_width = -1
@@ -31,7 +32,7 @@ module Slithernix
 
           setBox(box)
           box_height = separator ? 1 : 0
-          box_height += rows + 2 * @border_size + 1
+          box_height += rows + (2 * @border_size) + 1
 
           # Translate the string message to a chtype array
           (0...rows).each do |x|
@@ -46,7 +47,8 @@ module Slithernix
           # Translate the button label string to a chtype array
           (0...button_count).each do |x|
             button_len = []
-            @button_label << Slithernix::Cdk.char2Chtype(button_label[x], button_len, [])
+            @button_label << Slithernix::Cdk.char2Chtype(button_label[x],
+                                                         button_len, [])
             @button_len << button_len[0]
             button_width += button_len[0] + 1
           end
@@ -55,12 +57,13 @@ module Slithernix
 
           # Determine the final dimensions of the box.
           box_width = [box_width, max_message_width, button_width].max
-          box_width = box_width + 2 + 2 * @border_size
+          box_width = box_width + 2 + (2 * @border_size)
 
           # Now we have to readjust the x and y positions.
           xtmp = [xpos]
           ytmp = [ypos]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width, box_height)
+          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
+                                  box_height)
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -96,8 +99,8 @@ module Slithernix
 
           # Create the string alignments.
           (0...rows).each do |x|
-            @info_pos[x] = Slithernix::Cdk.justifyString(box_width - 2 * @border_size,
-                                             @info_len[x], @info_pos[x])
+            @info_pos[x] = Slithernix::Cdk.justifyString(box_width - (2 * @border_size),
+                                                         @info_len[x], @info_pos[x])
           end
 
           # Was there a shadow?
@@ -210,7 +213,7 @@ module Slithernix
             end
 
             # Should we call a post_process?
-            if !complete && !(@post_process_func.nil?)
+            if !complete && !@post_process_func.nil?
               @post_process_func.call(:Dialog, self,
                                       @post_process_data, input)
             end
@@ -242,8 +245,8 @@ module Slithernix
           # Draw in the message.
           (0...@message_rows).each do |x|
             Slithernix::Cdk::Draw.writeChtype(@win,
-                             @info_pos[x] + @border_size, x + @border_size, @info[x],
-                             Slithernix::Cdk::HORIZONTAL, 0, @info_len[x])
+                                              @info_pos[x] + @border_size, x + @border_size, @info[x],
+                                              Slithernix::Cdk::HORIZONTAL, 0, @info_len[x])
           end
 
           # Draw in the buttons.
@@ -267,10 +270,10 @@ module Slithernix
 
         # This function erases the dialog widget from the screen.
         def erase
-          if validCDKObject
-            Slithernix::Cdk.eraseCursesWindow(@win)
-            Slithernix::Cdk.eraseCursesWindow(@shadow_win)
-          end
+          return unless validCDKObject
+
+          Slithernix::Cdk.eraseCursesWindow(@win)
+          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
         end
 
         # This sets attributes of the dialog box.
