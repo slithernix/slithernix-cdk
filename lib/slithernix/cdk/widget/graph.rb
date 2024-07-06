@@ -47,41 +47,65 @@ module Slithernix
           @win.keypad(true)
 
           # Translate the X axis title string to a chtype array
-          if !xtitle.nil? && xtitle.size > 0
+          if xtitle&.size&.positive?
             xtitle_len = []
             xtitle_pos = []
-            @xtitle = Slithernix::Cdk.char2Chtype(xtitle, xtitle_len,
-                                                  xtitle_pos)
+            @xtitle = Slithernix::Cdk.char2Chtype(
+              xtitle,
+              xtitle_len,
+              xtitle_pos,
+            )
             @xtitle_len = xtitle_len[0]
-            @xtitle_pos = Slithernix::Cdk.justifyString(@box_height,
-                                                        @xtitle_len, xtitle_pos[0])
+            @xtitle_pos = Slithernix::Cdk.justifyString(
+              @box_height,
+              @xtitle_len,
+              xtitle_pos[0],
+            )
           else
             xtitle_len = []
             xtitle_pos = []
-            @xtitle = Slithernix::Cdk.char2Chtype('<C></5>X Axis', xtitle_len,
-                                                  xtitle_pos)
+            @xtitle = Slithernix::Cdk.char2Chtype(
+              '<C></5>X Axis',
+              xtitle_len,
+              xtitle_pos,
+            )
             @xtitle_len = title_len[0]
-            @xtitle_pos = Slithernix::Cdk.justifyString(@box_height,
-                                                        @xtitle_len, xtitle_pos[0])
+            @xtitle_pos = Slithernix::Cdk.justifyString(
+              @box_height,
+              @xtitle_len,
+              xtitle_pos[0],
+            )
           end
 
           # Translate the Y Axis title string to a chtype array
-          if !ytitle.nil? && ytitle.size > 0
+          if ytitle&.size&.positive?
             ytitle_len = []
             ytitle_pos = []
-            @ytitle = Slithernix::Cdk.char2Chtype(ytitle, ytitle_len,
-                                                  ytitle_pos)
+            @ytitle = Slithernix::Cdk.char2Chtype(
+              ytitle,
+              ytitle_len,
+              ytitle_pos,
+            )
             @ytitle_len = ytitle_len[0]
-            @ytitle_pos = Slithernix::Cdk.justifyString(@box_width,
-                                                        @ytitle_len, ytitle_pos[0])
+            @ytitle_pos = Slithernix::Cdk.justifyString(
+              @box_width,
+              @ytitle_len,
+              ytitle_pos[0],
+            )
           else
             ytitle_len = []
             ytitle_pos = []
-            @ytitle = Slithernix::Cdk.char2Chtype('<C></5>Y Axis', ytitle_len,
-                                                  ytitle_pos)
+            @ytitle = Slithernix::Cdk.char2Chtype(
+              '<C></5>Y Axis',
+              ytitle_len,
+              ytitle_pos,
+            )
             @ytitle_len = ytitle_len[0]
-            @ytitle_pos = Slithernix::Cdk.justifyString(@box_width,
-                                                        @ytitle_len, ytitle_pos[0])
+            @ytitle_pos = Slithernix::Cdk.justifyString(
+              @box_width,
+              @ytitle_len,
+              ytitle_pos[0],
+            )
           end
 
           @graph_char = 0
@@ -120,7 +144,7 @@ module Slithernix
           # Make sure everything is happy.
           return false if count < 0
 
-          if !@values.nil? && @values.size > 0
+          if @values&.size&.positive?
             @values = []
             @count = 0
           end
@@ -293,7 +317,7 @@ module Slithernix
           drawTitle(@win)
 
           # Draw in the X axis title.
-          if !@xtitle.nil? && @xtitle.size > 0
+          if @xtitle&.size&.positive?
             Slithernix::Cdk::Draw.writeChtype(
               @win,
               0,
@@ -333,7 +357,7 @@ module Slithernix
           )
 
           # Draw in the Y axis title
-          if !@ytitle.nil? && @ytitle.size > 0
+          if @ytitle&.size&.positive?
             Slithernix::Cdk::Draw.writeChtype(
               @win,
               @ytitle_pos,

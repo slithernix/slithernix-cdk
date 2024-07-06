@@ -216,7 +216,7 @@ module Slithernix
               end
             end
 
-            if !complete && !@post_process_func.nil?
+            if !complete and @post_process_func
               @post_process_func.call(:ButtonBox, self, @post_process_data,
                                       input)
             end

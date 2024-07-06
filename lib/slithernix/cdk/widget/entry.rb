@@ -32,7 +32,7 @@ module Slithernix
           @label_win = nil
 
           # Translate the label string to a chtype array
-          if !label.nil? && label.size > 0
+          if label&.size&.positive?
             label_len = [@label_len]
             @label = Slithernix::Cdk.char2Chtype(label, label_len, [])
             @label_len = label_len[0]
@@ -79,10 +79,13 @@ module Slithernix
           @field_win.keypad(true)
 
           # make the label win, if we need to
-          if !label.nil? && label.size > 0
-            @label_win = @win.subwin(1, @label_len,
-                                     ypos + @title_lines + @border_size,
-                                     xpos + horizontal_adjust + @border_size)
+          if label&.size&.positive?
+            @label_win = @win.subwin(
+              1,
+              @label_len,
+              ypos + @title_lines + @border_size,
+              xpos + horizontal_adjust + @border_size,
+            )
           end
 
           # cleanChar (entry->info, max + 3, '\0');
@@ -341,7 +344,7 @@ module Slithernix
               end
             end
 
-            if !complete && !@post_process_func.nil?
+            if !complete and @post_process_func
               @post_process_func.call(:Entry, self, @post_process_data, input)
             end
           end
@@ -404,7 +407,7 @@ module Slithernix
           @field_win.mvwhline(0, 0, @filler.ord, @field_width)
 
           # If there is information in the field then draw it in.
-          if !@info.nil? && @info.size > 0
+          if @info&.size&.positive?
             # Redraw the field.
             if Slithernix::Cdk::Display.isHiddenDisplayType(@disp_type)
               (@left_char...@info.size).each do |x|

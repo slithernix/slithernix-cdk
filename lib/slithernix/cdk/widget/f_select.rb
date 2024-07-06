@@ -560,9 +560,10 @@ module Slithernix
           setHighlight(highlight)
 
           # Only do the directory stuff if the directory is not nil.
-          if !directory.nil? && directory.size > 0
+          if directory&.size&.positive?
             # Try to expand the directory if it starts with a ~
-            if (temp_dir = Slithernix::Cdk::Widget::FSelect.expandTilde(directory)).size > 0
+            temp_dir = Slithernix::Cdk::Widget::FSelect.expandTilde(directory)
+            if temp_dir&.size&.positive?
               new_directory = temp_dir
             else
               new_directory = directory.clone
@@ -575,7 +576,7 @@ module Slithernix
               # Could not get into the directory, pop up a little message.
               mesg = [
                 format('<C>Could not change into %s', new_directory),
-                format('<C></U>%s', 'Unknown reason.'), # errorMessage(format)
+                format('<C></U>%s', 'Unknown reason.'),
                 ' ',
                 '<C>Press Any Key To Continue.'
               ]

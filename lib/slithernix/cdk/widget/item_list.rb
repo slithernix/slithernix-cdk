@@ -25,7 +25,7 @@ module Slithernix
           @label_win = nil
 
           # Translate the label string to a chtype array
-          if !label.nil? && label.size > 0
+          if label&.size&.positive?
             label_len = []
             @label = Slithernix::Cdk.char2Chtype(label, label_len, [])
             @label_len = label_len[0]
@@ -203,7 +203,7 @@ module Slithernix
             end
 
             # Should we call a post-process?
-            if !complete && !@post_process_func.nil?
+            if !complete and @post_process_func
               @post_process_func.call(:ItemList, self, @post_process_data,
                                       input)
             end

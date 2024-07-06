@@ -344,7 +344,7 @@ module Slithernix
 
       def cleanBindings(type)
         widg = bindableObject(type)
-        widg.binding_list.clear if !widg.nil? && !widg.binding_list.nil?
+        widg.binding_list.clear if widg&.binding_list
       end
 
       # This checks to see if the binding for the key exists:
@@ -353,7 +353,7 @@ module Slithernix
       # bindings.
       def checkBind(type, key)
         widg = bindableObject(type)
-        if !widg.nil? && widg.binding_list.include?(key)
+        if widg&.binding_list&.include?(key)
           function = widg.binding_list[key][0]
           data = widg.binding_list[key][1]
 

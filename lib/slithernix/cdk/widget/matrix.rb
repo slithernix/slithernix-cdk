@@ -77,13 +77,16 @@ module Slithernix
 
           # Determine the maximum row title width.
           (1..rows).each do |x|
-            if !rowtitles.nil? && x < rowtitles.size && rowtitles[x].size > 0
+            if rowtitles && x < rowtitles.size && rowtitles[x].size&.positive?
               have_rowtitles = true
             end
             rowtitle_len = []
             rowtitle_pos = []
-            @rowtitle[x] = Slithernix::Cdk.char2Chtype((rowtitles[x] || ''),
-                                                       rowtitle_len, rowtitle_pos)
+            @rowtitle[x] = Slithernix::Cdk.char2Chtype(
+              (rowtitles[x] || ''),
+              rowtitle_len,
+              rowtitle_pos,
+            )
             @rowtitle_len[x] = rowtitle_len[0]
             @rowtitle_pos[x] = rowtitle_pos[0]
             max_row_title_width = [max_row_title_width, @rowtitle_len[x]].max
@@ -94,8 +97,11 @@ module Slithernix
 
             # We need to rejustify the row title cell info.
             (1..rows).each do |x|
-              @rowtitle_pos[x] = Slithernix::Cdk.justifyString(@maxrt,
-                                                               @rowtitle_len[x], @rowtitle_pos[x])
+              @rowtitle_pos[x] = Slithernix::Cdk.justifyString(
+                @maxrt,
+                @rowtitle_len[x],
+                @rowtitle_pos[x],
+              )
             end
           else
             @maxrt = 0
@@ -118,8 +124,13 @@ module Slithernix
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
-                                  box_height)
+          Slithernix::Cdk.alignxy(
+            cdkscreen.window,
+            xtmp,
+            ytmp,
+            box_width,
+            box_height,
+          )
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -128,7 +139,7 @@ module Slithernix
 
           if @win.nil?
             destroy
-            return nil
+            raise StandardError, "could not start curses window"
           end
 
           # Make the subwindows in the pop-up.
@@ -142,7 +153,7 @@ module Slithernix
 
           # Copy the titles into the structrue.
           (1..cols).each do |x|
-            if !coltitles.nil? && x < coltitles.size && coltitles[x].size > 0
+            if coltitles && x < coltitles.size && coltitles[x].size.positive?
               have_coltitles = true
             end
             coltitle_len = []
@@ -151,7 +162,9 @@ module Slithernix
                                                        coltitle_len, coltitle_pos)
             @coltitle_len[x] = coltitle_len[0]
             @coltitle_pos[x] = @border_size + Slithernix::Cdk.justifyString(
-              colwidths[x], @coltitle_len[x], coltitle_pos[0]
+              colwidths[x],
+              @coltitle_len[x],
+              coltitle_pos[0],
             )
             @colwidths[x] = colwidths[x]
           end

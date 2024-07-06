@@ -14,8 +14,6 @@ module Slithernix
           widest_item = 0
 
           bindings = {
-            Slithernix::Cdk::BACKCHAR => Curses::KEY_PPAGE,
-            Slithernix::Cdk::FORCHAR => Curses::KEY_NPAGE,
             'g' => Curses::KEY_HOME,
             '1' => Curses::KEY_HOME,
             'G' => Curses::KEY_END,
@@ -23,17 +21,25 @@ module Slithernix
             '>' => Curses::KEY_END
           }
 
+          bindings[Slithernix::Cdk::BACKCHAR] = Curses::KEY_PPAGE
+          bindings[Slithernix::Cdk::FORCHAR]  = Curses::KEY_NPAGE
           setBox(box)
 
           # If the height is a negative value, height will be ROWS-height,
           # otherwise the height will be the given height.
-          box_height = Slithernix::Cdk.setWidgetDimension(parent_height,
-                                                          height, 0)
+          box_height = Slithernix::Cdk.setWidgetDimension(
+            parent_height,
+            height,
+            0,
+          )
 
           # If the width is a negative value, the width will be COLS-width,
           # otherwise the width will be the given width.
-          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width,
-                                                         5)
+          box_width = Slithernix::Cdk.setWidgetDimension(
+            parent_width,
+            width,
+            5,
+          )
 
           box_width = setTitle(title, box_width)
 
@@ -43,11 +49,11 @@ module Slithernix
           end
 
           # Adjust the box width if there is a scroll bar.
+          scrollbar = false
+
           if [Slithernix::Cdk::LEFT, Slithernix::Cdk::RIGHT].include?(splace)
             box_width += 1
             @scrollbar = true
-          else
-            scrollbar = false
           end
 
           # Make sure we didn't extend beyond the dimensions of the window
@@ -58,9 +64,9 @@ module Slithernix
 
           # Each item in the needs to be converted to chtype array
           widest_item = createList(list, list_size, @box_width)
-          if widest_item > 0
+          if widest_item.positive?
             updateViewWidth(widest_item)
-          elsif list_size > 0
+          elsif list_size.positive?
             destroy
             return nil
           end
@@ -68,8 +74,14 @@ module Slithernix
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, @box_width,
-                                  @box_height)
+          Slithernix::Cdk.alignxy(
+            cdkscreen.window,
+            xtmp,
+            ytmp,
+            @box_width,
+            @box_height,
+          )
+
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -79,7 +91,7 @@ module Slithernix
           # Is the window nil?
           if @win.nil?
             destroy
-            return nil
+            raise StandardError, "could not create curses window"
           end
 
           # Turn on the keypad.
@@ -87,11 +99,19 @@ module Slithernix
 
           # Create the scrollbar window.
           if splace == Slithernix::Cdk::RIGHT
-            @scrollbar_win = @win.subwin(maxViewSize, 1,
-                                         self.SCREEN_YPOS(ypos), xpos + @box_width - @border_size - 1)
+            @scrollbar_win = @win.subwin(
+              maxViewSize,
+              1,
+              self.SCREEN_YPOS(ypos),
+              xpos + @box_width - @border_size - 1,
+            )
           elsif splace == Slithernix::Cdk::LEFT
-            @scrollbar_win = @win.subwin(maxViewSize, 1,
-                                         self.SCREEN_YPOS(ypos), self.SCREEN_XPOS(xpos))
+            @scrollbar_win = @win.subwin(
+              maxViewSize,
+              1,
+              self.SCREEN_YPOS(ypos),
+              self.SCREEN_XPOS(xpos),
+            )
           else
             @scrollbar_win = nil
           end
@@ -179,8 +199,12 @@ module Slithernix
           # Check if there is a pre-process function to be called
           unless @pre_process_func.nil?
             # Call the pre-process function.
-            pp_return = @pre_process_func.call(:Radio, self,
-                                               @pre_process_data, input)
+            pp_return = @pre_process_func.call(
+              :Radio,
+              self,
+              @pre_process_data,
+              input,
+            )
           end
 
           # Should we continue?
@@ -230,7 +254,7 @@ module Slithernix
             end
 
             # Should we call a post-process?
-            if !complete && !@post_process_func.nil?
+            if !complete and @post_process_func
               @post_process_func.call(:Radio, self, @post_process_data, input)
             end
           end

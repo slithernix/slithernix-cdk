@@ -4,8 +4,7 @@ module Slithernix
   module Cdk
     class Widget
       class Template < Slithernix::Cdk::Widget
-        def initialize(cdkscreen, xplace, yplace, title, label, plate,
-                       overlay, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, title, label, plate, overlay, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -25,14 +24,14 @@ module Slithernix
           @label_win = nil
 
           # Translate the label string to achtype array
-          if !label.nil? && label.size > 0
+          if label&.size&.positive?
             label_len = []
             @label = Slithernix::Cdk.char2Chtype(label, label_len, [])
             @label_len = label_len[0]
           end
 
           # Translate the char * overlay to a chtype array
-          if !overlay.nil? && overlay.size > 0
+          if overlay&.size&.positive?
             overlay_len = []
             @overlay = Slithernix::Cdk.char2Chtype(overlay, overlay_len, [])
             @overlay_len = overlay_len[0]
@@ -53,16 +52,23 @@ module Slithernix
           box_height += @title_lines
 
           # Make sure we didn't extend beyond the dimensions of the window.
-          box_width = [box_width, parent_width].min
-          box_height = [box_height, parent_height].min
-          field_width = [field_width,
-                         box_width - @label_len - (2 * @border_size)].min
+          box_width = [ box_width, parent_width ].min
+          box_height = [ box_height, parent_height ].min
+          field_width = [
+            field_width,
+            box_width - @label_len - (2 * @border_size)
+          ].min
 
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
-                                  box_height)
+          Slithernix::Cdk.alignxy(
+            cdkscreen.window,
+            xtmp,
+            ytmp,
+            box_width,
+            box_height,
+          )
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -78,15 +84,21 @@ module Slithernix
 
           # Make the label window.
           if label.size > 0
-            @label_win = @win.subwin(1, @label_len,
-                                     ypos + @title_lines + @border_size,
-                                     xpos + horizontal_adjust + @border_size)
+            @label_win = @win.subwin(
+              1,
+              @label_len,
+              ypos + @title_lines + @border_size,
+              xpos + horizontal_adjust + @border_size,
+            )
           end
 
           # Make the field window
-          @field_win = @win.subwin(1, field_width,
-                                   ypos + @title_lines + @border_size,
-                                   xpos + @label_len + horizontal_adjust + @border_size)
+          @field_win = @win.subwin(
+            1,
+            field_width,
+            ypos + @title_lines + @border_size,
+            xpos + @label_len + horizontal_adjust + @border_size,
+          )
           @field_win.keypad(true)
 
           # Set up the info field.
@@ -184,8 +196,12 @@ module Slithernix
 
           # Do we need to create a shadow?
           if shadow
-            @shadow_win = Curses::Window.new(box_height, box_width,
-                                             ypos + 1, xpos + 1)
+            @shadow_win = Curses::Window.new(
+              box_height,
+              box_width,
+              ypos + 1,
+              xpos + 1,
+            )
           end
 
           cdkscreen.register(:Template, self)
@@ -294,7 +310,7 @@ module Slithernix
             end
 
             # Should we call a post-process?
-            if !complete && !@post_process_func.nil?
+            if !complete and @post_process_func
               @post_process_func.call(:Template, self, @post_process_data,
                                       input)
             end

@@ -266,7 +266,7 @@ module Slithernix
             end
 
             # Should we do a post-process?
-            if !complete && !@post_process_func.nil?
+            if !complete and @post_process_func
               @post_process_func.call(:Calendar, self, @post_process_data,
                                       input)
             end
@@ -349,10 +349,17 @@ module Slithernix
           @field_win.refresh
 
           # Draw the month in.
-          if !@label_win.nil?
+          if @label_win
             temp = format('%s %d,', month_name, @day)
-            Slithernix::Cdk::Draw.writeChar(@label_win, 0, 0, temp,
-                                            Slithernix::Cdk::HORIZONTAL, 0, temp.size)
+            Slithernix::Cdk::Draw.writeChar(
+              @label_win,
+              0,
+              0,
+              temp,
+              Slithernix::Cdk::HORIZONTAL,
+              0,
+              temp.size,
+            )
             @label_win.clrtoeol
 
             # Draw the year in.
@@ -378,8 +385,7 @@ module Slithernix
         end
 
         # This sets multiple attributes of the widget
-        def set(day, month, _year, day_attrib, month_attrib, year_attrib,
-                highlight, box)
+        def set(day, month, _year, day_attrib, month_attrib, year_attrib, highlight, box)
           setDate(day, month, yar)
           setDayAttribute(day_attrib)
           setMonthAttribute(month_attrib)
@@ -404,7 +410,8 @@ module Slithernix
 
           # Get the start of the current month.
           @week_day = Slithernix::Cdk::Widget::Calendar.getMonthStartWeekday(
-            @year, @month
+            @year,
+            @month,
           )
         end
 

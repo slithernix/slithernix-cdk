@@ -218,10 +218,11 @@ module Slithernix
             moved[0] = setCurPos(@current_row - 1, @field_width - 1)
           end
 
-          if !moved[0] && !redraw[0]
+          unless moved[0] and redraw[0]
             Slithernix::Cdk.Beep
             result = false
           end
+
           result
         end
 
@@ -292,7 +293,7 @@ module Slithernix
                 else
                   moved = setCurPos(@current_row + 1, 0)
                 end
-                Slithernix::Cdk.Beep if !moved && !redraw
+                Slithernix::Cdk.Beep unless moved and redraw
               when Curses::KEY_DOWN
                 if @current_row != @rows - 1
                   if getCursorPos + @field_width + 1 <= @info.size
@@ -303,14 +304,14 @@ module Slithernix
                     redraw = setTopRow(@top_row + 1)
                   end
                 end
-                Slithernix::Cdk.Beep if !moved && !redraw
+                Slithernix::Cdk.Beep unless moved and redraw
               when Curses::KEY_UP
                 if @current_row != 0
                   moved = setCurPos(@current_row - 1, @current_col)
                 elsif @top_row != 0
                   redraw = setTopRow(@top_row - 1)
                 end
-                Slithernix::Cdk.Beep if !moved && !redraw
+                Slithernix::Cdk.Beep unless moved and redraw
               when Curses::KEY_BACKSPACE, Curses::KEY_DC
                 if @disp_type == :VIEWONLY
                   Slithernix::Cdk.Beep
@@ -409,7 +410,7 @@ module Slithernix
             end
 
             # Should we do a post-process?
-            if !complete && !@post_process_func.nil?
+            if !complete and @post_process_func
               @post_process_func.call(:MEntry, self, @post_process_data, input)
             end
           end
