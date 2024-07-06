@@ -179,10 +179,11 @@ module Slithernix
             len = 0
             (0...list.size).each do |y|
               if list[y] == "\t".ord
-                begin
+                loop do
                   t << ' '
                   len += 1
-                end while (len & 7) != 0
+                  break unless (len & 7) != 0
+                end
               elsif Slithernix::Cdk.CharOf(list[y].ord).match(/^[[:print:]]$/)
                 t << Slithernix::Cdk.CharOf(list[y].ord)
                 len += 1

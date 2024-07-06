@@ -506,10 +506,11 @@ module Slithernix
             used += 1
             from += 1
           elsif string[from] == "\t"
-            begin
+            loop do
               result << ' '
               used += 1
-            end while (used & 7).nonzero?
+              break unless (used & 7).nonzero?
+            end
           else
             result << (string[from].ord | attrib)
             used += 1
