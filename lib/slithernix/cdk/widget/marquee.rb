@@ -104,7 +104,7 @@ module Slithernix
             if view_size <= 0 && first_char == (mesg_length[0] + padding)
               # Check if we repeat a specified number or loop indefinitely
               repeat_count += 1
-              break if repeat > 0 && repeat_count >= repeat
+              break if repeat.positive? && repeat_count >= repeat
 
               # Time to start over.
               @win.mvwaddch(@border_size, @border_size, ' '.ord)
@@ -115,7 +115,7 @@ module Slithernix
             # Now sleep
             Curses.napms(delay * 10)
           end
-          oldcurs = 1 if oldcurs < 0
+          oldcurs = 1 if oldcurs.negative?
           Curses.curs_set(oldcurs)
           0
         end

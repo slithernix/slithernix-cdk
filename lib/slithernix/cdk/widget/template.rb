@@ -12,7 +12,7 @@ module Slithernix
           box_height = box ? 3 : 1
           plate_len = 0
 
-          return nil if plate.nil? || plate.size == 0
+          return nil if plate.nil? || plate.size.zero?
 
           setBox(box)
 
@@ -83,7 +83,7 @@ module Slithernix
           @win.keypad(true)
 
           # Make the label window.
-          if label.size > 0
+          if label.size.positive?
             @label_win = @win.subwin(
               1,
               @label_len,
@@ -130,7 +130,7 @@ module Slithernix
             have = @info.size
 
             if input == Curses::KEY_LEFT
-              if mark == 0
+              if mark.zero?
                 failed = true
               else
                 moveby = true
@@ -146,7 +146,7 @@ module Slithernix
             else
               test = @info.clone
               if input == Curses::KEY_BACKSPACE
-                if mark == 0
+                if mark.zero?
                   failed = true
                 else
                   front = @info[0...mark - 1] || ''
@@ -211,7 +211,7 @@ module Slithernix
         def activate(actions)
           draw(@box)
 
-          if actions.nil? || actions.size == 0
+          if actions.nil? || actions.size.zero?
             while true
               input = getch([])
 
@@ -257,12 +257,12 @@ module Slithernix
             else
               case input
               when Slithernix::Cdk::ERASE
-                if @info.size > 0
+                if @info.size.positive?
                   clean
                   drawField
                 end
               when Slithernix::Cdk::CUT
-                if @info.size > 0
+                if @info.size.positive?
                   @@g_paste_buffer = @info.clone
                   clean
                   drawField
@@ -270,13 +270,13 @@ module Slithernix
                   Slithernix::Cdk.Beep
                 end
               when Slithernix::Cdk::COPY
-                if @info.size > 0
+                if @info.size.positive?
                   @@g_paste_buffer = @info.clone
                 else
                   Slithernix::Cdk.Beep
                 end
               when Slithernix::Cdk::PASTE
-                if @@g_paste_buffer.size > 0
+                if @@g_paste_buffer.size.positive?
                   clean
 
                   # Start inserting each character one at a time.
@@ -359,7 +359,7 @@ module Slithernix
           plate_pos = 0
           info_pos = 0
 
-          if @info.size > 0
+          if @info.size.positive?
             mixed_string = ''
             while plate_pos < @plate_len && info_pos < @info.size
               mixed_string << if Slithernix::Cdk::Widget::Template.isPlateChar(@plate[plate_pos])
@@ -427,13 +427,13 @@ module Slithernix
           end
 
           # Draw in the template
-          if @overlay.size > 0
+          if @overlay.size.positive?
             Slithernix::Cdk::Draw.writeChtype(@field_win, 0, 0, @overlay, Slithernix::Cdk::HORIZONTAL,
                                               0, @overlay_len)
           end
 
           # Adjust the cursor.
-          if @info.size > 0
+          if @info.size.positive?
             pos = 0
             (0...[@field_width, @plate.size].min).each do |x|
               unless Slithernix::Cdk::Widget::Template.isPlateChar(@plate[x]) && pos < @info.size

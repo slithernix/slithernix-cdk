@@ -52,7 +52,7 @@ class BindExample < Example
     dialog_help_cb = lambda do |_cdktype, dialog, _client_data, _key|
       mesg = []
       # Check which button we are on
-      if dialog.current_button == 0
+      if dialog.current_button.zero?
         mesg = [
           '<C></U>Help for </U>Who<!U>.',
           '<C>When this button is picked the name of the current',
@@ -93,7 +93,7 @@ class BindExample < Example
       selection = question.activate('')
 
       # Check the results.
-      if selection == 0
+      if selection.zero?
         # Get the users login name.
         info = ['<C>     </U>Login Name<!U>     ']
         login_name = Etc.getlogin

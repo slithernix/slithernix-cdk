@@ -109,7 +109,7 @@ class RadioExample < CLIExample
           cdkscreen.popupLabel(mesg, 4)
           nitem = []
           count = Slithernix::Cdk.getDirectoryContents(item[selection], nitem)
-          if count > 0
+          if count.positive?
             Dir.chdir(item[selection])
             item = nitem
             radio.setItems(item, count)

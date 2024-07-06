@@ -142,7 +142,7 @@ module Slithernix
           max = -2**30
 
           # Make sure everything is happy.
-          return false if count < 0
+          return false if count.negative?
 
           if @values&.size&.positive?
             @values = []
@@ -179,7 +179,7 @@ module Slithernix
         # Set the value of the graph at the given index.
         def setValue(index, value, start_at_zero)
           # Make sure the index is within range.
-          return false if index < 0 || index >= @count
+          return false if index.negative? || index >= @count
 
           # Set the min, max, and value for the graph
           @minx = [value, @minx].min
@@ -216,7 +216,7 @@ module Slithernix
         # Set the character of the graph widget of the given index.
         def setCharacter(index, character)
           # Make sure the index is within range
-          return false if index < 0 || index > @count
+          return false if index.negative? || index > @count
 
           # Convert the string given to us
           char_count = []
@@ -288,7 +288,7 @@ module Slithernix
 
         # Draw the grpah widget
         def draw(box)
-          adj = 2 + (@xtitle.nil? || @xtitle.size == 0 ? 0 : 1)
+          adj = 2 + (@xtitle.nil? || @xtitle.size.zero? ? 0 : 1)
           spacing = 0
           attrib = ' '.ord | Curses::A_REVERSE
 
@@ -395,7 +395,7 @@ module Slithernix
           )
 
           # If the count is zero then there aren't any points.
-          if @count == 0
+          if @count.zero?
             @win.refresh
             return
           end

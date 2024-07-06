@@ -111,7 +111,7 @@ module Slithernix
           @high = low <= high ? high : 0
           @value = low <= value && value <= high ? value : 0
           # Determine the percentage of the given value.
-          @percent = @high == 0 ? 0 : (1.0 * (@value / @high))
+          @percent = @high.zero? ? 0 : (1.0 * (@value / @high))
 
           # Determine the size of the histogram bar.
           @bar_size = if @orient == Slithernix::Cdk::VERTICAL
@@ -344,19 +344,19 @@ module Slithernix
           # If the user asked for labels, draw them in.
           if @view_type != :NONE
             # Draw in the low label.
-            if @low_string.size > 0
+            if @low_string.size.positive?
               Slithernix::Cdk::Draw.writeCharAttrib(@win, @lowx, @lowy, @low_string,
                                                     @stats_attr, @orient, 0, @low_string.size)
             end
 
             # Draw in the current value label.
-            if @cur_string.size > 0
+            if @cur_string.size.positive?
               Slithernix::Cdk::Draw.writeCharAttrib(@win, @curx, @cury, @cur_string,
                                                     @stats_attr, @orient, 0, @cur_string.size)
             end
 
             # Draw in the high label.
-            if @high_string.size > 0
+            if @high_string.size.positive?
               Slithernix::Cdk::Draw.writeCharAttrib(@win, @highx, @highy, @high_string,
                                                     @stats_attr, @orient, 0, @high_string.size)
             end

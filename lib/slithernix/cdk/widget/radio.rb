@@ -163,7 +163,7 @@ module Slithernix
           # Draw the radio list.
           draw(@box)
 
-          if actions.nil? || actions.size == 0
+          if actions.nil? || actions.size.zero?
             while true
               fixCursorPosition
               input = getch([])
@@ -531,7 +531,7 @@ module Slithernix
               new_list << Slithernix::Cdk.char2Chtype(list[j], lentmp, postmp)
               new_len << lentmp[0]
               new_pos << postmp[0]
-              if new_list[j].nil? || new_list[j].size == 0
+              if new_list[j].nil? || new_list[j].size.zero?
                 status = false
                 break
               end

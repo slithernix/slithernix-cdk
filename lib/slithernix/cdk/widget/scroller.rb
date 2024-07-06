@@ -8,10 +8,10 @@ module Slithernix
         end
 
         def KEY_UP
-          if @list_size > 0
-            if @current_item > 0
-              if @current_high == 0
-                if @current_top == 0
+          if @list_size.positive?
+            if @current_item.positive?
+              if @current_high.zero?
+                if @current_top.zero?
                   Slithernix::Cdk.Beep
                 else
                   @current_top -= 1
@@ -30,7 +30,7 @@ module Slithernix
         end
 
         def KEY_DOWN
-          if @list_size > 0
+          if @list_size.positive?
             if @current_item < @list_size - 1
               if @current_high == @view_size - 1
                 if @current_top < @max_top_item
@@ -52,8 +52,8 @@ module Slithernix
         end
 
         def KEY_LEFT
-          if @list_size > 0
-            if @left_char == 0
+          if @list_size.positive?
+            if @left_char.zero?
               Slithernix::Cdk.Beep
             else
               @left_char -= 1
@@ -64,7 +64,7 @@ module Slithernix
         end
 
         def KEY_RIGHT
-          if @list_size > 0
+          if @list_size.positive?
             if @left_char >= @max_left_char
               Slithernix::Cdk.Beep
             else
@@ -76,8 +76,8 @@ module Slithernix
         end
 
         def KEY_PPAGE
-          if @list_size > 0
-            if @current_top > 0
+          if @list_size.positive?
+            if @current_top.positive?
               if @current_top >= @view_size - 1
                 @current_top -= @view_size - 1
                 @current_item -= @view_size - 1
@@ -93,7 +93,7 @@ module Slithernix
         end
 
         def KEY_NPAGE
-          if @list_size > 0
+          if @list_size.positive?
             if @current_top < @max_top_item
               if @current_top + @view_size - 1 <= @max_top_item
                 @current_top += @view_size - 1
@@ -144,7 +144,7 @@ module Slithernix
             @max_top_item = 0
           end
 
-          if @list_size > 0 && maxViewSize > 0
+          if @list_size.positive? && maxViewSize.positive?
             @step = 1.0 * maxViewSize / @list_size
             @toggle_size = if @list_size > maxViewSize
                            then 1

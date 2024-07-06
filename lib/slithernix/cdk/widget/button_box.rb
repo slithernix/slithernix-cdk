@@ -97,12 +97,12 @@ module Slithernix
           @button_attrib = Curses::A_NORMAL
 
           # Set up the row adjustment.
-          if box_height - rows - @title_lines > 0
+          if (box_height - rows - @title_lines).positive?
             @row_adjust = (box_height - rows - @title_lines) / @rows
           end
 
           # Set the col adjustment
-          if box_width - col_width > 0
+          if (box_width - col_width).positive?
             @col_adjust = ((box_width - col_width) / @cols) - 1
           end
 
@@ -132,7 +132,7 @@ module Slithernix
           # Draw the buttonbox box.
           draw(@box)
 
-          if actions.nil? || actions.size == 0
+          if actions.nil? || actions.size.zero?
             while true
               input = getch([])
 

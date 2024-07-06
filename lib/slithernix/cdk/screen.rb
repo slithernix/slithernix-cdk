@@ -12,7 +12,7 @@ module Slithernix
         window ||= Curses.init_screen
         # Curses.curs_set(0)
         # initialization for the first time
-        if Slithernix::Cdk::ALL_SCREENS.size == 0
+        if Slithernix::Cdk::ALL_SCREENS.size.zero?
           # Set up basic curses settings.
           # #ifdef HAVE_SETLOCALE
           # setlocale (LC_ALL, "");
@@ -241,8 +241,8 @@ module Slithernix
           widg = @widget[x]
           if widg.validObjType(widg.widget_type)
             if widg.is_visible
-              visible = x if visible < 0
-              focused = x if widg.has_focus && focused < 0
+              visible = x if visible.negative?
+              focused = x if widg.has_focus && focused.negative?
             else
               widg.erase
             end

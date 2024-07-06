@@ -61,7 +61,7 @@ class MentryExample < Example
     cdkscreen.refresh
 
     # Set whatever was given from the command line.
-    arg = ARGV.size > 0 ? ARGV[0] : ''
+    arg = ARGV.size.positive? ? ARGV[0] : ''
     widget.set(arg, 0, true)
 
     # Activate the entry field.

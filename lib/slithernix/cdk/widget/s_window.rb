@@ -168,7 +168,7 @@ module Slithernix
         def add(list, insert_pos)
           # If we are at the maximum number of save lines erase the first
           # position and bump everything up one spot
-          if @list_size == @save_lines and @list_size > 0
+          if @list_size == @save_lines and @list_size.positive?
             @list = @list[1..-1]
             @list_pos = @list_pos[1..-1]
             @list_len = @list_len[1..-1]
@@ -240,7 +240,7 @@ module Slithernix
                          end
 
           # A little sanity check to make sure we don't do something silly
-          @current_top = 0 if @current_top < 0
+          @current_top = 0 if @current_top.negative?
 
           # Redraw the window.
           draw(@box)
@@ -267,7 +267,7 @@ module Slithernix
         # This trims lines from the scrolling window.
         def trim(begin_line, end_line)
           # Check the value of begin_line
-          start = if begin_line < 0
+          start = if begin_line.negative?
                     0
                   elsif begin_line >= @list_size
                     @list_size - 1
@@ -276,7 +276,7 @@ module Slithernix
                   end
 
           # Check the value of end_line
-          finish = if end_line < 0
+          finish = if end_line.negative?
                      0
                    elsif end_line >= @list_size
                      @list_size - 1
@@ -310,7 +310,7 @@ module Slithernix
           # Draw the scrolling list.
           draw(@box)
 
-          if actions.nil? || actions.size == 0
+          if actions.nil? || actions.size.zero?
             while true
               input = getch([])
 
@@ -357,7 +357,7 @@ module Slithernix
             else
               case input
               when Curses::KEY_UP
-                if @current_top > 0
+                if @current_top.positive?
                   @current_top -= 1
                 else
                   Slithernix::Cdk.Beep
@@ -375,13 +375,13 @@ module Slithernix
                   Slithernix::Cdk.Beep
                 end
               when Curses::KEY_LEFT
-                if @left_char > 0
+                if @left_char.positive?
                   @left_char -= 1
                 else
                   Slithernix::Cdk.Beep
                 end
               when Curses::KEY_PPAGE
-                if @current_top == 0
+                if @current_top.zero?
                   Slithernix::Cdk.Beep
                 else
                   @current_top = if @current_top >= @view_size
@@ -704,7 +704,7 @@ module Slithernix
 
           # Maybe we should check before nuking all the information in the
           # scrolling window...
-          if @list_size > 0
+          if @list_size.positive?
             # Create the dialog message.
             mesg = [
               '<C></B/5>Save Information First',
@@ -742,7 +742,7 @@ module Slithernix
           # Open the file and read it in.
           f = File.open(filename)
           file_info = f.readlines.map do |line|
-            if line.size > 0 && line[-1] == "\n"
+            if line.size.positive? && line[-1] == "\n"
               line[0...-1]
             else
               line

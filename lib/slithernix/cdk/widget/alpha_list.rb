@@ -37,7 +37,7 @@ module Slithernix
                                                          0)
 
           # Translate the label string to a chtype array
-          if label.size > 0
+          if label.size.positive?
             lentmp = []
             chtype_label = Slithernix::Cdk.char2Chtype(label, lentmp, [])
             label_len = lentmp[0]
@@ -111,7 +111,7 @@ module Slithernix
             scrollp = alphalist.scroll_field
             entry = alphalist.entry_field
 
-            if scrollp.list_size > 0
+            if scrollp.list_size.positive?
               # Adjust the scrolling list.
               alphalist.injectMyScroller(key)
 
@@ -132,7 +132,7 @@ module Slithernix
             ret = 0
             alt_words = []
 
-            if entry.info.size == 0
+            if entry.info.size.zero?
               Slithernix::Cdk.Beep
               return true
             end
@@ -145,7 +145,7 @@ module Slithernix
             )
 
             # if the index is less than zero, return we didn't find a match
-            if index < 0
+            if index.negative?
               Slithernix::Cdk.Beep
               return true
             end
@@ -160,7 +160,7 @@ module Slithernix
             # Ok, we found a match, is the next item similar?
             len = [entry.info.size, alphalist.list[index + 1].size].min
             ret = alphalist.list[index + 1][0...len] <=> entry.info
-            if ret == 0
+            if ret.zero?
               current_index = index
               match = 0
               selected = -1
@@ -168,7 +168,7 @@ module Slithernix
               # Start looking for alternate words
               # FIXME(original): bsearch would be more suitable.
               while current_index < alphalist.list.size &&
-                    (alphalist.list[current_index][0...len] <=> entry.info) == 0
+                    (alphalist.list[current_index][0...len] <=> entry.info).zero?
                 alt_words << alphalist.list[current_index]
                 current_index += 1
               end
@@ -255,7 +255,7 @@ module Slithernix
                 pattern = front + input.chr + back
               end
 
-              if pattern.size == 0
+              if pattern.size.zero?
                 empty = true
               elsif (index = Slithernix::Cdk.searchList(alphalist.list,
                                                         alphalist.list.size, pattern)) >= 0
@@ -562,7 +562,7 @@ module Slithernix
             status = true
             (0...list_size).each do |x|
               newlist << list[x]
-              if newlist[x] == 0
+              if (newlist[x]).zero?
                 status = false
                 break
               end

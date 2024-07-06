@@ -137,7 +137,7 @@ module Slithernix
     def self.alignxy(window, xpos, ypos, box_width, box_height)
       first = window.begx
       last = window.maxx
-      if (gap = (last - box_width)) < 0
+      if (gap = (last - box_width)).negative?
         gap = 0
       end
       last = first + gap
@@ -159,7 +159,7 @@ module Slithernix
 
       first = window.begy
       last = window.maxy
-      if (gap = (last - box_height)) < 0
+      if (gap = (last - box_height)).negative?
         gap = 0
       end
       last = first + gap
@@ -210,7 +210,7 @@ module Slithernix
       end
 
       lines = fd.readlines.map do |line|
-        if line.size > 0 && line[-1] == "\n"
+        if line.size.positive? && line[-1] == "\n"
           line[0...-1]
         else
           line
@@ -334,7 +334,7 @@ module Slithernix
       align << LEFT
       result = []
 
-      if string.size > 0
+      if string.size.positive?
         used = 0
 
         # The original code makes two passes since it has to pre-allocate space but
@@ -386,7 +386,7 @@ module Slithernix
           end
         end
 
-        while adjust > 0
+        while adjust.positive?
           adjust -= 1
           result << ' '
           used += 1
@@ -517,7 +517,7 @@ module Slithernix
           from += 1
         end
 
-        result << attrib if result.size == 0
+        result << attrib if result.size.zero?
         to[0] = used
       else
         result = []
@@ -585,7 +585,7 @@ module Slithernix
           need = decodeAttribute(
             newstring,
             need,
-            x > 0 ? string[x - 1] : 0,
+            x.positive? ? string[x - 1] : 0,
             string[x],
           )
           newstring << string[x]
@@ -621,7 +621,7 @@ module Slithernix
     def self.searchList(list, list_size, pattern)
       index = -1
 
-      if pattern.size > 0
+      if pattern.size.positive?
         (0...list_size).each do |x|
           len = [list[x].size, pattern.size].min
           ret = (list[x][0...len] <=> pattern)
@@ -632,10 +632,10 @@ module Slithernix
           # current word is alphabetically greater than the given word. We
           # should return with index, which might contain the last best match.
           # If they are equal then we've found it.
-          if ret < 0
+          if ret.negative?
             index = ret
           else
-            index = x if ret == 0
+            index = x if ret.zero?
             break
           end
         end
@@ -695,7 +695,7 @@ module Slithernix
         else
           proposed_dim + adjustment
         end
-      elsif parent_dim + proposed_dim < 0
+      elsif (parent_dim + proposed_dim).negative?
         # if they gave a negative value then return the dimension
         # of the parent plus the value given
         #
@@ -818,7 +818,7 @@ module Slithernix
 
       # Determine the height of the list.
       if list_size < 10
-        height = list_size + (title.size == 0 ? 2 : 3)
+        height = list_size + (title.size.zero? ? 2 : 3)
       end
 
       # Determine the width of the list.

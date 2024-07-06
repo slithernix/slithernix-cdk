@@ -167,7 +167,7 @@ class Appointment
 
       # Get the description.
       description = entry.activate([])
-      if description == 0
+      if description.zero?
         entry.destroy
         calendar.draw(calendar.box)
         return false
@@ -260,7 +260,7 @@ class Appointment
       end
 
       # If we didn't find the marker, create a different message.
-      if found == 0
+      if found.zero?
         mesg << (format('<C>There is no appointment for %02d/%02d/%d',
                         calendar.day, calendar.month, calendar.year))
         mesg << '<C><#HL(30)>'

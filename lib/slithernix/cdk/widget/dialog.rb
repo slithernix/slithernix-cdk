@@ -138,7 +138,7 @@ module Slithernix
 
           @win.refresh
 
-          if actions.nil? || actions.size == 0
+          if actions.nil? || actions.size.zero?
             while true
               input = getch([])
 

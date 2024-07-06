@@ -148,7 +148,7 @@ module Slithernix
           @marker = [0] * Slithernix::Cdk::Widget::Calendar::CALENDAR_LIMIT
 
           # If the day/month/year values were 0, then use today's date.
-          if @day == 0 && @month == 0 && @year == 0
+          if @day.zero? && @month.zero? && @year.zero?
             date_info = Time.new.gmtime
             @day = date_info.day
             @month = date_info.month
@@ -182,7 +182,7 @@ module Slithernix
           ret = -1
           draw(@box)
 
-          if actions.nil? || actions.size == 0
+          if actions.nil? || actions.size.zero?
             while true
               input = getch([])
 
@@ -322,7 +322,7 @@ module Slithernix
           save_x = -1
 
           day = (1 - @week_day + (@week_base % 7))
-          day -= 7 if day > 0
+          day -= 7 if day.positive?
 
           (1..6).each do |row|
             (0...7).each do |col|
@@ -497,7 +497,7 @@ module Slithernix
           oldmarker = getMarker(day, month, year)
 
           # Check to see if a marker has not already been set
-          if oldmarker == 0
+          if oldmarker.zero?
             setCalendarCell(day, month, year_index, marker)
           else
             setCalendarCell(day, month, year_index,
@@ -555,9 +555,9 @@ module Slithernix
         # This function returns a 1 if it's a leap year and 0 if not.
         def self.isLeapYear(year)
           result = false
-          if year % 4 == 0
-            if year % 100 == 0
-              result = true if year % 400 == 0
+          if (year % 4).zero?
+            if (year % 100).zero?
+              result = true if (year % 400).zero?
             else
               result = true
             end

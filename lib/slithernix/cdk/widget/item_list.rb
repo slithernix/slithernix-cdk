@@ -58,7 +58,7 @@ module Slithernix
           end
 
           # Make the label window if there was a label.
-          if @label.size > 0
+          if @label.size.positive?
             @label_win = @win.subwin(1, @label_len,
                                      ypos + @border_size + @title_lines,
                                      xpos + @border_size)
@@ -118,7 +118,7 @@ module Slithernix
           draw(@box)
           drawField(true)
 
-          if actions.nil? || actions.size == 0
+          if actions.nil? || actions.size.zero?
             input = 0
 
             while true
@@ -173,7 +173,7 @@ module Slithernix
                   @current_item = 0
                 end
               when Curses::KEY_DOWN, Curses::KEY_LEFT, '-', 'p'
-                if @current_item > 0
+                if @current_item.positive?
                   @current_item -= 1
                 else
                   @current_item = @list_size - 1
@@ -360,7 +360,7 @@ module Slithernix
         # This sets the default item in the list.
         def setDefaultItem(default_item)
           # Make sure the item is in the correct range.
-          @default_item = if default_item < 0
+          @default_item = if default_item.negative?
                             0
                           elsif default_item >= @list_size
                             @list_size - 1
@@ -398,7 +398,7 @@ module Slithernix
               new_items << Slithernix::Cdk.char2Chtype(item[x], lentmp, postmp)
               new_len << lentmp[0]
               new_pos << postmp[0]
-              if new_items[0] == 0
+              if (new_items[0]).zero?
                 status = false
                 break
               end

@@ -107,7 +107,7 @@ class Command
     # Create the key bindings.
     history_up_cb = lambda do |_cdktype, entry, history, _key|
       # Make sure we don't go out of bounds
-      if history.current == 0
+      if history.current.zero?
         Slithernix::Cdk.Beep
         return false
       end
@@ -157,7 +157,7 @@ class Command
       height = history.count < 10 ? history.count + 3 : 13
 
       # No history, no list.
-      if history.count == 0
+      if history.count.zero?
         # Popup a little message telling the user there are no comands.
         mesg = [
           '<C></B/16>No Commands Entered',

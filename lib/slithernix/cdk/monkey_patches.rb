@@ -6,7 +6,7 @@ module Curses
 
   def self.unctrl(ch)
     raise Curses::Error, 'Input is not an Integer' unless ch.is_a?(Integer)
-    raise Curses::Error, 'Input is out of ASCII range' if ch < 0 || ch > 127
+    raise Curses::Error, 'Input is out of ASCII range' if ch.negative? || ch > 127
 
     if (32..126).include?(ch)
       ch.chr

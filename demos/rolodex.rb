@@ -137,7 +137,7 @@ class Rolodex
 
     # Determine which groups we want to print.
     (0...group_count).each do |x|
-      if selection_list.selections[x] == 0
+      if (selection_list.selections[x]).zero?
         # Create a title.
         mesg = [format('<C></R>Printing Group [%s] to Printer',
                        group_list[x].name)]
@@ -157,7 +157,7 @@ class Rolodex
         entry.destroy
 
         # Print the group
-        if Rolodex.printGroup(group_list[x], '/tmp/rolodex.tmp', printer) == 0
+        if Rolodex.printGroup(group_list[x], '/tmp/rolodex.tmp', printer).zero?
           # The group could not be printed.
           mesg = ["<C>Sorry the group '%s' could not be printed" %
             group_list[x].name]
@@ -185,7 +185,7 @@ class Rolodex
         entry.destroy
 
         # Print the group.
-        if Rolodex.printGroup(group_list[x], filename, '') == 0
+        if Rolodex.printGroup(group_list[x], filename, '').zero?
           # The group could not be printed.
           mesg = [format("<C>Sorry the group '%s' could not be printed.",
                          group_list[x].name)]
@@ -203,7 +203,7 @@ class Rolodex
   # This deletes a rolodex group.
   def self.deleteRolodexGroup(screen, group_list, group_count)
     # If there are no groups, pop up a message telling them.
-    if group_count == 0
+    if group_count.zero?
       mesg = [
         '<C>Error',
         '<C>There are no groups defined.',
@@ -219,7 +219,7 @@ class Rolodex
                                          '<C></U>Delete Which Rolodex Group?', group_list, group_count)
 
     # Check the results.
-    if selection < 0
+    if selection.negative?
       mesg = [
         '<C>   Delete Canceled   ',
         '<C>No Group Deleted',
@@ -242,7 +242,7 @@ class Rolodex
     choice = screen.popupDialog(mesg, mesg.size, buttons, buttons.size)
 
     # Check the results of the confirmation.
-    if choice == 0
+    if choice.zero?
       mesg = [
         '<C>   Delete Canceled   ',
         '<C>No Group Deleted',
@@ -305,7 +305,7 @@ class Rolodex
     end
 
     # Check the return value from the getXXXPhoneRecord function.
-    phone_data.count += 1 if ret == 0
+    phone_data.count += 1 if ret.zero?
 
     # Clean up
     title.destroy
@@ -368,7 +368,7 @@ class Rolodex
       ret = screen.popupDialog(mesg, mesg.size, buttons, buttons.size)
 
       # Check the response of the popup dialog box.
-      if ret == 0
+      if ret.zero?
         # The user wants to submit the information.
         name_entry.destroy
         address_entry.destroy
@@ -450,7 +450,7 @@ class Rolodex
       ret = screen.popupDialog(mesg, mesg.size, buttons, buttons.size)
 
       # Check the response of the popup dialog box.
-      if ret == 0
+      if ret.zero?
         # The user wants to submit the information.
         name_entry.destroy
         desc_entry.destroy
@@ -508,7 +508,7 @@ class Rolodex
     group_count = Rolodex.readRCFile(filename, group_list)
 
     # Check the return value.
-    if group_count < 0
+    if group_count.negative?
       # This file does not appear to be a rolodex file.
       mesg = [
         '<C></B/16>The file<!B!16>',
@@ -535,7 +535,7 @@ class Rolodex
     lines_read = Slithernix::Cdk.readFile(filename, lines)
 
     # Check the number of lines read.
-    return 0 if lines_read == 0
+    return 0 if lines_read.zero?
 
     # Cycle through what was given to us and save it.
     (0...lines_read).each do |x|
@@ -543,7 +543,7 @@ class Rolodex
       lines[x].strip!
 
       # Only split lines which do not start with a #
-      next unless lines[x].size > 0 && lines[x][0] != '#'
+      next unless lines[x].size.positive? && lines[x][0] != '#'
 
       items = lines[x].split(Slithernix::Cdk.CTRL('V').chr)
 
@@ -566,7 +566,7 @@ class Rolodex
     end
 
     # Check the number of groups to the number of errors.
-    if errors_found > 0 && groups_found == 0
+    if errors_found.positive? && groups_found.zero?
       # This does NOT look like the rolodex RC file.
       return -1
     end
@@ -664,7 +664,7 @@ class Rolodex
 
     # Cycle through what was given to us and save it.
     (0...lines_read).each do |x|
-      next unless lines[x].size > 0 && lines[x][0] != '#'
+      next unless lines[x].size.positive? && lines[x][0] != '#'
 
       # Split the string.
       items = lines[x].split(Slithernix::Cdk.CTRL('V').chr)
@@ -802,7 +802,7 @@ class Rolodex
     phone_data.count = phone_count
 
     # Check the number of entries returned.
-    if phone_count == 0
+    if phone_count.zero?
       # They tried to open an empty group, maybe they want to
       # add a new entry to this number.
       buttons = [
@@ -820,7 +820,7 @@ class Rolodex
 
       # Get the information for a new number.
       return if Rolodex.addPhoneRecord(screen, phone_data) != 0
-    elsif phone_count < 0
+    elsif phone_count.negative?
       mesg = ['<C>Could not open the database for this group.']
       screen.popupLabel(mesg, mesg.size)
       help_window.destroy
@@ -851,7 +851,7 @@ class Rolodex
       scrollp.erase
 
       # Call the function which gets phone record information.
-      if Rolodex.addPhoneRecord(scrollp.screen, phone_data) == 0
+      if Rolodex.addPhoneRecord(scrollp.screen, phone_data).zero?
         temp = format('%s (%s)', phone_record.name,
                       Rolodex::GLineType[Rolodex::GTypeMap[phone_record.line_type]])
         scrollp.addItem(temp)
@@ -874,7 +874,7 @@ class Rolodex
       scrollp.erase
 
       # Check the number of entries left in the list.
-      if scrollp.list_size == 0
+      if scrollp.list_size.zero?
         mesg = ['There are no more numbers to delete.']
         scrollp.screen.popupLabel(mesg, mesg.size)
         return false
@@ -937,7 +937,7 @@ class Rolodex
     end
 
     # Save teh rolodex information to file.
-    if Rolodex.savePhoneDataFile(group_dbm, phone_data) == 0
+    if Rolodex.savePhoneDataFile(group_dbm, phone_data).zero?
       # Something happened.
       mesg = [
         '<C>Could not save phone data to data file.',
@@ -1230,7 +1230,7 @@ class Rolodex
     group_count = Rolodex.readRCFile(@@grc_file, group_list)
 
     # Check the value of group_count
-    if group_count < 0
+    if group_count.negative?
       # The RC file seems to be corrupt.
       mesg = [
         format('<C></B/16>The RC file (%s) seems to be corrupt.', @@grc_file),
@@ -1239,7 +1239,7 @@ class Rolodex
       ]
       cdkscreen.popupLabel(mesg, mesg.size)
       group_count = 0
-    elsif group_count == 0
+    elsif group_count.zero?
       mesg = [
         '<C></B/24>Empty rolodex RC file. No groups loaded.',
         '<C>Press any key to continue.',
@@ -1304,7 +1304,7 @@ class Rolodex
                                               group_list, group_count)
       when 101
         # If there are no groups, ask them if they want to create one.
-        if group_count == 0
+        if group_count.zero?
           buttons = [
             '<Yes>',
             '<No>',
@@ -1315,7 +1315,7 @@ class Rolodex
           ]
 
           # Add the group if they said yes.
-          if cdkscreen.popupDialog(mesg, 2, buttons, 2) == 0
+          if cdkscreen.popupDialog(mesg, 2, buttons, 2).zero?
             group_count = Rolodex.addRolodexGroup(
               cdkscreen, group_list, group_count
             )

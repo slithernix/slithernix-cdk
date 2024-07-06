@@ -122,7 +122,7 @@ module Slithernix
           drawSubwin
 
           # If the input string is empty this is an interactive activate.
-          if actions.nil? || actions.size == 0
+          if actions.nil? || actions.size.zero?
             @input_window = @title_win[@current_title]
 
             # Start taking input from the keyboard.
@@ -434,7 +434,7 @@ module Slithernix
 
         # The "%" operator is simpler but does not handle negative values
         def self.wrapped(within, limit)
-          if within < 0
+          if within.negative?
             within = limit - 1
           elsif within >= limit
             within = 0

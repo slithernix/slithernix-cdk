@@ -32,7 +32,7 @@ class Vinstall
       ]
 
       # Ask them if they want to create the directory.
-      if cdkscreen.popupDialog(mesg, mesg.size, buttons, buttons.size) == 0
+      if cdkscreen.popupDialog(mesg, mesg.size, buttons, buttons.size).zero?
         # TODO: error handling
         if Dir.mkdir(directory, 0o755) != 0
           # Create the error message.
@@ -88,7 +88,7 @@ class Vinstall
     file_list = []
     # Open the file list file and read it in.
     count = Slithernix::Cdk.readFile(filename, file_list)
-    if count == 0
+    if count.zero?
       warn format('%s: Input filename <%s> is empty.', ARGV[0], filename)
     end
 
@@ -298,7 +298,7 @@ class Vinstall
 
     # If there were errors, inform the user and allow them to look at the
     # errors in the scrolling window.
-    if errors > 0
+    if errors.positive?
       # Create the information for the dialog box.
       buttons = [
         'Look At Errors Now',
@@ -319,7 +319,7 @@ class Vinstall
       # Popup the dialog box.
       ret = cdkscreen.popupDialog(mesg, mesg.size, buttons, buttons.size)
 
-      if ret == 0
+      if ret.zero?
         install_output.activate([])
       elsif ret == 1
         install_output.inject('s')

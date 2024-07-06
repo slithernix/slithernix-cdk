@@ -155,7 +155,7 @@ module Slithernix
           # Draw the widget.
           draw(@box)
 
-          if actions.nil? or actions.size == 0
+          if actions.nil? or actions.size.zero?
             while true
               input = getch([])
 
@@ -246,7 +246,7 @@ module Slithernix
               when Curses::KEY_LEFT
                 if curr_pos <= 0
                   Slithernix::Cdk.Beep
-                elsif @screen_col == 0
+                elsif @screen_col.zero?
                   # Scroll left.
                   @left_char -= 1
                   drawField
@@ -273,7 +273,7 @@ module Slithernix
                   success = false
                   curr_pos -= 1 if input == Curses::KEY_BACKSPACE
 
-                  if curr_pos >= 0 && @info.size > 0
+                  if curr_pos >= 0 && @info.size.positive?
                     if curr_pos < @info.size
                       @info = @info[0...curr_pos] + @info[curr_pos + 1..-1]
                       success = true
@@ -285,7 +285,7 @@ module Slithernix
 
                   if success
                     if input == Curses::KEY_BACKSPACE
-                      if @screen_col > 0
+                      if @screen_col.positive?
                         @screen_col -= 1
                       else
                         @left_char -= 1
@@ -305,7 +305,7 @@ module Slithernix
                   drawField
                 end
               when Slithernix::Cdk::CUT
-                if @info.size == 0
+                if @info.size.zero?
                   Slithernix::Cdk.Beep
                 else
                   @@g_paste_buffer = @info.clone
@@ -313,13 +313,13 @@ module Slithernix
                   drawField
                 end
               when Slithernix::Cdk::COPY
-                if @info.size == 0
+                if @info.size.zero?
                   Slithernix::Cdk.Beep
                 else
                   @@g_paste_buffer = @info.clone
                 end
               when Slithernix::Cdk::PASTE
-                if @@g_paste_buffer == 0
+                if @@g_paste_buffer.zero?
                   Slithernix::Cdk.Beep
                 else
                   setValue(@@g_paste_buffer)

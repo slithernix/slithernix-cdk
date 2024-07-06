@@ -77,7 +77,7 @@ class MarqueeExample < Example
 
     params = parse(ARGV)
 
-    if params.start_attr.size > 0
+    if params.start_attr.size.positive?
       params.start_attr = format('<%s>', params.start_attr)
       params.end_attr = format('<%s>', params.end_attr)
     end
@@ -112,13 +112,13 @@ class MarqueeExample < Example
       # Get the current time
       current_time = Time.new.ctime
 
-      message = if params.start_attr.size > 0
+      message = if params.start_attr.size.positive?
                   format('%s%s%s (This Space For Rent) ', params.start_attr,
                          current_time, params.end_attr)
                 else
                   format('%s (This Space For Rent)', current_time)
                 end
-    elsif params.start_attr.size > 0
+    elsif params.start_attr.size.positive?
       message = format('%s%s%s ', params.start_attr, mesg, params.end_attr)
     else
       message = format('%s ', params.message)

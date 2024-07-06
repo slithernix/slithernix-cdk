@@ -107,10 +107,10 @@ module Slithernix
         y = 0
 
         # Determine if we're drawing a horizontal or vertical line.
-        if ydiff == 0
-          window.mvwhline(starty, startx, line, xdiff) if xdiff > 0
-        elsif xdiff == 0
-          window.mvwvline(starty, startx, line, ydiff) if ydiff > 0
+        if ydiff.zero?
+          window.mvwhline(starty, startx, line, xdiff) if xdiff.positive?
+        elsif xdiff.zero?
+          window.mvwvline(starty, startx, line, ydiff) if ydiff.positive?
         else
           # We need to determine the angle of the line.
           height = xdiff
@@ -131,13 +131,13 @@ module Slithernix
             if xadj == xratio
               xadj = 0
             else
-              x = xdiff < 0 ? x - 1 : x + 1
+              x = xdiff.negative? ? x - 1 : x + 1
               xadj += 1
             end
             if yadj == yratio
               yadj = 0
             else
-              y = ydiff < 0 ? y - 1 : y + 1
+              y = ydiff.negative? ? y - 1 : y + 1
               yadj += 1
             end
           end

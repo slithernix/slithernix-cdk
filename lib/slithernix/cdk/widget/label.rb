@@ -178,7 +178,7 @@ module Slithernix
         # This pauses until a user hits a key...
         def wait(key)
           function_key = []
-          if key.ord == 0
+          if key.ord.zero?
             code = getch(function_key)
           else
             # Only exit when a specific key is hit

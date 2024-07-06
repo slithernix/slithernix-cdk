@@ -63,7 +63,7 @@ class EntryExample < Example
     cdkscreen.refresh
 
     # Pass in whatever was given off of the command line.
-    arg = ARGV.size > 0 ? ARGV[0] : nil
+    arg = ARGV.size.positive? ? ARGV[0] : nil
     directory.set(arg, 0, 256, true)
 
     # Activate the entry field.

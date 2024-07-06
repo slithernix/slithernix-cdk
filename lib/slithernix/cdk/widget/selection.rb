@@ -129,9 +129,9 @@ module Slithernix
 
           # Each item in the needs to be converted to chtype array
           widest_item = createList(list, list_size)
-          if widest_item > 0
+          if widest_item.positive?
             updateViewWidth(widest_item)
-          elsif list_size > 0
+          elsif list_size.positive?
             destroy
             return nil
           end
@@ -171,7 +171,7 @@ module Slithernix
           # Draw the selection list
           draw(@box)
 
-          if actions.nil? || actions.size == 0
+          if actions.nil? || actions.size.zero?
             while true
               fixCursorPosition
               input = getch([])
@@ -239,7 +239,7 @@ module Slithernix
               when '|'
                 @left_char = 0
               when ' '
-                if @mode[@current_item] == 0
+                if (@mode[@current_item]).zero?
                   if @selections[@current_item] == @choice_count - 1
                     @selections[@current_item] = 0
                   else
@@ -478,7 +478,7 @@ module Slithernix
         def setChoices(choices)
           # Set the choice values in the selection list.
           (0...@list_size).each do |j|
-            @selections[j] = if choices[j] < 0
+            @selections[j] = if (choices[j]).negative?
                                0
                              elsif choices[j] > @choice_count
                                @choice_count - 1
@@ -498,14 +498,14 @@ module Slithernix
           correct_index = index
 
           # Verify that the choice value is in range.
-          if choice < 0
+          if choice.negative?
             correct_choice = 0
           elsif choice > @choice_count
             correct_choice = @choice_count - 1
           end
 
           # make sure the index isn't out of range.
-          if index < 0
+          if index.negative?
             correct_index = 0
           elsif index > @list_size
             correct_index = @list_size - 1
@@ -517,7 +517,7 @@ module Slithernix
 
         def getChoice(index)
           # Make sure the index isn't out of range.
-          if index < 0
+          if index.negative?
             @selections[0]
           elsif index > list_size
             @selections[@list_size - 1]
@@ -542,7 +542,7 @@ module Slithernix
         # This sets a single mode of an item in the selection list.
         def setMode(index, mode)
           # Make sure the index isn't out of range.
-          if index < 0
+          if index.negative?
             @mode[0] = mode
           elsif index > @list_size
             @mode[@list_size - 1] = mode
@@ -553,7 +553,7 @@ module Slithernix
 
         def getMode(index)
           # Make sure the index isn't out of range
-          if index < 0
+          if index.negative?
             @mode[0]
           elsif index > list_size
             @mode[@list_size - 1]

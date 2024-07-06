@@ -46,11 +46,11 @@ class CalendarExample < Example
     # day/month/year values for the calendar.
     date_info = Time.now.gmtime
 
-    params.day = date_info.day if params.day == 0
+    params.day = date_info.day if params.day.zero?
 
-    params.month = date_info.month if params.month == 0
+    params.month = date_info.month if params.month.zero?
 
-    params.year = date_info.year if params.year == 0
+    params.year = date_info.year if params.year.zero?
 
     # Set up CDK
     curses_win = Curses.init_screen

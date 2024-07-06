@@ -78,7 +78,7 @@ module Slithernix
           end
 
           # Create the widget's label window.
-          if @label.size > 0
+          if @label.size.positive?
             @label_win = @win.subwin(1, @label_len,
                                      ypos + @title_lines + @border_size,
                                      xpos + horizontal_adjust + @border_size)
@@ -144,7 +144,7 @@ module Slithernix
           # Draw the widget.
           draw(@box)
 
-          if actions.nil? || actions.size == 0
+          if actions.nil? || actions.size.zero?
             while true
               input = getch([])
 
@@ -208,9 +208,9 @@ module Slithernix
         # the editable field.  Moving it left, over the field, allows the user to
         # modify cells by typing in replacement characters for the field's value.
         def setEditPosition(new_position)
-          if new_position < 0
+          if new_position.negative?
             Slithernix::Cdk.Beep
-          elsif new_position == 0
+          elsif new_position.zero?
             @field_edit = new_position
           elsif validEditPosition(new_position)
             @field_edit = new_position
@@ -243,7 +243,7 @@ module Slithernix
           temp = ''
           col = need - @field_edit
 
-          adj = col < 0 ? -col : 0
+          adj = col.negative? ? -col : 0
           temp  = ' ' * adj if adj != 0
           @field_win.move(0, base)
           @field_win.winnstr(temp, need)
@@ -344,7 +344,7 @@ module Slithernix
                 @screen.erase
                 @screen.refresh
               else
-                if @field_edit == 0
+                if @field_edit.zero?
                   # The cursor is not within the editable text. Interpret
                   # input as commands.
                   case input

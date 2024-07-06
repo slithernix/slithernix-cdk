@@ -67,7 +67,7 @@ module Slithernix
 
         while true
           n -= 1
-          n = screen.widget_count - 1 if n < 0
+          n = screen.widget_count - 1 if n.negative?
           curwidg = screen.widget[n]
           if curwidg&.accepts_focus
             result = curwidg
@@ -184,7 +184,7 @@ module Slithernix
       end
 
       def self.limitFocusIndex(screen, value)
-        if value >= screen.widget_count || value < 0
+        if value >= screen.widget_count || value.negative?
           0
         else
           value

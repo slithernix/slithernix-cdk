@@ -161,7 +161,7 @@ module Slithernix
           # Draw the scrolling list
           draw(@box)
 
-          if actions.nil? || actions.size == 0
+          if actions.nil? || actions.size.zero?
             while true
               fixCursorPosition
               input = getch([])
@@ -267,7 +267,7 @@ module Slithernix
         end
 
         def setCurrentTop(item)
-          if item < 0
+          if item.negative?
             item = 0
           elsif item > @max_top_item
             item = @max_top_item
@@ -314,7 +314,7 @@ module Slithernix
 
         def drawList(box)
           # If the list is empty, don't draw anything.
-          if @list_size > 0
+          if @list_size.positive?
             # Redraw the list
             (0...@view_size).each do |j|
               k = j + @current_top
@@ -432,7 +432,7 @@ module Slithernix
         end
 
         def allocListItem(which, _work, _used, number, value)
-          value = format('%4d. %s', number, value) if number > 0
+          value = format('%4d. %s', number, value) if number.positive?
 
           item_len = []
           item_pos = []
@@ -449,7 +449,7 @@ module Slithernix
         # needed variables for the scrolling list to work correctly.
         def createItemList(numbers, list, list_size)
           status = 0
-          if list_size > 0
+          if list_size.positive?
             widest_item = 0
             x = 0
             have = 0
@@ -616,7 +616,7 @@ module Slithernix
 
           setViewSize(@list_size - 1)
 
-          resequence if @list_size > 0
+          resequence if @list_size.positive?
 
           if @list_size < maxViewSize
             @win.erase # force the next redraw to be complete
@@ -726,7 +726,7 @@ module Slithernix
           draw(@box)
           ret = -1
 
-          if actions.nil? || actions.size == 0
+          if actions.nil? || actions.size.zero?
             while true
               input = getch([])
 
@@ -864,7 +864,7 @@ module Slithernix
           while key != Curses::KEY_ENTER && key != Slithernix::Cdk::KEY_RETURN
             key = getch([])
             if [Curses::KEY_UP, '8'].include?(key)
-              if @win.begy > 0
+              if @win.begy.positive?
                 move(0, -1, true, true)
               else
                 Slithernix::Cdk.Beep
@@ -876,7 +876,7 @@ module Slithernix
                 Slithernix::Cdk.Beep
               end
             elsif [Curses::KEY_LEFT, '4'].include?(key)
-              if @win.begx > 0
+              if @win.begx.positive?
                 move(-1, 0, true, true)
               else
                 Slithernix::Cdk.Beep
@@ -888,20 +888,20 @@ module Slithernix
                 Slithernix::Cdk.Beep
               end
             elsif key == '7'
-              if @win.begy > 0 && @win.begx > 0
+              if @win.begy.positive? && @win.begx.positive?
                 move(-1, -1, true, true)
               else
                 Slithernix::Cdk.Beep
               end
             elsif key == '9'
               if @win.begx + @win.maxx < @screen.window.maxx - 1 &&
-                 @win.begy > 0
+                 @win.begy.positive?
                 move(1, -1, true, true)
               else
                 Slithernix::Cdk.Beep
               end
             elsif key == '1'
-              if @win.begx > 0 &&
+              if @win.begx.positive? &&
                  @win.begx + @win.maxx < @screen.window.maxx - 1
                 move(-1, 1, true, true)
               else

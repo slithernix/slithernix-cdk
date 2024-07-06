@@ -174,7 +174,7 @@ module Slithernix
             current_index = 0
 
             # Make sure the filename is not nil/empty.
-            if filename.nil? || filename.size == 0
+            if filename.nil? || filename.size.zero?
               Slithernix::Cdk.Beep
               return true
             end
@@ -223,7 +223,7 @@ module Slithernix
                                                filename)
 
             # If the index is less than zero, return we didn't find a match.
-            if index < 0
+            if index.negative?
               Slithernix::Cdk.Beep
             else
               # Move to the current item in the scrolling list.
@@ -314,7 +314,7 @@ module Slithernix
             # If the said yes then try to nuke it.
             if question.activate([]) == 1
               # If we were successful, reload the scrolling list.
-              if File.unlink(filename) == 0
+              if File.unlink(filename).zero?
                 # Set the file selector information.
                 fselect.set(fselect.pwd, fselect.field_attribute,
                             fselect.filler_character, fselect.highlight,
@@ -342,7 +342,7 @@ module Slithernix
             scrollp = fselect.scroll_field
             entry = fselect.entry_field
 
-            if scrollp.list_size > 0
+            if scrollp.list_size.positive?
               # Move the scrolling list.
               fselect.injectMyScroller(key)
 
@@ -478,7 +478,7 @@ module Slithernix
           # Draw the widget.
           draw(@box)
 
-          if actions.nil? || actions.size == 0
+          if actions.nil? || actions.size.zero?
             while true
               input = @entry_field.getch([])
 
@@ -673,7 +673,7 @@ module Slithernix
           # If the directory supplied is the same as what is already there, return.
           if @pwd != directory
             # Try to chdir into the given directory.
-            if Dir.chdir(directory) == 0
+            if Dir.chdir(directory).zero?
               @pwd = Dir.getwd
 
               # Set the contents of the entry field.
@@ -906,7 +906,7 @@ module Slithernix
             status = true
             (0...list_size).each do |x|
               newlist << list[x]
-              if newlist[x] == 0
+              if (newlist[x]).zero?
                 status = false
                 break
               end

@@ -34,7 +34,7 @@ module Slithernix
           @label_win = nil
 
           # We need to translate the string label to a chtype array
-          if label.size > 0
+          if label.size.positive?
             label_len = []
             @label = Slithernix::Cdk.char2Chtype(label, label_len, [])
             @label_len = label_len[0]
@@ -71,7 +71,7 @@ module Slithernix
           end
 
           # Create the label window.
-          if @label.size > 0
+          if @label.size.positive?
             @label_win = @win.subwin(field_rows, @label_len + 2,
                                      ypos + @title_lines + 1, xpos + horizontal_adjust + 1)
           end
@@ -168,7 +168,7 @@ module Slithernix
           # Draw the mentry widget.
           draw(@box)
 
-          if actions.size == 0
+          if actions.size.zero?
             while true
               input = getch([])
 
@@ -209,7 +209,7 @@ module Slithernix
           result = true
           if @current_col != 0
             moved[0] = setCurPos(@current_row, @current_col - 1)
-          elsif @current_row == 0
+          elsif @current_row.zero?
             if @top_row != 0
               moved[0] = setCurPos(@current_row, @field_width - 1)
               redraw[0] = setTopRow(@top_row - 1)
@@ -315,7 +315,7 @@ module Slithernix
               when Curses::KEY_BACKSPACE, Curses::KEY_DC
                 if @disp_type == :VIEWONLY
                   Slithernix::Cdk.Beep
-                elsif @info.length == 0
+                elsif @info.length.zero?
                   Slithernix::Cdk.Beep
                 elsif input == Curses::KEY_DC
                   cursor_pos = getCursorPos
@@ -356,7 +356,7 @@ module Slithernix
                   drawField
                 end
               when Slithernix::Cdk::CUT
-                if @info.size == 0
+                if @info.size.zero?
                   Slithernix::Cdk.Beep
                 else
                   @@g_paste_buffer = @info.clone
@@ -364,13 +364,13 @@ module Slithernix
                   drawField
                 end
               when Slithernix::Cdk::COPY
-                if @info.size == 0
+                if @info.size.zero?
                   Slithernix::Cdk.Beep
                 else
                   @@g_paste_buffer = @info.clone
                 end
               when Slithernix::Cdk::PASTE
-                if @@g_paste_buffer.size == 0
+                if @@g_paste_buffer.size.zero?
                   Slithernix::Cdk.Beep
                 else
                   setValue(@@g_paste_buffer)

@@ -68,7 +68,7 @@ module Slithernix
           # Determine the height of the box.
           box_height = if vrows == 1
                          6 + @title_lines
-                       elsif row_space == 0
+                       elsif row_space.zero?
                          6 + @title_lines + ((vrows - 1) * 2)
                        else
                          3 + @title_lines + (vrows * 3) +
@@ -301,7 +301,7 @@ module Slithernix
         def activate(actions)
           draw(@box)
 
-          if actions.nil? || actions.size == 0
+          if actions.nil? || actions.size.zero?
             while true
               @input_window = self.CurMatrixCell
               @input_window.keypad(true)
@@ -519,7 +519,7 @@ module Slithernix
                 jumpToCell(-1, -1)
                 draw(@box)
               when Slithernix::Cdk::PASTE
-                if @@g_paste_buffer.size == 0 ||
+                if @@g_paste_buffer.size.zero? ||
                    @@g_paste_buffer.size > @colwidths[@ccol]
                   Slithernix::Cdk.Beep
                 else
@@ -704,7 +704,7 @@ module Slithernix
                                           Slithernix::Cdk::ACS_VLINE, attr)
             return
           end
-          if @col_space != 0 && @row_space == 0
+          if @col_space != 0 && @row_space.zero?
             if row == 1
               Slithernix::Cdk::Draw.attrbox(@cell[row][col], Slithernix::Cdk::ACS_ULCORNER,
                                             Slithernix::Cdk::ACS_URCORNER, Slithernix::Cdk::ACS_LTEE,
@@ -723,7 +723,7 @@ module Slithernix
               return
             end
           end
-          if @col_space == 0 && @row_space != 0
+          if @col_space.zero? && @row_space != 0
             if col == 1
               Slithernix::Cdk::Draw.attrbox(@cell[row][col], Slithernix::Cdk::ACS_ULCORNER,
                                             Slithernix::Cdk::ACS_TTEE, Slithernix::Cdk::ACS_LLCORNER, Slithernix::Cdk::ACS_BTEE,
@@ -944,7 +944,7 @@ module Slithernix
 
         # This cleans one cell in the matrix widget.
         def cleanCell(row, col)
-          return unless row > 0 && row <= @rows && col > col && col <= @cols
+          return unless row.positive? && row <= @rows && col > col && col <= @cols
 
           @info[row][col] =
             ''
@@ -998,7 +998,7 @@ module Slithernix
           end
 
           # Did we move up/down?
-          if row_shift > 0
+          if row_shift.positive?
             # We are moving down
             if @vrows == @cols
               @trow = 1
@@ -1015,7 +1015,7 @@ module Slithernix
               @crow = row_shift + @vrows - @rows + 1
               @row = newrow
             end
-          elsif row_shift < 0
+          elsif row_shift.negative?
             # We are moving up.
             if @vrows == @rows
               @trow = 1
@@ -1035,7 +1035,7 @@ module Slithernix
           end
 
           # Did we move left/right?
-          if col_shift > 0
+          if col_shift.positive?
             # We are moving right.
             if @vcols == @cols
               @lcol = 1
@@ -1051,7 +1051,7 @@ module Slithernix
               @ccol = col_shift + @vcols - @cols + 1
               @col = newcol
             end
-          elsif col_shift < 0
+          elsif col_shift.negative?
             # We are moving left.
             if @vcols == @cols
               @lcol = 1

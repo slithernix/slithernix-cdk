@@ -73,7 +73,7 @@ module Slithernix
           @button = []
           @button_len = []
           @button_pos = []
-          if button_count > 0
+          if button_count.positive?
             (0...button_count).each do |x|
               button_len = []
               @button << Slithernix::Cdk.char2Chtype(
@@ -211,7 +211,7 @@ module Slithernix
 
           # Compute the size of the resulting display
           viewer_size = list_size
-          if list.size > 0 && interpret
+          if list.size.positive? && interpret
             (0...list_size).each do |x|
               filename = ''
               next unless Slithernix::Cdk.checkForLink(list[x], filename) == 1
@@ -234,7 +234,7 @@ module Slithernix
           current_line = 0
           x = 0
           while x < list_size && current_line < viewer_size
-            if list[x].size == 0
+            if list[x].size.zero?
               @list[current_line] = ''
               @list_len[current_line] = 0
               @list_pos[current_line] = 0
@@ -383,7 +383,7 @@ module Slithernix
                 end
               when Slithernix::Cdk::PREV
                 if @button_count > 1
-                  if @current_button == 0
+                  if @current_button.zero?
                     @current_button = @button_count - 1
                   else
                     @current_button -= 1
@@ -393,7 +393,7 @@ module Slithernix
                   drawButtons
                 end
               when Curses::KEY_UP
-                if @current_top > 0
+                if @current_top.positive?
                   @current_top -= 1
                   refresh = true
                 else
@@ -414,15 +414,15 @@ module Slithernix
                   Slithernix::Cdk.Beep
                 end
               when Curses::KEY_LEFT
-                if @left_char > 0
+                if @left_char.positive?
                   @left_char -= 1
                   refresh = true
                 else
                   Slithernix::Cdk.Beep
                 end
               when Curses::KEY_PPAGE
-                if @current_top > 0
-                  @current_top = if @current_top - (@view_size - 1) > 0
+                if @current_top.positive?
+                  @current_top = if (@current_top - (@view_size - 1)).positive?
                                    @current_top - (@view_size - 1)
                                  else
                                    0

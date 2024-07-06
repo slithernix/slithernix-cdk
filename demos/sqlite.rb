@@ -160,7 +160,7 @@ class SQLiteDemo
 
     history_up_cb = lambda do |_cdktype, entry, history, _key|
       # Make sure we don't go out of bounds
-      if history.current == 0
+      if history.current.zero?
         Slithernix::Cdk.Beep
         return true
       end
@@ -201,7 +201,7 @@ class SQLiteDemo
       height = [history.count, 10].min + 3
 
       # No history, no list.
-      if history.count == 0
+      if history.count.zero?
         # Popup a little window telling the user there are no commands.
         mesg = ['<C></B/16>No Commands Entered', '<C>No History']
         entry.screen.popupLabel(mesg, mesg.size)

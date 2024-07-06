@@ -113,7 +113,7 @@ class AlphalistExample < CLIExample
       size = size[0]
       result = false
 
-      if size > 0
+      if size.positive?
         save = widget.scroll_field.getCurrentTop
         first = widget.getCurrentItem
 
@@ -134,12 +134,12 @@ class AlphalistExample < CLIExample
       size = size[0]
       result = false
 
-      if size > 0
+      if size.positive?
         save = widget.scroll_field.getCurrentTop
         first = widget.getCurrentItem
 
         first -= 1
-        if first + 1 > 0
+        if (first + 1).positive?
           AlphalistExample.fill_undo(widget, first, list[first])
           list = list[0...first] + list[first + 1..-1]
           widget.setContents(list, size - 1)
@@ -169,7 +169,7 @@ class AlphalistExample < CLIExample
     do_reload = lambda do |_cdktype, widget, _alpha_list, _key|
       result = false
 
-      if @@my_user_list.size > 0
+      if @@my_user_list.size.positive?
         widget.setContents(@@my_user_list, @@my_user_list.size)
         widget.setCurrentItem(0)
         widget.draw(widget.border_size)
@@ -180,7 +180,7 @@ class AlphalistExample < CLIExample
 
     do_undo = lambda do |_cdktype, widget, _alpha_list, _key|
       result = false
-      if @@my_undo_list.size > 0
+      if @@my_undo_list.size.positive?
         size = []
         oldlist = widget.getContents(size)
         size = size[0] + 1
