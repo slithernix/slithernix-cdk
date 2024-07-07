@@ -86,7 +86,6 @@ class MarqueeExample < Example
     # Set up CDK
     curses_win = Curses.init_screen
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
-    Curses.curs_set(0)
 
     # Set up CDK colors
     Slithernix::Cdk::Draw.initCDKColor

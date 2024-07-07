@@ -322,31 +322,35 @@ module Slithernix
         key
       end
 
+      # This is one of many methods whose purpose I really don't get. Look
+      # into removal. -- snake 2024
       def bindableObject(cdktype)
-        if cdktype != widget_type
-          nil
-        elsif %i[FSelect AlphaList].include?(widget_type)
-          @entry_field
-        else
-          self
-        end
+        return @entry_field if %i[FSelect AlphaList].include?(widget_type)
+        #if cdktype != widget_type
+        #  nil
+        #elsif %i[FSelect AlphaList].include?(widget_type)
+        #  @entry_field
+        #else
+        #  self
+        #end
+        self
       end
 
       def bind(type, key, function, data)
-        widg = bindableObject(type)
-        return unless key.ord < Curses::KEY_MAX && !widg.nil?
+        widget = bindableObject(type)
+        return unless key.ord < Curses::KEY_MAX && widget
 
-        widg.binding_list[key] = [function, data] if key.ord != 0
+        widget.binding_list[key] = [function, data] if key.ord != 0
       end
 
       def unbind(type, key)
-        widg = bindableObject(type)
-        widg&.binding_list&.delete(key)
+        widget = bindableObject(type)
+        widget&.binding_list&.delete(key)
       end
 
       def cleanBindings(type)
-        widg = bindableObject(type)
-        widg.binding_list.clear if widg&.binding_list
+        widget = bindableObject(type)
+        widget.binding_list.clear if widget&.binding_list
       end
 
       # This checks to see if the binding for the key exists:

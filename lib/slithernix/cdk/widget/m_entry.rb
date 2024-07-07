@@ -9,9 +9,9 @@ module Slithernix
         attr_accessor :info, :current_col, :current_row, :top_row
         attr_reader :disp_type, :field_width, :rows, :field_win
 
-        def initialize(cdkscreen, xplace, yplace, title, label, field_attr,
-                       filler, disp_type, f_width, f_rows, logical_rows, min, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, title, label, field_attr, filler, disp_type, f_width, f_rows, logical_rows, min, box, shadow)
           super()
+          Curses.curs_set(1)
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
           field_width = f_width
@@ -21,13 +21,20 @@ module Slithernix
 
           # If the field_width is a negative value, the field_width will be
           # COLS-field_width, otherwise the field_width will be the given width.
-          field_width = Slithernix::Cdk.setWidgetDimension(parent_width,
-                                                           field_width, 0)
+          field_width = Slithernix::Cdk.setWidgetDimension(
+            parent_width,
+            field_width,
+            0,
+          )
 
           # If the field_rows is a negative value, the field_rows will be
           # ROWS-field_rows, otherwise the field_rows will be the given rows.
-          field_rows = Slithernix::Cdk.setWidgetDimension(parent_width,
-                                                          field_rows, 0)
+          field_rows = Slithernix::Cdk.setWidgetDimension(
+            parent_width,
+            field_rows,
+            0,
+          )
+
           box_height = field_rows + 2
 
           # Set some basic values of the mentry field
@@ -58,8 +65,13 @@ module Slithernix
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
-                                  box_height)
+          Slithernix::Cdk.alignxy(
+            cdkscreen.window,
+            xtmp,
+            ytmp,
+            box_width,
+            box_height,
+          )
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -74,13 +86,21 @@ module Slithernix
 
           # Create the label window.
           if @label.size.positive?
-            @label_win = @win.subwin(field_rows, @label_len + 2,
-                                     ypos + @title_lines + 1, xpos + horizontal_adjust + 1)
+            @label_win = @win.subwin(
+              field_rows,
+              @label_len + 2,
+              ypos + @title_lines + 1,
+              xpos + horizontal_adjust + 1,
+            )
           end
 
           # make the field window.
-          @field_win = @win.subwin(field_rows, field_width,
-                                   ypos + @title_lines + 1, xpos + @label_len + horizontal_adjust + 1)
+          @field_win = @win.subwin(
+            field_rows,
+            field_width,
+            ypos + @title_lines + 1,
+            xpos + @label_len + horizontal_adjust + 1,
+          )
 
           # Turn on the keypad.
           @field_win.keypad(true)
@@ -125,8 +145,12 @@ module Slithernix
             if newchar == Curses::Error
               Slithernix::Cdk.Beep
             else
-              mentry.info = mentry.info[0...cursor_pos] + newchar.chr +
-                            mentry.info[cursor_pos..]
+              mentry.info = [
+                mentry.info[0...cursor_pos],
+                newchar.chr,
+                mentry.info[cursor_pos..],
+              ].join
+
               mentry.current_col += 1
 
               mentry.drawField
@@ -153,10 +177,13 @@ module Slithernix
           end
           @callbackfn = mentry_callback
 
-          # Do we need to create a shadow.
           if shadow
-            @shadow_win = Curses::Window.new(box_height, box_width,
-                                             ypos + 1, xpos + 1)
+            @shadow_win = Curses::Window.new(
+              box_height,
+              box_width,
+              ypos + 1,
+              xpos + 1,
+            )
           end
 
           # Register
@@ -246,8 +273,12 @@ module Slithernix
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
             # Call the pre-process function
-            pp_return = @pre_process_func.call(:MEntry, self,
-                                               @pre_process_data, input)
+            pp_return = @pre_process_func.call(
+              :MEntry,
+              self,
+              @pre_process_data,
+              input
+            )
           end
 
           # Should we continue?

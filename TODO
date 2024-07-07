@@ -1,5 +1,12 @@
 SlitherNix CDK TODO List (You can find the original Tawny list below)
 
+* Viewer doesn't exit cleanly on escpae
+
+* Viewer widget scrolls too far
+
+  It should stop when at 100 but goes down too far shows a bunch of
+  blank space.
+
 * Figure out how to do a kind of standardish-RGB integration
 
   Right now it's just color pairs. Should find a way to look up via RGB stuff
@@ -12,19 +19,11 @@ SlitherNix CDK TODO List (You can find the original Tawny list below)
 
   Basically what it says, the listing of the group box says stays small
 
-* AlphaList/FSelect/Viewer are broken
-
-  Can't use arrows to go up and down, something is broken in Widget#bind it looks like?
-
 * Traverse example can't be exited cleanly
 
 * Subwindow example broken
 
   Top of the box not working,
-
-* Slider and USlider example is broken now
-
-  Doesn't show the actual slider.
 
 * GNU Readline integration for entry
 
@@ -48,10 +47,6 @@ SlitherNix CDK TODO List (You can find the original Tawny list below)
   I assume this thing should pop up widgets to take down appointment
   information.
 
-* Viewer widgets not working anymore
-
-  Pressing arrow keys or enter does nothing. ESC also doesn't exit cleanly
-
 * Graph widget a little off
 
   It has the wrong names on the axes, and 5 is printed twice.
@@ -65,23 +60,10 @@ SlitherNix CDK TODO List (You can find the original Tawny list below)
   Did you mean?  times
     from ./calendar_ex.rb:139:in `<main>'
 
-* ButtonBox can't be navigated to hit cancel
-
-  Can't use arrows or tabs just exits
-
-* Help (?) on bind example not working
-
-  Hitting ? does nothing
-
 * Fix matrix widget
 
   This is supposed to show entry widgets in each column like a spreadsheet,
   but it shows the entry widget on the top left outside the matrix.
-
-* Fix position widget
-
-  I believe this is supposed to change the window position with arrows, but
-  it does nothing and won't let me enter keys either.
 
 
 * Aesthetics

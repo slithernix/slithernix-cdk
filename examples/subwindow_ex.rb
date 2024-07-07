@@ -36,7 +36,6 @@ class SubwindowExample < CLIExample
 
     # Start curses
     Curses.init_screen
-    Curses.curs_set(0)
 
     # Create a basic window.
     sub_window = Curses::Window.new(

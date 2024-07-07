@@ -235,7 +235,7 @@ module Slithernix
           current_line = 0
           x = 0
           while x < list_size && current_line < viewer_size
-            if list[x].empty?
+            if list[x].size.zero?
               @list[current_line] = String.new
               @list_len[current_line] = 0
               @list_pos[current_line] = 0

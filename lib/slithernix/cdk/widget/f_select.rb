@@ -24,19 +24,30 @@ module Slithernix
 
           # If the height is a negative value the height will be ROWS-height,
           # otherwise the height will be the given height
-          box_height = Slithernix::Cdk.setWidgetDimension(parent_height,
-                                                          height, 0)
+          box_height = Slithernix::Cdk.setWidgetDimension(
+            parent_height,
+            height,
+            0,
+          )
 
           # If the width is a negative value, the width will be COLS-width,
           # otherwise the width will be the given width.
-          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width,
-                                                         0)
+          box_width = Slithernix::Cdk.setWidgetDimension(
+            parent_width,
+            width,
+            0,
+          )
 
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
-                                  box_height)
+          Slithernix::Cdk.alignxy(
+            cdkscreen.window,
+            xtmp,
+            ytmp,
+            box_width,
+            box_height,
+          )
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -89,9 +100,21 @@ module Slithernix
                        else
                          box_width - 2 - label_len
                        end
-          @entry_field = Slithernix::Cdk::Widget::Entry.new(cdkscreen, @win.begx, @win.begy,
-                                                            title, label, field_attribute, filler_char, :MIXED, temp_width,
-                                                            0, 512, box, false)
+          @entry_field = Slithernix::Cdk::Widget::Entry.new(
+            cdkscreen,
+            @win.begx,
+            @win.begy,
+            title,
+            label,
+            field_attribute,
+            filler_char,
+            :MIXED,
+            temp_width,
+            0,
+            512,
+            box,
+            false,
+          )
 
           # Make sure the widget was created.
           if @entry_field.nil?
@@ -105,7 +128,7 @@ module Slithernix
 
           # This is a callback to the scrolling list which displays information
           # about the current file.  (and the whole directory as well)
-          display_file_info_cb = lambda do |_widget_type, entry, fselect, _key|
+          display_file_info_cb = lambda do |widget_type, entry, fselect, key|
             # Get the file name.
             filename = fselect.entry_field.info
 
@@ -168,7 +191,7 @@ module Slithernix
           end
 
           # This tries to complete the filename
-          complete_filename_cb = lambda do |_widget_type, _widget, fselect, _key|
+          complete_filename_cb = lambda do |widget_type, widget, fselect, key|
             scrollp = fselect.scroll_field
             entry = fselect.entry_field
             filename = entry.info.clone
@@ -297,7 +320,7 @@ module Slithernix
           # This allows the user to delete a file.
 
           # Start of callback functions.
-          adjust_scroll_cb = lambda do |_widget_type, _widget, fselect, key|
+          adjust_scroll_cb = lambda do |widget_type, widget, fselect, key|
             scrollp = fselect.scroll_field
             entry = fselect.entry_field
 

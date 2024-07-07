@@ -8,8 +8,7 @@ module Slithernix
       class AlphaList < Slithernix::Cdk::Widget
         attr_reader :scroll_field, :entry_field, :list
 
-        def initialize(cdkscreen, xplace, yplace, height, width, title, label,
-                       list, list_size, filler_char, highlight, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, height, width, title, label, list, list_size, filler_char, highlight, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -28,16 +27,22 @@ module Slithernix
 
           # If the height is a negative value, the height will be ROWS-height,
           # otherwise the height will be the given height.
-          box_height = Slithernix::Cdk.setWidgetDimension(parent_height,
-                                                          height, 0)
+          box_height = Slithernix::Cdk.setWidgetDimension(
+            parent_height,
+            height,
+            0,
+          )
 
           # If the width is a negative value, the width will be COLS-width,
           # otherwise the width will be the given width.
-          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width,
-                                                         0)
+          box_width = Slithernix::Cdk.setWidgetDimension(
+            parent_width,
+            width,
+            0,
+          )
 
           # Translate the label string to a chtype array
-          if label.size.positive?
+          if label&.size&.positive?
             lentmp = []
             Slithernix::Cdk.char2Chtype(label, lentmp, [])
             label_len = lentmp[0]
@@ -46,8 +51,13 @@ module Slithernix
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
-                                  box_height)
+          Slithernix::Cdk.alignxy(
+            cdkscreen.window,
+            xtmp,
+            ytmp,
+            box_width,
+            box_height,
+          )
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -72,8 +82,12 @@ module Slithernix
 
           # Do we want a shadow?
           if shadow
-            @shadow_win = Curses::Window.new(box_height, box_width,
-                                             ypos + 1, xpos + 1)
+            @shadow_win = Curses::Window.new(
+              box_height,
+              box_width,
+              ypos + 1,
+              xpos + 1,
+            )
           end
 
           # Create the entry field.
@@ -107,7 +121,7 @@ module Slithernix
           @entry_field.setLRchar(Slithernix::Cdk::ACS_RTEE)
 
           # Callback functions
-          adjust_alphalist_cb = lambda do |_widget_type, _widget, alphalist, key|
+          adjust_alphalist_cb = lambda do |widget_type, widget, alphalist, key|
             scrollp = alphalist.scroll_field
             entry = alphalist.entry_field
 
@@ -125,7 +139,7 @@ module Slithernix
             false
           end
 
-          complete_word_cb = lambda do |_widget_type, _widget, alphalist, _key|
+          complete_word_cb = lambda do |widget_type, widget, alphalist, key|
             entry = alphalist.entry_field
             scrollp = nil
             alt_words = []
@@ -227,7 +241,7 @@ module Slithernix
             true
           end
 
-          pre_process_entry_field = lambda do |_cdktype, _widget, alphalist, input|
+          pre_process_entry_field = lambda do |widget_type, widget, alphalist, input|
             scrollp = alphalist.scroll_field
             entry = alphalist.entry_field
             entry.info.size
@@ -273,15 +287,40 @@ module Slithernix
           end
 
           # Set the key bindings for the entry field.
-          @entry_field.bind(:Entry, Curses::KEY_UP, adjust_alphalist_cb, self)
-          @entry_field.bind(:Entry, Curses::KEY_DOWN, adjust_alphalist_cb,
-                            self)
-          @entry_field.bind(:Entry, Curses::KEY_NPAGE, adjust_alphalist_cb,
-                            self)
-          @entry_field.bind(:Entry, Curses::KEY_PPAGE, adjust_alphalist_cb,
-                            self)
-          @entry_field.bind(:Entry, Slithernix::Cdk::KEY_TAB,
-                            complete_word_cb, self)
+          @entry_field.bind(
+            :Entry,
+            Curses::KEY_UP,
+            adjust_alphalist_cb,
+            self,
+          )
+
+          @entry_field.bind(
+            :Entry,
+            Curses::KEY_DOWN,
+            adjust_alphalist_cb,
+            self,
+          )
+
+          @entry_field.bind(
+            :Entry,
+            Curses::KEY_NPAGE,
+            adjust_alphalist_cb,
+            self,
+          )
+
+          @entry_field.bind(
+            :Entry,
+            Curses::KEY_PPAGE,
+            adjust_alphalist_cb,
+            self,
+          )
+
+          @entry_field.bind(
+            :Entry,
+            Slithernix::Cdk::KEY_TAB,
+            complete_word_cb,
+            self,
+          )
 
           # Set up the post-process function for the entry field.
           @entry_field.setPreProcess(pre_process_entry_field, self)
@@ -554,7 +593,7 @@ module Slithernix
             status = true
             (0...list_size).each do |x|
               newlist << list[x]
-              if (newlist[x]).zero?
+              if (newlist[x])&.size&.zero?
                 status = false
                 break
               end

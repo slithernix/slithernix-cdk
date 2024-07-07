@@ -9,9 +9,9 @@ module Slithernix
         attr_accessor :info, :left_char, :screen_col
         attr_reader :win, :box_height, :box_width, :max, :field_width, :min
 
-        def initialize(cdkscreen, xplace, yplace, title, label, field_attr, filler,
-                       disp_type, f_width, min, max, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, title, label, field_attr, filler, disp_type, f_width, min, max, box, shadow)
           super()
+          Curses.curs_set(1)
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
           field_width = f_width
@@ -23,8 +23,11 @@ module Slithernix
 
           # If the field_width is a negative value, the field_width will be
           # COLS-field_width, otherwise the field_width will be the given width.
-          field_width = Slithernix::Cdk.setWidgetDimension(parent_width,
-                                                           field_width, 0)
+          field_width = Slithernix::Cdk.setWidgetDimension(
+            parent_width,
+            field_width,
+            0
+          )
           box_width = field_width + (2 * @border_size)
 
           # Set some basic values of the entry field.
@@ -55,8 +58,13 @@ module Slithernix
           # Rejustify the x and y positions if we need to.
           xtmp = [xpos]
           ytmp = [ypos]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
-                                  box_height)
+          Slithernix::Cdk.alignxy(
+            cdkscreen.window,
+            xtmp,
+            ytmp,
+            box_width,
+            box_height,
+          )
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -69,9 +77,12 @@ module Slithernix
           @win.keypad(true)
 
           # Make the field window.
-          @field_win = @win.subwin(1, field_width,
-                                   ypos + @title_lines + @border_size,
-                                   xpos + @label_len + horizontal_adjust + @border_size)
+          @field_win = @win.subwin(
+            1,
+            field_width,
+            ypos + @title_lines + @border_size,
+            xpos + @label_len + horizontal_adjust + @border_size,
+          )
 
           if @field_win.nil?
             destroy
@@ -113,8 +124,10 @@ module Slithernix
           @box_height = box_height
           @disp_type = disp_type
           @callbackfn = lambda do |entry, character|
-            plainchar = Slithernix::Cdk::Display.filterByDisplayType(entry,
-                                                                     character)
+            plainchar = Slithernix::Cdk::Display.filterByDisplayType(
+              entry,
+              character
+            )
 
             if plainchar == Curses::Error || entry.info.size >= entry.max
               Slithernix::Cdk.Beep
@@ -359,8 +372,14 @@ module Slithernix
         # This moves the entry field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @field_win, @label_win, @shadow_win]
-          move_specific(xplace, yplace, relative, refresh_flag,
-                        windows, [])
+          move_specific(
+            xplace,
+            yplace,
+            relative,
+            refresh_flag,
+            windows,
+            [],
+          )
         end
 
         # This erases the information in the entry field and redraws

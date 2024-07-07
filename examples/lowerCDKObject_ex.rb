@@ -52,7 +52,7 @@ class LowerCDKObjectExample < Example
     label2 = Slithernix::Cdk::Widget::Label.new(cdkscreen, 14, 9, mesg2, 10,
                                                 true, false)
 
-    mesg = ['</B>1<!B> - lower </U>label1<!U>, </B>2<!B> - lower ']
+    mesg = ['</B>1<!B> - lower </U>label1<!U>, </B>2<!B> - lower '.dup]
     mesg[0] << '</U>label2<!U>, </B>q<!B> - </U>quit<!U>'
     instruct = Slithernix::Cdk::Widget::Label.new(cdkscreen, params.x_value, params.y_value,
                                                   mesg, 1, params.box, params.shadow)

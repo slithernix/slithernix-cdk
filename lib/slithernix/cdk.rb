@@ -844,8 +844,18 @@ module Slithernix
                       interpret)
 
       # Create the file viewer to view the file selected.
-      viewer = Slithernix::Cdk::Viewer.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, -6, -16,
-                                           buttons, button_count, Curses::A_REVERSE, true, true)
+      viewer = Slithernix::Cdk::Widget::Viewer.new(
+        screen,
+        Slithernix::Cdk::CENTER,
+        Slithernix::Cdk::CENTER,
+        -6,
+        -16,
+        buttons,
+        button_count,
+        Curses::A_REVERSE,
+        true,
+        true,
+      )
 
       # Set up the viewer title, and the contents to the widget.
       viewer.set(title, info, count, Curses::A_REVERSE, interpret, true, true)

@@ -90,10 +90,17 @@ class RaiseCDKObjectExample < Example
                                                 true, false)
     label4.setULchar('4'.ord | Curses::A_BOLD)
 
-    mesg = ['</B>#<!B> - raise </U>label#<!U>, </B>r<!B> - </U>redraw<!U>, ']
+    mesg = ['</B>#<!B> - raise </U>label#<!U>, </B>r<!B> - </U>redraw<!U>, '.dup]
     mesg[0] << '</B>q<!B> - </U>quit<!U>'
-    instruct = Slithernix::Cdk::Widget::Label.new(cdkscreen, params.x_value, params.y_value,
-                                                  mesg, 1, params.box, params.shadow)
+    instruct = Slithernix::Cdk::Widget::Label.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value,
+      mesg,
+      1,
+      params.box,
+      params.shadow
+    )
 
     instruct.setULchar(' '.ord | Curses::A_NORMAL)
     instruct.setURchar(' '.ord | Curses::A_NORMAL)
