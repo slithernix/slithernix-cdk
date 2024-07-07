@@ -1,5 +1,17 @@
 SlitherNix CDK TODO List (You can find the original Tawny list below)
 
+* Figure out how to do a kind of standardish-RGB integration
+
+  Right now it's just color pairs. Should find a way to look up via RGB stuff
+
+* Down the road, add yaml description feature
+
+  Basically, create a way to describe a TUI via a yaml manifest
+
+* RoloDex example doesn't expand box size after adding new entries
+
+  Basically what it says, the listing of the group box says stays small
+
 * AlphaList/FSelect/Viewer are broken
 
   Can't use arrows to go up and down, something is broken in Widget#bind it looks like?

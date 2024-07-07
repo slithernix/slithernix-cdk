@@ -1604,7 +1604,7 @@ class Rolodex
       cdkscreen.popupLabel(mesg, mesg.size)
     else
       temp = if group_count == 1
-             then '<C></24>There was 1 group'
+               then '<C></24>There was 1 group'.dup
              else
                format('<C></24>There were %d groups', group_count)
              end

@@ -11,7 +11,7 @@ class Command
   def self.help(entry)
     # Create the help message.
     mesg = [
-      '<C></B/29>Help',
+      '<C></B/14>Help',
       '',
       '</B/24>When in the command line.',
       '<B=history   > Displays the command history.',

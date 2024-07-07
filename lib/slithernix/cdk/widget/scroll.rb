@@ -8,8 +8,7 @@ module Slithernix
       class Scroll < Slithernix::Cdk::Widget::Scroller
         attr_reader :item, :list_size, :current_item, :highlight
 
-        def initialize(cdkscreen, xplace, yplace, splace, height, width, title,
-                       list, list_size, numbers, highlight, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, splace, height, width, title, list, list_size, numbers, highlight, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -31,13 +30,19 @@ module Slithernix
 
           # If the height is a negative value, the height will be ROWS-height,
           # otherwise the height will be the given height
-          box_height = Slithernix::Cdk.setWidgetDimension(parent_height,
-                                                          height, 0)
+          box_height = Slithernix::Cdk.setWidgetDimension(
+            parent_height,
+            height,
+            0,
+          )
 
           # If the width is a negative value, the width will be COLS-width,
           # otherwise the width will be the given width
-          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width,
-                                                         0)
+          box_width = Slithernix::Cdk.setWidgetDimension(
+            parent_width,
+            width,
+            0,
+          )
 
           box_width = setTitle(title, box_width)
 
@@ -83,11 +88,19 @@ module Slithernix
 
           # Create the scrollbar window.
           if splace == Slithernix::Cdk::RIGHT
-            @scrollbar_win = @win.subwin(maxViewSize, 1,
-                                         self.SCREEN_YPOS(ypos), xpos + box_width - @border_size - 1)
+            @scrollbar_win = @win.subwin(
+              maxViewSize,
+              1,
+              self.SCREEN_YPOS(ypos),
+              xpos + box_width - @border_size - 1,
+            )
           elsif splace == Slithernix::Cdk::LEFT
-            @scrollbar_win = @win.subwin(maxViewSize, 1,
-                                         self.SCREEN_YPOS(ypos), self.SCREEN_XPOS(xpos))
+            @scrollbar_win = @win.subwin(
+              maxViewSize,
+              1,
+              self.SCREEN_YPOS(ypos),
+              self.SCREEN_XPOS(xpos),
+            )
           else
             @scrollbar_win = nil
           end
@@ -120,8 +133,12 @@ module Slithernix
 
           # Do we need to create a shadow?
           if shadow
-            @shadow_win = Curses::Window.new(@box_height, box_width,
-                                             ypos + 1, xpos + 1)
+            @shadow_win = Curses::Window.new(
+              @box_height,
+              box_width,
+              ypos + 1,
+              xpos + 1,
+            )
           end
 
           # Set up the key bindings.
@@ -193,8 +210,12 @@ module Slithernix
 
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
-            pp_return = @pre_process_func.call(:Scroll, self,
-                                               @pre_process_data, input)
+            pp_return = @pre_process_func.call(
+              :Scroll,
+              self,
+              @pre_process_data,
+              input,
+            )
           end
 
           # Should we continue?

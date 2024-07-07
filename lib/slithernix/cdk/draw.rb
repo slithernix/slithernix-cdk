@@ -3,21 +3,26 @@
 module Slithernix
   module Cdk
     module Draw
-      # Set up all basic BG/FG color pairs based on what Curses supports
+      # It'd be nice if curses could do 65535 or true color.
+      # It only supports 256 color pairs.
       def self.initCDKColor
-        return unless Curses.has_colors?
+        return nil unless Curses.has_colors?
 
         Curses.start_color
         limit = [Curses.colors, 256].min
+        limit = Math.sqrt(limit)
+        color_pairs = { }
 
-        # Create color pairs for all combinations of foreground and background colors
         pair = 1
         (0...limit).each do |fg|
           (0...limit).each do |bg|
             Curses.init_pair(pair, fg, bg)
+            color_pairs[pair] = [ fg, bg ]
             pair += 1
           end
         end
+
+        color_pairs
       end
 
       # This prints out a box around a window with attributes

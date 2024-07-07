@@ -236,26 +236,13 @@ module Slithernix
 
       if mask[0] != 0
         from += 1
-      elsif digit?(string[from + 1]) && digit?(string[from + 2])
-        mask[0] = Curses::A_BOLD
-
-        if Curses.has_colors?
-          # XXX: Only checks if terminal has colours not if colours are started
-          pair = string[from + 1..from + 2].to_i
-          mask[0] = Curses.color_pair(pair)
-        end
-
-        from += 2
       elsif digit?(string[from + 1])
-        if Curses.has_colors?
-          # XXX: Only checks if terminal has colours not if colours are started
-          pair = string[from + 1].to_i
+        match = string[from + 1..].match(/\d+/)
+        if match
+          pair = match[0].to_i
           mask[0] = Curses.color_pair(pair)
-        else
-          mask[0] = Curses.A_BOLD
+          from += match[0].length
         end
-
-        from += 1
       end
 
       from
@@ -604,6 +591,9 @@ module Slithernix
     end
 
     # This opens the current directory and reads the contents.
+    # This method is absolute dogshit, should just return the list.
+    # I hate the mutation of the second argument rather than the return.
+    # TODO: fix --snake 2024
     def self.getDirectoryContents(directory, list)
       # Open the directory.
       Dir.foreach(directory) do |filename|
