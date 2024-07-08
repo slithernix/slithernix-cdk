@@ -118,7 +118,7 @@ class ViewerExample < CLIExample
           '',
           '<C>Press any key to continue.',
         ]
-        cdkscreen.popupLabel(mesg, 3)
+        cdkscreen.popup_label(mesg, 3)
 
         f_select.destroy
         cdkscreen.destroy
@@ -203,7 +203,7 @@ class ViewerExample < CLIExample
       ]
     end
 
-    cdkscreen.popupLabel(mesg, 3)
+    cdkscreen.popup_label(mesg, 3)
     example.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK

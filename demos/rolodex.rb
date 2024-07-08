@@ -153,7 +153,7 @@ class Rolodex
       # Tell the user they exited early.
       selection_list.destroy
       mesg = ['<C>Print Canceled.']
-      screen.popupLabel(mesg, mesg.size)
+      screen.popup_label(mesg, mesg.size)
       return
     end
     selection_list.erase
@@ -211,7 +211,7 @@ class Rolodex
               group_list[x].name,
             )
           ]
-          screen.popupLabel(screen, mesg, mesg.size)
+          screen.popup_label(screen, mesg, mesg.size)
         end
 
         title.destroy
@@ -266,7 +266,7 @@ class Rolodex
               group_list[x].name
             )
           ]
-          screen.popupLabel(mesg, mesg.size)
+          screen.popup_label(mesg, mesg.size)
         end
 
         title.destroy
@@ -285,7 +285,7 @@ class Rolodex
         '<C>Error',
         '<C>There are no groups defined.',
       ]
-      screen.popupLabel(mesg, mesg.size)
+      screen.popup_label(mesg, mesg.size)
 
       # Return the current group count
       return group_count
@@ -305,7 +305,7 @@ class Rolodex
         '<C>   Delete Canceled   ',
         '<C>No Group Deleted',
       ]
-      screen.popupLabel(mesg, mesg.size)
+      screen.popup_label(mesg, mesg.size)
       return group_count
     end
 
@@ -320,7 +320,7 @@ class Rolodex
       '<No>',
       '<Yes>',
     ]
-    choice = screen.popupDialog(mesg, mesg.size, buttons, buttons.size)
+    choice = screen.popup_dialog(mesg, mesg.size, buttons, buttons.size)
 
     # Check the results of the confirmation.
     if choice.zero?
@@ -328,7 +328,7 @@ class Rolodex
         '<C>   Delete Canceled   ',
         '<C>No Group Deleted',
       ]
-      screen.popupLabel(mesg, mesg.size)
+      screen.popup_label(mesg, mesg.size)
       return group_count
     end
 
@@ -552,7 +552,7 @@ class Rolodex
         '</B/16><Cancel>',
         '</B/8><Modify Information>',
       ]
-      ret = screen.popupDialog(mesg, mesg.size, buttons, buttons.size)
+      ret = screen.popup_dialog(mesg, mesg.size, buttons, buttons.size)
 
       # Check the response of the popup dialog box.
       if ret.zero?
@@ -670,7 +670,7 @@ class Rolodex
         '</B/16><Cancel>',
         '</B/8><Modify Information>',
       ]
-      ret = screen.popupDialog(mesg, mesg.size, buttons, buttons.size)
+      ret = screen.popup_dialog(mesg, mesg.size, buttons, buttons.size)
 
       # Check the response of the popup dialog box.
       if ret.zero?
@@ -733,7 +733,7 @@ class Rolodex
     if file_selector.exit_type == :ESCAPE_HIT
       file_selector.destroy
       mesg = ['Open New RC File Aborted.']
-      screen.popupLabel(mesg, mesg.size)
+      screen.popup_label(mesg, mesg.size)
       return group_count
     end
 
@@ -752,7 +752,7 @@ class Rolodex
         '<C>does not seem to be a rolodex RC file.',
         '<C>Press any key to continue.'
       ]
-      screen.popupLabel(mesg, mesg.size)
+      screen.popup_label(mesg, mesg.size)
       group_count = 0
     end
 
@@ -846,7 +846,7 @@ class Rolodex
     mesg << ('<C>%s' % filename)
     mesg << '<C>Press any key to continue.'
 
-    screen.popupLabel(mesg, mesg.size)
+    screen.popup_label(mesg, mesg.size)
 
     1
   end
@@ -1060,7 +1060,7 @@ class Rolodex
                '<C>Can not display information.',
              ]
            end
-    screen.popupLabel(mesg, mesg.size)
+    screen.popup_label(mesg, mesg.size)
   end
 
   # This function allows the user to add/delete/modify/save the
@@ -1101,7 +1101,7 @@ class Rolodex
         '<C>There were no entries in this group.',
         '<C>Do you want to add a new listing?',
       ]
-      if screen.popupDialog(mesg, mesg.size, buttons, buttons.size) == 1
+      if screen.popup_dialog(mesg, mesg.size, buttons, buttons.size) == 1
         help_window.destroy
         return
       end
@@ -1110,7 +1110,7 @@ class Rolodex
       return if Rolodex.addPhoneRecord(screen, phone_data) != 0
     elsif phone_count.negative?
       mesg = ['<C>Could not open the database for this group.']
-      screen.popupLabel(mesg, mesg.size)
+      screen.popup_label(mesg, mesg.size)
       help_window.destroy
       return
     end
@@ -1178,7 +1178,7 @@ class Rolodex
       # Check the number of entries left in the list.
       if scrollp.list_size.zero?
         mesg = ['There are no more numbers to delete.']
-        scrollp.screen.popupLabel(mesg, mesg.size)
+        scrollp.screen.popup_label(mesg, mesg.size)
         return false
       end
 
@@ -1190,8 +1190,8 @@ class Rolodex
           Slithernix::Cdk.chtype2Char(scrollp.item[scrollp.current_item]),
         ),
       ]
-      if scrollp.screen.popupDialog(mesg, mesg.size, buttons,
-                                    buttons.size) == 1
+      if scrollp.screen.popup_dialog(mesg, mesg.size, buttons,
+                                     buttons.size) == 1
         front = phone_data.record[0...position] || []
         back = phone_data.record[position + 1..] || []
         phone_data.record = front + back
@@ -1216,7 +1216,7 @@ class Rolodex
         '<B=?     > Pops up this help window.',
       ]
 
-      scrollp.screen.popupLabel(mesg, 5)
+      scrollp.screen.popup_label(mesg, 5)
 
       false
     end
@@ -1247,7 +1247,7 @@ class Rolodex
         '<C>Could not save phone data to data file.',
         '<C>All changes have been lost.'
       ]
-      screen.popupLabel(mesg, mesg.size)
+      screen.popup_label(mesg, mesg.size)
     end
 
     # Clean up.
@@ -1294,7 +1294,7 @@ class Rolodex
       ]
 
       # Display the message.
-      scrollp.screen.popupLabel(mesg, mesg.size)
+      scrollp.screen.popup_label(mesg, mesg.size)
 
       # Redraw the scrolling list.
       scrollp.draw(scrollp.box)
@@ -1339,7 +1339,7 @@ class Rolodex
     if new_name.exit_type == :ESCAPE_HIT
       mesg = ['<C></B/16>Add Group Canceled.']
       new_name.destroy
-      screen.popupLabel(mesg, mesg.size)
+      screen.popup_label(mesg, mesg.size)
       return group_count
     end
 
@@ -1353,7 +1353,7 @@ class Rolodex
           new_group_name,
         )
       ]
-      screen.popupLabel(mesg, mesg.size)
+      screen.popup_label(mesg, mesg.size)
       new_name.destroy
       return group_count
     end
@@ -1416,7 +1416,7 @@ class Rolodex
     ]
 
     # Display the message.
-    screen.popupLabel(mesg, mesg.size)
+    screen.popup_label(mesg, mesg.size)
   end
 
   # This function displays a little pop up window discussing this demo.
@@ -1438,7 +1438,7 @@ class Rolodex
       '<R></B/24>March 2013',
     ]
 
-    screen.popupLabel(mesg, mesg.size)
+    screen.popup_label(mesg, mesg.size)
   end
 
   def self.main
@@ -1547,7 +1547,7 @@ class Rolodex
               end
 
       # Pop up the message.
-      menu.screen.popupLabel(mesg, mesg.size)
+      menu.screen.popup_label(mesg, mesg.size)
 
       # Redraw the submenu window.
       menu.drawSubwin
@@ -1594,14 +1594,14 @@ class Rolodex
         '<C></B/16>No rolodex groups were loaded.',
         '<C>Press any key to continue.',
       ]
-      cdkscreen.popupLabel(mesg, mesg.size)
+      cdkscreen.popup_label(mesg, mesg.size)
       group_count = 0
     elsif group_count.zero?
       mesg = [
         '<C></B/24>Empty rolodex RC file. No groups loaded.',
         '<C>Press any key to continue.',
       ]
-      cdkscreen.popupLabel(mesg, mesg.size)
+      cdkscreen.popup_label(mesg, mesg.size)
     else
       temp = if group_count == 1
                then '<C></24>There was 1 group'.dup
@@ -1613,7 +1613,7 @@ class Rolodex
         temp,
         '<C>Press any key to continue.',
       ]
-      cdkscreen.popupLabel(mesg, mesg.size)
+      cdkscreen.popup_label(mesg, mesg.size)
     end
 
     # Loop until we are done.
@@ -1672,7 +1672,7 @@ class Rolodex
           ]
 
           # Add the group if they said yes.
-          if cdkscreen.popupDialog(mesg, 2, buttons, 2).zero?
+          if cdkscreen.popup_dialog(mesg, 2, buttons, 2).zero?
             group_count = Rolodex.addRolodexGroup(
               cdkscreen, group_list, group_count
             )

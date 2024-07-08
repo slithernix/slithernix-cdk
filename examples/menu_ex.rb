@@ -108,7 +108,7 @@ class MenuExample < Example
         '',
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     elsif menu.exit_type == :NORMAL
       mesg = [
         format('<C>You selected menu #%d, submenu #%d', selection / 100,
@@ -116,7 +116,7 @@ class MenuExample < Example
         '',
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     end
 
     # Clean up.

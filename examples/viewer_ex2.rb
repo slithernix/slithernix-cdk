@@ -83,7 +83,7 @@ class Viewer2Example < CLIExample
           '',
           '<C>Press any key to continue.',
         ]
-        cdkscreen.popupLabel(mesg, 3)
+        cdkscreen.popup_label(mesg, 3)
 
         # Exit CDK.
         f_select.destroy
@@ -109,7 +109,7 @@ class Viewer2Example < CLIExample
       '',
       '<C>Press any key to continue.'
     ]
-    cdkscreen.popupLabel(mesg, 3)
+    cdkscreen.popup_label(mesg, 3)
 
     # Clean up.
     cdkscreen.destroy

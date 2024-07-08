@@ -89,7 +89,7 @@ class EntryExample < Example
     end
 
     directory.destroy
-    cdkscreen.popupLabel(mesg, mesg.size)
+    cdkscreen.popup_label(mesg, mesg.size)
     cdkscreen.destroy
     Slithernix::Cdk::Screen.endCDK
     exit # EXIT_SUCCESS

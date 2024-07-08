@@ -111,7 +111,7 @@ class CalendarExample < Example
         '',
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     elsif calendar.exit_type == :NORMAL
       mesg = [
         'You selected the following date',
@@ -119,7 +119,7 @@ class CalendarExample < Example
                calendar.month, calendar.year),
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     end
 
     # Clean up

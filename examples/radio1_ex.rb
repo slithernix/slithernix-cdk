@@ -76,7 +76,7 @@ class Radio1Example < CLIExample
         '',
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     elsif radio.exit_type == :NORMAL
       mesg = [
         '<C> You selected the filename',
@@ -84,7 +84,7 @@ class Radio1Example < CLIExample
         '',
         '<C>Press any key to continue'
       ]
-      cdkscreen.popupLabel(mesg, 4)
+      cdkscreen.popup_label(mesg, 4)
     end
 
     # Clean up.

@@ -98,7 +98,7 @@ class RadioExample < CLIExample
           '',
           '<C>Press any key to continue.'
         ]
-        cdkscreen.popupLabel(mesg, 3)
+        cdkscreen.popup_label(mesg, 3)
         break
       elsif radio.exit_type == :NORMAL
         if File.directory?(item[selection])
@@ -108,7 +108,7 @@ class RadioExample < CLIExample
             '',
             '<C>Press any key to continue'
           ]
-          cdkscreen.popupLabel(mesg, 4)
+          cdkscreen.popup_label(mesg, 4)
           nitem = []
           count = Slithernix::Cdk.getDirectoryContents(item[selection], nitem)
           if count.positive?
@@ -123,7 +123,7 @@ class RadioExample < CLIExample
             '',
             '<C>Press any key to continue.'
           ]
-          cdkscreen.popupLabel(mesg, 4)
+          cdkscreen.popup_label(mesg, 4)
           break
         end
       end

@@ -65,7 +65,7 @@ class SQLiteDemo
     ]
 
     # Display the message.
-    screen.popupLabel(mesg, mesg.size)
+    screen.popup_label(mesg, mesg.size)
   end
 
   def self.help(entry)
@@ -93,7 +93,7 @@ class SQLiteDemo
     ]
 
     # Pop up the help message.
-    entry.screen.popupLabel(mesg, mesg.size)
+    entry.screen.popup_label(mesg, mesg.size)
   end
 
   def self.main
@@ -135,7 +135,7 @@ class SQLiteDemo
       sqlitedb = SQLite3::Database.new(dbfile)
     rescue StandardError
       mesg = ['<C></U>Fatal Error', '<C>Could not connect to the database.']
-      @gp_cdk_screen.popupLabel(mesg, mesg.size)
+      @gp_cdk_screen.popup_label(mesg, mesg.size)
       exit # EXIT_FAILURE
     end
 
@@ -201,7 +201,7 @@ class SQLiteDemo
       if history.count.zero?
         # Popup a little window telling the user there are no commands.
         mesg = ['<C></B/16>No Commands Entered', '<C>No History']
-        entry.screen.popupLabel(mesg, mesg.size)
+        entry.screen.popup_label(mesg, mesg.size)
 
         # Redraw the screen.
         entry.erase

@@ -62,7 +62,7 @@ class TemplateExample < Example
         '',
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     elsif phone_number.exit_type == :NORMAL
       # Mix the plate and the number.
       mixed = phone_number.mix
@@ -75,7 +75,7 @@ class TemplateExample < Example
         '',
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 4)
+      cdkscreen.popup_label(mesg, 4)
     end
 
     # Clean up

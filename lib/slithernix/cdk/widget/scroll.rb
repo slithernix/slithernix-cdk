@@ -860,7 +860,7 @@ module Slithernix
           Slithernix::Cdk.moveCursesWindow(@shadow_win, -xdiff, -ydiff)
 
           # Thouch the windows so they 'move'.
-          Slithernix::Cdk::Screen.refreshCDKWindow(@screen.window)
+          Slithernix::Cdk::Screen.refresh_window(@screen.window)
 
           # Redraw the window, if they asked for it.
           draw(@box) if refresh_flag

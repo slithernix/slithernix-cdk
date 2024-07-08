@@ -93,7 +93,7 @@ class ItemlistExample < Example
         '',
         '<C>Press any key to continue.'
       ]
-      monthlist.screen.popupLabel(mesg, 3)
+      monthlist.screen.popup_label(mesg, 3)
     elsif monthlist.exit_type == :NORMAL
       human_count_choice = choice + 1
       suffix = case human_count_choice
@@ -111,7 +111,7 @@ class ItemlistExample < Example
         '<C>Press any key to continue.'
       ]
 
-      monthlist.screen.popupLabel(mesg, 4)
+      monthlist.screen.popup_label(mesg, 4)
     end
 
     # Clean up

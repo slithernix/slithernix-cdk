@@ -110,7 +110,7 @@ class MatrixExample < Example
         '',
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     elsif course_list.exit_type == :NORMAL
       mesg = [
         '<L>You exited the matrix normally',
@@ -121,7 +121,7 @@ class MatrixExample < Example
         '',
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 7)
+      cdkscreen.popup_label(mesg, 7)
     end
 
     # Clean up

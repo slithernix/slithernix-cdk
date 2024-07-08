@@ -119,13 +119,13 @@ class RaiseCDKObjectExample < Example
     while (ch = $stdin.getc.chr) != 'q'
       case ch
       when '1'
-        Slithernix::Cdk::Screen.raiseCDKObject(:Label, label1)
+        Slithernix::Cdk::Screen.raise_widget(:Label, label1)
       when '2'
-        Slithernix::Cdk::Screen.raiseCDKObject(:Label, label2)
+        Slithernix::Cdk::Screen.raise_widget(:Label, label2)
       when '3'
-        Slithernix::Cdk::Screen.raiseCDKObject(:Label, label3)
+        Slithernix::Cdk::Screen.raise_widget(:Label, label3)
       when '4'
-        Slithernix::Cdk::Screen.raiseCDKObject(:Label, label4)
+        Slithernix::Cdk::Screen.raise_widget(:Label, label4)
       when 'r'
         cdkscreen.refresh
       else

@@ -62,9 +62,9 @@ class LowerCDKObjectExample < Example
     while (ch = $stdin.getc.chr) != 'q'
       case ch
       when '1'
-        Slithernix::Cdk::Screen.lowerCDKObject(:Label, label1)
+        Slithernix::Cdk::Screen.lower_widget(:Label, label1)
       when '2'
-        Slithernix::Cdk::Screen.lowerCDKObject(:Label, label2)
+        Slithernix::Cdk::Screen.lower_widget(:Label, label2)
       else
         next
       end

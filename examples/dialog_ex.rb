@@ -63,13 +63,13 @@ class DialogExample < Example
         '',
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     elsif (mesg = [
       format('<C>You selected button #%d', selection),
       '',
       '<C>Press any key to continue.'
     ])
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     end
 
     # Clean up.

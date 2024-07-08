@@ -132,7 +132,7 @@ class ScrollExample < CLIExample
       ]
     end
 
-    cdkscreen.popupLabel(msg, 3)
+    cdkscreen.popup_label(msg, 3)
 
     # Clean up.
     # CDKfreeStrings (item);

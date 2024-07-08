@@ -10,8 +10,7 @@ module Curses
     raise Curses::Error, 'Input is not an Integer' unless ch.is_a?(Integer)
 
     if ch.negative? || ch > 127
-      raise Curses::Error,
-            'Input is out of ASCII range'
+      raise Curses::Error, 'Input is out of ASCII range'
     end
 
     if (32..126).include?(ch)

@@ -77,7 +77,7 @@ when :NORMAL
   ]
 end
 
-cdkscreen.popupLabel(msg, 3)
+cdkscreen.popup_label(msg, 3)
 
 color_list.destroy
 cdkscreen.destroy

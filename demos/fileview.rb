@@ -70,7 +70,7 @@ class FileView
           '',
           '<C>Press any key to continue.',
         ]
-        cdkscreen.popupLabel(mesg, 3)
+        cdkscreen.popup_label(mesg, 3)
 
         fselect.destroy
         cdkscreen.destroy
@@ -124,14 +124,14 @@ class FileView
         '',
         '<C>Press any key to continue.',
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     elsif example.exit_type == :NORMAL
       mesg = [
         format('<C>You selected button %d', selected),
         '',
         '<C>Press any key to continue.',
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     end
 
     example.destroy

@@ -163,7 +163,7 @@ class AlphalistExample < CLIExample
         'F4 = reload all items',
         'F5 = undo deletion',
       ]
-      cdkscreen.popupLabel(message, message.size)
+      cdkscreen.popup_label(message, message.size)
       true
     end
 
@@ -220,7 +220,7 @@ class AlphalistExample < CLIExample
         '',
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     elsif alpha_list.exit_type == :NORMAL
       mesg = [
         '<C>You selected the following',
@@ -228,7 +228,7 @@ class AlphalistExample < CLIExample
         '',
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 4)
+      cdkscreen.popup_label(mesg, 4)
     end
 
     # Clean up.

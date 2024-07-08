@@ -75,14 +75,14 @@ class SliderExample < Example
         '',
         '<C>Press any key to continue.',
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     elsif widget.exit_type == :NORMAL
       mesg = [
         '<C>You selected %d' % selection,
         '',
         '<C>Press any key to continue.',
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     end
 
     # Clean up

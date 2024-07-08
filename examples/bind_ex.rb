@@ -56,27 +56,27 @@ class BindExample < Example
           '<C>When this button is picked the name of the current',
           '<C>user is displayed on the screen in a popup window.',
         ]
-        dialog.screen.popupLabel(mesg, 3)
+        dialog.screen.popup_label(mesg, 3)
       elsif dialog.current_button == 1
         mesg = [
           '<C></U>Help for </U>Time<!U>.',
           '<C>When this button is picked the current time is',
           '<C>displayed on the screen in a popup window.'
         ]
-        dialog.screen.popupLabel(mesg, 3)
+        dialog.screen.popup_label(mesg, 3)
       elsif dialog.current_button == 2
         mesg = [
           '<C></U>Help for </U>Date<!U>.',
           '<C>When this button is picked the current date is',
           '<C>displayed on the screen in a popup window.'
         ]
-        dialog.screen.popupLabel(mesg, 3)
+        dialog.screen.popup_label(mesg, 3)
       elsif dialog.current_button == 3
         mesg = [
           '<C></U>Help for </U>Quit<!U>.',
           '<C>When this button is picked the dialog box is exited.'
         ]
-        dialog.screen.popupLabel(mesg, 2)
+        dialog.screen.popup_label(mesg, 2)
       end
       false
     end
@@ -101,19 +101,19 @@ class BindExample < Example
                   format('<C><%.*s>', 246, login_name) # FIXME: magic number
                 end
 
-        question.screen.popupLabel(info, 2)
+        question.screen.popup_label(info, 2)
       elsif selection == 1
         info = [
           '<C>   </U>Current Time<!U>   ',
           Time.new.getlocal.strftime('<C>%H:%M:%S')
         ]
-        question.screen.popupLabel(info, 2)
+        question.screen.popup_label(info, 2)
       elsif selection == 2
         info = [
           '<C>   </U>Current Date<!U>   ',
           Time.new.getlocal.strftime('<C>%d/%m/%y')
         ]
-        question.screen.popupLabel(info, 2)
+        question.screen.popup_label(info, 2)
       end
     end
 

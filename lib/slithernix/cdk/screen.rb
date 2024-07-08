@@ -46,7 +46,7 @@ module Slithernix
 
         return unless widget.validObjType(cdktype)
 
-        setScreenIndex(@widget_count, widget)
+        set_screen_index(@widget_count, widget)
         @widget_count += 1
       end
 
@@ -63,7 +63,7 @@ module Slithernix
 
         # Resequence the widgets
         (index...screen.widget_count - 1).each do |x|
-          screen.setScreenIndex(x, screen.widget[x + 1])
+          screen.set_screen_index(x, screen.widget[x + 1])
         end
 
         if screen.widget_count <= 1
@@ -85,23 +85,23 @@ module Slithernix
         end
       end
 
-      def setScreenIndex(number, widg)
+      def set_screen_index(number, widg)
         widg.screen_index = number
         widg.screen = self
         @widget[number] = widg
       end
 
-      def validIndex(n)
+      def valid_index(n)
         n >= 0 && n < @widget_count
       end
 
-      def swapCDKIndices(n1, n2)
-        return unless n1 != n2 && validIndex(n1) && validIndex(n2)
+      def swap_indices(n1, n2)
+        return unless n1 != n2 && valid_index(n1) && valid_index(n2)
 
         o1 = @widget[n1]
         o2 = @widget[n2]
-        setScreenIndex(n1, o2)
-        setScreenIndex(n2, o1)
+        set_screen_index(n1, o2)
+        set_screen_index(n2, o1)
 
         if @widget_focus == n1
           @widget_focus = n2
@@ -111,22 +111,22 @@ module Slithernix
       end
 
       # This 'brings' a CDK widget to the top of the stack.
-      def self.raiseCDKObject(cdktype, widget)
+      def self.raise_widget(cdktype, widget)
         return unless widget.validObjType(cdktype)
 
         screen = widget.screen
-        screen.swapCDKIndices(widget.screen_index, screen.widget_count - 1)
+        screen.swap_indices(widget.screen_index, screen.widget_count - 1)
       end
 
       # This 'lowers' a widget.
-      def self.lowerCDKObject(cdktype, widget)
+      def self.lower_widget(cdktype, widget)
         return unless widget.validObjType(cdktype)
 
-        widget.screen.swapCDKIndices(widget.screen_index, 0)
+        widget.screen.swap_indices(widget.screen_index, 0)
       end
 
       # This pops up a message.
-      def popupLabel(mesg, count)
+      def popup_label(mesg, count)
         # Create the label.
         popup = Slithernix::Cdk::Widget::Label.new(
           self,
@@ -156,7 +156,7 @@ module Slithernix
       end
 
       # This pops up a message
-      def popupLabelAttrib(mesg, count, _attrib)
+      def popup_label_attrib(mesg, count, _attrib)
         # Create the label.
         popup = Slithernix::Cdk::Widget::Label.new(
           self,
@@ -187,7 +187,7 @@ module Slithernix
       end
 
       # This pops up a dialog box.
-      def popupDialog(mesg, mesg_count, buttons, button_count)
+      def popup_dialog(mesg, mesg_count, buttons, button_count)
         # Create the dialog box.
         popup = Slithernix::Cdk::Widget::Dialog.new(
           self,
@@ -228,7 +228,7 @@ module Slithernix
       # FIXME(original): this should be rewritten to use the panel library, so
       # it would not be necessary to touch the window to ensure that it covers
       # other windows.
-      def self.refreshCDKWindow(win)
+      def self.refresh_window(win)
         win.touch
         win.refresh
       end
@@ -238,7 +238,7 @@ module Slithernix
         focused = -1
         visible = -1
 
-        Slithernix::Cdk::Screen.refreshCDKWindow(@window)
+        Slithernix::Cdk::Screen.refresh_window(@window)
 
         # We erase all the invisible widgets, then only draw it all back, so
         # that the widgets can overlap, and the visible ones will always be

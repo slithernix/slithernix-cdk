@@ -145,7 +145,7 @@ class FselectExample < CLIExample
         'F4 = reload all items',
         'F5 = undo deletion',
       ]
-      cdkscreen.popupLabel(message, message.size)
+      cdkscreen.popup_label(message, message.size)
       true
     end
 
@@ -204,7 +204,7 @@ class FselectExample < CLIExample
         '',
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
 
       # Exit CDK.
       fselect.destroy
@@ -258,14 +258,14 @@ class FselectExample < CLIExample
         '',
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     elsif example.exit_type == :NORMAL
       mesg = [
         format('<C>You selected button %d', selected),
         '',
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     end
 
     # Clean up.

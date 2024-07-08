@@ -34,7 +34,7 @@ class Vinstall
       ]
 
       # Ask them if they want to create the directory.
-      if cdkscreen.popupDialog(mesg, mesg.size, buttons, buttons.size).zero?
+      if cdkscreen.popup_dialog(mesg, mesg.size, buttons, buttons.size).zero?
         # TODO: error handling
         if Dir.mkdir(directory, 0o755) != 0
           # Create the error message.
@@ -46,7 +46,7 @@ class Vinstall
           ]
 
           # Pop up the error message.
-          cdkscreen.popupLabel(error, error.size)
+          cdkscreen.popup_label(error, error.size)
 
           status = -1
         end
@@ -55,7 +55,7 @@ class Vinstall
         error = ['<C>Installation aborted.']
 
         # Pop up the error message.
-        cdkscreen.popupLabel(error, error.size)
+        cdkscreen.popup_label(error, error.size)
 
         status = -1
       end
@@ -316,7 +316,7 @@ class Vinstall
       ]
 
       # Popup the dialog box.
-      ret = cdkscreen.popupDialog(mesg, mesg.size, buttons, buttons.size)
+      ret = cdkscreen.popup_dialog(mesg, mesg.size, buttons, buttons.size)
 
       if ret.zero?
         install_output.activate([])
@@ -338,7 +338,7 @@ class Vinstall
         '<C>scrolling window to a file?',
       ]
 
-      if cdkscreen.popupDialog(mesg, 2, buttons, 2) == 1
+      if cdkscreen.popup_dialog(mesg, 2, buttons, 2) == 1
         install_output.inject('s')
       end
     end

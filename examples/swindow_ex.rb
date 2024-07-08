@@ -102,14 +102,14 @@ class SwindowExample < CLIExample
         '',
         '<C>Press any key to continue.',
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     elsif swindow.exit_type == :NORMAL
       mesg = [
         '<C>You hit return to exit this widget.',
         '',
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     end
 
     # Clean up.

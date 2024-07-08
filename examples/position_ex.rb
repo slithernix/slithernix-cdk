@@ -73,7 +73,7 @@ class PositionExample < Example
         '',
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     elsif directory.exit_type == :NORMAL
       mesg = [
         '<C>You typed in the following',
@@ -82,7 +82,7 @@ class PositionExample < Example
         '<C>Press any key to continue.'
       ]
 
-      cdkscreen.popupLabel(mesg, 4)
+      cdkscreen.popup_label(mesg, 4)
     end
 
     directory.destroy

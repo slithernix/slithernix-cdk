@@ -33,7 +33,7 @@ class Command
       '<C> (</B/24>Refer to the scrolling window online manual ' \
       'for more help<!B!24>.)'
     ]
-    entry.screen.popupLabel(mesg, mesg.size)
+    entry.screen.popup_label(mesg, mesg.size)
   end
 
   def self.main
@@ -165,7 +165,7 @@ class Command
           '<C></B/16>No Commands Entered',
           '<C>No History',
         ]
-        entry.screen.popupLabel(mesg, 2)
+        entry.screen.popup_label(mesg, 2)
 
         # Redraw the screen.
         entry.erase
@@ -253,7 +253,7 @@ class Command
     cdkscreen.refresh
 
     # Show them who wrote this and how to get help.
-    cdkscreen.popupLabel(intro_mesg, intro_mesg.size)
+    cdkscreen.popup_label(intro_mesg, intro_mesg.size)
     command_entry.erase
 
     # Do this forever.

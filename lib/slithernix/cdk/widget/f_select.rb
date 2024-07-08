@@ -564,7 +564,7 @@ module Slithernix
               ]
 
               # Pop up a message.
-              @screen.popupLabel(mesg, 4)
+              @screen.popup_label(mesg, 4)
 
               # Get out of here.
               erase

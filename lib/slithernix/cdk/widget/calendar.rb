@@ -597,7 +597,7 @@ module Slithernix
                   'Can not go past the year 1900'
                 ]
                 Slithernix::Cdk.Beep
-                @screen.popupLabel(mesg, 2)
+                @screen.popup_label(mesg, 2)
                 return
               end
               month_length = Slithernix::Cdk::Widget::Calendar.getMonthLength(
@@ -655,7 +655,7 @@ module Slithernix
                 'Can not go past the year 1900',
               ]
               Slithernix::Cdk.Beep
-              @screen.popupLabel(mesg, 2)
+              @screen.popup_label(mesg, 2)
               return
             else
               @month = 13 - adjust
@@ -713,7 +713,7 @@ module Slithernix
               'Can not go past the year 1900',
             ]
             Slithernix::Cdk.Beep
-            @screen.popupLabel(mesg, 2)
+            @screen.popup_label(mesg, 2)
             return
           end
 

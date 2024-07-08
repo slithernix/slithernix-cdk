@@ -145,7 +145,7 @@ class SelectionExample < CLIExample
         '',
         '<C>Press any key to continue.'
       ]
-      cdkscreen.popupLabel(mesg, 3)
+      cdkscreen.popup_label(mesg, 3)
     elsif selection.exit_type == :NORMAL
       mesg = ['<C>Here are the accounts you selected.']
       (0...item.size).each do |x|
@@ -153,10 +153,10 @@ class SelectionExample < CLIExample
           mesg << (format('<C></5>%.*s', 236, item[x])) # FIXME: magic number
         end
       end
-      cdkscreen.popupLabel(mesg, mesg.size)
+      cdkscreen.popup_label(mesg, mesg.size)
     else
       mesg = ['<C>Unknown failure.']
-      cdkscreen.popupLabel(mesg, mesg.size)
+      cdkscreen.popup_label(mesg, mesg.size)
     end
 
     # Clean up.

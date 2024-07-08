@@ -469,7 +469,7 @@ class TraverseExample < Example
       '',
       '<C>Press any key to continue'
     ]
-    cdkscreen.popupLabel(mesg, 3)
+    cdkscreen.popup_label(mesg, 3)
 
     # clean up and exit
     (0...TraverseExample::MY_MAX).each do |j|
