@@ -8,7 +8,8 @@ module Slithernix
       class AlphaList < Slithernix::Cdk::Widget
         attr_reader :scroll_field, :entry_field, :list
 
-        def initialize(cdkscreen, xplace, yplace, height, width, title, label, list, list_size, filler_char, highlight, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, height, width, title, label,
+                       list, list_size, filler_char, highlight, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -121,7 +122,7 @@ module Slithernix
           @entry_field.setLRchar(Slithernix::Cdk::ACS_RTEE)
 
           # Callback functions
-          adjust_alphalist_cb = lambda do |widget_type, widget, alphalist, key|
+          adjust_alphalist_cb = lambda do |_widget_type, _widget, alphalist, key|
             scrollp = alphalist.scroll_field
             entry = alphalist.entry_field
 
@@ -139,7 +140,7 @@ module Slithernix
             false
           end
 
-          complete_word_cb = lambda do |widget_type, widget, alphalist, key|
+          complete_word_cb = lambda do |_widget_type, _widget, alphalist, _key|
             entry = alphalist.entry_field
             scrollp = nil
             alt_words = []
@@ -241,7 +242,7 @@ module Slithernix
             true
           end
 
-          pre_process_entry_field = lambda do |widget_type, widget, alphalist, input|
+          pre_process_entry_field = lambda do |_widget_type, _widget, alphalist, input|
             scrollp = alphalist.scroll_field
             entry = alphalist.entry_field
             entry.info.size

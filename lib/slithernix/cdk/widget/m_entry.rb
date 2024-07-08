@@ -9,7 +9,8 @@ module Slithernix
         attr_accessor :info, :current_col, :current_row, :top_row
         attr_reader :disp_type, :field_width, :rows, :field_win
 
-        def initialize(cdkscreen, xplace, yplace, title, label, field_attr, filler, disp_type, f_width, f_rows, logical_rows, min, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, title, label, field_attr,
+                       filler, disp_type, f_width, f_rows, logical_rows, min, box, shadow)
           super()
           Curses.curs_set(1)
           parent_width = cdkscreen.window.maxx

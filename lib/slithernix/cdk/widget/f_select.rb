@@ -128,7 +128,7 @@ module Slithernix
 
           # This is a callback to the scrolling list which displays information
           # about the current file.  (and the whole directory as well)
-          display_file_info_cb = lambda do |widget_type, entry, fselect, key|
+          display_file_info_cb = lambda do |_widget_type, entry, fselect, _key|
             # Get the file name.
             filename = fselect.entry_field.info
 
@@ -191,7 +191,7 @@ module Slithernix
           end
 
           # This tries to complete the filename
-          complete_filename_cb = lambda do |widget_type, widget, fselect, key|
+          complete_filename_cb = lambda do |_widget_type, _widget, fselect, _key|
             scrollp = fselect.scroll_field
             entry = fselect.entry_field
             filename = entry.info.clone
@@ -320,7 +320,7 @@ module Slithernix
           # This allows the user to delete a file.
 
           # Start of callback functions.
-          adjust_scroll_cb = lambda do |widget_type, widget, fselect, key|
+          adjust_scroll_cb = lambda do |_widget_type, _widget, fselect, key|
             scrollp = fselect.scroll_field
             entry = fselect.entry_field
 

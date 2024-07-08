@@ -108,7 +108,7 @@ class AlphalistExample < CLIExample
       exit # EXIT_FAILURE
     end
 
-    do_delete = lambda do |widget_type, widget, alpha_list, key|
+    do_delete = lambda do |_widget_type, widget, _alpha_list, _key|
       size = []
       list = widget.getContents(size)
       size = size[0]
@@ -129,7 +129,7 @@ class AlphalistExample < CLIExample
       result
     end
 
-    do_delete1 = lambda do |widget_type, widget, alpha_list, key|
+    do_delete1 = lambda do |_widget_type, widget, _alpha_list, _key|
       size = []
       list = widget.getContents(size)
       size = size[0]
@@ -153,7 +153,7 @@ class AlphalistExample < CLIExample
       result
     end
 
-    do_help = lambda do |widget_type, widget, client_data, key|
+    do_help = lambda do |_widget_type, _widget, _client_data, _key|
       message = [
         'Alpha List tests:',
         '',
@@ -167,7 +167,7 @@ class AlphalistExample < CLIExample
       true
     end
 
-    do_reload = lambda do |widget_type, widget, alpha_list, key|
+    do_reload = lambda do |_widget_type, widget, _alpha_list, _key|
       result = false
 
       if @@my_user_list.size.positive?
@@ -179,7 +179,7 @@ class AlphalistExample < CLIExample
       result
     end
 
-    do_undo = lambda do |widget_type, widget, alpha_list, key|
+    do_undo = lambda do |_widget_type, widget, _alpha_list, _key|
       result = false
       if @@my_undo_list.size.positive?
         size = []

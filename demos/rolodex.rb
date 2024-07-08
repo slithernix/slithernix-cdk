@@ -710,22 +710,21 @@ class Rolodex
   def self.openNewRCFile(screen, group_list, group_count)
     # Get the filename
     file_selector = Slithernix::Cdk::Widget::FSelect.new(screen,
-      Slithernix::Cdk::CENTER,
-      Slithernix::Cdk::CENTER,
-      20,
-      55,
-      '<C>Open RC File',
-      'Filename: ',
-      Curses::A_NORMAL,
-      '.'.ord,
-      Curses::A_REVERSE,
-      '</5>',
-      '</48>',
-      '</N>',
-      '</N>',
-      true,
-      false,
-    )
+                                                         Slithernix::Cdk::CENTER,
+                                                         Slithernix::Cdk::CENTER,
+                                                         20,
+                                                         55,
+                                                         '<C>Open RC File',
+                                                         'Filename: ',
+                                                         Curses::A_NORMAL,
+                                                         '.'.ord,
+                                                         Curses::A_REVERSE,
+                                                         '</5>',
+                                                         '</48>',
+                                                         '</N>',
+                                                         '</N>',
+                                                         true,
+                                                         false,)
 
     # Activate the file selector.
     filename = file_selector.activate([])
@@ -841,7 +840,7 @@ class Rolodex
     mesg << format(
       'There were %d group%s saved to file',
       group_count,
-      group_count == 1 ? "" : "s",
+      group_count == 1 ? '' : 's',
     )
 
     mesg << ('<C>%s' % filename)
@@ -1191,7 +1190,8 @@ class Rolodex
           Slithernix::Cdk.chtype2Char(scrollp.item[scrollp.current_item]),
         ),
       ]
-      if scrollp.screen.popupDialog(mesg, mesg.size, buttons, buttons.size) == 1
+      if scrollp.screen.popupDialog(mesg, mesg.size, buttons,
+                                    buttons.size) == 1
         front = phone_data.record[0...position] || []
         back = phone_data.record[position + 1..] || []
         phone_data.record = front + back
@@ -1579,7 +1579,7 @@ class Rolodex
     end
 
     # Make the rolodex directory.
-    FileUtils.mkdir_p(@@gdbm_dir, mode: 0755)
+    FileUtils.mkdir_p(@@gdbm_dir, mode: 0o755)
 
     group_list = []
 

@@ -4,11 +4,11 @@ module Slithernix
   module Cdk
     class Screen
       attr_accessor :exit_status,
-        :widget,
-        :widget_count,
-        :widget_limit,
-        :widget_focus,
-        :window
+                    :widget,
+                    :widget_count,
+                    :widget_limit,
+                    :widget_focus,
+                    :window
 
       NOEXIT = 0
       EXITOK = 1

@@ -6,7 +6,8 @@ module Slithernix
   module Cdk
     class Widget
       class ItemList < Slithernix::Cdk::Widget
-        def initialize(cdkscreen, xplace, yplace, title, label, item, count, default_item, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, title, label, item, count,
+                       default_item, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy

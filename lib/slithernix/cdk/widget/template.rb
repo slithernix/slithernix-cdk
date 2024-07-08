@@ -6,7 +6,8 @@ module Slithernix
   module Cdk
     class Widget
       class Template < Slithernix::Cdk::Widget
-        def initialize(cdkscreen, xplace, yplace, title, label, plate, overlay, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, title, label, plate,
+                       overlay, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -368,7 +369,7 @@ module Slithernix
             while plate_pos < @plate_len && info_pos < @info.size
               mixed_string << if Slithernix::Cdk::Widget::Template.isPlateChar(@plate[plate_pos])
                               then info_pos += 1
-                                @info[info_pos - 1]
+                                   @info[info_pos - 1]
                               else
                                 @plate[plate_pos]
                               end

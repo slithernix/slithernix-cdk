@@ -8,7 +8,8 @@ module Slithernix
       class Scroll < Slithernix::Cdk::Widget::Scroller
         attr_reader :item, :list_size, :current_item, :highlight
 
-        def initialize(cdkscreen, xplace, yplace, splace, height, width, title, list, list_size, numbers, highlight, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, splace, height, width,
+                       title, list, list_size, numbers, highlight, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -87,23 +88,21 @@ module Slithernix
           @win.keypad(true)
 
           # Create the scrollbar window.
-          if splace == Slithernix::Cdk::RIGHT
-            @scrollbar_win = @win.subwin(
-              maxViewSize,
-              1,
-              self.SCREEN_YPOS(ypos),
-              xpos + box_width - @border_size - 1,
-            )
-          elsif splace == Slithernix::Cdk::LEFT
-            @scrollbar_win = @win.subwin(
-              maxViewSize,
-              1,
-              self.SCREEN_YPOS(ypos),
-              self.SCREEN_XPOS(xpos),
-            )
-          else
-            @scrollbar_win = nil
-          end
+          @scrollbar_win = if splace == Slithernix::Cdk::RIGHT
+                             @win.subwin(
+                               maxViewSize,
+                               1,
+                               self.SCREEN_YPOS(ypos),
+                               xpos + box_width - @border_size - 1,
+                             )
+                           elsif splace == Slithernix::Cdk::LEFT
+                             @win.subwin(
+                               maxViewSize,
+                               1,
+                               self.SCREEN_YPOS(ypos),
+                               self.SCREEN_XPOS(xpos),
+                             )
+                           end
 
           # create the list window
           @list_win = @win.subwin(

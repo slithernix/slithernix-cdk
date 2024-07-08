@@ -82,4 +82,3 @@ cdkscreen.popupLabel(msg, 3)
 color_list.destroy
 cdkscreen.destroy
 Slithernix::Cdk::Screen.endCDK
-

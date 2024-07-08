@@ -324,15 +324,16 @@ module Slithernix
 
       # This is one of many methods whose purpose I really don't get. Look
       # into removal. -- snake 2024
-      def bindableObject(cdktype)
+      def bindableObject(_cdktype)
         return @entry_field if %i[FSelect AlphaList].include?(widget_type)
-        #if cdktype != widget_type
+
+        # if cdktype != widget_type
         #  nil
-        #elsif %i[FSelect AlphaList].include?(widget_type)
+        # elsif %i[FSelect AlphaList].include?(widget_type)
         #  @entry_field
-        #else
+        # else
         #  self
-        #end
+        # end
         self
       end
 

@@ -11,13 +11,13 @@ module Slithernix
         Curses.start_color
         limit = [Curses.colors, 256].min
         limit = Math.sqrt(limit)
-        color_pairs = { }
+        color_pairs = {}
 
         pair = 1
         (0...limit).each do |fg|
           (0...limit).each do |bg|
             Curses.init_pair(pair, fg, bg)
-            color_pairs[pair] = [ fg, bg ]
+            color_pairs[pair] = [fg, bg]
             pair += 1
           end
         end
