@@ -675,11 +675,11 @@ module Slithernix
 
         # This function draws the viewer widget.
         def draw(box)
-          Slithernix::Cdk::Draw.drawShadow(@shadow_win) if @shadow_win
+          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) if @shadow_win
 
           # Box it if it was asked for.
           if box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
+            Slithernix::Cdk::Draw.draw_obj_box(@win, self)
             @win.refresh
           end
 
@@ -694,7 +694,7 @@ module Slithernix
 
           # Redraw the buttons.
           (0...@button_count).each do |x|
-            Slithernix::Cdk::Draw.writeChtype(
+            Slithernix::Cdk::Draw.write_chtype(
               @win,
               @button_pos[x],
               @box_height - 2,
@@ -787,7 +787,7 @@ module Slithernix
             if @title_lines == '' || @title_pos[0] < temp.size + 2
               list_adjust = true
             end
-            Slithernix::Cdk::Draw.writeChar(
+            Slithernix::Cdk::Draw.write_char(
               @win,
               1,
               (list_adjust ? @title_lines : 0) + 1,
@@ -808,7 +808,7 @@ module Slithernix
 
             screen_pos = @list_pos[@current_top + x] + 1 - @left_char
 
-            Slithernix::Cdk::Draw.writeChtype(
+            Slithernix::Cdk::Draw.write_chtype(
               @win,
               screen_pos >= 0 ? screen_pos : 1,
               x + @title_lines + (list_adjust ? 1 : 0) + 1,
@@ -821,7 +821,7 @@ module Slithernix
 
           # Box it if we have to.
           if @box
-            Slithernix::Cdk::Draw.drawObjBox(@win, self)
+            Slithernix::Cdk::Draw.draw_obj_box(@win, self)
             @win.refresh
           end
 

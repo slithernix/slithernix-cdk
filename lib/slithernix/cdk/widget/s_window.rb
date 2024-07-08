@@ -452,10 +452,10 @@ module Slithernix
         # This function draws the swindow window widget.
         def draw(box)
           # Do we need to draw in the shadow.
-          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
+          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
 
           # Box the widget if needed
-          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
+          Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
           drawTitle(@win)
 
@@ -479,13 +479,13 @@ module Slithernix
 
             # Write in the correct line.
             if screen_pos >= 0
-              Slithernix::Cdk::Draw.writeChtype(@field_win, screen_pos, x,
-                                                @list[x + @current_top], Slithernix::Cdk::HORIZONTAL, 0,
-                                                @list_len[x + @current_top])
+              Slithernix::Cdk::Draw.write_chtype(@field_win, screen_pos, x,
+                                                 @list[x + @current_top], Slithernix::Cdk::HORIZONTAL, 0,
+                                                 @list_len[x + @current_top])
             else
-              Slithernix::Cdk::Draw.writeChtype(@field_win, 0, x, @list[x + @current_top],
-                                                Slithernix::Cdk::HORIZONTAL, @left_char - @list_pos[x + @current_top],
-                                                @list_len[x + @current_top])
+              Slithernix::Cdk::Draw.write_chtype(@field_win, 0, x, @list[x + @current_top],
+                                                 Slithernix::Cdk::HORIZONTAL, @left_char - @list_pos[x + @current_top],
+                                                 @list_len[x + @current_top])
             end
           end
 

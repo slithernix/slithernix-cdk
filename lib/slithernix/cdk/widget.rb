@@ -226,7 +226,7 @@ module Slithernix
       # Draw the widget's title
       def drawTitle(_win)
         (0...@title_lines).each do |x|
-          Draw.writeChtype(
+          Draw.write_chtype(
             @win,
             @title_pos[x] + @border_size,
             x + @border_size,

@@ -257,10 +257,10 @@ module Slithernix
         # This draws the buttonbox box widget.
         def draw(box)
           # Is there a shadow?
-          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
+          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
 
           # Box the widget if they asked.
-          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
+          Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
           # Draw in the title if there is one.
           drawTitle(@win)
@@ -290,7 +290,7 @@ module Slithernix
                   cur_col = col
                 end
 
-                Slithernix::Cdk::Draw.writeChtypeAttrib(
+                Slithernix::Cdk::Draw.write_chtype_attrib(
                   @win,
                   col,
                   row,

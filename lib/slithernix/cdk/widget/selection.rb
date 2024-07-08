@@ -291,7 +291,7 @@ module Slithernix
         # This function draws the selection list.
         def draw(box)
           # Draw in the shadow if we need to.
-          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
+          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
 
           drawTitle(@win)
 
@@ -318,7 +318,7 @@ module Slithernix
               xpos = self.SCREEN_XPOS(0)
 
               # Draw the empty line.
-              Slithernix::Cdk::Draw.writeBlanks(
+              Slithernix::Cdk::Draw.write_blanks(
                 @win,
                 xpos,
                 ypos,
@@ -328,7 +328,7 @@ module Slithernix
               )
 
               # Draw the selection item.
-              Slithernix::Cdk::Draw.writeChtypeAttrib(
+              Slithernix::Cdk::Draw.write_chtype_attrib(
                 @win,
                 screen_pos >= 0 ? screen_pos : 1,
                 ypos,
@@ -340,7 +340,7 @@ module Slithernix
               )
 
               # Draw the choice value
-              Slithernix::Cdk::Draw.writeChtype(
+              Slithernix::Cdk::Draw.write_chtype(
                 @win,
                 xpos + scrollbar_adj,
                 ypos,
@@ -375,7 +375,7 @@ module Slithernix
           end
 
           # Box it if needed
-          Slithernix::Cdk::Draw.drawObjBox(@win, self) if @box
+          Slithernix::Cdk::Draw.draw_obj_box(@win, self) if @box
 
           fixCursorPosition
         end
@@ -429,7 +429,7 @@ module Slithernix
 
           # Clean up the display
           (0...@view_size).each do |j|
-            Slithernix::Cdk::Draw.writeBlanks(
+            Slithernix::Cdk::Draw.write_blanks(
               @win,
               self.SCREEN_XPOS(0),
               self.SCREEN_YPOS(j),

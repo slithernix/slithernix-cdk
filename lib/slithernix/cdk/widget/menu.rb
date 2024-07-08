@@ -144,23 +144,23 @@ module Slithernix
         end
 
         def drawTitle(item)
-          Slithernix::Cdk::Draw.writeChtype(@title_win[item], 0, 0, @title[item],
-                                            Slithernix::Cdk::HORIZONTAL, 0, @title_len[item])
+          Slithernix::Cdk::Draw.write_chtype(@title_win[item], 0, 0, @title[item],
+                                             Slithernix::Cdk::HORIZONTAL, 0, @title_len[item])
         end
 
         def drawItem(item, offset)
-          Slithernix::Cdk::Draw.writeChtype(@pull_win[@current_title], 1,
-                                            item + Slithernix::Cdk::Widget::Menu::TITLELINES - offset,
-                                            @sublist[@current_title][item],
-                                            Slithernix::Cdk::HORIZONTAL, 0, @sublist_len[@current_title][item])
+          Slithernix::Cdk::Draw.write_chtype(@pull_win[@current_title], 1,
+                                             item + Slithernix::Cdk::Widget::Menu::TITLELINES - offset,
+                                             @sublist[@current_title][item],
+                                             Slithernix::Cdk::HORIZONTAL, 0, @sublist_len[@current_title][item])
         end
 
         # Highlight the current sub-menu item
         def selectItem(item, offset)
-          Slithernix::Cdk::Draw.writeChtypeAttrib(@pull_win[@current_title], 1,
-                                                  item + Slithernix::Cdk::Widget::Menu::TITLELINES - offset,
-                                                  @sublist[@current_title][item], @subtitle_attr,
-                                                  Slithernix::Cdk::HORIZONTAL, 0, @sublist_len[@current_title][item])
+          Slithernix::Cdk::Draw.write_chtype_attrib(@pull_win[@current_title], 1,
+                                                    item + Slithernix::Cdk::Widget::Menu::TITLELINES - offset,
+                                                    @sublist[@current_title][item], @subtitle_attr,
+                                                    Slithernix::Cdk::HORIZONTAL, 0, @sublist_len[@current_title][item])
         end
 
         def withinSubmenu(step)
@@ -309,9 +309,9 @@ module Slithernix
           @pull_win[@current_title].refresh
 
           # Highlight the title.
-          Slithernix::Cdk::Draw.writeChtypeAttrib(@title_win[@current_title], 0, 0,
-                                                  @title[@current_title], @title_attr, Slithernix::Cdk::HORIZONTAL,
-                                                  0, @title_len[@current_title])
+          Slithernix::Cdk::Draw.write_chtype_attrib(@title_win[@current_title], 0, 0,
+                                                    @title[@current_title], @title_attr, Slithernix::Cdk::HORIZONTAL,
+                                                    0, @title_len[@current_title])
           @title_win[@current_title].refresh
         end
 

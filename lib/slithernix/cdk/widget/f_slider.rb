@@ -46,7 +46,7 @@ module Slithernix
           format = format('%%.%if', digits)
           temp = format(format, @current)
 
-          Slithernix::Cdk::Draw.writeCharAttrib(
+          Slithernix::Cdk::Draw.write_char_attrib(
             @field_win,
             @field_width,
             0,

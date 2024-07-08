@@ -293,10 +293,10 @@ module Slithernix
           col_len = (6 + header_len) / 7
 
           # Is there a shadow?
-          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
+          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
 
           # Box the widget if asked.
-          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
+          Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
           drawTitle(@win)
 
@@ -304,8 +304,8 @@ module Slithernix
           (0...7).each do |col|
             src = col_len * ((col + (@week_base % 7)) % 7)
             dst = col_len * col
-            Slithernix::Cdk::Draw.writeChar(@win, @x_offset + dst, @title_lines + 2,
-                                            @day_name[src..], Slithernix::Cdk::HORIZONTAL, 0, col_len)
+            Slithernix::Cdk::Draw.write_char(@win, @x_offset + dst, @title_lines + 2,
+                                             @day_name[src..], Slithernix::Cdk::HORIZONTAL, 0, col_len)
           end
 
           @win.refresh
@@ -341,8 +341,8 @@ module Slithernix
                 else
                   marker |= getMarker(day, @month, year_index)
                 end
-                Slithernix::Cdk::Draw.writeCharAttrib(@field_win, xpos, ypos, temp, marker,
-                                                      Slithernix::Cdk::HORIZONTAL, 0, 2)
+                Slithernix::Cdk::Draw.write_char_attrib(@field_win, xpos, ypos, temp, marker,
+                                                        Slithernix::Cdk::HORIZONTAL, 0, 2)
               end
               day += 1
             end
@@ -352,7 +352,7 @@ module Slithernix
           # Draw the month in.
           if @label_win
             temp = format('%s %d,', month_name, @day)
-            Slithernix::Cdk::Draw.writeChar(
+            Slithernix::Cdk::Draw.write_char(
               @label_win,
               0,
               0,
@@ -367,7 +367,7 @@ module Slithernix
             temp = format('%d', @year)
             year_len = temp.size
 
-            Slithernix::Cdk::Draw.writeChar(
+            Slithernix::Cdk::Draw.write_char(
               @label_win,
               @field_width - year_len,
               0,

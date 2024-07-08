@@ -807,10 +807,10 @@ module Slithernix
             next if @cell[0][x].nil?
 
             @cell[0][x].erase
-            Slithernix::Cdk::Draw.writeChtype(@cell[0][x],
-                                              @coltitle_pos[@lcol + x - 1], 0,
-                                              @coltitle[@lcol + x - 1], Slithernix::Cdk::HORIZONTAL, 0,
-                                              @coltitle_len[@lcol + x - 1])
+            Slithernix::Cdk::Draw.write_chtype(@cell[0][x],
+                                               @coltitle_pos[@lcol + x - 1], 0,
+                                               @coltitle[@lcol + x - 1], Slithernix::Cdk::HORIZONTAL, 0,
+                                               @coltitle_len[@lcol + x - 1])
             @cell[0][x].refresh
           end
         end
@@ -820,10 +820,10 @@ module Slithernix
             next if @cell[x][0].nil?
 
             @cell[x][0].erase
-            Slithernix::Cdk::Draw.writeChtype(@cell[x][0],
-                                              @rowtitle_pos[@trow + x - 1], 1,
-                                              @rowtitle[@trow + x - 1], Slithernix::Cdk::HORIZONTAL, 0,
-                                              @rowtitle_len[@trow + x - 1])
+            Slithernix::Cdk::Draw.write_chtype(@cell[x][0],
+                                               @rowtitle_pos[@trow + x - 1], 1,
+                                               @rowtitle[@trow + x - 1], Slithernix::Cdk::HORIZONTAL, 0,
+                                               @rowtitle_len[@trow + x - 1])
             @cell[x][0].refresh
           end
         end
@@ -850,10 +850,10 @@ module Slithernix
         # This function draws the matrix widget.
         def draw(box)
           # Did we ask for a shadow?
-          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
+          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
 
           # Should we box the matrix?
-          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
+          Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
           drawTitle(@win)
 

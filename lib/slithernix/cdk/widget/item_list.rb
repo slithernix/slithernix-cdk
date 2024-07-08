@@ -229,18 +229,18 @@ module Slithernix
         # This draws the widget on the screen.
         def draw(box)
           # Did we ask for a shadow?
-          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
+          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
 
           drawTitle(@win)
 
           # Draw in the label to the widget.
           unless @label_win.nil?
-            Slithernix::Cdk::Draw.writeChtype(@label_win, 0, 0, @label, Slithernix::Cdk::HORIZONTAL,
-                                              0, @label.size)
+            Slithernix::Cdk::Draw.write_chtype(@label_win, 0, 0, @label, Slithernix::Cdk::HORIZONTAL,
+                                               0, @label.size)
           end
 
           # Box the widget if asked.
-          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
+          Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
           @win.refresh
 

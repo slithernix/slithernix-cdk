@@ -279,10 +279,10 @@ module Slithernix
           spacing = 0
           attrib = ' '.ord | Curses::A_REVERSE
 
-          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
+          Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
           # Draw in the vertical axis
-          Slithernix::Cdk::Draw.drawLine(
+          Slithernix::Cdk::Draw.draw_line(
             @win,
             2,
             @title_lines + 1,
@@ -292,7 +292,7 @@ module Slithernix
           )
 
           # Draw in the horizontal axis
-          Slithernix::Cdk::Draw.drawLine(
+          Slithernix::Cdk::Draw.draw_line(
             @win,
             3,
             @box_height - 3,
@@ -305,7 +305,7 @@ module Slithernix
 
           # Draw in the X axis title.
           if @xtitle&.size&.positive?
-            Slithernix::Cdk::Draw.writeChtype(
+            Slithernix::Cdk::Draw.write_chtype(
               @win,
               0,
               @xtitle_pos,
@@ -319,7 +319,7 @@ module Slithernix
 
           # Draw in the X axis high value
           temp = format('%d', @maxx)
-          Slithernix::Cdk::Draw.writeCharAttrib(
+          Slithernix::Cdk::Draw.write_char_attrib(
             @win,
             1,
             @title_lines + 1,
@@ -332,7 +332,7 @@ module Slithernix
 
           # Draw in the X axis low value.
           temp = format('%d', @minx)
-          Slithernix::Cdk::Draw.writeCharAttrib(
+          Slithernix::Cdk::Draw.write_char_attrib(
             @win,
             1,
             @box_height - 2 - temp.size,
@@ -345,7 +345,7 @@ module Slithernix
 
           # Draw in the Y axis title
           if @ytitle&.size&.positive?
-            Slithernix::Cdk::Draw.writeChtype(
+            Slithernix::Cdk::Draw.write_chtype(
               @win,
               @ytitle_pos,
               @box_height - 1,
@@ -358,7 +358,7 @@ module Slithernix
 
           # Draw in the Y axis high value.
           temp = format('%d', @count)
-          Slithernix::Cdk::Draw.writeCharAttrib(
+          Slithernix::Cdk::Draw.write_char_attrib(
             @win,
             @box_width - temp.size - adj,
             @box_height - 2,
@@ -370,7 +370,7 @@ module Slithernix
           )
 
           # Draw in the Y axis low value.
-          Slithernix::Cdk::Draw.writeCharAttrib(
+          Slithernix::Cdk::Draw.write_char_attrib(
             @win,
             3,
             @box_height - 2,
@@ -408,7 +408,7 @@ module Slithernix
               (0..@yscale).each do |_x|
                 xpos = @box_height - 3
                 ypos = ((y + 1) * spacing) - adj
-                Slithernix::Cdk::Draw.drawLine(
+                Slithernix::Cdk::Draw.draw_line(
                   @win,
                   ypos,
                   xpos - colheight,

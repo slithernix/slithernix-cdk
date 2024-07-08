@@ -441,7 +441,7 @@ module Slithernix
         # This draws the file selector widget.
         def draw(_box)
           # Draw in the shadow if we need to.
-          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
+          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
 
           # Draw in the entry field.
           @entry_field.draw(@entry_field.box)

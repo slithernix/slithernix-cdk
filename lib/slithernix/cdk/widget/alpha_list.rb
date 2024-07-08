@@ -409,7 +409,7 @@ module Slithernix
         # This draws the alphalist widget.
         def draw(_box)
           # Does this widget have a shadow?
-          Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
+          Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
 
           # Draw in the entry field.
           @entry_field.draw(@entry_field.box)

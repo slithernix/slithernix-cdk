@@ -334,10 +334,10 @@ module Slithernix
           @win.erase
 
           # Box the widget if asked.
-          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
+          Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
           # Do we have a shadow to draw?
-          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow.nil?
+          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow.nil?
 
           drawTitle(@win)
 
@@ -345,20 +345,20 @@ module Slithernix
           if @view_type != :NONE
             # Draw in the low label.
             if @low_string.size.positive?
-              Slithernix::Cdk::Draw.writeCharAttrib(@win, @lowx, @lowy, @low_string,
-                                                    @stats_attr, @orient, 0, @low_string.size)
+              Slithernix::Cdk::Draw.write_char_attrib(@win, @lowx, @lowy, @low_string,
+                                                      @stats_attr, @orient, 0, @low_string.size)
             end
 
             # Draw in the current value label.
             if @cur_string.size.positive?
-              Slithernix::Cdk::Draw.writeCharAttrib(@win, @curx, @cury, @cur_string,
-                                                    @stats_attr, @orient, 0, @cur_string.size)
+              Slithernix::Cdk::Draw.write_char_attrib(@win, @curx, @cury, @cur_string,
+                                                      @stats_attr, @orient, 0, @cur_string.size)
             end
 
             # Draw in the high label.
             if @high_string.size.positive?
-              Slithernix::Cdk::Draw.writeCharAttrib(@win, @highx, @highy, @high_string,
-                                                    @stats_attr, @orient, 0, @high_string.size)
+              Slithernix::Cdk::Draw.write_char_attrib(@win, @highx, @highy, @high_string,
+                                                      @stats_attr, @orient, 0, @high_string.size)
             end
           end
 

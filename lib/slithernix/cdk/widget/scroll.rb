@@ -303,7 +303,7 @@ module Slithernix
         # This function draws the scrolling list widget.
         def draw(box)
           # Draw in the shadow if we need to.
-          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
+          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
 
           drawTitle(@win)
 
@@ -316,7 +316,7 @@ module Slithernix
           screen_pos = @item_pos[@current_item] - @left_char
           highlight = has_focus ? @highlight : Curses::A_NORMAL
 
-          Slithernix::Cdk::Draw.writeChtypeAttrib(
+          Slithernix::Cdk::Draw.write_chtype_attrib(
             @list_win,
             [screen_pos, 0].max,
             @current_high,
@@ -335,7 +335,7 @@ module Slithernix
             (0...@view_size).each do |j|
               k = j + @current_top
 
-              Slithernix::Cdk::Draw.writeBlanks(
+              Slithernix::Cdk::Draw.write_blanks(
                 @list_win,
                 0,
                 j,
@@ -351,7 +351,7 @@ module Slithernix
               ypos = j
 
               # Write in the correct line.
-              Slithernix::Cdk::Draw.writeChtype(
+              Slithernix::Cdk::Draw.write_chtype(
                 @list_win,
                 screen_pos >= 0 ? screen_pos : 1,
                 ypos,
@@ -392,7 +392,7 @@ module Slithernix
           end
 
           # Box it if needed.
-          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
+          Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
           # Refresh the window
           @win.refresh
@@ -509,8 +509,8 @@ module Slithernix
 
           # Clean up the display.
           (0...@view_size).each do |x|
-            Slithernix::Cdk::Draw.writeBlanks(@win, 1, x,
-                                              Slithernix::Cdk::HORIZONTAL, 0, @box_width - 2)
+            Slithernix::Cdk::Draw.write_blanks(@win, 1, x,
+                                               Slithernix::Cdk::HORIZONTAL, 0, @box_width - 2)
           end
 
           setViewSize(list_size)
@@ -813,10 +813,10 @@ module Slithernix
         # This draws the button widget
         def draw(_box)
           # Is there a shadow?
-          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
+          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
 
           # Box the widget if asked.
-          Slithernix::Cdk::Draw.drawObjBox(@win, self) if @box
+          Slithernix::Cdk::Draw.draw_obj_box(@win, self) if @box
           drawText
           @win.refresh
         end

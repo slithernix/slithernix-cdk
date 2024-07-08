@@ -275,7 +275,7 @@ module Slithernix
         # This function draws the radio widget.
         def draw(_box)
           # Do we need to draw in the shadow?
-          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
+          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
 
           drawTitle(@win)
 
@@ -299,11 +299,11 @@ module Slithernix
             screen_pos = self.SCREENPOS(k, scrollbar_adj)
 
             # Draw the empty string.
-            Slithernix::Cdk::Draw.writeBlanks(@win, xpos, ypos, Slithernix::Cdk::HORIZONTAL, 0,
-                                              @box_width - @border_size)
+            Slithernix::Cdk::Draw.write_blanks(@win, xpos, ypos, Slithernix::Cdk::HORIZONTAL, 0,
+                                               @box_width - @border_size)
 
             # Draw the line.
-            Slithernix::Cdk::Draw.writeChtype(
+            Slithernix::Cdk::Draw.write_chtype(
               @win,
               screen_pos >= 0 ? screen_pos : 1,
               ypos,
@@ -331,7 +331,7 @@ module Slithernix
               screen_pos = self.SCREENPOS(k, scrollbar_adj)
               ypos = self.SCREEN_YPOS(@current_high)
 
-              Slithernix::Cdk::Draw.writeChtypeAttrib(
+              Slithernix::Cdk::Draw.write_chtype_attrib(
                 @win,
                 screen_pos >= 0 ? screen_pos : (1 + scrollbar_adj),
                 ypos,
@@ -364,7 +364,7 @@ module Slithernix
           end
 
           # Box it if needed.
-          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
+          Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
           fixCursorPosition
         end
@@ -418,7 +418,7 @@ module Slithernix
 
           # Clean up the display.
           (0...@view_size).each do |j|
-            Slithernix::Cdk::Draw.writeBlanks(
+            Slithernix::Cdk::Draw.write_blanks(
               @win,
               self.SCREEN_XPOS(0),
               self.SCREEN_YPOS(j),

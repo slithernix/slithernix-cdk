@@ -385,17 +385,17 @@ module Slithernix
         # This function draws the widget.
         def draw(box)
           # Draw the shadow.
-          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
+          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
 
           # Box the widget if asked.
-          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
+          Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
           drawTitle(@win)
 
           # Draw the label.
           unless @label_win.nil?
-            Slithernix::Cdk::Draw.writeChtype(@label_win, 0, 0, @label, Slithernix::Cdk::HORIZONTAL,
-                                              0, @label_len)
+            Slithernix::Cdk::Draw.write_chtype(@label_win, 0, 0, @label, Slithernix::Cdk::HORIZONTAL,
+                                               0, @label_len)
             @label_win.refresh
           end
           @win.refresh
@@ -410,9 +410,9 @@ module Slithernix
 
           # Draw the value in the field.
           temp = @current.to_s
-          Slithernix::Cdk::Draw.writeCharAttrib(@field_win,
-                                                @field_width - temp.size - 1, 0, temp, @field_attr,
-                                                Slithernix::Cdk::HORIZONTAL, 0, temp.size)
+          Slithernix::Cdk::Draw.write_char_attrib(@field_win,
+                                                  @field_width - temp.size - 1, 0, temp, @field_attr,
+                                                  Slithernix::Cdk::HORIZONTAL, 0, temp.size)
 
           moveToEditPosition(@field_edit)
           @field_win.refresh

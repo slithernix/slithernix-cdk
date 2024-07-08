@@ -124,7 +124,7 @@ module Slithernix
           draw(@box)
 
           # Lets move to the first button.
-          Slithernix::Cdk::Draw.writeChtypeAttrib(
+          Slithernix::Cdk::Draw.write_chtype_attrib(
             @win,
             @button_pos[@current_button],
             @box_height - 1 - @border_size,
@@ -236,16 +236,16 @@ module Slithernix
         # This function draws the dialog widget.
         def draw(box)
           # Is there a shadow?
-          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
+          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
 
           # Box the widget if they asked.
-          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
+          Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
           # Draw in the message.
           (0...@message_rows).each do |x|
-            Slithernix::Cdk::Draw.writeChtype(@win,
-                                              @info_pos[x] + @border_size, x + @border_size, @info[x],
-                                              Slithernix::Cdk::HORIZONTAL, 0, @info_len[x])
+            Slithernix::Cdk::Draw.write_chtype(@win,
+                                               @info_pos[x] + @border_size, x + @border_size, @info[x],
+                                               Slithernix::Cdk::HORIZONTAL, 0, @info_len[x])
           end
 
           # Draw in the buttons.
@@ -308,7 +308,7 @@ module Slithernix
         # This draws the dialog buttons and the separation line.
         def drawButtons
           (0...@button_count).each do |x|
-            Slithernix::Cdk::Draw.writeChtype(
+            Slithernix::Cdk::Draw.write_chtype(
               @win,
               @button_pos[x],
               @box_height - 1 - @border_size,
@@ -344,7 +344,7 @@ module Slithernix
             )
           end
 
-          Slithernix::Cdk::Draw.writeChtypeAttrib(
+          Slithernix::Cdk::Draw.write_chtype_attrib(
             @win,
             @button_pos[@current_button],
             @box_height - 1 - @border_size,

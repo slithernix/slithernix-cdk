@@ -410,8 +410,8 @@ module Slithernix
 
         # Draw the template widget.
         def draw(box)
-          Slithernix::Cdk::Draw.drawShadow(@shadow_win) unless @shadow_win.nil?
-          Slithernix::Cdk::Draw.drawObjBox(@win, self) if box
+          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
+          Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
           drawTitle(@win)
 
@@ -426,15 +426,15 @@ module Slithernix
 
           # Draw in the label and the template widget.
           unless @label_win.nil?
-            Slithernix::Cdk::Draw.writeChtype(@label_win, 0, 0, @label, Slithernix::Cdk::HORIZONTAL,
-                                              0, @label_len)
+            Slithernix::Cdk::Draw.write_chtype(@label_win, 0, 0, @label, Slithernix::Cdk::HORIZONTAL,
+                                               0, @label_len)
             @label_win.refresh
           end
 
           # Draw in the template
           if @overlay.size.positive?
-            Slithernix::Cdk::Draw.writeChtype(@field_win, 0, 0, @overlay, Slithernix::Cdk::HORIZONTAL,
-                                              0, @overlay_len)
+            Slithernix::Cdk::Draw.write_chtype(@field_win, 0, 0, @overlay, Slithernix::Cdk::HORIZONTAL,
+                                               0, @overlay_len)
           end
 
           # Adjust the cursor.
