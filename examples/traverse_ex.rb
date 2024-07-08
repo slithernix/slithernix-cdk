@@ -421,7 +421,7 @@ class TraverseExample < Example
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Start CDK colours.
-    Slithernix::Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.init_color
 
     menu = Slithernix::Cdk::Widget::Menu.new(
       cdkscreen,

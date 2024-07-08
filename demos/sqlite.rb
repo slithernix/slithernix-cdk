@@ -129,7 +129,7 @@ class SQLiteDemo
     @@gp_cdk_screen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Slithernix::Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.init_color
 
     begin
       sqlitedb = SQLite3::Database.new(dbfile)

@@ -30,7 +30,7 @@ class SwindowExample < CLIExample
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Start CDK colors.
-    Slithernix::Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.init_color
 
     # Create the scrolling window.
     swindow = Slithernix::Cdk::Widget::SWindow.new(

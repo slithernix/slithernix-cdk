@@ -25,7 +25,7 @@ class DialogExample < Example
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Start color.
-    Slithernix::Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.init_color
 
     # Create the message within the dialog box.
     message = [

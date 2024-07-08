@@ -64,7 +64,7 @@ class Command
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Slithernix::Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.init_color
 
     # Create the scrolling window.
     command_output = Slithernix::Cdk::Widget::SWindow.new(

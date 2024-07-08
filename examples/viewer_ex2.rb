@@ -50,7 +50,7 @@ class Viewer2Example < CLIExample
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Start CDK colors.
-    Slithernix::Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.init_color
 
     f_select = nil
     if params.filename == ''

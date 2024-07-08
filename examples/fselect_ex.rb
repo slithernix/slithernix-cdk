@@ -74,7 +74,7 @@ class FselectExample < CLIExample
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Slithernix::Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.init_color
 
     # Get the filename.
     fselect = Slithernix::Cdk::Widget::FSelect.new(cdkscreen, params.x_value, params.y_value,

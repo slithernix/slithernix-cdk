@@ -34,7 +34,7 @@ class HistogramExample < CLIExample
     cdkscreen = Slithernix::Cdk::Screen.new
 
     # Set up CDK colors
-    Slithernix::Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.init_color
 
     # Create the histogram widgets.
     volume_title = '<C></5>Volume<!5>'

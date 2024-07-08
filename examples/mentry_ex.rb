@@ -43,11 +43,24 @@ class MentryExample < Example
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Slithernix::Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.init_color
 
-    widget = Slithernix::Cdk::Widget::MEntry.new(cdkscreen, params.x_value, params.y_value,
-                                                 title, label, Curses::A_BOLD, '.', :MIXED, params.w, params.h,
-                                                 params.rows, 0, params.box, params.shadow)
+    widget = Slithernix::Cdk::Widget::MEntry.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value,
+      title,
+      label,
+      Curses::A_BOLD,
+      '.',
+      :MIXED,
+      params.w,
+      params.h,
+      params.rows,
+      0,
+      params.box,
+      params.shadow,
+    )
 
     # Is the widget nil?
     if widget.nil?

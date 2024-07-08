@@ -47,7 +47,7 @@ class USliderExample < Example
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Slithernix::Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.init_color
 
     # Create the widget
     widget = Slithernix::Cdk::Widget::USlider.new(cdkscreen, params.x_value, params.y_value,

@@ -1444,7 +1444,7 @@ class Rolodex
   def self.main
     curses_win = Curses.init_screen
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
-    Slithernix::Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.init_color
 
     # Create the menu lists.
     menulist = [

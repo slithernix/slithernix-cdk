@@ -28,7 +28,7 @@ class TemplateExample < Example
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Slithernix::Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.init_color
 
     # Declare the template.
     phone_number = Slithernix::Cdk::Widget::Template.new(

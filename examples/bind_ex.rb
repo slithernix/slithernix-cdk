@@ -23,7 +23,7 @@ class BindExample < Example
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Start color.
-    Slithernix::Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.init_color
 
     # Set up the dialog box.
     message = [

@@ -50,7 +50,7 @@ class MatrixExample < Example
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Slithernix::Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.init_color
 
     coltitle = []
     unless params.cancel_col

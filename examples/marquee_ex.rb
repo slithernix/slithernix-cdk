@@ -88,7 +88,7 @@ class MarqueeExample < Example
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Slithernix::Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.init_color
 
     scroll_message = Slithernix::Cdk::Widget::Marquee.new(cdkscreen,
                                                           params.x_value, params.y_value, params.width,

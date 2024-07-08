@@ -15,7 +15,7 @@ title = '<C></B></89>COLOR LIST'
 curses_win = Curses.init_screen
 cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
-color_pairs = Slithernix::Cdk::Draw.initCDKColor
+color_pairs = Slithernix::Cdk::Draw.init_color
 
 w_value = "#{color_pairs.size}.    THIS IS COLOR PAIR #{color_pairs.size}  ".size
 

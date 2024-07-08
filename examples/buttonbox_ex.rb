@@ -13,7 +13,7 @@ class ButtonboxExample < Example
     cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Start color.
-    Slithernix::Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.init_color
 
     # Create the entry widget.
     entry = Slithernix::Cdk::Widget::Entry.new(
