@@ -139,7 +139,7 @@ module Slithernix
           # creating a new function and calling that one the mentry activation.
           mentry_callback = lambda do |mentry, character|
             cursor_pos = mentry.getCursorPos
-            newchar = Slithernix::Cdk::Display.filterByDisplayType(
+            newchar = Slithernix::Cdk::Display.filter_by_display_type(
               mentry.disp_type, character
             )
 

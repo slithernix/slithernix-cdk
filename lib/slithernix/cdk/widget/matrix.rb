@@ -244,8 +244,10 @@ module Slithernix
           @shadow_win = nil
           @callbackfn = lambda do |matrix, input|
             disptype = matrix.colvalues[matrix.col]
-            plainchar = Slithernix::Cdk::Display.filterByDisplayType(disptype,
-                                                                     input)
+            plainchar = Slithernix::Cdk::Display.filter_by_display_type(
+              disptype,
+              input,
+            )
             charcount = matrix.info[matrix.row][matrix.col].size
 
             if plainchar == Curses::Error
@@ -253,9 +255,10 @@ module Slithernix
             elsif charcount == matrix.colwidths[matrix.col]
               Slithernix::Cdk.Beep
             else
-              # Update the screen.
-              matrix.CurMatrixCell.move(1,
-                                        matrix.info[matrix.row][matrix.col].size + 1)
+              matrix.CurMatrixCell.move(
+                1,
+                matrix.info[matrix.row][matrix.col].size + 1,
+              )
               matrix.CurMatrixCell.addch(
                 if Slithernix::Cdk::Display.is_hidden_display_type?(disptype)
                 then matrix.filler
@@ -283,10 +286,13 @@ module Slithernix
           @colvalues = colvalues.clone
           @colwidths = colwidths.clone
 
-          # Do we want a shadow?
           if shadow
-            @shadow_win = Curses::Window.new(box_height, box_width,
-                                             ypos + 1, xpos + 1)
+            @shadow_win = Curses::Window.new(
+              box_height,
+              box_width,
+              ypos + 1,
+              xpos + 1,
+            )
           end
 
           # Set up the key bindings.

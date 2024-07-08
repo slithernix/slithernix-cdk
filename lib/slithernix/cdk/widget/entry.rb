@@ -125,7 +125,7 @@ module Slithernix
           @box_height = box_height
           @disp_type = disp_type
           @callbackfn = lambda do |entry, character|
-            plainchar = Slithernix::Cdk::Display.filterByDisplayType(
+            plainchar = Slithernix::Cdk::Display.filter_by_display_type(
               entry,
               character
             )

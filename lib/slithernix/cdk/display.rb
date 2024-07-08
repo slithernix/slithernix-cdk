@@ -43,7 +43,7 @@ module Slithernix
 
       # Given a character input, check if it is allowed by the display type
       # and return the character to apply to the display, or ERR if not
-      def self.filterByDisplayType(type, input)
+      def self.filter_by_display_type(type, input)
         result = input
         if !Slithernix::Cdk.isChar(input)
           result = Curses::Error
