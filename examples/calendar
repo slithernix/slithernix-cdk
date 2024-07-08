@@ -1,0 +1,135 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative 'example'
+
+class CalendarExample < Example
+  def self.parse_opts(opts, param)
+    opts.banner = 'Usage: calendar_ex.rb [options]'
+
+    param.x_value = Slithernix::Cdk::CENTER
+    param.y_value = Slithernix::Cdk::CENTER
+    param.box = true
+    param.shadow = false
+    param.day = 0
+    param.month = 0
+    param.year = 0
+    param.week_base = 0
+    param.title = "<C></U>CDK Calendar Widget\n<C>Demo"
+
+    super
+
+    opts.on('-d DAY', OptionParser::DecimalInteger, 'Starting day') do |d|
+      param.day = d
+    end
+
+    opts.on('-m MONTH', OptionParser::DecimalInteger, 'Starting month') do |m|
+      param.month = m
+    end
+
+    opts.on('-y YEAR', OptionParser::DecimalInteger, 'Starting year') do |y|
+      param.year = y
+    end
+
+    opts.on('-t TITLE', String, 'Calendar title') do |title|
+      param.title = title
+    end
+
+    opts.on('-w WEEKBASE', OptionParser::DecimalInteger, 'Week start') do |w|
+      param.week_base = w
+    end
+  end
+
+  # This program demonstrates the Cdk calendar widget.
+  def self.main
+    params = parse(ARGV)
+
+    # Get the current dates and set the default values for the
+    # day/month/year values for the calendar.
+    date_info = Time.now.gmtime
+
+    params.day = date_info.day if params.day.zero?
+
+    params.month = date_info.month if params.month.zero?
+
+    params.year = date_info.year if params.year.zero?
+
+    # Set up CDK
+    curses_win = Curses.init_screen
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
+
+    # Set up CDK colors
+    Slithernix::Cdk::Draw.init_color
+
+    # Declare the calendar widget.
+    calendar = Slithernix::Cdk::Widget::Calendar.new(cdkscreen, params.x_value, params.y_value,
+                                                     params.title, params.day, params.month, params.year,
+                                                     Curses.color_pair(16) | Curses::A_BOLD,
+                                                     Curses.color_pair(24) | Curses::A_BOLD,
+                                                     Curses.color_pair(32) | Curses::A_BOLD,
+                                                     Curses.color_pair(40) | Curses::A_REVERSE,
+                                                     params.box, params.shadow)
+
+    if calendar.nil?
+      # Exit CDK.
+      cdkscreen.destroy
+      Slithernix::Cdk::Screen.end_cdk
+
+      puts 'Cannot create the calendar. Is the window too small?'
+      exit # EXIT_FAILURE
+    end
+
+    # This adds a marker ot the calendar.
+    create_calendar_mark = lambda do |_widget_type, calendar, _client_data, _key|
+      calendar.setMarker(calendar.day, calendar.month, calendar.year)
+      calendar.draw(calendar.box)
+      false
+    end
+
+    # This removes a marker from the calendar.
+    remove_calendar_mark = lambda do |_widget_type, calendar, _client_data, _key|
+      calendar.removeMarker(calendar.day, calendar.month, calendar.year)
+      calendar.draw(calendar.box)
+      false
+    end
+
+    # Create a key binding to mark days on the calendar.
+    calendar.bind(:Calendar, 'm', create_calendar_mark, calendar)
+    calendar.bind(:Calendar, 'M', create_calendar_mark, calendar)
+    calendar.bind(:Calendar, 'r', remove_calendar_mark, calendar)
+    calendar.bind(:Calendar, 'R', remove_calendar_mark, calendar)
+
+    calendar.week_base = params.week_base
+
+    # Let the user play with the widget.
+    ret_val = calendar.activate([])
+
+    # Check which day they selected.
+    if calendar.exit_type == :ESCAPE_HIT
+      mesg = [
+        '<C>You hit escape. No date selected.',
+        '',
+        '<C>Press any key to continue.'
+      ]
+      cdkscreen.popup_label(mesg, 3)
+    elsif calendar.exit_type == :NORMAL
+      mesg = [
+        'You selected the following date',
+        format('<C></B/16>%02d/%02d/%d (dd/mm/yyyy)', calendar.day,
+               calendar.month, calendar.year),
+        '<C>Press any key to continue.'
+      ]
+      cdkscreen.popup_label(mesg, 3)
+    end
+
+    # Clean up
+    calendar.destroy
+    cdkscreen.destroy
+    Slithernix::Cdk::Screen.end_cdk
+    $stdout.flush
+    puts 'Selected Time: %s' % ret_val.ctime
+    # ExitProgram (EXIT_SUCCESS);
+  end
+end
+
+CalendarExample.main
