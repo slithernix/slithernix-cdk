@@ -26,7 +26,7 @@ module Slithernix
 
           # If the height is a negative value, height will be ROWS-height,
           # otherwise the height will be the given height.
-          box_height = Slithernix::Cdk.setWidgetDimension(
+          box_height = Slithernix::Cdk.set_widget_dimension(
             parent_height,
             height,
             0,
@@ -34,7 +34,7 @@ module Slithernix
 
           # If the width is a negative value, the width will be COLS-width,
           # otherwise the width will be the given width.
-          box_width = Slithernix::Cdk.setWidgetDimension(
+          box_width = Slithernix::Cdk.set_widget_dimension(
             parent_width,
             width,
             5,
@@ -387,9 +387,9 @@ module Slithernix
           destroyInfo
 
           # Clean up the windows.
-          Slithernix::Cdk.deleteCursesWindow(@scrollbar_win)
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@scrollbar_win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@win)
 
           # Clean up the key bindings.
           clean_bindings(:Radio)
@@ -402,8 +402,8 @@ module Slithernix
         def erase
           return unless is_valid_widget?
 
-          Slithernix::Cdk.eraseCursesWindow(@win)
-          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
+          Slithernix::Cdk.erase_curses_window(@win)
+          Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
 
         # This sets various attributes of the radio list.
@@ -441,7 +441,7 @@ module Slithernix
 
         def getItems(list)
           (0...@list_size).each do |j|
-            list << Slithernix::Cdk.chtype2Char(@item[j])
+            list << Slithernix::Cdk.chtype_string_to_unformatted_string(@item[j])
           end
           @list_size
         end
@@ -526,7 +526,7 @@ module Slithernix
             (0...list_size).each do |j|
               lentmp = []
               postmp = []
-              new_list << Slithernix::Cdk.char2Chtype(list[j], lentmp, postmp)
+              new_list << Slithernix::Cdk.char_to_chtype(list[j], lentmp, postmp)
               new_len << lentmp[0]
               new_pos << postmp[0]
               if new_list[j].nil? || new_list[j].empty?
@@ -534,8 +534,8 @@ module Slithernix
                 break
               end
               new_pos[j] =
-                Slithernix::Cdk.justifyString(box_width, new_len[j],
-                                              new_pos[j]) + 3
+                Slithernix::Cdk.justify_string(box_width, new_len[j],
+                                               new_pos[j]) + 3
               widest_item = [widest_item, new_len[j]].max
             end
             if status

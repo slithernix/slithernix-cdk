@@ -160,7 +160,7 @@ class ViewerExample < CLIExample
     else
       example.set('reading...', 0, 0, Curses::A_REVERSE, true, true, true)
       # Open the file and read the contents.
-      lines = Slithernix::Cdk.readFile(params.filename, info)
+      lines = Slithernix::Cdk.read_file(params.filename, info)
       if lines == -1
         Slithernix::Cdk::Screen.end_cdk
         puts format('Could not open "%s"', params.filename)

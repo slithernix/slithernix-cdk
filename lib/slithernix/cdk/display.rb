@@ -45,7 +45,7 @@ module Slithernix
       # and return the character to apply to the display, or ERR if not
       def self.filter_by_display_type(type, input)
         result = input
-        if !Slithernix::Cdk.isChar(input)
+        if !Slithernix::Cdk.is_char?(input)
           result = Curses::Error
         elsif %i[INT
                  HINT].include?(type) && !Slithernix::Cdk.digit?(result.chr)

@@ -61,7 +61,7 @@ class ScrollExample < CLIExample
 
     # Use the current directory list to fill the radio list
     item = []
-    count = Slithernix::Cdk.getDirectoryContents('.', item)
+    count = Slithernix::Cdk.get_directory_contents('.', item)
 
     # Create the scrolling list.
     scroll_list = Slithernix::Cdk::Widget::Scroll.new(
@@ -124,7 +124,7 @@ class ScrollExample < CLIExample
         '<C>Press any key to continue.',
       ]
     when :NORMAL
-      the_item = Slithernix::Cdk.chtype2Char(scroll_list.item[selection])
+      the_item = Slithernix::Cdk.chtype_string_to_unformatted_string(scroll_list.item[selection])
       msg = [
         '<C>You selected the following file',
         format('<C>%.*s', 236, the_item), # FIXME: magic number

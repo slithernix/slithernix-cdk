@@ -126,7 +126,7 @@ module Slithernix
           switch_focus(set_focus_to_previous_widget(screen), curwidg)
         when Slithernix::Cdk::KEY_TAB
           switch_focus(set_focus_to_next_widget(screen), curwidg)
-        when Slithernix::Cdk.KEY_F(10)
+        when Slithernix::Cdk.key_f(10)
           # save data and exit
           exit_screen_ok(screen)
         when Slithernix::Cdk.CTRL('X')

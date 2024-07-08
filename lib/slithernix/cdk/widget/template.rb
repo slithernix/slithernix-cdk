@@ -27,14 +27,14 @@ module Slithernix
           # Translate the label string to achtype array
           if label&.size&.positive?
             label_len = []
-            @label = Slithernix::Cdk.char2Chtype(label, label_len, [])
+            @label = Slithernix::Cdk.char_to_chtype(label, label_len, [])
             @label_len = label_len[0]
           end
 
           # Translate the char * overlay to a chtype array
           if overlay&.size&.positive?
             overlay_len = []
-            @overlay = Slithernix::Cdk.char2Chtype(overlay, overlay_len, [])
+            @overlay = Slithernix::Cdk.char_to_chtype(overlay, overlay_len, [])
             @overlay_len = overlay_len[0]
             @field_attr = @overlay[0] & Curses::A_ATTRIBUTES
           else
@@ -166,7 +166,7 @@ module Slithernix
                 else
                   failed = true
                 end
-              elsif Slithernix::Cdk.isChar(input) && @plate_pos < @plate.size
+              elsif Slithernix::Cdk.is_char?(input) && @plate_pos < @plate.size
                 test[mark] = input.chr
                 change = true
                 amount = 1
@@ -185,7 +185,7 @@ module Slithernix
             end
 
             if failed
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             elsif change || moveby
               @info_pos += amount
               @plate_pos += amount
@@ -268,13 +268,13 @@ module Slithernix
                   clean
                   drawField
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               when Slithernix::Cdk::COPY
                 if @info.size.positive?
                   @@g_paste_buffer = @info.clone
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               when Slithernix::Cdk::PASTE
                 if @@g_paste_buffer.size.positive?
@@ -286,11 +286,11 @@ module Slithernix
                   end
                   drawField
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
                 if @info.size < @min
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 else
                   set_exit_type(input)
                   ret = @info
@@ -481,10 +481,10 @@ module Slithernix
           clean_title
 
           # Delete the windows
-          Slithernix::Cdk.deleteCursesWindow(@field_win)
-          Slithernix::Cdk.deleteCursesWindow(@label_win)
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@field_win)
+          Slithernix::Cdk.delete_curses_window(@label_win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@win)
 
           # Clean the key bindings.
           clean_bindings(:Template)
@@ -496,10 +496,10 @@ module Slithernix
         def erase
           return unless is_valid_widget?
 
-          Slithernix::Cdk.eraseCursesWindow(@field_win)
-          Slithernix::Cdk.eraseCursesWindow(@label_win)
-          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
-          Slithernix::Cdk.eraseCursesWindow(@win)
+          Slithernix::Cdk.erase_curses_window(@field_win)
+          Slithernix::Cdk.erase_curses_window(@label_win)
+          Slithernix::Cdk.erase_curses_window(@shadow_win)
+          Slithernix::Cdk.erase_curses_window(@win)
         end
 
         # Set the value given to the template

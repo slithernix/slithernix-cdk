@@ -271,7 +271,7 @@ class TraverseExample < Example
   end
 
   def self.rebind_esc(widg)
-    widg.bind(widg.widget_type, Slithernix::Cdk::KEY_F(1), :getc,
+    widg.bind(widg.widget_type, Slithernix::Cdk::key_f(1), :getc,
               Slithernix::Cdk::KEY_ESC)
   end
 
@@ -289,7 +289,7 @@ class TraverseExample < Example
       x = Slithernix::Cdk::RIGHT
       y = 2
     else
-      Slithernix::Cdk.Beep
+      Slithernix::Cdk.beep
       return
     end
 
@@ -350,7 +350,7 @@ class TraverseExample < Example
     when :Viewer
       func = :make_viewer
     when :Menu, :TRAVERSE, :NULL
-      Slithernix::Cdk.Beep
+      Slithernix::Cdk.beep
       return
     end
 
@@ -363,7 +363,7 @@ class TraverseExample < Example
 
     # Create the new widget
     if func.nil?
-      Slithernix::Cdk.Beep
+      Slithernix::Cdk.beep
     else
       widget = send(func, cdkscreen, x, y)
       if widget.nil?

@@ -14,12 +14,12 @@ module Slithernix
 
           set_box(box)
 
-          box_height = Slithernix::Cdk.setWidgetDimension(parent_height,
-                                                          height, 2)
+          box_height = Slithernix::Cdk.set_widget_dimension(parent_height,
+                                                            height, 2)
           old_height = box_height
 
-          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width,
-                                                         0)
+          box_width = Slithernix::Cdk.set_widget_dimension(parent_width, width,
+                                                           0)
           old_width = box_width
 
           box_width = set_title(title, -(box_width + 1))
@@ -389,8 +389,8 @@ module Slithernix
           clean_title
 
           # Clean up the windows.
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@win)
 
           # Clean the key bindings.
           clean_bindings(:Histogram)
@@ -403,8 +403,8 @@ module Slithernix
         def erase
           return unless is_valid_widget?
 
-          Slithernix::Cdk.eraseCursesWindow(@win)
-          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
+          Slithernix::Cdk.erase_curses_window(@win)
+          Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
       end
     end

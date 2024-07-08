@@ -31,7 +31,7 @@ module Slithernix
 
           # If the height is a negative value, the height will be ROWS-height,
           # otherwise the height will be the given height
-          box_height = Slithernix::Cdk.setWidgetDimension(
+          box_height = Slithernix::Cdk.set_widget_dimension(
             parent_height,
             height,
             0,
@@ -39,7 +39,7 @@ module Slithernix
 
           # If the width is a negative value, the width will be COLS-width,
           # otherwise the width will be the given width
-          box_width = Slithernix::Cdk.setWidgetDimension(
+          box_width = Slithernix::Cdk.set_widget_dimension(
             parent_width,
             width,
             0,
@@ -412,10 +412,10 @@ module Slithernix
           clean_title
 
           # Clean up the windows.
-          Slithernix::Cdk.deleteCursesWindow(@scrollbar_win)
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
-          Slithernix::Cdk.deleteCursesWindow(@list_win)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@scrollbar_win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@list_win)
+          Slithernix::Cdk.delete_curses_window(@win)
 
           # Clean the key bindings.
           clean_bindings(:Scroll)
@@ -426,8 +426,8 @@ module Slithernix
 
         # This function erases the scrolling list from the screen.
         def erase
-          Slithernix::Cdk.eraseCursesWindow(@win)
-          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
+          Slithernix::Cdk.erase_curses_window(@win)
+          Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
 
         def allocListArrays(old_size, new_size)
@@ -454,12 +454,12 @@ module Slithernix
 
           item_len = []
           item_pos = []
-          @item[which] = Slithernix::Cdk.char2Chtype(value, item_len, item_pos)
+          @item[which] = Slithernix::Cdk.char_to_chtype(value, item_len, item_pos)
           @item_len[which] = item_len[0]
           @item_pos[which] = item_pos[0]
 
-          @item_pos[which] = Slithernix::Cdk.justifyString(@box_width,
-                                                           @item_len[which], @item_pos[which])
+          @item_pos[which] = Slithernix::Cdk.justify_string(@box_width,
+                                                            @item_len[which], @item_pos[which])
           true
         end
 
@@ -522,7 +522,7 @@ module Slithernix
 
         def getItems(list)
           (0...@list_size).each do |x|
-            list << Slithernix::Cdk.chtype2Char(@item[x])
+            list << Slithernix::Cdk.chtype_string_to_unformatted_string(@item[x])
           end
 
           @list_size
@@ -685,14 +685,14 @@ module Slithernix
           # Translate the string to a chtype array.
           info_len = []
           info_pos = []
-          @info = Slithernix::Cdk.char2Chtype(text, info_len, info_pos)
+          @info = Slithernix::Cdk.char_to_chtype(text, info_len, info_pos)
           @info_len = info_len[0]
           @info_pos = info_pos[0]
           box_width = [box_width, @info_len].max + (2 * @border_size)
 
           # Create the string alignments.
-          @info_pos = Slithernix::Cdk.justifyString(box_width - (2 * @border_size),
-                                                    @info_len, @info_pos)
+          @info_pos = Slithernix::Cdk.justify_string(box_width - (2 * @border_size),
+                                                     @info_len, @info_pos)
 
           # Make sure we didn't extend beyond the dimensions of the window.
           box_width = parent_width if box_width > parent_width
@@ -774,10 +774,10 @@ module Slithernix
         def setMessage(info)
           info_len = []
           info_pos = []
-          @info = Slithernix::Cdk.char2Chtype(info, info_len, info_pos)
+          @info = Slithernix::Cdk.char_to_chtype(info, info_len, info_pos)
           @info_len = info_len[0]
-          @info_pos = Slithernix::Cdk.justifyString(@box_width - (2 * @border_size),
-                                                    info_pos[0])
+          @info_pos = Slithernix::Cdk.justify_string(@box_width - (2 * @border_size),
+                                                     info_pos[0])
 
           # Redraw the button widget.
           erase
@@ -829,8 +829,8 @@ module Slithernix
         def erase
           return unless is_valid_widget?
 
-          Slithernix::Cdk.eraseCursesWindow(@win)
-          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
+          Slithernix::Cdk.erase_curses_window(@win)
+          Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
 
         # This moves the button field to the given location.
@@ -860,8 +860,8 @@ module Slithernix
           ydiff = current_y - ypos
 
           # Move the window to the new location.
-          Slithernix::Cdk.moveCursesWindow(@win, -xdiff, -ydiff)
-          Slithernix::Cdk.moveCursesWindow(@shadow_win, -xdiff, -ydiff)
+          Slithernix::Cdk.move_curses_window(@win, -xdiff, -ydiff)
+          Slithernix::Cdk.move_curses_window(@shadow_win, -xdiff, -ydiff)
 
           # Thouch the windows so they 'move'.
           Slithernix::Cdk::Screen.refresh_window(@screen.window)
@@ -886,52 +886,52 @@ module Slithernix
               if @win.begy.positive?
                 move(0, -1, true, true)
               else
-                Slithernix::Cdk.Beep
+                Slithernix::Cdk.beep
               end
             elsif [Curses::KEY_DOWN, '2'].include?(key)
               if @win.begy + @win.maxy < @screen.window.maxy - 1
                 move(0, 1, true, true)
               else
-                Slithernix::Cdk.Beep
+                Slithernix::Cdk.beep
               end
             elsif [Curses::KEY_LEFT, '4'].include?(key)
               if @win.begx.positive?
                 move(-1, 0, true, true)
               else
-                Slithernix::Cdk.Beep
+                Slithernix::Cdk.beep
               end
             elsif [Curses::KEY_RIGHT, '6'].include?(key)
               if @win.begx + @win.maxx < @screen.window.maxx - 1
                 move(1, 0, true, true)
               else
-                Slithernix::Cdk.Beep
+                Slithernix::Cdk.beep
               end
             elsif key == '7'
               if @win.begy.positive? && @win.begx.positive?
                 move(-1, -1, true, true)
               else
-                Slithernix::Cdk.Beep
+                Slithernix::Cdk.beep
               end
             elsif key == '9'
               if @win.begx + @win.maxx < @screen.window.maxx - 1 &&
                  @win.begy.positive?
                 move(1, -1, true, true)
               else
-                Slithernix::Cdk.Beep
+                Slithernix::Cdk.beep
               end
             elsif key == '1'
               if @win.begx.positive? &&
                  @win.begx + @win.maxx < @screen.window.maxx - 1
                 move(-1, 1, true, true)
               else
-                Slithernix::Cdk.Beep
+                Slithernix::Cdk.beep
               end
             elsif key == '3'
               if @win.begx + @win.maxx < @screen.window.maxx - 1 &&
                  @win.begy + @win.maxy < @screen.window.maxy - 1
                 move(1, 1, true, true)
               else
-                Slithernix::Cdk.Beep
+                Slithernix::Cdk.beep
               end
             elsif key == '5'
               move(Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, false,
@@ -954,15 +954,15 @@ module Slithernix
             elsif key == Slithernix::Cdk::KEY_ESC
               move(orig_x, orig_y, false, true)
             elsif key != Slithernix::Cdk::KEY_RETURN && key != Curses::KEY_ENTER
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             end
           end
         end
 
         # This destroys the button widget pointer.
         def destroy
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@win)
 
           clean_bindings(:BUTTON)
 
@@ -996,7 +996,7 @@ module Slithernix
               @screen.erase
               @screen.refresh
             else
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             end
           end
 

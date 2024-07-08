@@ -47,8 +47,8 @@ class SQLiteDemo
     history.current = 0
 
     # Read the file.
-    if (history.count = Slithernix::Cdk.readFile(filename,
-                                                 history.cmd_history)) != -1
+    if (history.count = Slithernix::Cdk.read_file(filename,
+                                                  history.cmd_history)) != -1
       history.current = history.count
     end
   end
@@ -158,7 +158,7 @@ class SQLiteDemo
     history_up_cb = lambda do |_cdktype, entry, history, _key|
       # Make sure we don't go out of bounds
       if history.current.zero?
-        Slithernix::Cdk.Beep
+        Slithernix::Cdk.beep
         return true
       end
 
@@ -174,7 +174,7 @@ class SQLiteDemo
     history_down_cb = lambda do |_cdktype, entry, history, _key|
       # Make sure we don't go out of bounds.
       if history.current == history.count
-        Slithernix::Cdk.Beep
+        Slithernix::Cdk.beep
         return true
       end
 

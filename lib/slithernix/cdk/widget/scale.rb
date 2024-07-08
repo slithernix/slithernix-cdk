@@ -35,14 +35,14 @@ module Slithernix
           # If the field_width is a negative value, the field_width will
           # be COLS-field_width, otherwise the field_width will be the
           # given width.
-          field_width = Slithernix::Cdk.setWidgetDimension(parent_width,
-                                                           field_width, 0)
+          field_width = Slithernix::Cdk.set_widget_dimension(parent_width,
+                                                             field_width, 0)
           box_width = field_width + (2 * @border_size)
 
           # Translate the label string to a chtype array
           unless label.nil?
             label_len = []
-            @label = Slithernix::Cdk.char2Chtype(label, label_len, [])
+            @label = Slithernix::Cdk.char_to_chtype(label, label_len, [])
             @label_len = label_len[0]
             box_width = @label_len + field_width + 2
           end
@@ -168,10 +168,10 @@ module Slithernix
         def limitCurrentValue
           if @current < @low
             @current = @low
-            Slithernix::Cdk.Beep
+            Slithernix::Cdk.beep
           elsif @current > @high
             @current = @high
-            Slithernix::Cdk.Beep
+            Slithernix::Cdk.beep
           end
         end
 
@@ -210,13 +210,13 @@ module Slithernix
         # modify cells by typing in replacement characters for the field's value.
         def setEditPosition(new_position)
           if new_position.negative?
-            Slithernix::Cdk.Beep
+            Slithernix::Cdk.beep
           elsif new_position.zero?
             @field_edit = new_position
           elsif validEditPosition(new_position)
             @field_edit = new_position
           else
-            Slithernix::Cdk.Beep
+            Slithernix::Cdk.beep
           end
         end
 
@@ -247,7 +247,7 @@ module Slithernix
           @field_win.move(0, base)
           @field_win.winnstr(temp, need)
           temp << ' '
-          if Slithernix::Cdk.isChar(input) # Replace the char at the cursor
+          if Slithernix::Cdk.is_char?(input) # Replace the char at the cursor
             temp[col] = input.chr
           elsif input == Curses::KEY_BACKSPACE
             # delete the char before the cursor
@@ -350,10 +350,10 @@ module Slithernix
                   when '0'
                     return inject(Curses::KEY_HOME)
                   else
-                    Slithernix::Cdk.Beep
+                    Slithernix::Cdk.beep
                   end
                 else
-                  Slithernix::Cdk.Beep unless performEdit(input)
+                  Slithernix::Cdk.beep unless performEdit(input)
                 end
               end
             end
@@ -433,10 +433,10 @@ module Slithernix
           @label = []
 
           # Clean up the windows.
-          Slithernix::Cdk.deleteCursesWindow(@field_win)
-          Slithernix::Cdk.deleteCursesWindow(@label_win)
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@field_win)
+          Slithernix::Cdk.delete_curses_window(@label_win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@win)
 
           # Clean the key bindings.
           clean_bindings(widget_type)
@@ -449,10 +449,10 @@ module Slithernix
         def erase
           return unless is_valid_widget?
 
-          Slithernix::Cdk.eraseCursesWindow(@label_win)
-          Slithernix::Cdk.eraseCursesWindow(@field_win)
-          Slithernix::Cdk.eraseCursesWindow(@win)
-          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
+          Slithernix::Cdk.erase_curses_window(@label_win)
+          Slithernix::Cdk.erase_curses_window(@field_win)
+          Slithernix::Cdk.erase_curses_window(@win)
+          Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
 
         # This function sets the low/high/current values of the widget.

@@ -45,7 +45,7 @@ class RadioExample < CLIExample
 
     # Use the current directory list to fill the radio list
     item = []
-    count = Slithernix::Cdk.getDirectoryContents('.', item)
+    count = Slithernix::Cdk.get_directory_contents('.', item)
     if count <= 0
       warn 'Cannot get directory list'
       exit # EXIT_FAILURE
@@ -110,7 +110,7 @@ class RadioExample < CLIExample
           ]
           cdkscreen.popup_label(mesg, 4)
           nitem = []
-          count = Slithernix::Cdk.getDirectoryContents(item[selection], nitem)
+          count = Slithernix::Cdk.get_directory_contents(item[selection], nitem)
           if count.positive?
             Dir.chdir(item[selection])
             item = nitem

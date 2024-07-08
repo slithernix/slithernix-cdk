@@ -44,7 +44,7 @@ module Slithernix
           padding = mesg[-1] == ' ' ? 0 : 1
 
           # Translate the string to a chtype array
-          message = Slithernix::Cdk.char2Chtype(mesg, mesg_length, [])
+          message = Slithernix::Cdk.char_to_chtype(mesg, mesg_length, [])
 
           # Draw in the widget.
           draw(@box)
@@ -152,8 +152,8 @@ module Slithernix
         # This destroys the widget.
         def destroy
           # Clean up the windows.
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@win)
 
           # Clean the key bindings.
           clean_bindings(:Marquee)
@@ -166,8 +166,8 @@ module Slithernix
         def erase
           return unless is_valid_widget?
 
-          Slithernix::Cdk.eraseCursesWindow(@win)
-          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
+          Slithernix::Cdk.erase_curses_window(@win)
+          Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
 
         # This sets the widget box attribute.
@@ -195,7 +195,7 @@ module Slithernix
           Slithernix::Cdk::Widget::Marquee.discardWin(@win)
           Slithernix::Cdk::Widget::Marquee.discardWin(@shadow_win)
 
-          box_width = Slithernix::Cdk.setWidgetDimension(
+          box_width = Slithernix::Cdk.set_widget_dimension(
             parent_width,
             @width,
             0,

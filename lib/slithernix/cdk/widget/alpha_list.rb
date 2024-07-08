@@ -28,7 +28,7 @@ module Slithernix
 
           # If the height is a negative value, the height will be ROWS-height,
           # otherwise the height will be the given height.
-          box_height = Slithernix::Cdk.setWidgetDimension(
+          box_height = Slithernix::Cdk.set_widget_dimension(
             parent_height,
             height,
             0,
@@ -36,7 +36,7 @@ module Slithernix
 
           # If the width is a negative value, the width will be COLS-width,
           # otherwise the width will be the given width.
-          box_width = Slithernix::Cdk.setWidgetDimension(
+          box_width = Slithernix::Cdk.set_widget_dimension(
             parent_width,
             width,
             0,
@@ -45,7 +45,7 @@ module Slithernix
           # Translate the label string to a chtype array
           if label&.size&.positive?
             lentmp = []
-            Slithernix::Cdk.char2Chtype(label, lentmp, [])
+            Slithernix::Cdk.char_to_chtype(label, lentmp, [])
             label_len = lentmp[0]
           end
 
@@ -131,12 +131,12 @@ module Slithernix
               alphalist.inject_scroller(key)
 
               # Set the value in the entry field.
-              current = Slithernix::Cdk.chtype2Char(scrollp.item[scrollp.current_item])
+              current = Slithernix::Cdk.chtype_string_to_unformatted_string(scrollp.item[scrollp.current_item])
               entry.setValue(current)
               entry.draw(entry.box)
               return true
             end
-            Slithernix::Cdk.Beep
+            Slithernix::Cdk.beep
             false
           end
 
@@ -146,12 +146,12 @@ module Slithernix
             alt_words = []
 
             if entry.info.empty?
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
               return true
             end
 
             # Look for a unique word match.
-            index = Slithernix::Cdk.searchList(
+            index = Slithernix::Cdk.search_list(
               alphalist.list,
               alphalist.list.size,
               entry.info,
@@ -159,7 +159,7 @@ module Slithernix
 
             # if the index is less than zero, return we didn't find a match
             if index.negative?
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
               return true
             end
 
@@ -213,8 +213,8 @@ module Slithernix
                 # Destroy the scrolling list.
                 scrollp.destroy
 
-                # Beep at the user.
-                Slithernix::Cdk.Beep
+                # beep at the user.
+                Slithernix::Cdk.beep
 
                 # Redraw the alphalist and return.
                 alphalist.draw(alphalist.box)
@@ -251,7 +251,7 @@ module Slithernix
 
             if alphalist.does_bind_exist?(:AlphaList, input)
               result = 1 # Don't try to use this key in editing
-            elsif (Slithernix::Cdk.isChar(input) &&
+            elsif (Slithernix::Cdk.is_char?(input) &&
                 input.chr.match(/^[[:alnum:][:punct:]]$/)) ||
                   [Curses::KEY_BACKSPACE, Curses::KEY_DC].include?(input)
               index = 0
@@ -268,13 +268,13 @@ module Slithernix
 
               if pattern.empty?
                 empty = true
-              elsif (index = Slithernix::Cdk.searchList(alphalist.list,
-                                                        alphalist.list.size, pattern)) >= 0
+              elsif (index = Slithernix::Cdk.search_list(alphalist.list,
+                                                         alphalist.list.size, pattern)) >= 0
                 # XXX: original uses n scroll downs/ups for <10 positions change
                 scrollp.setPosition(index)
                 alphalist.draw_scroller
               else
-                Slithernix::Cdk.Beep
+                Slithernix::Cdk.beep
                 result = 0
               end
             end
@@ -369,8 +369,8 @@ module Slithernix
           @scroll_field.erase
           @entry_field.erase
 
-          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
-          Slithernix::Cdk.eraseCursesWindow(@win)
+          Slithernix::Cdk.erase_curses_window(@shadow_win)
+          Slithernix::Cdk.erase_curses_window(@win)
         end
 
         # This moves the alphalist field to the given location.
@@ -573,8 +573,8 @@ module Slithernix
           @scroll_field.destroy
 
           # Free up the window pointers.
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@win)
 
           # Unregister the widget.
           Slithernix::Cdk::Screen.unregister(:AlphaList, self)

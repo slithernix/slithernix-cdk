@@ -28,7 +28,7 @@ module Slithernix
           # Translate the label string to a chtype array
           if label&.size&.positive?
             label_len = []
-            @label = Slithernix::Cdk.char2Chtype(label, label_len, [])
+            @label = Slithernix::Cdk.char_to_chtype(label, label_len, [])
             @label_len = label_len[0]
           end
 
@@ -199,7 +199,7 @@ module Slithernix
                 @screen.erase
                 @screen.refresh
               else
-                Slithernix::Cdk.Beep
+                Slithernix::Cdk.beep
               end
             end
 
@@ -285,10 +285,10 @@ module Slithernix
         def erase
           return unless is_valid_widget?
 
-          Slithernix::Cdk.eraseCursesWindow(@field_win)
-          Slithernix::Cdk.eraseCursesWindow(@label_win)
-          Slithernix::Cdk.eraseCursesWindow(@win)
-          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
+          Slithernix::Cdk.erase_curses_window(@field_win)
+          Slithernix::Cdk.erase_curses_window(@label_win)
+          Slithernix::Cdk.erase_curses_window(@win)
+          Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
 
         def destroyInfo
@@ -302,10 +302,10 @@ module Slithernix
           destroyInfo
 
           # Delete the windows
-          Slithernix::Cdk.deleteCursesWindow(@field_win)
-          Slithernix::Cdk.deleteCursesWindow(@label_win)
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@field_win)
+          Slithernix::Cdk.delete_curses_window(@label_win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@win)
 
           # Clean the key bindings.
           clean_bindings(:ItemList)
@@ -398,7 +398,7 @@ module Slithernix
               # Copy the item to the list.
               lentmp = []
               postmp = []
-              new_items << Slithernix::Cdk.char2Chtype(
+              new_items << Slithernix::Cdk.char_to_chtype(
                 item[x],
                 lentmp,
                 postmp
@@ -412,7 +412,7 @@ module Slithernix
               field_width = [field_width, new_len[x]].max
 
               # Now we need to justify the strings.
-              new_pos[x] = Slithernix::Cdk.justifyString(
+              new_pos[x] = Slithernix::Cdk.justify_string(
                 field_width + 1,
                 new_len[x],
                 new_pos[x],

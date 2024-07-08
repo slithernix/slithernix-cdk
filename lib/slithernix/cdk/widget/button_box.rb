@@ -33,20 +33,20 @@ module Slithernix
 
           # If the height is a negative value, the height will be
           # ROWS-height, otherwise the height will be the given height.
-          box_height = Slithernix::Cdk.setWidgetDimension(parent_height,
-                                                          height, rows + 1)
+          box_height = Slithernix::Cdk.set_widget_dimension(parent_height,
+                                                            height, rows + 1)
 
           # If the width is a negative value, the width will be
           # COLS-width, otherwise the width will be the given width.
-          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width,
-                                                         0)
+          box_width = Slithernix::Cdk.set_widget_dimension(parent_width, width,
+                                                           0)
 
           box_width = set_title(title, box_width)
 
           # Translate the buttons string to a chtype array
           (0...button_count).each do |x|
             button_len = []
-            @button << Slithernix::Cdk.char2Chtype(buttons[x], button_len, [])
+            @button << Slithernix::Cdk.char_to_chtype(buttons[x], button_len, [])
             @button_len << button_len[0]
           end
 
@@ -321,16 +321,16 @@ module Slithernix
         def erase
           return unless is_valid_widget?
 
-          Slithernix::Cdk.eraseCursesWindow(@win)
-          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
+          Slithernix::Cdk.erase_curses_window(@win)
+          Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
 
         # This destroys the widget
         def destroy
           clean_title
 
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@win)
 
           clean_bindings(:ButtonBox)
 

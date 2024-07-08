@@ -74,7 +74,7 @@ class SubwindowExample < CLIExample
     # Clean up.
     dow_list.destroy
     title.destroy
-    Slithernix::Cdk.eraseCursesWindow(sub_window)
+    Slithernix::Cdk.erase_curses_window(sub_window)
     cdkscreen.destroy
     Slithernix::Cdk::Screen.end_cdk
 

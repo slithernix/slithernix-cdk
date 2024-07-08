@@ -83,7 +83,7 @@ module Slithernix
             end
             rowtitle_len = []
             rowtitle_pos = []
-            @rowtitle[x] = Slithernix::Cdk.char2Chtype(
+            @rowtitle[x] = Slithernix::Cdk.char_to_chtype(
               (rowtitles[x] || ''),
               rowtitle_len,
               rowtitle_pos,
@@ -98,7 +98,7 @@ module Slithernix
 
             # We need to rejustify the row title cell info.
             (1..rows).each do |x|
-              @rowtitle_pos[x] = Slithernix::Cdk.justifyString(
+              @rowtitle_pos[x] = Slithernix::Cdk.justify_string(
                 @maxrt,
                 @rowtitle_len[x],
                 @rowtitle_pos[x],
@@ -159,10 +159,10 @@ module Slithernix
             end
             coltitle_len = []
             coltitle_pos = []
-            @coltitle[x] = Slithernix::Cdk.char2Chtype(coltitles[x] || '',
-                                                       coltitle_len, coltitle_pos)
+            @coltitle[x] = Slithernix::Cdk.char_to_chtype(coltitles[x] || '',
+                                                          coltitle_len, coltitle_pos)
             @coltitle_len[x] = coltitle_len[0]
-            @coltitle_pos[x] = @border_size + Slithernix::Cdk.justifyString(
+            @coltitle_pos[x] = @border_size + Slithernix::Cdk.justify_string(
               colwidths[x],
               @coltitle_len[x],
               coltitle_pos[0],
@@ -251,9 +251,9 @@ module Slithernix
             charcount = matrix.info[matrix.row][matrix.col].size
 
             if plainchar == Curses::Error
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             elsif charcount == matrix.colwidths[matrix.col]
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             else
               matrix.CurMatrixCell.move(
                 1,
@@ -372,7 +372,7 @@ module Slithernix
               when Curses::KEY_END
               when Curses::KEY_BACKSPACE, Curses::KEY_DC
                 if @colvalues[@col] == :VIEWONLY || charcount <= 0
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 else
                   charcount -= 1
                   self.CurMatrixCell.mvwdelch(1, charcount + 1)
@@ -395,7 +395,7 @@ module Slithernix
                   elsif @row == @rows
                     # We are at the far right column, we need to shift
                     # down one row, if we can.
-                    Slithernix::Cdk.Beep
+                    Slithernix::Cdk.beep
                   else
                     # Set up the columns info.
                     @col = 1
@@ -432,7 +432,7 @@ module Slithernix
                     moved_cell = true
                   elsif @row == 1
                     # Shift up one line if we can...
-                    Slithernix::Cdk.Beep
+                    Slithernix::Cdk.beep
                   else
                     # Set up the columns info.
                     @col = @cols
@@ -459,7 +459,7 @@ module Slithernix
               when Curses::KEY_UP
                 if @crow == 1
                   if @trow == 1
-                    Slithernix::Cdk.Beep
+                    Slithernix::Cdk.beep
                   else
                     @trow -= 1
                     @row -= 1
@@ -477,7 +477,7 @@ module Slithernix
               when Curses::KEY_DOWN
                 if @crow == @vrows
                   if @trow + @vrows - 1 == @rows
-                    Slithernix::Cdk.Beep
+                    Slithernix::Cdk.beep
                   else
                     @trow += 1
                     @row += 1
@@ -501,10 +501,10 @@ module Slithernix
                     refresh_cells = true
                     moved_cell = true
                   else
-                    Slithernix::Cdk.Beep
+                    Slithernix::Cdk.beep
                   end
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               when Curses::KEY_PPAGE
                 if @rows > @vrows
@@ -515,10 +515,10 @@ module Slithernix
                     refresh_cells = true
                     moved_cell = true
                   else
-                    Slithernix::Cdk.Beep
+                    Slithernix::Cdk.beep
                   end
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               when Slithernix::Cdk.CTRL('G')
                 jumpToCell(-1, -1)
@@ -526,7 +526,7 @@ module Slithernix
               when Slithernix::Cdk::PASTE
                 if @@g_paste_buffer.empty? ||
                    @@g_paste_buffer.size > @colwidths[@ccol]
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 else
                   self.CurMatrixInfo = @@g_paste_buffer.clone
                   drawCurCell
@@ -641,7 +641,7 @@ module Slithernix
           # If the column is only one char.
           (1..@colwidths[@ccol]).each do |x|
             ch = if x <= infolen && !Slithernix::Cdk::Display.is_hidden_display_type?(disptype)
-                 then Slithernix::Cdk.CharOf(@info[@row][@col][x - 1])
+                 then Slithernix::Cdk.chtype_to_char(@info[@row][@col][x - 1])
                  else
                    @filler
                  end
@@ -685,7 +685,7 @@ module Slithernix
           # Draw in the cell info.
           (1..@colwidths[col]).each do |x|
             ch = if x <= infolen && !Slithernix::Cdk::Display.is_hidden_display_type?(disptype)
-                 then Slithernix::Cdk.CharOf(@info[vrow][vcol][x - 1]).ord | highlight
+                 then Slithernix::Cdk.chtype_to_char(@info[vrow][vcol][x - 1]).ord | highlight
                  else
                    @filler
                  end
@@ -872,21 +872,21 @@ module Slithernix
           clean_title
 
           # Clear the matrix windows.
-          Slithernix::Cdk.deleteCursesWindow(@cell[0][0])
+          Slithernix::Cdk.delete_curses_window(@cell[0][0])
           (1..@vrows).each do |x|
-            Slithernix::Cdk.deleteCursesWindow(@cell[x][0])
+            Slithernix::Cdk.delete_curses_window(@cell[x][0])
           end
           (1..@vcols).each do |x|
-            Slithernix::Cdk.deleteCursesWindow(@cell[0][x])
+            Slithernix::Cdk.delete_curses_window(@cell[0][x])
           end
           (1..@vrows).each do |x|
             (1..@vcols).each do |y|
-              Slithernix::Cdk.deleteCursesWindow(@cell[x][y])
+              Slithernix::Cdk.delete_curses_window(@cell[x][y])
             end
           end
 
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@win)
 
           # Clean the key bindings.
           clean_bindings(:Matrix)
@@ -900,20 +900,20 @@ module Slithernix
           return unless is_valid_widget?
 
           # Clear the matrix cells.
-          Slithernix::Cdk.eraseCursesWindow(@cell[0][0])
+          Slithernix::Cdk.erase_curses_window(@cell[0][0])
           (1..@vrows).each do |x|
-            Slithernix::Cdk.eraseCursesWindow(@cell[x][0])
+            Slithernix::Cdk.erase_curses_window(@cell[x][0])
           end
           (1..@vcols).each do |x|
-            Slithernix::Cdk.eraseCursesWindow(@cell[0][x])
+            Slithernix::Cdk.erase_curses_window(@cell[0][x])
           end
           (1..@vrows).each do |x|
             (1..@vcols).each do |y|
-              Slithernix::Cdk.eraseCursesWindow(@cell[x][y])
+              Slithernix::Cdk.erase_curses_window(@cell[x][y])
             end
           end
-          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
-          Slithernix::Cdk.eraseCursesWindow(@win)
+          Slithernix::Cdk.erase_curses_window(@shadow_win)
+          Slithernix::Cdk.erase_curses_window(@win)
         end
 
         # Set the callback function

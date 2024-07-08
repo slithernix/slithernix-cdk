@@ -27,13 +27,13 @@ module Slithernix
 
           # If the height is a negative value, the height will be
           # ROWS-height, otherwise the height will be the given height.
-          box_height = Slithernix::Cdk.setWidgetDimension(parent_height,
-                                                          height, 0)
+          box_height = Slithernix::Cdk.set_widget_dimension(parent_height,
+                                                            height, 0)
 
           # If the width is a negative value, the width will be
           # COLS-width, otherwise the widget will be the given width.
-          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width,
-                                                         0)
+          box_width = Slithernix::Cdk.set_widget_dimension(parent_width, width,
+                                                           0)
           box_width = set_title(title, box_width)
 
           # Set the box height.
@@ -123,9 +123,9 @@ module Slithernix
         def setupLine(list, x)
           list_len = []
           list_pos = []
-          @list[x] = Slithernix::Cdk.char2Chtype(list, list_len, list_pos)
+          @list[x] = Slithernix::Cdk.char_to_chtype(list, list_len, list_pos)
           @list_len[x] = list_len[0]
-          @list_pos[x] = Slithernix::Cdk.justifyString(
+          @list_pos[x] = Slithernix::Cdk.justify_string(
             @box_width,
             list_len[0],
             list_pos[0],
@@ -360,29 +360,29 @@ module Slithernix
                 if @current_top.positive?
                   @current_top -= 1
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               when Curses::KEY_DOWN
                 if @current_top >= 0 && @current_top < @max_top_line
                   @current_top += 1
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               when Curses::KEY_RIGHT
                 if @left_char < @max_left_char
                   @left_char += 1
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               when Curses::KEY_LEFT
                 if @left_char.positive?
                   @left_char -= 1
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               when Curses::KEY_PPAGE
                 if @current_top.zero?
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 else
                   @current_top = if @current_top >= @view_size
                                    @current_top - (@view_size - 1)
@@ -392,7 +392,7 @@ module Slithernix
                 end
               when Curses::KEY_NPAGE
                 if @current_top == @max_top_line
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 else
                   @current_top = if @current_top + @view_size < @max_top_line
                                    @current_top + (@view_size - 1)
@@ -514,9 +514,9 @@ module Slithernix
           clean_title
 
           # Delete the windows.
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
-          Slithernix::Cdk.deleteCursesWindow(@field_win)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@field_win)
+          Slithernix::Cdk.delete_curses_window(@win)
 
           # Clean the key bindings.
           clean_bindings(:SWindow)
@@ -529,8 +529,8 @@ module Slithernix
         def erase
           return unless is_valid_widget?
 
-          Slithernix::Cdk.eraseCursesWindow(@win)
-          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
+          Slithernix::Cdk.erase_curses_window(@win)
+          Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
 
         # This execs a command and redirects the output to the scrolling window.
@@ -777,7 +777,7 @@ module Slithernix
 
           # Start writing out the file.
           @list.each do |item|
-            raw_line = Slithernix::Cdk.chtype2Char(item)
+            raw_line = Slithernix::Cdk.chtype_string_to_unformatted_string(item)
             output_file << ("%s\n" % raw_line)
           end
 

@@ -24,7 +24,7 @@ module Slithernix
 
           # If the height is a negative value the height will be ROWS-height,
           # otherwise the height will be the given height
-          box_height = Slithernix::Cdk.setWidgetDimension(
+          box_height = Slithernix::Cdk.set_widget_dimension(
             parent_height,
             height,
             0,
@@ -32,7 +32,7 @@ module Slithernix
 
           # If the width is a negative value, the width will be COLS-width,
           # otherwise the width will be the given width.
-          box_width = Slithernix::Cdk.setWidgetDimension(
+          box_width = Slithernix::Cdk.set_widget_dimension(
             parent_width,
             width,
             0,
@@ -92,7 +92,7 @@ module Slithernix
 
           # Create the entry field in the selector
           label_len = []
-          Slithernix::Cdk.char2Chtype(label, label_len, [])
+          Slithernix::Cdk.char_to_chtype(label, label_len, [])
           label_len = label_len[0]
 
           temp_width = if Slithernix::Cdk::Widget::FSelect.isFullWidth(width)
@@ -195,12 +195,12 @@ module Slithernix
             scrollp = fselect.scroll_field
             entry = fselect.entry_field
             filename = entry.info.clone
-            mydirname = Slithernix::Cdk.dirName(filename)
+            mydirname = Slithernix::Cdk.dirname(filename)
             current_index = 0
 
             # Make sure the filename is not nil/empty.
             if filename.nil? || filename.empty?
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
               return true
             end
 
@@ -243,12 +243,12 @@ module Slithernix
             end
 
             # Look for a unique filename match.
-            index = Slithernix::Cdk.searchList(list, fselect.file_counter,
-                                               filename)
+            index = Slithernix::Cdk.search_list(list, fselect.file_counter,
+                                                filename)
 
             # If the index is less than zero, return we didn't find a match.
             if index.negative?
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             else
               # Move to the current item in the scrolling list.
               # difference = Index - scrollp->currentItem;
@@ -299,7 +299,7 @@ module Slithernix
                   end
 
                   if secondary_matches != matches
-                    Slithernix::Cdk.Beep
+                    Slithernix::Cdk.beep
                     break
                   end
 
@@ -329,8 +329,8 @@ module Slithernix
               fselect.inject_scroller(key)
 
               # Get the currently highlighted filename.
-              current = Slithernix::Cdk.chtype2Char(scrollp.item[scrollp.current_item])
-              # current = CDK.chtype2String(scrollp.item[scrollp.current_item])
+              current = Slithernix::Cdk.chtype_string_to_unformatted_string(scrollp.item[scrollp.current_item])
+              # current = CDK.chtype_string_to_formatted_string(scrollp.item[scrollp.current_item])
               current = current[0...-1]
 
               temp = Slithernix::Cdk::Widget::FSelect.make_pathname(
@@ -343,7 +343,7 @@ module Slithernix
 
               return true
             end
-            Slithernix::Cdk.Beep
+            Slithernix::Cdk.beep
             false
           end
 
@@ -400,7 +400,7 @@ module Slithernix
 
           @scroll_field.erase
           @entry_field.erase
-          Slithernix::Cdk.eraseCursesWindow(@win)
+          Slithernix::Cdk.erase_curses_window(@win)
         end
 
         # This moves the fselect field to the given location.
@@ -555,7 +555,7 @@ module Slithernix
 
             # Change directories.
             if Dir.chdir(new_directory) != 0
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
 
               # Could not get into the directory, pop up a little message.
               mesg = [
@@ -590,7 +590,7 @@ module Slithernix
 
           # Get the directory contents.
           unless setDirContents
-            Slithernix::Cdk.Beep
+            Slithernix::Cdk.beep
             return
           end
 
@@ -603,7 +603,7 @@ module Slithernix
           dir_list = []
 
           # Get the directory contents
-          file_count = Slithernix::Cdk.getDirectoryContents(@pwd, dir_list)
+          file_count = Slithernix::Cdk.get_directory_contents(@pwd, dir_list)
           if file_count <= 0
             # We couldn't read the directory. Return.
             return false
@@ -840,8 +840,8 @@ module Slithernix
           @entry_field.destroy
 
           # Free up the windows
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@win)
 
           # Clean the key bindings.
           # Unregister the widget.
@@ -860,8 +860,8 @@ module Slithernix
         # Return the plain string that corresponds to an item in dir_contents
         def contentToPath(content)
           # XXX direct translation of original but might be redundant
-          temp_chtype = Slithernix::Cdk.char2Chtype(content, [], [])
-          temp_char = Slithernix::Cdk.chtype2Char(temp_chtype)
+          temp_chtype = Slithernix::Cdk.char_to_chtype(content, [], [])
+          temp_char = Slithernix::Cdk.chtype_string_to_unformatted_string(temp_chtype)
           temp_char = temp_char
 
           # Create the pathname.

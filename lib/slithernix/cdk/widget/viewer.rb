@@ -33,13 +33,13 @@ module Slithernix
 
                                                set_box(box)
 
-          box_height = Slithernix::Cdk.setWidgetDimension(
+          box_height = Slithernix::Cdk.set_widget_dimension(
             parent_height,
             height,
             0
           )
 
-          box_width = Slithernix::Cdk.setWidgetDimension(
+          box_width = Slithernix::Cdk.set_widget_dimension(
             parent_width,
             width,
             0
@@ -76,7 +76,7 @@ module Slithernix
           if button_count.positive?
             (0...button_count).each do |x|
               button_len = []
-              @button << Slithernix::Cdk.char2Chtype(
+              @button << Slithernix::Cdk.char_to_chtype(
                 buttons[x],
                 button_len,
                 [],
@@ -164,9 +164,9 @@ module Slithernix
           if interpret
             list_len = []
             list_pos = []
-            @list[x] = Slithernix::Cdk.char2Chtype(list, list_len, list_pos)
+            @list[x] = Slithernix::Cdk.char_to_chtype(list, list_len, list_pos)
             @list_len[x] = list_len[0]
-            @list_pos[x] = Slithernix::Cdk.justifyString(
+            @list_pos[x] = Slithernix::Cdk.justify_string(
               @box_width,
               @list_len[x],
               list_pos[0],
@@ -184,8 +184,8 @@ module Slithernix
                   len += 1
                   break unless (len & 7) != 0
                 end
-              elsif Slithernix::Cdk.CharOf(list[y].ord).match(/^[[:print:]]$/)
-                t << Slithernix::Cdk.CharOf(list[y].ord)
+              elsif Slithernix::Cdk.chtype_to_char(list[y].ord).match(/^[[:print:]]$/)
+                t << Slithernix::Cdk.chtype_to_char(list[y].ord)
                 len += 1
               else
                 t << Curses.unctrl(list[y].ord)
@@ -215,10 +215,10 @@ module Slithernix
           if list.size.positive? && interpret
             (0...list_size).each do |x|
               filename = String.new
-              next unless Slithernix::Cdk.checkForLink(list[x], filename) == 1
+              next unless Slithernix::Cdk.check_for_link(list[x], filename) == 1
 
               file_contents = []
-              file_len = Slithernix::Cdk.readFile(filename, file_contents)
+              file_len = Slithernix::Cdk.read_file(filename, file_contents)
               viewer_size += (file_len - 1) if file_len >= 0
             end
           end
@@ -243,13 +243,13 @@ module Slithernix
             else
               # Check if we have a file link in this line.
               filename = []
-              if Slithernix::Cdk.checkForLink(list[x], filename) == 1
+              if Slithernix::Cdk.check_for_link(list[x], filename) == 1
                 # We have a link, open the file.
                 file_contents = []
                 file_len = 0
 
                 # Open the file and put it into the viewer
-                file_len = Slithernix::Cdk.readFile(filename, file_contents)
+                file_len = Slithernix::Cdk.read_file(filename, file_contents)
                 if file_len == -1
                   color_msg = '<C></16>Link Failed: Could not open the file %s'
                   bw_msg = '<C></K>Link Failed: Could not open the file %s'
@@ -398,28 +398,28 @@ module Slithernix
                   @current_top -= 1
                   refresh = true
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               when Curses::KEY_DOWN
                 if @current_top < @max_top_line
                   @current_top += 1
                   refresh = true
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               when Curses::KEY_RIGHT
                 if @left_char < @max_left_char
                   @left_char += 1
                   refresh = true
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               when Curses::KEY_LEFT
                 if @left_char.positive?
                   @left_char -= 1
                   refresh = true
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               when Curses::KEY_PPAGE
                 if @current_top.positive?
@@ -430,7 +430,7 @@ module Slithernix
                                  end
                   refresh = true
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               when Curses::KEY_NPAGE
                 if @current_top < @max_top_line
@@ -441,7 +441,7 @@ module Slithernix
                                  end
                   refresh = true
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               when Curses::KEY_HOME
                 @left_char = 0
@@ -461,7 +461,7 @@ module Slithernix
                   @current_top = x
                   refresh = true
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               when 'l'
                 x = @current_top / 2
@@ -469,7 +469,7 @@ module Slithernix
                   @current_top = x
                   refresh = true
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               when '?'
                 @search_direction = Slithernix::Cdk::Widget::Viewer::UP
@@ -514,7 +514,7 @@ module Slithernix
                 @screen.erase
                 @screen.refresh
               else
-                Slithernix::Cdk.Beep
+                Slithernix::Cdk.beep
               end
             end
 
@@ -582,10 +582,10 @@ module Slithernix
                 pos = 0
                 y = 0
                 while y < @list[x].size
-                  plain_char = Slithernix::Cdk.CharOf(@list[x][y])
+                  plain_char = Slithernix::Cdk.chtype_to_char(@list[x][y])
 
                   pos += 1
-                  if @CDK.CharOf(pattern[pos - 1]) != plain_char
+                  if @CDK.chtype_to_char(pattern[pos - 1]) != plain_char
                     y -= (pos - 1)
                     pos = 0
                   elsif pos == pattern.size
@@ -605,10 +605,10 @@ module Slithernix
                 y = 0
                 pos = 0
                 while y < @list[x].size
-                  plain_char = Slithernix::Cdk.CharOf(@list[x][y])
+                  plain_char = Slithernix::Cdk.chtype_to_char(@list[x][y])
 
                   pos += 1
-                  if Slithernix::Cdk.CharOf(pattern[pos - 1]) != plain_char
+                  if Slithernix::Cdk.chtype_to_char(pattern[pos - 1]) != plain_char
                     y -= (pos - 1)
                     pos = 0
                   elsif pos == pattern.size
@@ -708,7 +708,7 @@ module Slithernix
           # Highlight the current button.
           (0...@button_len[@current_button]).each do |x|
             # Strip the character of any extra attributes.
-            character = Slithernix::Cdk.CharOf(@button[@current_button][x])
+            character = Slithernix::Cdk.chtype_to_char(@button[@current_button][x])
 
             # Add the character into the window.
             @win.mvwaddch(
@@ -740,8 +740,8 @@ module Slithernix
           clean_title
 
           # Clean up the windows.
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@win)
 
           # Clean the key bindings.
           clean_bindings(:Viewer)
@@ -754,8 +754,8 @@ module Slithernix
         def erase
           return unless is_valid_widget?
 
-          Slithernix::Cdk.eraseCursesWindow(@win)
-          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
+          Slithernix::Cdk.erase_curses_window(@win)
+          Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
 
         # This draws the viewer info lines.

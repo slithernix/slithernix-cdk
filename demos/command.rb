@@ -81,7 +81,7 @@ class Command
 
     # Convert the prompt to a chtype and determine its length
     prompt_len = []
-    Slithernix::Cdk.char2Chtype(
+    Slithernix::Cdk.char_to_chtype(
       prompt,
       prompt_len,
       []
@@ -110,7 +110,7 @@ class Command
     history_up_cb = lambda do |_cdktype, entry, history, _key|
       # Make sure we don't go out of bounds
       if history.current.zero?
-        Slithernix::Cdk.Beep
+        Slithernix::Cdk.beep
         return false
       end
 
@@ -126,7 +126,7 @@ class Command
     history_down_cb = lambda do |_cdktype, entry, history, _key|
       # Make sure we don't go out of bounds
       if history.current == @count
-        Slithernix::Cdk.Beep
+        Slithernix::Cdk.beep
         return false
       end
 

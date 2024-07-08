@@ -22,7 +22,7 @@ module Slithernix
 
           # If the field_width is a negative value, the field_width will be
           # COLS-field_width, otherwise the field_width will be the given width.
-          field_width = Slithernix::Cdk.setWidgetDimension(
+          field_width = Slithernix::Cdk.set_widget_dimension(
             parent_width,
             field_width,
             0,
@@ -30,7 +30,7 @@ module Slithernix
 
           # If the field_rows is a negative value, the field_rows will be
           # ROWS-field_rows, otherwise the field_rows will be the given rows.
-          field_rows = Slithernix::Cdk.setWidgetDimension(
+          field_rows = Slithernix::Cdk.set_widget_dimension(
             parent_width,
             field_rows,
             0,
@@ -46,7 +46,7 @@ module Slithernix
           # We need to translate the string label to a chtype array
           if label.size.positive?
             label_len = []
-            @label = Slithernix::Cdk.char2Chtype(label, label_len, [])
+            @label = Slithernix::Cdk.char_to_chtype(label, label_len, [])
             @label_len = label_len[0]
           end
           box_width = @label_len + field_width + 2
@@ -144,7 +144,7 @@ module Slithernix
             )
 
             if newchar == Curses::Error
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             else
               mentry.info = [
                 mentry.info[0...cursor_pos],
@@ -247,7 +247,7 @@ module Slithernix
           end
 
           unless moved[0] && redraw[0]
-            Slithernix::Cdk.Beep
+            Slithernix::Cdk.beep
             result = false
           end
 
@@ -325,7 +325,7 @@ module Slithernix
                 else
                   moved = setCurPos(@current_row + 1, 0)
                 end
-                Slithernix::Cdk.Beep unless moved && redraw
+                Slithernix::Cdk.beep unless moved && redraw
               when Curses::KEY_DOWN
                 if @current_row != @rows - 1
                   if getCursorPos + @field_width + 1 <= @info.size
@@ -336,26 +336,26 @@ module Slithernix
                     redraw = setTopRow(@top_row + 1)
                   end
                 end
-                Slithernix::Cdk.Beep unless moved && redraw
+                Slithernix::Cdk.beep unless moved && redraw
               when Curses::KEY_UP
                 if @current_row != 0
                   moved = setCurPos(@current_row - 1, @current_col)
                 elsif @top_row != 0
                   redraw = setTopRow(@top_row - 1)
                 end
-                Slithernix::Cdk.Beep unless moved && redraw
+                Slithernix::Cdk.beep unless moved && redraw
               when Curses::KEY_BACKSPACE, Curses::KEY_DC
                 if @disp_type == :VIEWONLY
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 elsif @info.empty?
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 elsif input == Curses::KEY_DC
                   cursor_pos = getCursorPos
                   if cursor_pos < @info.size
                     @info = @info[0...cursor_pos] + @info[cursor_pos + 1..]
                     drawField
                   else
-                    Slithernix::Cdk.Beep
+                    Slithernix::Cdk.beep
                   end
                 else
                   mtmp = [moved]
@@ -369,13 +369,13 @@ module Slithernix
                       @info = @info[0...cursor_pos] + @info[cursor_pos + 1..]
                       drawField
                     else
-                      Slithernix::Cdk.Beep
+                      Slithernix::Cdk.beep
                     end
                   end
                 end
               when Slithernix::Cdk::TRANSPOSE
                 if cursor_pos >= @info.size - 1
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 else
                   holder = @info[cursor_pos]
                   @info[cursor_pos] = @info[cursor_pos + 1]
@@ -389,7 +389,7 @@ module Slithernix
                 end
               when Slithernix::Cdk::CUT
                 if @info.empty?
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 else
                   @@g_paste_buffer = @info.clone
                   clean
@@ -397,20 +397,20 @@ module Slithernix
                 end
               when Slithernix::Cdk::COPY
                 if @info.empty?
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 else
                   @@g_paste_buffer = @info.clone
                 end
               when Slithernix::Cdk::PASTE
                 if @@g_paste_buffer.empty?
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 else
                   setValue(@@g_paste_buffer)
                   draw(@box)
                 end
               when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
                 if @info.size < @min + 1
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 else
                   set_exit_type(input)
                   ret = @info
@@ -427,7 +427,7 @@ module Slithernix
                 @screen.refresh
               else
                 if @disp_type == :VIEWONLY || @info.size >= @total_width
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 else
                   @callbackfn.call(self, input)
                 end
@@ -526,10 +526,10 @@ module Slithernix
         def erase
           return unless is_valid_widget?
 
-          Slithernix::Cdk.eraseCursesWindow(@field_win)
-          Slithernix::Cdk.eraseCursesWindow(@label_win)
-          Slithernix::Cdk.eraseCursesWindow(@win)
-          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
+          Slithernix::Cdk.erase_curses_window(@field_win)
+          Slithernix::Cdk.erase_curses_window(@label_win)
+          Slithernix::Cdk.erase_curses_window(@win)
+          Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
 
         # This function destroys a multiple line entry field widget.
@@ -537,10 +537,10 @@ module Slithernix
           clean_title
 
           # Clean up the windows.
-          Slithernix::Cdk.deleteCursesWindow(@field_win)
-          Slithernix::Cdk.deleteCursesWindow(@label_win)
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@field_win)
+          Slithernix::Cdk.delete_curses_window(@label_win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@win)
 
           # Clean the key bindings.
           clean_bindings(:MEntry)

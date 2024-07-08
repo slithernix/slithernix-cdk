@@ -199,14 +199,14 @@ class AlphalistExample < CLIExample
     end
 
     alpha_list.bind(:AlphaList, '?', do_help, nil)
-    alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(1), do_help, nil)
-    alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(2), do_delete,
+    alpha_list.bind(:AlphaList, Slithernix::Cdk::key_f(1), do_help, nil)
+    alpha_list.bind(:AlphaList, Slithernix::Cdk::key_f(2), do_delete,
                     alpha_list)
-    alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(3), do_delete1,
+    alpha_list.bind(:AlphaList, Slithernix::Cdk::key_f(3), do_delete1,
                     alpha_list)
-    alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(4), do_reload,
+    alpha_list.bind(:AlphaList, Slithernix::Cdk::key_f(4), do_reload,
                     alpha_list)
-    alpha_list.bind(:AlphaList, Slithernix::Cdk::KEY_F(5), do_undo, alpha_list)
+    alpha_list.bind(:AlphaList, Slithernix::Cdk::key_f(5), do_undo, alpha_list)
 
     alpha_list.set_contents(user_list, user_size) if params.c
 

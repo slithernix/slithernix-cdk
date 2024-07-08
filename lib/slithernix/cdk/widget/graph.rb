@@ -12,10 +12,10 @@ module Slithernix
 
           set_box(false)
 
-          box_height = Slithernix::Cdk.setWidgetDimension(parent_height,
-                                                          height, 3)
-          box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width,
-                                                         0)
+          box_height = Slithernix::Cdk.set_widget_dimension(parent_height,
+                                                            height, 3)
+          box_width = Slithernix::Cdk.set_widget_dimension(parent_width, width,
+                                                           0)
           box_width = set_title(title, box_width)
           box_height += @title_lines
           box_width = [parent_width, box_width].min
@@ -52,21 +52,21 @@ module Slithernix
           xtitle_len = []
           xtitle_pos = []
           if xtitle&.size&.positive?
-            @xtitle = Slithernix::Cdk.char2Chtype(
+            @xtitle = Slithernix::Cdk.char_to_chtype(
               xtitle,
               xtitle_len,
               xtitle_pos,
             )
             @xtitle_len = xtitle_len[0]
           else
-            @xtitle = Slithernix::Cdk.char2Chtype(
+            @xtitle = Slithernix::Cdk.char_to_chtype(
               '<C></5>X Axis',
               xtitle_len,
               xtitle_pos,
             )
             @xtitle_len = title_len[0]
           end
-          @xtitle_pos = Slithernix::Cdk.justifyString(
+          @xtitle_pos = Slithernix::Cdk.justify_string(
             @box_height,
             @xtitle_len,
             xtitle_pos[0],
@@ -76,20 +76,20 @@ module Slithernix
           ytitle_len = []
           ytitle_pos = []
           @ytitle = if ytitle&.size&.positive?
-                      Slithernix::Cdk.char2Chtype(
+                      Slithernix::Cdk.char_to_chtype(
                         ytitle,
                         ytitle_len,
                         ytitle_pos,
                       )
                     else
-                      Slithernix::Cdk.char2Chtype(
+                      Slithernix::Cdk.char_to_chtype(
                         '<C></5>Y Axis',
                         ytitle_len,
                         ytitle_pos,
                       )
                     end
           @ytitle_len = ytitle_len[0]
-          @ytitle_pos = Slithernix::Cdk.justifyString(
+          @ytitle_pos = Slithernix::Cdk.justify_string(
             @box_width,
             @ytitle_len,
             ytitle_pos[0],
@@ -188,7 +188,7 @@ module Slithernix
         # Set the characters of the graph widget.
         def setCharacters(characters)
           char_count = []
-          new_tokens = Slithernix::Cdk.char2Chtype(characters, char_count, [])
+          new_tokens = Slithernix::Cdk.char_to_chtype(characters, char_count, [])
 
           return false if char_count[0] != @count
 
@@ -207,7 +207,7 @@ module Slithernix
 
           # Convert the string given to us
           char_count = []
-          new_tokens = Slithernix::Cdk.char2Chtype(character, char_count, [])
+          new_tokens = Slithernix::Cdk.char_to_chtype(character, char_count, [])
 
           # Check if the number of characters back is the same as the number
           # of elements in the list.
@@ -263,8 +263,8 @@ module Slithernix
           ydiff = current_y - ypos
 
           # Move the window to the new location.
-          Slithernix::Cdk.moveCursesWindow(@win, -xdiff, -ydiff)
-          Slithernix::Cdk.moveCursesWindow(@shadow_win, -xdiff, -ydiff)
+          Slithernix::Cdk.move_curses_window(@win, -xdiff, -ydiff)
+          Slithernix::Cdk.move_curses_window(@shadow_win, -xdiff, -ydiff)
 
           # Touch the windows so they 'move'.
           Slithernix::Cdk::Screen.refresh_window(@screen.window)
@@ -434,11 +434,11 @@ module Slithernix
           clean_title
           clean_bindings(:Graph)
           Slithernix::Cdk::Screen.unregister(:Graph, self)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@win)
         end
 
         def erase
-          Slithernix::Cdk.eraseCursesWindow(@win) if is_valid_widget?
+          Slithernix::Cdk.erase_curses_window(@win) if is_valid_widget?
         end
 
         def position

@@ -69,7 +69,7 @@ when :ESCAPE_HIT
     '<C>Press any key to continue.',
   ]
 when :NORMAL
-  the_item = Slithernix::Cdk.chtype2Char(color_list.item[selection])
+  the_item = Slithernix::Cdk.chtype_string_to_unformatted_string(color_list.item[selection])
   msg = [
     '<C>You selected the following color ',
     format('<C></B></%d>%.*s', selection + 1, 236, the_item),

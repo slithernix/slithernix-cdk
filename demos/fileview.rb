@@ -105,7 +105,7 @@ class FileView
 
     # Open the file and read the contents.
     info = []
-    lines = Slithernix::Cdk.readFile(filename, info)
+    lines = Slithernix::Cdk.read_file(filename, info)
     if lines == -1
       puts format('Could not open %s', filename)
       exit # EXIT_FAILURE

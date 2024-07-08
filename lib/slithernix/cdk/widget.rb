@@ -99,7 +99,7 @@ module Slithernix
 
         # Move the window to the new location.
         windows.each do |window|
-          Slithernix::Cdk.moveCursesWindow(window, -xdiff, -ydiff)
+          Slithernix::Cdk.move_curses_window(window, -xdiff, -ydiff)
         end
 
         subwidgets.each do |subwidget|
@@ -177,7 +177,7 @@ module Slithernix
         junk2 = []
 
         # Convert the value of the environment variable to a chtype
-        holder = Slithernix::Cdk.char2Chtype(color, junk1, junk2)
+        holder = Slithernix::Cdk.char_to_chtype(color, junk1, junk2)
 
         # Set the widget's background color
         self.SetBackAttrObj(holder[0])
@@ -194,7 +194,7 @@ module Slithernix
             temp.each do |line|
               len = []
               align = []
-              Slithernix::Cdk.char2Chtype(line, len, align)
+              Slithernix::Cdk.char_to_chtype(line, len, align)
               max_width = [len[0], max_width].max
             end
             box_width = [box_width, max_width + (2 * @border_size)].max
@@ -210,9 +210,9 @@ module Slithernix
           (0...@title_lines).each do |x|
             len_x = []
             pos_x = []
-            @title << Slithernix::Cdk.char2Chtype(temp[x], len_x, pos_x)
+            @title << Slithernix::Cdk.char_to_chtype(temp[x], len_x, pos_x)
             @title_len.concat(len_x)
-            @title_pos << Slithernix::Cdk.justifyString(
+            @title_pos << Slithernix::Cdk.justify_string(
               title_width,
               len_x[0],
               pos_x[0],
@@ -401,50 +401,50 @@ module Slithernix
             if win.begy > beg_y
               move(0, -1, true, true)
             else
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             end
           when Curses::KEY_DOWN, '2'
             if (win.begy + win.maxy) < end_y
               move(0, 1, true, true)
             else
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             end
           when Curses::KEY_LEFT, '4'
             if win.begx > beg_x
               move(-1, 0, true, true)
             else
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             end
           when Curses::KEY_RIGHT, '6'
             if (win.begx + win.maxx) < end_x
               move(1, 0, true, true)
             else
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             end
           when '7'
             if win.begy > beg_y && win.begx > beg_x
               move(-1, -1, true, true)
             else
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             end
           when '9'
             if (win.begx + win.maxx) < end_x && win.begy > beg_y
               move(1, -1, true, true)
             else
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             end
           when '1'
             if win.begx > beg_x && (win.begy + win.maxy) < end_y
               move(-1, 1, true, true)
             else
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             end
           when '3'
             if (win.begx + win.maxx) < end_x &&
                (win.begy + win.maxy) < end_y
               move(1, 1, true, true)
             else
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             end
           when '5'
             move(Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, false, true)
@@ -466,7 +466,7 @@ module Slithernix
           when Slithernix::Cdk::KEY_ESC
             move(orig_x, orig_y, false, true)
           else
-            Slithernix::Cdk.Beep
+            Slithernix::Cdk.beep
           end
         end
       end

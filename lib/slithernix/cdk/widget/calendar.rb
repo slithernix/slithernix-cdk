@@ -473,20 +473,20 @@ module Slithernix
         def erase
           return unless is_valid_widget?
 
-          Slithernix::Cdk.eraseCursesWindow(@label_win)
-          Slithernix::Cdk.eraseCursesWindow(@field_win)
-          Slithernix::Cdk.eraseCursesWindow(@win)
-          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
+          Slithernix::Cdk.erase_curses_window(@label_win)
+          Slithernix::Cdk.erase_curses_window(@field_win)
+          Slithernix::Cdk.erase_curses_window(@win)
+          Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
 
         # This destroys the calendar
         def destroy
           clean_title
 
-          Slithernix::Cdk.deleteCursesWindow(@label_win)
-          Slithernix::Cdk.deleteCursesWindow(@field_win)
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@label_win)
+          Slithernix::Cdk.delete_curses_window(@field_win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@win)
 
           # Clean the key bindings.
           clean_bindings(:Calendar)
@@ -598,7 +598,7 @@ module Slithernix
                   '<C></U>Error',
                   'Can not go past the year 1900'
                 ]
-                Slithernix::Cdk.Beep
+                Slithernix::Cdk.beep
                 @screen.popup_label(mesg, 2)
                 return
               end
@@ -656,7 +656,7 @@ module Slithernix
                 '<C></U>Error',
                 'Can not go past the year 1900',
               ]
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
               @screen.popup_label(mesg, 2)
               return
             else
@@ -714,7 +714,7 @@ module Slithernix
               '<C></U>Error',
               'Can not go past the year 1900',
             ]
-            Slithernix::Cdk.Beep
+            Slithernix::Cdk.beep
             @screen.popup_label(mesg, 2)
             return
           end

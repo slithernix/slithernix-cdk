@@ -97,8 +97,8 @@ class Viewer2Example < CLIExample
     v_title = format('<C></B/21>Filename:<!21></22>%20s<!22!B>',
                      params.filename)
 
-    selected = Slithernix::Cdk.viewFile(cdkscreen, v_title, params.filename,
-                                        button, 2)
+    selected = Slithernix::Cdk.view_file(cdkscreen, v_title, params.filename,
+                                         button, 2)
 
     # Destroy the file selector widget (do not need filename anymore)
     f_select&.destroy

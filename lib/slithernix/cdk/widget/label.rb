@@ -30,7 +30,7 @@ module Slithernix
             # Translate the string to a chtype array
             info_len = []
             info_pos = []
-            @info << Slithernix::Cdk.char2Chtype(mesg[x], info_len, info_pos)
+            @info << Slithernix::Cdk.char_to_chtype(mesg[x], info_len, info_pos)
             @info_len << info_len[0]
             @info_pos << info_pos[0]
             box_width = [box_width, @info_len[x]].max
@@ -39,8 +39,8 @@ module Slithernix
 
           # Create the string alignments.
           (0...rows).each do |x|
-            @info_pos[x] = Slithernix::Cdk.justifyString(box_width - (2 * @border_size),
-                                                         @info_len[x], @info_pos[x])
+            @info_pos[x] = Slithernix::Cdk.justify_string(box_width - (2 * @border_size),
+                                                          @info_len[x], @info_pos[x])
           end
 
           # Make sure we didn't extend beyond the dimensions of the window.
@@ -106,10 +106,10 @@ module Slithernix
           (0...@rows).each do |x|
             info_len = []
             info_pos = []
-            @info[x] = Slithernix::Cdk.char2Chtype(info[x], info_len, info_pos)
+            @info[x] = Slithernix::Cdk.char_to_chtype(info[x], info_len, info_pos)
             @info_len[x] = info_len[0]
-            @info_pos[x] = Slithernix::Cdk.justifyString(@box_width - (2 * @border_size),
-                                                         @info_len[x], info_pos[0])
+            @info_pos[x] = Slithernix::Cdk.justify_string(@box_width - (2 * @border_size),
+                                                          @info_len[x], info_pos[0])
           end
 
           # Redraw the label widget.
@@ -154,8 +154,8 @@ module Slithernix
 
         # This erases the label widget
         def erase
-          Slithernix::Cdk.eraseCursesWindow(@win)
-          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
+          Slithernix::Cdk.erase_curses_window(@win)
+          Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
 
         # This moves the label field to the given location
@@ -165,8 +165,8 @@ module Slithernix
 
         # This destroys the label widget pointer.
         def destroy
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@win)
 
           clean_bindings(:Label)
 

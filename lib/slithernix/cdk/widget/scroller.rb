@@ -10,7 +10,7 @@ module Slithernix
             if @current_item.positive?
               if @current_high.zero?
                 if @current_top.zero?
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 else
                   @current_top -= 1
                   @current_item -= 1
@@ -20,10 +20,10 @@ module Slithernix
                 @current_high -= 1
               end
             else
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             end
           else
-            Slithernix::Cdk.Beep
+            Slithernix::Cdk.beep
           end
         end
 
@@ -35,41 +35,41 @@ module Slithernix
                   @current_top += 1
                   @current_item += 1
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               else
                 @current_item += 1
                 @current_high += 1
               end
             else
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             end
           else
-            Slithernix::Cdk.Beep
+            Slithernix::Cdk.beep
           end
         end
 
         def KEY_LEFT
           if @list_size.positive?
             if @left_char.zero?
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             else
               @left_char -= 1
             end
           else
-            Slithernix::Cdk.Beep
+            Slithernix::Cdk.beep
           end
         end
 
         def KEY_RIGHT
           if @list_size.positive?
             if @left_char >= @max_left_char
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             else
               @left_char += 1
             end
           else
-            Slithernix::Cdk.Beep
+            Slithernix::Cdk.beep
           end
         end
 
@@ -83,10 +83,10 @@ module Slithernix
                 self.KEY_HOME
               end
             else
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             end
           else
-            Slithernix::Cdk.Beep
+            Slithernix::Cdk.beep
           end
         end
 
@@ -102,10 +102,10 @@ module Slithernix
                 @current_high = @view_size - 1
               end
             else
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             end
           else
-            Slithernix::Cdk.Beep
+            Slithernix::Cdk.beep
           end
         end
 

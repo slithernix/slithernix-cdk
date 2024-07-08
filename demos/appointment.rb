@@ -28,7 +28,7 @@ class Appointment
     lines = []
 
     # Read the appointment file.
-    lines_read = Slithernix::Cdk.readFile(filename, lines)
+    lines_read = Slithernix::Cdk.read_file(filename, lines)
     if lines_read == -1
       app_info.count = 0
       return

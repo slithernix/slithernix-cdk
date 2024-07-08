@@ -202,7 +202,7 @@ module Slithernix
         want = (endn - start) + 1000
         blanks = String.new
 
-        Slithernix::Cdk.cleanChar(blanks, want - 1, ' ')
+        Slithernix::Cdk.clean_char(blanks, want - 1, ' ')
         write_char(window, xpos, ypos, blanks, align, start, endn)
       end
 

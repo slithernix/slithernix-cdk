@@ -70,8 +70,8 @@ module Slithernix
             (Slithernix::Cdk::Widget::Menu::TITLELINES...subsize[x]).to_a.each do |y|
               y0 = y - Slithernix::Cdk::Widget::Menu::TITLELINES
               sublist_len = []
-              @sublist[x1][y0] = Slithernix::Cdk.char2Chtype(menu_list[x][y],
-                                                             sublist_len, [])
+              @sublist[x1][y0] = Slithernix::Cdk.char_to_chtype(menu_list[x][y],
+                                                                sublist_len, [])
               @sublist_len[x1][y0] = sublist_len[0]
               max = [max, sublist_len[0]].max
             end
@@ -84,7 +84,7 @@ module Slithernix
 
             title_len = []
             @title[x1] =
-              Slithernix::Cdk.char2Chtype(menu_list[x][0], title_len, [])
+              Slithernix::Cdk.char_to_chtype(menu_list[x][0], title_len, [])
             @title_len[x1] = title_len[0]
             @subsize[x1] =
               subsize[x] - Slithernix::Cdk::Widget::Menu::TITLELINES
@@ -317,7 +317,7 @@ module Slithernix
 
         # Erase a menu item subwindow
         def eraseSubwin
-          Slithernix::Cdk.eraseCursesWindow(@pull_win[@current_title])
+          Slithernix::Cdk.erase_curses_window(@pull_win[@current_title])
 
           # Redraw the sub-menu title.
           draw_title(@current_title)
@@ -355,8 +355,8 @@ module Slithernix
         def destroy
           # Clean up the windows
           (0...@menu_items).each do |x|
-            Slithernix::Cdk.deleteCursesWindow(@title_win[x])
-            Slithernix::Cdk.deleteCursesWindow(@pull_win[x])
+            Slithernix::Cdk.delete_curses_window(@title_win[x])
+            Slithernix::Cdk.delete_curses_window(@pull_win[x])
           end
 
           # Clean the key bindings.

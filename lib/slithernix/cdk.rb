@@ -118,17 +118,17 @@ module Slithernix
     ACS_VLINE     = 0x78 | Curses::A_ALTCHARSET
 
     # This beeps then flushes the stdout stream
-    def self.Beep
+    def self.beep
       Curses.beep
       $stdout.flush
     end
 
     # This sets a blank string to be len of the given characer.
-    def self.cleanChar(s, len, character)
+    def self.clean_char(s, len, character)
       s << (character * len)
     end
 
-    def self.cleanChtype(s, len, character)
+    def self.clean_chtype(s, len, character)
       s.concat(character * len)
     end
 
@@ -187,7 +187,7 @@ module Slithernix
     # This takes a string, a field width, and a justification type
     # and returns the adjustment to make, to fill the justification
     # requirement
-    def self.justifyString(box_width, mesg_length, justify)
+    def self.justify_string(box_width, mesg_length, justify)
       # make sure the message isn't longer than the width
       # if it is, return 0
       return 0 if mesg_length >= box_width
@@ -206,7 +206,7 @@ module Slithernix
     end
 
     # This reads a file and sticks it into the list provided.
-    def self.readFile(filename, array)
+    def self.read_file(filename, array)
       begin
         fd = File.new(filename, 'r')
       rescue StandardError
@@ -225,7 +225,7 @@ module Slithernix
       array.size
     end
 
-    def self.encodeAttribute(string, from, mask)
+    def self.encode_attribute(string, from, mask)
       mask << 0
       case string[from + 1]
       when 'B' then mask[0] = Curses::A_BOLD
@@ -250,12 +250,12 @@ module Slithernix
       from
     end
 
-    # The reverse of encodeAttribute
+    # The reverse of encode_attribute
     # Well, almost.  If attributes such as bold and underline are combined in the
     # same string, we do not necessarily reconstruct them in the same order.
     # Also, alignment markers and tabs are lost.
 
-    def self.decodeAttribute(string, from, oldattr, newattr)
+    def self.decode_attribute(string, from, oldattr, newattr)
       table = {
         'B' => Curses::A_BOLD,
         'D' => Curses::A_DIM,
@@ -320,7 +320,7 @@ module Slithernix
     # This function takes a string, full of format markers and translates
     # them into a chtype array.  This is better suited to curses because
     # curses uses chtype almost exclusively
-    def self.char2Chtype(string, to, align)
+    def self.char_to_chtype(string, to, align)
       to << 0
       align << LEFT
       result = []
@@ -481,11 +481,11 @@ module Slithernix
               end
             when '/'
               mask = []
-              from = encodeAttribute(string, from, mask)
+              from = encode_attribute(string, from, mask)
               attrib |= mask[0]
             when '!'
               mask = []
-              from = encodeAttribute(string, from, mask)
+              from = encode_attribute(string, from, mask)
               attrib &= ~(mask[0])
             end
           elsif string[from] == L_MARKER &&
@@ -518,7 +518,7 @@ module Slithernix
     end
 
     # Compare a regular string to a chtype string
-    def self.cmpStrChstr(str, chstr)
+    def self.compare_string_to_chtype_string(str, chstr)
       i = 0
       r = 0
 
@@ -549,17 +549,17 @@ module Slithernix
       end
     end
 
-    def self.CharOf(chtype)
+    def self.chtype_to_char(chtype)
       (chtype.ord & 255).chr
     end
 
     # This returns a string from a chtype array
     # Formatting codes are omitted.
-    def self.chtype2Char(string)
+    def self.chtype_string_to_unformatted_string(string)
       newstring = String.new
 
       string&.each do |char|
-        newstring << self.CharOf(char)
+        newstring << self.chtype_to_char(char)
       end
 
       newstring
@@ -567,12 +567,12 @@ module Slithernix
 
     # This returns a string from a chtype array
     # Formatting codes are embedded
-    def self.chtype2String(string)
+    def self.chtype_string_to_formatted_string(string)
       newstring = String.new
       unless string.nil?
         need = 0
         (0...string.size).each do |x|
-          need = decodeAttribute(
+          need = decode_attribute(
             newstring,
             need,
             x.positive? ? string[x - 1] : 0,
@@ -588,6 +588,7 @@ module Slithernix
     # This returns the length of the integer.
     #
     # Currently a wrapper maintained for easy of porting.
+    # TODO remove this useless method
     def self.intlen(value)
       value.to_str.size
     end
@@ -596,7 +597,7 @@ module Slithernix
     # This method is absolute dogshit, should just return the list.
     # I hate the mutation of the second argument rather than the return.
     # TODO: fix --snake 2024
-    def self.getDirectoryContents(directory, list)
+    def self.get_directory_contents(directory, list)
       # Open the directory.
       Dir.foreach(directory) do |filename|
         next if filename == '.'
@@ -609,7 +610,8 @@ module Slithernix
     end
 
     # This looks for a subset of a word in the given list
-    def self.searchList(list, list_size, pattern)
+    # TODO no way this thing is necessary as it is
+    def self.search_list(list, list_size, pattern)
       index = -1
 
       if pattern.size.positive?
@@ -635,7 +637,7 @@ module Slithernix
     end
 
     # This function checks to see if a link has been requested
-    def self.checkForLink(line, filename)
+    def self.check_for_link(line, filename)
       f_pos = 0
       x = 3
       return -1 if line.nil?
@@ -659,7 +661,7 @@ module Slithernix
     # slash
     # For now this function is just a wrapper for File.basename kept for ease of
     # porting and will be completely replaced in the future
-    def self.baseName(pathname)
+    def self.basename(pathname)
       File.basename(pathname)
     end
 
@@ -667,14 +669,14 @@ module Slithernix
     # last slash
     # For now this function is just a wrapper for File.dirname kept for ease of
     # porting and will be completely replaced in the future
-    def self.dirName(pathname)
+    def self.dirname(pathname)
       File.dirname(pathname)
     end
 
     # If the dimension is a negative value, the dimension will be the full
     # height/width of the parent window - the value of the dimension. Otherwise,
     # the dimension will be the given value.
-    def self.setWidgetDimension(parent_dim, proposed_dim, adjustment)
+    def self.set_widget_dimension(parent_dim, proposed_dim, adjustment)
       # If the user passed in FULL, return the parents size
       if [FULL, 0].include?(proposed_dim)
         parent_dim
@@ -697,7 +699,7 @@ module Slithernix
     end
 
     # This safely erases a given window
-    def self.eraseCursesWindow(window)
+    def self.erase_curses_window(window)
       return if window.nil?
 
       window.erase
@@ -705,18 +707,19 @@ module Slithernix
     end
 
     # This safely deletes a given window.
-    def self.deleteCursesWindow(window)
+    def self.delete_curses_window(window)
       return if window.nil?
 
-      eraseCursesWindow(window)
+      erase_curses_window(window)
       window.close
     end
 
     # This moves a given window (if we're able to set the window's beginning).
     # We do not use mvwin(), because it does not (usually) move subwindows.
+    #
     # This just didn't work as it was. Maybe this mvwin() comment is no longer
-    # accurate but for now, leaving in the usage of window.move.
-    def self.moveCursesWindow(window, xdiff, ydiff)
+    # accurate but for now, leaving in the usage of window.move. --snake 2024
+    def self.move_curses_window(window, xdiff, ydiff)
       return if window.nil?
 
       xpos = window.begx + xdiff
@@ -729,35 +732,54 @@ module Slithernix
         old_window.erase
         # window
       rescue StandardError
-        self.Beep
+        self.beep
       end
     end
 
+    # wtf? --snake
     def self.digit?(character)
       !character.match(/^[[:digit:]]$/).nil?
     end
 
+    # again, wtf? --snake
     def self.alpha?(character)
       !character.match(/^[[:alpha:]]$/).nil?
     end
 
-    def self.isChar(c)
+    def self.is_char?(c)
       c.ord >= 0 && c.ord < Curses::KEY_MIN
     end
 
-    def self.KEY_F(n)
+    def self.key_f(n)
       264 + n
     end
 
-    def self.Version
-      format('%d.%d - %d', Slithernix::Cdk::VERSION_MAJOR,
-             Slithernix::Cdk::VERSION_MINOR, Slithernix::Cdk::VERSION_PATCH)
+    def self.version
+      format(
+        '%d.%d - %d',
+        Slithernix::Cdk::VERSION_MAJOR,
+        Slithernix::Cdk::VERSION_MINOR,
+        Slithernix::Cdk::VERSION_PATCH,
+      )
     end
 
-    def self.getString(screen, title, label, init_value)
+    def self.get_string(screen, title, label, init_value)
       # Create the widget.
-      widget = Slithernix::Cdk::Entry.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, title, label,
-                                          Curses::A_NORMAL, '.', :MIXED, 40, 0, 5000, true, false)
+      widget = Slithernix::Cdk::Entry.new(
+        screen,
+        Slithernix::Cdk::CENTER,
+        Slithernix::Cdk::CENTER,
+        title,
+        label,
+        Curses::A_NORMAL,
+        '.',
+        :MIXED,
+        40,
+        0,
+        5000,
+        true,
+        false,
+      )
 
       # Set the default value.
       widget.setValue(init_value)
@@ -778,30 +800,42 @@ module Slithernix
     end
 
     # This allows a person to select a file.
-    def self.selectFile(screen, title)
+    def self.select_file(screen, title)
       # Create the file selector.
-      fselect = Slithernix::Cdk::FSelect.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, -4, -20,
-                                             title, 'File: ', Curses::A_NORMAL, '_', Curses::A_REVERSE,
-                                             '</5>', '</48>', '</N>', '</N>', true, false)
+      fselect = Slithernix::Cdk::FSelect.new(
+        screen,
+        Slithernix::Cdk::CENTER,
+        Slithernix::Cdk::CENTER,
+        -4,
+        -20,
+        title,
+        'File: ',
+        Curses::A_NORMAL,
+        '_',
+        Curses::A_REVERSE,
+        '</5>',
+        '</48>',
+        '</N>',
+        '</N>',
+        true,
+        false,
+      )
 
-      # Let the user play.
       filename = fselect.activate([])
 
-      # Check the way the user exited the selector.
       if fselect.exit_type != :NORMAL
         fselect.destroy
         screen.refresh
         return nil
       end
 
-      # Otherwise...
       fselect.destroy
       screen.refresh
       filename
     end
 
     # This returns a selected value in a list
-    def self.getListindex(screen, title, list, list_size, numbers)
+    def self.get_list_index(screen, title, list, list_size, numbers)
       height = 10
       width = -1
 
@@ -819,9 +853,21 @@ module Slithernix
       width += 5
 
       # Create the scrolling list.
-      scrollp = Slithernix::Cdk::Scroll.new(screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, Slithernix::Cdk::RIGHT,
-                                            height, width, title, list, list_size, numbers, Curses::A_REVERSE,
-                                            true, false)
+      scrollp = Slithernix::Cdk::Scroll.new(
+        screen,
+        Slithernix::Cdk::CENTER,
+        Slithernix::Cdk::CENTER,
+        Slithernix::Cdk::RIGHT,
+        height,
+        width,
+        title,
+        list,
+        list_size,
+        numbers,
+        Curses::A_REVERSE,
+        true,
+        false,
+      )
 
       # Check if we made the lsit.
       if scrollp.nil?
@@ -841,10 +887,7 @@ module Slithernix
       selected
     end
 
-    # This allows the user to view information.
-    def self.viewInfo(screen, title, info, count, buttons, button_count,
-                      interpret)
-
+    def self.view_info(screen, title, info, count, buttons, button_count, interpret)
       # Create the file viewer to view the file selected.
       viewer = Slithernix::Cdk::Widget::Viewer.new(
         screen,
@@ -862,33 +905,29 @@ module Slithernix
       # Set up the viewer title, and the contents to the widget.
       viewer.set(title, info, count, Curses::A_REVERSE, interpret, true, true)
 
-      # Activate the viewer widget.
       selected = viewer.activate([])
 
-      # Make sure they exited normally.
       if viewer.exit_type != :NORMAL
         viewer.destroy
         return -1
       end
 
-      # Clean up and return the button index selected
       viewer.destroy
       selected
     end
 
-    # This allows the user to view a file.
-    def self.viewFile(screen, title, filename, buttons, button_count)
+    def self.view_file(screen, title, filename, buttons, button_count)
       info = []
 
       # Open the file and read the contents.
-      lines = readFile(filename, info)
+      lines = read_file(filename, info)
 
       # If we couldn't read the file, return an error.
       if lines == -1
         lines
       else
-        viewInfo(screen, title, info, lines, buttons,
-                 button_count, true)
+        view_info(screen, title, info, lines, buttons,
+                  button_count, true)
       end
     end
   end

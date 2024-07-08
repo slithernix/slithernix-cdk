@@ -89,7 +89,7 @@ class Vinstall
 
     file_list = []
     # Open the file list file and read it in.
-    count = Slithernix::Cdk.readFile(filename, file_list)
+    count = Slithernix::Cdk.read_file(filename, file_list)
     if count.zero?
       warn format('%s: Input filename <%s> is empty.', ARGV[0], filename)
     end

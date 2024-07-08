@@ -24,7 +24,7 @@ module Slithernix
 
           # If the field_width is a negative value, the field_width will be
           # COLS-field_width, otherwise the field_width will be the given width.
-          field_width = Slithernix::Cdk.setWidgetDimension(
+          field_width = Slithernix::Cdk.set_widget_dimension(
             parent_width,
             field_width,
             0
@@ -39,7 +39,7 @@ module Slithernix
           # Translate the label string to a chtype array
           if label&.size&.positive?
             label_len = [@label_len]
-            @label = Slithernix::Cdk.char2Chtype(label, label_len, [])
+            @label = Slithernix::Cdk.char_to_chtype(label, label_len, [])
             @label_len = label_len[0]
             box_width += @label_len
           end
@@ -101,7 +101,7 @@ module Slithernix
             )
           end
 
-          # cleanChar (entry->info, max + 3, '\0');
+          # clean_char (entry->info, max + 3, '\0');
           @info = String.new
           @info_width = max + 3
 
@@ -131,7 +131,7 @@ module Slithernix
             )
 
             if plainchar == Curses::Error || entry.info.size >= entry.max
-              Slithernix::Cdk.Beep
+              Slithernix::Cdk.beep
             else
               # Update the screen and pointer
               if entry.screen_col == entry.field_width - 1
@@ -241,14 +241,14 @@ module Slithernix
 
               case input
               when Curses::KEY_UP, Curses::KEY_DOWN
-                Slithernix::Cdk.Beep
+                Slithernix::Cdk.beep
               when Curses::KEY_HOME
                 @left_char = 0
                 @screen_col = 0
                 drawField
               when Slithernix::Cdk::TRANSPOSE
                 if curr_pos >= @info.size - 1
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 else
                   holder = @info[curr_pos]
                   @info[curr_pos] = @info[curr_pos + 1]
@@ -260,7 +260,7 @@ module Slithernix
                 drawField
               when Curses::KEY_LEFT
                 if curr_pos <= 0
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 elsif @screen_col.zero?
                   # Scroll left.
                   @left_char -= 1
@@ -271,7 +271,7 @@ module Slithernix
                 end
               when Curses::KEY_RIGHT
                 if curr_pos >= @info.size
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 elsif @screen_col == @field_width - 1
                   # Scroll to the right.
                   @left_char += 1
@@ -283,7 +283,7 @@ module Slithernix
                 end
               when Curses::KEY_BACKSPACE, Curses::KEY_DC
                 if @disp_type == :VIEWONLY
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 else
                   success = false
                   curr_pos -= 1 if input == Curses::KEY_BACKSPACE
@@ -308,7 +308,7 @@ module Slithernix
                     end
                     drawField
                   else
-                    Slithernix::Cdk.Beep
+                    Slithernix::Cdk.beep
                   end
                 end
               when Slithernix::Cdk::KEY_ESC
@@ -321,7 +321,7 @@ module Slithernix
                 end
               when Slithernix::Cdk::CUT
                 if @info.empty?
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 else
                   @@g_paste_buffer = @info.clone
                   clean
@@ -329,13 +329,13 @@ module Slithernix
                 end
               when Slithernix::Cdk::COPY
                 if @info.empty?
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 else
                   @@g_paste_buffer = @info.clone
                 end
               when Slithernix::Cdk::PASTE
                 if @@g_paste_buffer.zero?
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 else
                   setValue(@@g_paste_buffer)
                   drawField
@@ -346,7 +346,7 @@ module Slithernix
                   ret = @info
                   complete = true
                 else
-                  Slithernix::Cdk.Beep
+                  Slithernix::Cdk.beep
                 end
               when Curses::Error
                 set_exit_type(input)
@@ -452,20 +452,20 @@ module Slithernix
         def erase
           return unless is_valid_widget?
 
-          Slithernix::Cdk.eraseCursesWindow(@field_win)
-          Slithernix::Cdk.eraseCursesWindow(@label_win)
-          Slithernix::Cdk.eraseCursesWindow(@win)
-          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
+          Slithernix::Cdk.erase_curses_window(@field_win)
+          Slithernix::Cdk.erase_curses_window(@label_win)
+          Slithernix::Cdk.erase_curses_window(@win)
+          Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
 
         # This destroys an entry widget.
         def destroy
           clean_title
 
-          Slithernix::Cdk.deleteCursesWindow(@field_win)
-          Slithernix::Cdk.deleteCursesWindow(@label_win)
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
-          Slithernix::Cdk.deleteCursesWindow(@win)
+          Slithernix::Cdk.delete_curses_window(@field_win)
+          Slithernix::Cdk.delete_curses_window(@label_win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@win)
 
           clean_bindings(:Entry)
 

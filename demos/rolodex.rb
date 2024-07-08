@@ -768,7 +768,7 @@ class Rolodex
     lines = []
 
     # Open the file and start reading.
-    lines_read = Slithernix::Cdk.readFile(filename, lines)
+    lines_read = Slithernix::Cdk.read_file(filename, lines)
 
     # Check the number of lines read.
     return 0 if lines_read.zero?
@@ -874,7 +874,7 @@ class Rolodex
     # Add a pre-process function so no spaces are introduced.
     entry_pre_process_cb = lambda do |_cdk_type, _widget, _client_data, input|
       if input.ord == ' '.ord
-        Slithernix::Cdk.Beep
+        Slithernix::Cdk.beep
         return 0
       end
       1
@@ -909,7 +909,7 @@ class Rolodex
   def self.readPhoneDataFile(data_file, phone_data)
     lines = []
 
-    lines_read = Slithernix::Cdk.readFile(data_file, lines)
+    lines_read = Slithernix::Cdk.read_file(data_file, lines)
     lines_found = 0
 
     # Check the number of lines read.
@@ -1187,7 +1187,7 @@ class Rolodex
         '<C>Do you really want to delete the phone entry.',
         format(
           '<C></B/16>%s',
-          Slithernix::Cdk.chtype2Char(scrollp.item[scrollp.current_item]),
+          Slithernix::Cdk.chtype_string_to_unformatted_string(scrollp.item[scrollp.current_item]),
         ),
       ]
       if scrollp.screen.popup_dialog(mesg, mesg.size, buttons,
@@ -1514,7 +1514,7 @@ class Rolodex
       selection = (menu_list * 100) + submenu_list
 
       # Create the help title.
-      name = Slithernix::Cdk.chtype2Char(menu.sublist[menu_list][submenu_list])
+      name = Slithernix::Cdk.chtype_string_to_unformatted_string(menu.sublist[menu_list][submenu_list])
       name.strip!
       mesg = [
         format('<C></R>Help<!R> </U>%s<!U>', name),

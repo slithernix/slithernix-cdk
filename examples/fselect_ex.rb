@@ -181,11 +181,11 @@ class FselectExample < CLIExample
     end
 
     fselect.bind(:FSelect, '?', do_help, nil)
-    fselect.bind(:FSelect, Slithernix::Cdk::KEY_F(1), do_help, nil)
-    fselect.bind(:FSelect, Slithernix::Cdk::KEY_F(2), do_delete, fselect)
-    fselect.bind(:FSelect, Slithernix::Cdk::KEY_F(3), do_delete1, fselect)
-    fselect.bind(:FSelect, Slithernix::Cdk::KEY_F(4), do_reload, fselect)
-    fselect.bind(:FSelect, Slithernix::Cdk::KEY_F(5), do_undo, fselect)
+    fselect.bind(:FSelect, Slithernix::Cdk::key_f(1), do_help, nil)
+    fselect.bind(:FSelect, Slithernix::Cdk::key_f(2), do_delete, fselect)
+    fselect.bind(:FSelect, Slithernix::Cdk::key_f(3), do_delete1, fselect)
+    fselect.bind(:FSelect, Slithernix::Cdk::key_f(4), do_reload, fselect)
+    fselect.bind(:FSelect, Slithernix::Cdk::key_f(5), do_undo, fselect)
 
     # Set the starting directory. This is not necessary because when
     # the file selector starts it uses the present directory as a default.
@@ -230,7 +230,7 @@ class FselectExample < CLIExample
 
     # Open the file and read the contents.
     info = []
-    lines = Slithernix::Cdk.readFile(filename, info)
+    lines = Slithernix::Cdk.read_file(filename, info)
     if lines == -1
       fselect.destroy
       cdkscreen.destroy

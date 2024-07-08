@@ -39,7 +39,7 @@ module Slithernix
           (0...rows).each do |x|
             info_len = []
             info_pos = []
-            @info << Slithernix::Cdk.char2Chtype(mesg[x], info_len, info_pos)
+            @info << Slithernix::Cdk.char_to_chtype(mesg[x], info_len, info_pos)
             @info_len << info_len[0]
             @info_pos << info_pos[0]
             max_message_width = [max_message_width, info_len[0]].max
@@ -48,8 +48,8 @@ module Slithernix
           # Translate the button label string to a chtype array
           (0...button_count).each do |x|
             button_len = []
-            @button_label << Slithernix::Cdk.char2Chtype(button_label[x],
-                                                         button_len, [])
+            @button_label << Slithernix::Cdk.char_to_chtype(button_label[x],
+                                                            button_len, [])
             @button_len << button_len[0]
             button_width += button_len[0] + 1
           end
@@ -100,8 +100,8 @@ module Slithernix
 
           # Create the string alignments.
           (0...rows).each do |x|
-            @info_pos[x] = Slithernix::Cdk.justifyString(box_width - (2 * @border_size),
-                                                         @info_len[x], @info_pos[x])
+            @info_pos[x] = Slithernix::Cdk.justify_string(box_width - (2 * @border_size),
+                                                          @info_len[x], @info_pos[x])
           end
 
           # Was there a shadow?
@@ -195,7 +195,7 @@ module Slithernix
                   @current_button += 1
                 end
               when Curses::KEY_UP, Curses::KEY_DOWN
-                Slithernix::Cdk.Beep
+                Slithernix::Cdk.beep
               when Slithernix::Cdk::REFRESH
                 @screen.erase
                 @screen.refresh
@@ -259,8 +259,8 @@ module Slithernix
         # This function destroys the dialog widget.
         def destroy
           # Clean up the windows.
-          Slithernix::Cdk.deleteCursesWindow(@win)
-          Slithernix::Cdk.deleteCursesWindow(@shadow_win)
+          Slithernix::Cdk.delete_curses_window(@win)
+          Slithernix::Cdk.delete_curses_window(@shadow_win)
 
           # Clean the key bindings
           clean_bindings(:Dialog)
@@ -273,8 +273,8 @@ module Slithernix
         def erase
           return unless is_valid_widget?
 
-          Slithernix::Cdk.eraseCursesWindow(@win)
-          Slithernix::Cdk.eraseCursesWindow(@shadow_win)
+          Slithernix::Cdk.erase_curses_window(@win)
+          Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
 
         # This sets attributes of the dialog box.
