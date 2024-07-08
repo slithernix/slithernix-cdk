@@ -8,8 +8,7 @@ module Slithernix
       class AlphaList < Slithernix::Cdk::Widget
         attr_reader :scroll_field, :entry_field, :list
 
-        def initialize(cdkscreen, xplace, yplace, height, width, title, label,
-                       list, list_size, filler_char, highlight, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, height, width, title, label, list, list_size, filler_char, highlight, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy

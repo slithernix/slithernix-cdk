@@ -5,7 +5,7 @@ require_relative 'example'
 
 class LowerCDKObjectExample < Example
   def self.parse_opts(opts, param)
-    opts.banner = 'Usage: lowerCDKObject_ex.rb [options]'
+    opts.banner = 'Usage: lower_widget_ex.rb [options]'
 
     param.x_value = Slithernix::Cdk::CENTER
     param.y_value = Slithernix::Cdk::BOTTOM

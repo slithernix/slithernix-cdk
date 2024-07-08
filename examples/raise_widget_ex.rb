@@ -9,7 +9,7 @@ class RaiseCDKObjectExample < Example
   end
 
   def self.parse_opts(opts, param)
-    opts.banner = 'Usage: raiseCDKObject_ex.rb [options]'
+    opts.banner = 'Usage: raise_widget_ex.rb [options]'
 
     param.x_value = Slithernix::Cdk::CENTER
     param.y_value = Slithernix::Cdk::BOTTOM

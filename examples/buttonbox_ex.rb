@@ -73,12 +73,12 @@ class ButtonboxExample < Example
 
     # Bind the Tab key in the entry field to send a
     # Tab key to the button box widget.
-    entryCB = lambda do |_cdktype, _widget, client_data, key|
+    entry_callback = lambda do |_cdktype, _widget, client_data, key|
       client_data.inject(key)
       true
     end
 
-    entry.bind(:Entry, Slithernix::Cdk::KEY_TAB, entryCB, button_widget)
+    entry.bind(:Entry, Slithernix::Cdk::KEY_TAB, entry_callback, button_widget)
 
     # Activate the entry field.
     button_widget.draw(true)

@@ -8,7 +8,7 @@ class FselectExample < CLIExample
   @@my_undo_list = []
   @@my_user_list = []
 
-  def self.getUserList(list)
+  def self.get_user_list(list)
     while (ent = Etc.getpwent)
       list << ent.name
     end

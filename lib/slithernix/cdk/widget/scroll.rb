@@ -8,8 +8,7 @@ module Slithernix
       class Scroll < Slithernix::Cdk::Widget::Scroller
         attr_reader :item, :list_size, :current_item, :highlight
 
-        def initialize(cdkscreen, xplace, yplace, splace, height, width,
-                       title, list, list_size, numbers, highlight, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, splace, height, width, title, list, list_size, numbers, highlight, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy

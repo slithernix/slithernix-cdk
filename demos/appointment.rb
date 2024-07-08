@@ -7,14 +7,14 @@ require_relative '../lib/slithernix/cdk'
 
 class Appointment
   MAX_MARKERS = 2000
-  GPAppointmentAttributes = [
+  APPOINTMENT_ATTRIBUTES = [
     Curses::A_BLINK,
     Curses::A_BOLD,
     Curses::A_REVERSE,
     Curses::A_UNDERLINE,
   ].freeze
 
-  AppointmentType = %i[
+  APPOINTMENT_TYPE = %i[
     BIRTHDAY
     ANNIVERSARY
     APPOINTMENT
@@ -22,7 +22,7 @@ class Appointment
   ].freeze
 
   # This reads a given appointment file.
-  def self.readAppointmentFile(filename, app_info)
+  def self.read_appointment_file(filename, app_info)
     appointments = 0
     segments = 0
     lines = []
@@ -44,7 +44,7 @@ class Appointment
       next unless segments == 5
 
       app_info.appointment << OpenStruct.new
-      e_type = Appointment::AppointmentType[temp[3].to_i]
+      e_type = Appointment::APPOINTMENT_TYPE[temp[3].to_i]
 
       app_info.appointment[appointments].day = temp[0].to_i
       app_info.appointment[appointments].month = temp[1].to_i
@@ -59,7 +59,7 @@ class Appointment
   end
 
   # This saves a given appointment file.
-  def self.saveAppointmentFile(filename, app_info)
+  def self.save_appointment_file(filename, app_info)
     # TODO: error handling
     fd = File.new(filename, 'w')
 
@@ -75,7 +75,7 @@ class Appointment
         Slithernix::Cdk.CTRL('V').chr,
         appointment.year,
         Slithernix::Cdk.CTRL('V').chr,
-        Appointment::AppointmentType.index(appointment.type),
+        Appointment::APPOINTMENT_TYPE.index(appointment.type),
         Slithernix::Cdk.CTRL('V').chr,
         appointment.description,
       )
@@ -120,7 +120,7 @@ class Appointment
     appointment_info.appointment = []
 
     # Read the appointment book information.
-    readAppointmentFile(filename, appointment_info)
+    read_appointment_file(filename, appointment_info)
 
     # Set up CDK
     curses_win = Curses.init_screen
@@ -191,7 +191,7 @@ class Appointment
       # Destroy the itemlist and set the marker.
       itemlist.destroy
       calendar.draw(calendar.box)
-      marker = Appointment::GPAppointmentAttributes[selection]
+      marker = Appointment::APPOINTMENT_ATTRIBUTES[selection]
 
       # Create the entry field for the description.
       entry = Slithernix::Cdk::Widget::Entry.new(
@@ -233,7 +233,7 @@ class Appointment
       info.appointment[current].day = calendar.day
       info.appointment[current].month = calendar.month
       info.appointment[current].year = calendar.year
-      info.appointment[current].type = Appointment::AppointmentType[selection]
+      info.appointment[current].type = Appointment::APPOINTMENT_TYPE[selection]
       info.appointment[current].description = description
       info.count += 1
 
@@ -353,8 +353,8 @@ class Appointment
 
     # Set all the appointments read from the file.
     appointment_info.appointment.each do |appointment|
-      marker = Appointment::GPAppointmentAttributes[
-          Appointment::AppointmentType.index(appointment.type)
+      marker = Appointment::APPOINTMENT_ATTRIBUTES[
+          Appointment::APPOINTMENT_TYPE.index(appointment.type)
       ]
 
       calendar.setMarker(
@@ -368,7 +368,7 @@ class Appointment
     calendar.draw(calendar.box)
     calendar.activate([])
 
-    Appointment.saveAppointmentFile(filename, appointment_info)
+    Appointment.save_appointment_file(filename, appointment_info)
 
     calendar.destroy
     cdkscreen.destroy

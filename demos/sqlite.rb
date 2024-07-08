@@ -9,12 +9,12 @@ require_relative '../lib/slithernix/cdk'
 class SQLiteDemo
   MAXWIDTH = 5000
   MAXHISTORY = 1000
-  GPUsage = '[-p Command Prompt] [-f databasefile] [-h help]'
+  USAGE = '[-p Command Prompt] [-f databasefile] [-h help]'
   @@gp_current_database = String.new
   @@gp_cdk_screen = nil
 
   # This saves the history into RC file.
-  def self.saveHistory(history, _count)
+  def self.save_history(history, _count)
     if (home = Dir.home).nil?
       home = '.'
     end
@@ -36,7 +36,7 @@ class SQLiteDemo
   end
 
   # This loads the history into the editor from the RC file.
-  def self.loadHistory(history)
+  def self.load_history(history)
     # Create the RC filename.
     if (home = Dir.home).nil?
       home = '.'
@@ -111,7 +111,7 @@ class SQLiteDemo
     dbfile = opts['f'] if opts['f']
     if opts['h']
       puts format('Usage: %s %s', File.basename($PROGRAM_NAME),
-                  SQLiteDemo::GPUsage)
+                  SQLiteDemo::USAGE)
       exit # EXIT_SUCCESS
     end
 
@@ -140,7 +140,7 @@ class SQLiteDemo
     end
 
     # Load the history.
-    SQLiteDemo.loadHistory(history)
+    SQLiteDemo.load_history(history)
 
     # Create the scrolling window.
     command_output = Slithernix::Cdk::Widget::SWindow.new(@@gp_cdk_screen, Slithernix::Cdk::CENTER, Slithernix::Cdk::TOP,
@@ -267,7 +267,7 @@ class SQLiteDemo
       if %w[QUIT EXIT Q E].include?(upper) ||
          command_entry.exit_type == :ESCAPE_HIT
         # Save the history.
-        SQLiteDemo.saveHistory(history, 100)
+        SQLiteDemo.save_history(history, 100)
 
         # Exit
         sqlitedb.close unless sqlitedb.closed?

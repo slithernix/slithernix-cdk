@@ -6,11 +6,10 @@ require 'fileutils'
 require_relative '../lib/slithernix/cdk'
 
 class Vinstall
-  FPUsage = '-f filename [-s source directory] [-d destination directory] ' \
-            '[-t title] [-o Output file] [q]'
+  USAGE = '-f filename [-s source directory] [-d destination directory] [-t title] [-o Output file] [q]'
 
   # Copy the file.
-  def self.copyFile(_cdkscreen, src, dest)
+  def self.copy_file(_cdkscreen, src, dest)
     # TODO: error handling
     FileUtils.cp(src, dest)
     :OK
@@ -18,7 +17,7 @@ class Vinstall
 
   # This makes sure the given directory exists.  If it doesn't then it will
   # make it.
-  def self.verifyDirectory(cdkscreen, directory)
+  def self.verify_directory(cdkscreen, directory)
     status = 0
     buttons = %w[
       Yes
@@ -83,7 +82,7 @@ class Vinstall
     # Make sure we have everything we need.
     if filename == ''
       warn format('Usage: %s %s', File.basename($PROGRAM_NAME),
-                  Vinstall::FPUsage)
+                  Vinstall::USAGE)
       exit # EXIT_FAILURE
     end
 
@@ -184,7 +183,7 @@ class Vinstall
     dest_entry&.destroy
 
     # Verify that the source directory is valid.
-    if Vinstall.verifyDirectory(cdkscreen, source_dir) != 0
+    if Vinstall.verify_directory(cdkscreen, source_dir) != 0
       # Clean up and leave.
       title_win.destroy
       cdkscreen.destroy
@@ -193,7 +192,7 @@ class Vinstall
     end
 
     # Verify that the destination directory is valid.
-    if Vinstall.verifyDirectory(cdkscreen, dest_dir) != 0
+    if Vinstall.verify_directory(cdkscreen, dest_dir) != 0
       title_win.destroy
       cdkscreen.destroy
       Slithernix::Cdk::Screen.end_cdk
@@ -268,7 +267,7 @@ class Vinstall
       end
 
       # Copy the file from the source to the destiation.
-      ret = Vinstall.copyFile(cdkscreen, old_path, new_path)
+      ret = Vinstall.copy_file(cdkscreen, old_path, new_path)
       temp = String.new
       if ret == :CanNotOpenSource
         temp = format('</16>Error: Can not open source file "%.256s"<!16>',

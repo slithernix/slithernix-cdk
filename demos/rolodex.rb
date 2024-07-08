@@ -6,7 +6,7 @@ require_relative '../lib/slithernix/cdk'
 
 class Rolodex
   MAXGROUPS = 100
-  GTypeMap = {
+  TYPE_MAP = {
     UNKNOWN: -1,
     VOICE: 0,
     CELL: 1,
@@ -18,7 +18,7 @@ class Rolodex
     DATA2: 7,
     DATA3: 8
   }.freeze
-  GTypeReverseMap = {
+  REVERSE_TYPE_MAP = {
     -1 => :UNKNOWN,
     0 => :VOICE,
     1 => :CELL,
@@ -30,7 +30,7 @@ class Rolodex
     7 => :DATA2,
     8 => :DATA3
   }.freeze
-  GLineType = [
+  LINE_TYPE = [
     'Voice',
     'Cell',
     'Pager',
@@ -47,13 +47,13 @@ class Rolodex
   @@gdbm_dir = String.new
   @@g_group_modified = false
 
-  def self.printGroup(group_record, filename, printer)
+  def self.print_group(group_record, filename, printer)
     uid = Process::Sys.getuid
 
     phone_data = OpenStruct.new
     phone_data.record = []
     phone_data.count = 0
-    Rolodex.readPhoneDataFile(group_record.dbm, phone_data)
+    Rolodex.read_phone_data_file(group_record.dbm, phone_data)
 
     # Create the temporary filename
     temp_filename = if filename == ''
@@ -77,7 +77,7 @@ class Rolodex
       fd.puts format(
         'Phone Number: %s (%s)',
         phone_record.phone_number,
-        Rolodex::GLineType[Rolodex::GTypeMap[phone_record.line_type]]
+        Rolodex::LINE_TYPE[Rolodex::TYPE_MAP[phone_record.line_type]]
       )
 
       unless %i[PAGER CELL].include? phone_record.line_type
@@ -116,7 +116,7 @@ class Rolodex
   end
 
   # This prints a group's phone numbers.
-  def self.printGroupNumbers(screen, group_list, group_count)
+  def self.print_group_numbers(screen, group_list, group_count)
     choices = [
       'Print to Printer',
       'Print to File',
@@ -203,7 +203,7 @@ class Rolodex
         entry.destroy
 
         # Print the group
-        if Rolodex.printGroup(group_list[x], '/tmp/rolodex.tmp', printer).zero?
+        if Rolodex.print_group(group_list[x], '/tmp/rolodex.tmp', printer).zero?
           # The group could not be printed.
           mesg = [
             format(
@@ -258,7 +258,7 @@ class Rolodex
         entry.destroy
 
         # Print the group.
-        if Rolodex.printGroup(group_list[x], filename, '').zero?
+        if Rolodex.print_group(group_list[x], filename, '').zero?
           # The group could not be printed.
           mesg = [
             format(
@@ -278,7 +278,7 @@ class Rolodex
   end
 
   # This deletes a rolodex group.
-  def self.deleteRolodexGroup(screen, group_list, group_count)
+  def self.delete_rolodex_group(screen, group_list, group_count)
     # If there are no groups, pop up a message telling them.
     if group_count.zero?
       mesg = [
@@ -292,7 +292,7 @@ class Rolodex
     end
 
     # Get the number of the group to delete.
-    selection = Rolodex.pickRolodexGroup(
+    selection = Rolodex.pick_rolodex_group(
       screen,
       '<C></U>Delete Which Rolodex Group?',
       group_list,
@@ -350,7 +350,7 @@ class Rolodex
   end
 
   # This function gets information about a new phone number.
-  def self.addPhoneRecord(screen, phone_data)
+  def self.add_phone_record(screen, phone_data)
     # Get the phone record
     phone_data.record[phone_data.count] =
       phone_data.record[phone_data.count] || OpenStruct.new
@@ -370,7 +370,7 @@ class Rolodex
     title.draw(false)
 
     # Create the phone line type list.
-    types = Rolodex::GLineType.map do |type|
+    types = Rolodex::LINE_TYPE.map do |type|
       format('<C></U>%s', type)
     end
 
@@ -387,7 +387,7 @@ class Rolodex
       true,
       false,
     )
-    phone_record.line_type = Rolodex::GTypeReverseMap[item_list.activate([])]
+    phone_record.line_type = Rolodex::REVERSE_TYPE_MAP[item_list.activate([])]
     item_list.destroy
 
     # Check the return code of the line type question.
@@ -395,9 +395,9 @@ class Rolodex
       phone_record.line_type = :VOICE
       return 1
     elsif %i[PAGER CELL].include?(phone_record.line_type)
-      ret = Rolodex.getSmallPhoneRecord(screen, phone_record)
+      ret = Rolodex.get_small_phone_record(screen, phone_record)
     else
-      ret = Rolodex.getLargePhoneRecord(screen, phone_record)
+      ret = Rolodex.get_large_phone_record(screen, phone_record)
     end
 
     # Check the return value from the getXXXPhoneRecord function.
@@ -411,7 +411,7 @@ class Rolodex
   end
 
   # This gets a phone record with all the details
-  def self.getLargePhoneRecord(screen, phone_record)
+  def self.get_large_phone_record(screen, phone_record)
     # Define the widget.
     name_entry = Slithernix::Cdk::Widget::Entry.new(
       screen,
@@ -597,7 +597,7 @@ class Rolodex
   end
 
   # This gets a small phone record.
-  def self.getSmallPhoneRecord(screen, phone_record)
+  def self.get_small_phone_record(screen, phone_record)
     # Define the widget.
     name_entry = Slithernix::Cdk::Widget::Entry.new(
       screen,
@@ -707,24 +707,26 @@ class Rolodex
   end
 
   # This opens a new RC file.
-  def self.openNewRCFile(screen, group_list, group_count)
+  def self.open_new_rc_file(screen, group_list, group_count)
     # Get the filename
-    file_selector = Slithernix::Cdk::Widget::FSelect.new(screen,
-                                                         Slithernix::Cdk::CENTER,
-                                                         Slithernix::Cdk::CENTER,
-                                                         20,
-                                                         55,
-                                                         '<C>Open RC File',
-                                                         'Filename: ',
-                                                         Curses::A_NORMAL,
-                                                         '.'.ord,
-                                                         Curses::A_REVERSE,
-                                                         '</5>',
-                                                         '</48>',
-                                                         '</N>',
-                                                         '</N>',
-                                                         true,
-                                                         false,)
+    file_selector = Slithernix::Cdk::Widget::FSelect.new(
+      screen,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::CENTER,
+      20,
+      55,
+      '<C>Open RC File',
+      'Filename: ',
+      Curses::A_NORMAL,
+      '.'.ord,
+      Curses::A_REVERSE,
+      '</5>',
+      '</48>',
+      '</N>',
+      '</N>',
+      true,
+      false,
+    )
 
     # Activate the file selector.
     filename = file_selector.activate([])
@@ -741,7 +743,7 @@ class Rolodex
     group_list.clear
 
     # Open the RC file
-    group_count = Rolodex.readRCFile(filename, group_list)
+    group_count = Rolodex.read_rc_file(filename, group_list)
 
     # Check the return value.
     if group_count.negative?
@@ -762,7 +764,7 @@ class Rolodex
   end
 
   # This reads the user's rc file.
-  def self.readRCFile(filename, group_list)
+  def self.read_rc_file(filename, group_list)
     groups_found = 0
     errors_found = 0
     lines = []
@@ -811,7 +813,7 @@ class Rolodex
   end
 
   # This writes out the new RC file.
-  def self.writeRCFile(screen, filename, group_list, group_count)
+  def self.write_rc_file(screen, filename, group_list, group_count)
     # TODO: error handling
     fd = File.new(filename, 'w')
 
@@ -853,7 +855,7 @@ class Rolodex
 
   # This function gets a new rc filename and saves the contents of the
   # groups under that name.
-  def self.writeRCFileAs(screen, group_list, group_count)
+  def self.write_rc_file_as(screen, group_list, group_count)
     # Create the entry field.
     new_rc_file = Slithernix::Cdk::Widget::Entry.new(
       screen,
@@ -891,7 +893,7 @@ class Rolodex
     end
 
     # Call the function to save the RC file.
-    ret = Rolodex.writeRCFile(screen, new_filename, group_list, group_count)
+    ret = Rolodex.write_rc_file(screen, new_filename, group_list, group_count)
 
     # Reset the saved flag if the rc file saved ok.
     if ret != 0
@@ -906,7 +908,7 @@ class Rolodex
   end
 
   # This opens a phone data file and returns the number of elements read
-  def self.readPhoneDataFile(data_file, phone_data)
+  def self.read_phone_data_file(data_file, phone_data)
     lines = []
 
     lines_read = Slithernix::Cdk.read_file(data_file, lines)
@@ -927,7 +929,7 @@ class Rolodex
           phone_data.record[lines_found] || OpenStruct.new
         phone_data.record[lines_found].name = items[0]
         phone_data.record[lines_found].line_type =
-          Rolodex::GTypeReverseMap[items[1].to_i]
+          Rolodex::REVERSE_TYPE_MAP[items[1].to_i]
         phone_data.record[lines_found].phone_number = items[2]
         phone_data.record[lines_found].address = items[3]
         phone_data.record[lines_found].city = items[4]
@@ -940,7 +942,7 @@ class Rolodex
           phone_data.record[lines_found] || OpenStruct.new
         phone_data.record[lines_found].name = items[0]
         phone_data.record[lines_found].line_type =
-          Rolodex::GTypeReverseMap[items[1].to_i]
+          Rolodex::REVERSE_TYPE_MAP[items[1].to_i]
         phone_data.record[lines_found].phone_number = items[2]
         phone_data.record[lines_found].address = items[3]
         phone_data.record[lines_found].city = items[4]
@@ -964,7 +966,7 @@ class Rolodex
   end
 
   # This writes a phone data file and returns the number of elements written.
-  def self.savePhoneDataFile(filename, phone_data)
+  def self.save_phone_data_file(filename, phone_data)
     # TODO: add error handling
     fd = File.new(filename, 'w')
 
@@ -988,7 +990,7 @@ class Rolodex
           '%s%c%d%c%s%c-%c-%c-%c-%c%s',
           phone_record.name,
           Slithernix::Cdk.CTRL('V').chr,
-          Rolodex::GTypeMap[phone_record.line_type],
+          Rolodex::TYPE_MAP[phone_record.line_type],
           Slithernix::Cdk.CTRL('V').chr,
           phone_record.phone_number,
           Slithernix::Cdk.CTRL('V').chr,
@@ -1003,7 +1005,7 @@ class Rolodex
           '%s%c%d%c%s%c%s%c%s%c%s%c%s',
           phone_record.name,
           Slithernix::Cdk.CTRL('V').chr,
-          Rolodex::GTypeMap[phone_record.line_type],
+          Rolodex::TYPE_MAP[phone_record.line_type],
           Slithernix::Cdk.CTRL('V').chr,
           phone_record.phone_number,
           Slithernix::Cdk.CTRL('V').chr,
@@ -1024,7 +1026,7 @@ class Rolodex
   end
 
   # This displays the information about the phone record.
-  def self.displayPhoneInfo(screen, record)
+  def self.display_phone_info(screen, record)
     # Check the type of line it is.
     mesg = if %i[VOICE DATA1 DATA2 DATA3 FAX1 FAX2 FAX2].include?(
       record.line_type
@@ -1032,7 +1034,7 @@ class Rolodex
              # Create the information to display.
              [
                format('<C></U>%s Phone Record',
-                      Rolodex::GLineType[Rolodex::GTypeMap[record.line_type]]),
+                      Rolodex::LINE_TYPE[Rolodex::TYPE_MAP[record.line_type]]),
                format('</B/29>Name        <!B!29>%s', record.name),
                format('</B/29>Phone Number<!B!29>%s', record.phone_number),
                format('</B/29>Address     <!B!29>%s', record.address),
@@ -1047,7 +1049,7 @@ class Rolodex
              # Create the information to display.
              [
                format('<C></U>%s Phone Record',
-                      Rolodex::GLineType[Rolodex::GTypeMap[record.line_type]]),
+                      Rolodex::LINE_TYPE[Rolodex::TYPE_MAP[record.line_type]]),
                format('</B/29>Name        <!B!29>%s', record.name),
                format('</B/29>Phone Number<!B!29>%s', record.phone_number),
                format('</B/29>Comment     <!B!29>%s', record.desc),
@@ -1065,7 +1067,7 @@ class Rolodex
 
   # This function allows the user to add/delete/modify/save the
   # contents of a rolodex group.
-  def self.useRolodexGroup(screen, group_name, _group_desc, group_dbm)
+  def self.use_rolodex_group(screen, group_name, _group_desc, group_dbm)
     # Set up the help window at the bottom of the screen.
     title = [
       '<C><#HL(30)>',
@@ -1086,7 +1088,7 @@ class Rolodex
     # Open the DBM file and read in the contents of the file
     phone_data = OpenStruct.new
     phone_data.record = []
-    phone_count = Rolodex.readPhoneDataFile(group_dbm, phone_data)
+    phone_count = Rolodex.read_phone_data_file(group_dbm, phone_data)
     phone_data.count = phone_count
 
     # Check the number of entries returned.
@@ -1107,7 +1109,7 @@ class Rolodex
       end
 
       # Get the information for a new number.
-      return if Rolodex.addPhoneRecord(screen, phone_data) != 0
+      return if Rolodex.add_phone_record(screen, phone_data) != 0
     elsif phone_count.negative?
       mesg = ['<C>Could not open the database for this group.']
       screen.popup_label(mesg, mesg.size)
@@ -1118,7 +1120,7 @@ class Rolodex
     # Set up the data needed for the scrolling list.
     index = phone_data.record.map do |phone_record|
       format('</B/29>%s (%s)', phone_record.name,
-             Rolodex::GLineType[Rolodex::GTypeMap[phone_record.line_type]])
+             Rolodex::LINE_TYPE[Rolodex::TYPE_MAP[phone_record.line_type]])
     end
     temp = format('<C>Listing of Group </U>%s', group_name)
     height = [phone_data.count, 5].min + 3
@@ -1150,11 +1152,11 @@ class Rolodex
       scrollp.erase
 
       # Call the function which gets phone record information.
-      if Rolodex.addPhoneRecord(scrollp.screen, phone_data).zero?
+      if Rolodex.add_phone_record(scrollp.screen, phone_data).zero?
         temp = format(
           '%s (%s)',
           phone_record.name,
-          Rolodex::GLineType[Rolodex::GTypeMap[phone_record.line_type]]
+          Rolodex::LINE_TYPE[Rolodex::TYPE_MAP[phone_record.line_type]]
         )
         scrollp.addItem(temp)
       end
@@ -1236,12 +1238,12 @@ class Rolodex
       # Display the information.
       if selection >= 0
         # Display the information.
-        Rolodex.displayPhoneInfo(screen, phone_data.record[selection])
+        Rolodex.display_phone_info(screen, phone_data.record[selection])
       end
     end
 
     # Save teh rolodex information to file.
-    if Rolodex.savePhoneDataFile(group_dbm, phone_data).zero?
+    if Rolodex.save_phone_data_file(group_dbm, phone_data).zero?
       # Something happened.
       mesg = [
         '<C>Could not save phone data to data file.',
@@ -1256,7 +1258,7 @@ class Rolodex
   end
 
   # This allows the user to pick a DBM file to open.
-  def self.pickRolodexGroup(screen, title, group_list, group_count)
+  def self.pick_rolodex_group(screen, title, group_list, group_count)
     height = [group_count, 5].min + 3
 
     # Copy the names of the scrolling list into an array.
@@ -1314,7 +1316,7 @@ class Rolodex
   end
 
   # This allows the user to add a rolo group to the list.
-  def self.addRolodexGroup(screen, group_list, group_count)
+  def self.add_rolodex_group(screen, group_list, group_count)
     # Create the name widget.
     new_name = Slithernix::Cdk::Widget::Entry.new(
       screen,
@@ -1407,7 +1409,7 @@ class Rolodex
   end
 
   # This displays rolodex information.
-  def self.displayRolodexStats(screen, group_count)
+  def self.display_rolodex_stats(screen, group_count)
     # Create the information to display.
     mesg = [
       '<C></U>Rolodex Statistics',
@@ -1420,7 +1422,7 @@ class Rolodex
   end
 
   # This function displays a little pop up window discussing this demo.
-  def self.aboutCdkRolodex(screen)
+  def self.about_rolodex(screen)
     mesg = [
       '<C></U>About Cdk Rolodex',
       ' ',
@@ -1584,7 +1586,7 @@ class Rolodex
     group_list = []
 
     # Open the rolodex RC file.
-    group_count = Rolodex.readRCFile(@@grc_file, group_list)
+    group_count = Rolodex.read_rc_file(@@grc_file, group_list)
 
     # Check the value of group_count
     if group_count.negative?
@@ -1625,10 +1627,10 @@ class Rolodex
       case selection
       when 0
         # Open the rolodex RC file.
-        group_count = Rolodex.openNewRCFile(cdkscreen, group_list, group_count)
+        group_count = Rolodex.open_new_rc_file(cdkscreen, group_list, group_count)
       when 1
         # Write out the RC file.
-        ret = Rolodex.writeRCFile(
+        ret = Rolodex.write_rc_file(
           cdkscreen, @@grc_file, group_list, group_count
         )
 
@@ -1636,7 +1638,7 @@ class Rolodex
         @@g_group_modified = false if ret != 0
       when 2
         # Save as.
-        ret = Rolodex.writeRCFileAs(cdkscreen, group_list, group_count)
+        ret = Rolodex.write_rc_file_as(cdkscreen, group_list, group_count)
 
         # Reset the saved flag if the rc file saved ok.
         @@g_group_modified = false if ret != 0
@@ -1644,7 +1646,7 @@ class Rolodex
         # Has anything changed?
         if @@g_group_modified
           # Write out the RC file.
-          Rolodex.writeRCFile(cdkscreen, @@grc_file, group_list, group_count)
+          Rolodex.write_rc_file(cdkscreen, @@grc_file, group_list, group_count)
         end
 
         # Remove the CDK widget pointers.
@@ -1657,8 +1659,8 @@ class Rolodex
         exit # EXIT_SUCCESS
       when 100
         # Add a new group to the list.
-        group_count = Rolodex.addRolodexGroup(cdkscreen,
-                                              group_list, group_count)
+        group_count = Rolodex.add_rolodex_group(cdkscreen,
+                                                group_list, group_count)
       when 101
         # If there are no groups, ask them if they want to create one.
         if group_count.zero?
@@ -1673,13 +1675,13 @@ class Rolodex
 
           # Add the group if they said yes.
           if cdkscreen.popup_dialog(mesg, 2, buttons, 2).zero?
-            group_count = Rolodex.addRolodexGroup(
+            group_count = Rolodex.add_rolodex_group(
               cdkscreen, group_list, group_count
             )
           end
         else
           # Get the number of the group to open.
-          group = Rolodex.pickRolodexGroup(
+          group = Rolodex.pick_rolodex_group(
             cdkscreen,
             '<C></B/29>Open Rolodex Group',
             group_list,
@@ -1691,7 +1693,7 @@ class Rolodex
             @@g_current_group = group_list[group].name.clone
 
             # Try to open the DBM file and read the contents.
-            Rolodex.useRolodexGroup(
+            Rolodex.use_rolodex_group(
               cdkscreen,
               group_list[group].name,
               group_list[group].desc,
@@ -1701,19 +1703,19 @@ class Rolodex
         end
       when 102
         # Delete the group chosen.
-        group_count = Rolodex.deleteRolodexGroup(
+        group_count = Rolodex.delete_rolodex_group(
           cdkscreen,
           group_list,
           group_count,
         )
       when 200
         # Print Phone Number Group.
-        Rolodex.printGroupNumbers(cdkscreen, group_list, group_count)
+        Rolodex.print_group_numbers(cdkscreen, group_list, group_count)
       when 300
         # About Rolodex.
-        Rolodex.aboutCdkRolodex(cdkscreen)
+        Rolodex.about_rolodex(cdkscreen)
       when 301
-        Rolodex.displayRolodexStats(rolodex_menu.screen, group_count)
+        Rolodex.display_rolodex_stats(rolodex_menu.screen, group_count)
       end
     end
   end

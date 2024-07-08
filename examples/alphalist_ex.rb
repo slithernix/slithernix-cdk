@@ -8,7 +8,7 @@ class AlphalistExample < CLIExample
   @@my_undo_list = []
   @@my_user_list = []
 
-  def self.getUserList(list)
+  def self.get_user_list(list)
     while (ent = Etc.getpwent)
       list << ent.name
     end
@@ -67,7 +67,7 @@ class AlphalistExample < CLIExample
     user_list = []
 
     # Get the user list.
-    user_size = AlphalistExample.getUserList(user_list)
+    user_size = AlphalistExample.get_user_list(user_list)
 
     if user_size <= 0
       warn 'Cannot get user list'
