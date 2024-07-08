@@ -33,7 +33,7 @@ module Slithernix
           @choice = []
           @choicelen = []
 
-          setBox(box)
+          set_box(box)
 
           # If the height is a negative value, the height will be ROWS-height,
           # otherwise the height will be the given height.
@@ -51,7 +51,7 @@ module Slithernix
             0,
           )
 
-          box_width = setTitle(title, box_width)
+          box_width = set_title(title, box_width)
 
           # Set the box height.
           if @title_lines > box_height
@@ -189,7 +189,7 @@ module Slithernix
           end
 
           # Set the exit type and return.
-          setExitType(0)
+          set_exit_type(0)
           0
         end
 
@@ -200,7 +200,7 @@ module Slithernix
           complete = false
 
           # Set the exit type
-          setExitType(0)
+          set_exit_type(0)
 
           # Draw the widget list.
           drawList(@box)
@@ -214,7 +214,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check for a predefined binding.
-            if checkBind(:Selection, input)
+            if check_bind(:Selection, input)
               complete = true
             else
               case input
@@ -249,13 +249,13 @@ module Slithernix
                   Slithernix::Cdk.Beep
                 end
               when Slithernix::Cdk::KEY_ESC
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Curses::Error
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Curses::KEY_ENTER, Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN
-                setExitType(input)
+                set_exit_type(input)
                 ret = 1
                 complete = true
               when Slithernix::Cdk::REFRESH
@@ -273,7 +273,7 @@ module Slithernix
 
           unless complete
             drawList(@box)
-            setExitType(0)
+            set_exit_type(0)
           end
 
           @result_data = ret
@@ -293,7 +293,7 @@ module Slithernix
           # Draw in the shadow if we need to.
           Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
 
-          drawTitle(@win)
+          draw_title(@win)
 
           # Redraw the list
           drawList(box)
@@ -392,7 +392,7 @@ module Slithernix
 
         # This function destroys the selection list.
         def destroy
-          cleanTitle
+          clean_title
           destroyInfo
 
           # Clean up the windows.
@@ -401,7 +401,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean up the key bindings
-          cleanBindings(:Selection)
+          clean_bindings(:Selection)
 
           # Unregister this widget.
           Slithernix::Cdk::Screen.unregister(:Selection, self)
@@ -409,7 +409,7 @@ module Slithernix
 
         # This function erases the selection list from the screen.
         def erase
-          return unless validCDKObject
+          return unless is_valid_widget?
 
           Slithernix::Cdk.eraseCursesWindow(@win)
           Slithernix::Cdk.eraseCursesWindow(@shadow_win)
@@ -419,7 +419,7 @@ module Slithernix
         def set(highlight, choices, box)
           setChoices(choices)
           setHighlight(highlight)
-          setBox(box)
+          set_box(box)
         end
 
         # This sets the selection list items.
@@ -456,7 +456,7 @@ module Slithernix
           # Make sure the title isn't nil
           return if title.nil?
 
-          setTitle(title, -(@box_width + 1))
+          set_title(title, -(@box_width + 1))
 
           setViewSize(@list_size)
         end

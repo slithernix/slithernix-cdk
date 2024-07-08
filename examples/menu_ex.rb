@@ -93,7 +93,7 @@ class MenuExample < Example
     end
 
     # Create the post process function.
-    menu.setPostProcess(display_callback, info_box)
+    menu.set_post_process(display_callback, info_box)
 
     # Draw the CDK screen.
     cdkscreen.refresh

@@ -40,7 +40,7 @@ class RaiseCDKObjectExample < Example
     ]
     label1 = Slithernix::Cdk::Widget::Label.new(cdkscreen, 10, 4, mesg1, 10,
                                                 true, false)
-    label1.setULchar('1'.ord | Curses::A_BOLD)
+    label1.set_upper_left_corner_char('1'.ord | Curses::A_BOLD)
 
     mesg2 = [
       'label2 label2 label2 label2 label2 label2 label2',
@@ -56,7 +56,7 @@ class RaiseCDKObjectExample < Example
     ]
     label2 = Slithernix::Cdk::Widget::Label.new(cdkscreen, 8, 8, mesg2, 10,
                                                 true, false)
-    label2.setULchar('2'.ord | Curses::A_BOLD)
+    label2.set_upper_left_corner_char('2'.ord | Curses::A_BOLD)
 
     mesg3 = [
       'label3 label3 label3 label3 label3 label3 label3',
@@ -72,7 +72,7 @@ class RaiseCDKObjectExample < Example
     ]
     label3 = Slithernix::Cdk::Widget::Label.new(cdkscreen, 6, 12, mesg3, 10,
                                                 true, false)
-    label3.setULchar('3'.ord | Curses::A_BOLD)
+    label3.set_upper_left_corner_char('3'.ord | Curses::A_BOLD)
 
     mesg4 = [
       'label4 label4 label4 label4 label4 label4 label4',
@@ -88,7 +88,7 @@ class RaiseCDKObjectExample < Example
     ]
     label4 = Slithernix::Cdk::Widget::Label.new(cdkscreen, 4, 16, mesg4, 10,
                                                 true, false)
-    label4.setULchar('4'.ord | Curses::A_BOLD)
+    label4.set_upper_left_corner_char('4'.ord | Curses::A_BOLD)
 
     mesg = ['</B>#<!B> - raise </U>label#<!U>, </B>r<!B> - </U>redraw<!U>, '.dup]
     mesg[0] << '</B>q<!B> - </U>quit<!U>'
@@ -102,17 +102,17 @@ class RaiseCDKObjectExample < Example
       params.shadow
     )
 
-    instruct.setULchar(' '.ord | Curses::A_NORMAL)
-    instruct.setURchar(' '.ord | Curses::A_NORMAL)
-    instruct.setLLchar(' '.ord | Curses::A_NORMAL)
-    instruct.setVTchar(' '.ord | Curses::A_NORMAL)
-    instruct.setHZchar(' '.ord | Curses::A_NORMAL)
+    instruct.set_upper_left_corner_char(' '.ord | Curses::A_NORMAL)
+    instruct.set_upper_right_corner_char(' '.ord | Curses::A_NORMAL)
+    instruct.set_lower_left_corner_char(' '.ord | Curses::A_NORMAL)
+    instruct.set_vertical_line_char(' '.ord | Curses::A_NORMAL)
+    instruct.set_horizontal_line_char(' '.ord | Curses::A_NORMAL)
 
-    label1.setLRchar(MY_LABEL(label1))
-    label2.setLRchar(MY_LABEL(label2))
-    label3.setLRchar(MY_LABEL(label3))
-    label4.setLRchar(MY_LABEL(label4))
-    instruct.setLRchar(MY_LABEL(instruct))
+    label1.set_lower_right_corner_char(MY_LABEL(label1))
+    label2.set_lower_right_corner_char(MY_LABEL(label2))
+    label3.set_lower_right_corner_char(MY_LABEL(label3))
+    label4.set_lower_right_corner_char(MY_LABEL(label4))
+    instruct.set_lower_right_corner_char(MY_LABEL(instruct))
 
     cdkscreen.refresh
 
@@ -132,11 +132,11 @@ class RaiseCDKObjectExample < Example
         next
       end
 
-      label1.setLRchar(MY_LABEL(label1))
-      label2.setLRchar(MY_LABEL(label2))
-      label3.setLRchar(MY_LABEL(label3))
-      label4.setLRchar(MY_LABEL(label4))
-      instruct.setLRchar(MY_LABEL(instruct))
+      label1.set_lower_right_corner_char(MY_LABEL(label1))
+      label2.set_lower_right_corner_char(MY_LABEL(label2))
+      label3.set_lower_right_corner_char(MY_LABEL(label3))
+      label4.set_lower_right_corner_char(MY_LABEL(label4))
+      instruct.set_lower_right_corner_char(MY_LABEL(instruct))
       cdkscreen.refresh
     end
 

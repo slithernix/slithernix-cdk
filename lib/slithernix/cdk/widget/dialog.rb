@@ -31,7 +31,7 @@ module Slithernix
             return nil
           end
 
-          setBox(box)
+          set_box(box)
           box_height = separator ? 1 : 0
           box_height += rows + (2 * @border_size) + 1
 
@@ -154,7 +154,7 @@ module Slithernix
           end
 
           # Set the exit type and exit
-          setExitType(0)
+          set_exit_type(0)
           -1
         end
 
@@ -167,7 +167,7 @@ module Slithernix
           complete = false
 
           # Set the exit type.
-          setExitType(0)
+          set_exit_type(0)
 
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
@@ -178,7 +178,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check for a key binding.
-            if checkBind(:Dialog, input)
+            if check_bind(:Dialog, input)
               complete = true
             else
               case input
@@ -200,12 +200,12 @@ module Slithernix
                 @screen.erase
                 @screen.refresh
               when Slithernix::Cdk::KEY_ESC
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Curses::Error
-                setExitType(input)
+                set_exit_type(input)
               when Curses::KEY_ENTER, Slithernix::Cdk::KEY_RETURN
-                setExitType(input)
+                set_exit_type(input)
                 ret = @current_button
                 complete = true
               end
@@ -221,7 +221,7 @@ module Slithernix
           unless complete
             drawButtons
             @win.refresh
-            setExitType(0)
+            set_exit_type(0)
           end
 
           @result_data = ret
@@ -261,7 +261,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@shadow_win)
 
           # Clean the key bindings
-          cleanBindings(:Dialog)
+          clean_bindings(:Dialog)
 
           # Unregister this widget
           Slithernix::Cdk::Screen.unregister(:Dialog, self)
@@ -269,7 +269,7 @@ module Slithernix
 
         # This function erases the dialog widget from the screen.
         def erase
-          return unless validCDKObject
+          return unless is_valid_widget?
 
           Slithernix::Cdk.eraseCursesWindow(@win)
           Slithernix::Cdk.eraseCursesWindow(@shadow_win)
@@ -279,7 +279,7 @@ module Slithernix
         def set(highlight, separator, box)
           setHighlight(highlight)
           setSeparator(separator)
-          setBox(box)
+          set_box(box)
         end
 
         # This sets the highlight attribute for the buttons.

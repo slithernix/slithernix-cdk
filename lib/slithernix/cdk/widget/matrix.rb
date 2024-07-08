@@ -34,7 +34,7 @@ module Slithernix
             Slithernix::Cdk::BACKCHAR => Curses::KEY_PPAGE
           }
 
-          setBox(box)
+          set_box(box)
           borderw = @box ? 1 : 0
 
           # Make sure that the number of rows/cols/vrows/vcols is not zero.
@@ -115,7 +115,7 @@ module Slithernix
           end
           max_width -= (col_space - 1)
           box_width = [max_width, box_width].max
-          box_width = setTitle(title, box_width)
+          box_width = set_title(title, box_width)
 
           # Make sure the dimensions of the window didn't extend
           # beyond the dimensions of the parent window
@@ -327,7 +327,7 @@ module Slithernix
           end
 
           # Set the exit type and exit.
-          setExitType(0)
+          set_exit_type(0)
           -1
         end
 
@@ -341,7 +341,7 @@ module Slithernix
           complete = false
 
           # Set the exit type.
-          setExitType(0)
+          set_exit_type(0)
 
           # Move the cursor to the correct position within the cell.
           if @colwidths[@ccol] == 1
@@ -363,7 +363,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check the key bindings.
-            if checkBind(:Matrix, input)
+            if check_bind(:Matrix, input)
               complete = true
             else
               case input
@@ -548,11 +548,11 @@ module Slithernix
                                                 ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
                 end
                 self.CurMatrixCell.refresh
-                setExitType(input)
+                set_exit_type(input)
                 ret = 1
                 complete = true
               when Curses::Error
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Slithernix::Cdk::KEY_ESC
                 if @box_cell
@@ -562,7 +562,7 @@ module Slithernix
                                                 ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
                 end
                 self.CurMatrixCell.refresh
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Slithernix::Cdk::REFRESH
                 @screen.erase
@@ -617,7 +617,7 @@ module Slithernix
             @oldvcol = @col
 
             # Set the exit type and exit.
-            setExitType(0)
+            set_exit_type(0)
           end
 
           @result_data = ret
@@ -855,7 +855,7 @@ module Slithernix
           # Should we box the matrix?
           Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
-          drawTitle(@win)
+          draw_title(@win)
 
           @win.refresh
 
@@ -867,7 +867,7 @@ module Slithernix
 
         # This function destroys the matrix widget.
         def destroy
-          cleanTitle
+          clean_title
 
           # Clear the matrix windows.
           Slithernix::Cdk.deleteCursesWindow(@cell[0][0])
@@ -887,7 +887,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          cleanBindings(:Matrix)
+          clean_bindings(:Matrix)
 
           # Unregister this widget.
           Slithernix::Cdk::Screen.unregister(:Matrix, self)
@@ -895,7 +895,7 @@ module Slithernix
 
         # This function erases the matrix widget from the screen.
         def erase
-          return unless validCDKObject
+          return unless is_valid_widget?
 
           # Clear the matrix cells.
           Slithernix::Cdk.eraseCursesWindow(@cell[0][0])

@@ -66,10 +66,10 @@ class ButtonboxExample < Example
     end
 
     # Set the lower left and right characters of the box.
-    entry.setLLchar(Slithernix::Cdk::ACS_LTEE)
-    entry.setLRchar(Slithernix::Cdk::ACS_RTEE)
-    button_widget.setULchar(Slithernix::Cdk::ACS_LTEE)
-    button_widget.setURchar(Slithernix::Cdk::ACS_RTEE)
+    entry.set_lower_left_corner_char(Slithernix::Cdk::ACS_LTEE)
+    entry.set_lower_right_corner_char(Slithernix::Cdk::ACS_RTEE)
+    button_widget.set_upper_left_corner_char(Slithernix::Cdk::ACS_LTEE)
+    button_widget.set_upper_right_corner_char(Slithernix::Cdk::ACS_RTEE)
 
     # Bind the Tab key in the entry field to send a
     # Tab key to the button box widget.

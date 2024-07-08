@@ -18,7 +18,7 @@ module Slithernix
           field_width = f_width
           field_rows = f_rows
 
-          setBox(box)
+          set_box(box)
 
           # If the field_width is a negative value, the field_width will be
           # COLS-field_width, otherwise the field_width will be the given width.
@@ -52,7 +52,7 @@ module Slithernix
           box_width = @label_len + field_width + 2
 
           old_width = box_width
-          box_width = setTitle(title, box_width)
+          box_width = set_title(title, box_width)
           horizontal_adjust = (box_width - old_width) / 2
 
           box_height += @title_lines
@@ -212,7 +212,7 @@ module Slithernix
           end
 
           # Set the exit type and exit.
-          setExitType(0)
+          set_exit_type(0)
           0
         end
 
@@ -266,7 +266,7 @@ module Slithernix
           complete = false
 
           # Set the exit type.
-          setExitType(0)
+          set_exit_type(0)
 
           # Refresh the field.
           drawField
@@ -285,7 +285,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check for a key binding...
-            if checkBind(:MEntry, input)
+            if check_bind(:MEntry, input)
               complete = true
             else
               moved = false
@@ -412,15 +412,15 @@ module Slithernix
                 if @info.size < @min + 1
                   Slithernix::Cdk.Beep
                 else
-                  setExitType(input)
+                  set_exit_type(input)
                   ret = @info
                   complete = true
                 end
               when Curses::Error
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Slithernix::Cdk::KEY_ESC
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Slithernix::Cdk::REFRESH
                 @screen.erase
@@ -447,7 +447,7 @@ module Slithernix
             end
           end
 
-          setExitType(0) unless complete
+          set_exit_type(0) unless complete
 
           @result_data = ret
           ret
@@ -465,7 +465,7 @@ module Slithernix
         def drawField
           currchar = @field_width * @top_row
 
-          drawTitle(@win)
+          draw_title(@win)
           @win.refresh
 
           lastpos = @info.size
@@ -522,7 +522,7 @@ module Slithernix
 
         # This function erases the multiple line entry field from the screen.
         def erase
-          return unless validCDKObject
+          return unless is_valid_widget?
 
           Slithernix::Cdk.eraseCursesWindow(@field_win)
           Slithernix::Cdk.eraseCursesWindow(@label_win)
@@ -532,7 +532,7 @@ module Slithernix
 
         # This function destroys a multiple line entry field widget.
         def destroy
-          cleanTitle
+          clean_title
 
           # Clean up the windows.
           Slithernix::Cdk.deleteCursesWindow(@field_win)
@@ -541,7 +541,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          cleanBindings(:MEntry)
+          clean_bindings(:MEntry)
 
           # Unregister this widget.
           Slithernix::Cdk::Screen.unregister(:MEntry, self)
@@ -551,7 +551,7 @@ module Slithernix
         def set(value, min, box)
           setValue(value)
           setMin(min)
-          setBox(box)
+          set_box(box)
         end
 
         # This removes the old information in the entry field and keeps the

@@ -22,7 +22,7 @@ module Slithernix
           bindings[Slithernix::Cdk::BACKCHAR] = Curses::KEY_PPAGE,
                                                 bindings[Slithernix::Cdk::FORCHAR] =
                                                   Curses::KEY_NPAGE,
-                                                setBox(box)
+                                                set_box(box)
           box_height = (@border_size * 2) + 1
 
           # Set some basic values of the widget's data field.
@@ -51,7 +51,7 @@ module Slithernix
           end
 
           old_width = box_width
-          box_width = setTitle(title, box_width)
+          box_width = set_title(title, box_width)
           horizontal_adjust = (box_width - old_width) / 2
 
           box_height += @title_lines
@@ -163,7 +163,7 @@ module Slithernix
           end
 
           # Set the exit type and return.
-          setExitType(0)
+          set_exit_type(0)
           -1
         end
 
@@ -285,7 +285,7 @@ module Slithernix
           complete = false
 
           # Set the exit type.
-          setExitType(0)
+          set_exit_type(0)
 
           # Draw the field.
           drawField
@@ -300,7 +300,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check for a key binding.
-            if checkBind(:Slider, input)
+            if check_bind(:Slider, input)
               complete = true
             else
               case input
@@ -325,14 +325,14 @@ module Slithernix
               when Curses::KEY_END
                 @current = @high
               when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
-                setExitType(input)
+                set_exit_type(input)
                 ret = @current
                 complete = true
               when Slithernix::Cdk::KEY_ESC
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Curses::Error
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Slithernix::Cdk::REFRESH
                 @screen.erase
@@ -368,7 +368,7 @@ module Slithernix
 
           unless complete
             drawField
-            setExitType(0)
+            set_exit_type(0)
           end
 
           @return_data = 0
@@ -396,7 +396,7 @@ module Slithernix
           # Box the widget if asked.
           Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
-          drawTitle(@win)
+          draw_title(@win)
 
           # Draw the label.
           unless @label_win.nil?
@@ -457,7 +457,7 @@ module Slithernix
 
         # This function destroys the widget.
         def destroy
-          cleanTitle
+          clean_title
           @label = []
 
           # Clean up the windows.
@@ -467,7 +467,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          cleanBindings(:Slider)
+          clean_bindings(:Slider)
 
           # Unregister this widget.
           Slithernix::Cdk::Screen.unregister(:Slider, self)
@@ -475,7 +475,7 @@ module Slithernix
 
         # This function erases the widget from the screen.
         def erase
-          return unless validCDKObject
+          return unless is_valid_widget?
 
           Slithernix::Cdk.eraseCursesWindow(@label_win)
           Slithernix::Cdk.eraseCursesWindow(@field_win)
@@ -491,7 +491,7 @@ module Slithernix
         def set(low, high, value, box)
           setLowHigh(low, high)
           setValue(value)
-          setBox(box)
+          set_box(box)
         end
 
         # This sets the widget's value.

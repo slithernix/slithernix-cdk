@@ -214,8 +214,8 @@ class Vinstall
     )
 
     # Set the top left/right characters of the histogram.
-    progress_bar.setLLchar(Slithernix::Cdk::ACS_LTEE)
-    progress_bar.setLRchar(Slithernix::Cdk::ACS_RTEE)
+    progress_bar.set_lower_left_corner_char(Slithernix::Cdk::ACS_LTEE)
+    progress_bar.set_lower_right_corner_char(Slithernix::Cdk::ACS_RTEE)
 
     # Set the initial value fo the histgoram.
     progress_bar.set(
@@ -246,8 +246,8 @@ class Vinstall
     )
 
     # Set the top left/right characters of the scrolling window.
-    install_output.setULchar(Slithernix::Cdk::ACS_LTEE)
-    install_output.setURchar(Slithernix::Cdk::ACS_RTEE)
+    install_output.set_upper_left_corner_char(Slithernix::Cdk::ACS_LTEE)
+    install_output.set_upper_right_corner_char(Slithernix::Cdk::ACS_RTEE)
 
     # Draw the screen.
     cdkscreen.draw

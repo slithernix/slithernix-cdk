@@ -10,13 +10,13 @@ module Slithernix
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
 
-          setBox(false)
+          set_box(false)
 
           box_height = Slithernix::Cdk.setWidgetDimension(parent_height,
                                                           height, 3)
           box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width,
                                                          0)
-          box_width = setTitle(title, box_width)
+          box_width = set_title(title, box_width)
           box_height += @title_lines
           box_width = [parent_width, box_width].min
           box_height = [parent_height, box_height].min
@@ -301,7 +301,7 @@ module Slithernix
             Slithernix::Cdk::ACS_HLINE,
           )
 
-          drawTitle(@win)
+          draw_title(@win)
 
           # Draw in the X axis title.
           if @xtitle&.size&.positive?
@@ -431,14 +431,14 @@ module Slithernix
         end
 
         def destroy
-          cleanTitle
-          cleanBindings(:Graph)
+          clean_title
+          clean_bindings(:Graph)
           Slithernix::Cdk::Screen.unregister(:Graph, self)
           Slithernix::Cdk.deleteCursesWindow(@win)
         end
 
         def erase
-          Slithernix::Cdk.eraseCursesWindow(@win) if validCDKObject
+          Slithernix::Cdk.eraseCursesWindow(@win) if is_valid_widget?
         end
 
         def position

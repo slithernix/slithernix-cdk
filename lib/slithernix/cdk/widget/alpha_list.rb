@@ -24,7 +24,7 @@ module Slithernix
             return nil
           end
 
-          setBox(box)
+          set_box(box)
 
           # If the height is a negative value, the height will be ROWS-height,
           # otherwise the height will be the given height.
@@ -118,8 +118,8 @@ module Slithernix
             destroy
             return nil
           end
-          @entry_field.setLLchar(Slithernix::Cdk::ACS_LTEE)
-          @entry_field.setLRchar(Slithernix::Cdk::ACS_RTEE)
+          @entry_field.set_lower_left_corner_char(Slithernix::Cdk::ACS_LTEE)
+          @entry_field.set_lower_right_corner_char(Slithernix::Cdk::ACS_RTEE)
 
           # Callback functions
           adjust_alphalist_cb = lambda do |_widget_type, _widget, alphalist, key|
@@ -249,7 +249,7 @@ module Slithernix
             result = 1
             empty = false
 
-            if alphalist.isBind(:AlphaList, input)
+            if alphalist.does_bind_exist?(:AlphaList, input)
               result = 1 # Don't try to use this key in editing
             elsif (Slithernix::Cdk.isChar(input) &&
                 input.chr.match(/^[[:alnum:][:punct:]]$/)) ||
@@ -324,7 +324,7 @@ module Slithernix
           )
 
           # Set up the post-process function for the entry field.
-          @entry_field.setPreProcess(pre_process_entry_field, self)
+          @entry_field.set_pre_process(pre_process_entry_field, self)
 
           # Create the scrolling list.  It overlaps the entry field by one line if
           # we are using box-borders.
@@ -351,8 +351,8 @@ module Slithernix
             false,
           )
 
-          @scroll_field.setULchar(Slithernix::Cdk::ACS_LTEE)
-          @scroll_field.setURchar(Slithernix::Cdk::ACS_RTEE)
+          @scroll_field.set_upper_left_corner_char(Slithernix::Cdk::ACS_LTEE)
+          @scroll_field.set_upper_right_corner_char(Slithernix::Cdk::ACS_RTEE)
 
           # Setup the key bindings.
           bindings.each do |from, to|
@@ -364,7 +364,7 @@ module Slithernix
 
         # This erases the alphalist from the screen.
         def erase
-          return unless validCDKObject
+          return unless is_valid_widget?
 
           @scroll_field.erase
           @entry_field.erase
@@ -458,7 +458,7 @@ module Slithernix
           setContents(list, list_size)
           setFillerChar(filler_char)
           setHighlight(highlight)
-          setBox(box)
+          set_box(box)
         end
 
         # This function sets the information inside the alphalist.
@@ -517,34 +517,34 @@ module Slithernix
 
         # These functions set the drawing characters of the widget.
         def setMyULchar(character)
-          @entry_field.setULchar(character)
+          @entry_field.set_upper_left_corner_char(character)
         end
 
         def setMyURchar(character)
-          @entry_field.setURchar(character)
+          @entry_field.set_upper_right_corner_char(character)
         end
 
         def setMyLLchar(character)
-          @scroll_field.setLLchar(character)
+          @scroll_field.set_lower_left_corner_char(character)
         end
 
         def setMyLRchar(character)
-          @scroll_field.setLRchar(character)
+          @scroll_field.set_lower_right_corner_char(character)
         end
 
         def setMyVTchar(character)
-          @entry_field.setVTchar(character)
-          @scroll_field.setVTchar(character)
+          @entry_field.set_vertical_line_char(character)
+          @scroll_field.set_vertical_line_char(character)
         end
 
         def setMyHZchar(character)
-          @entry_field.setHZchar(character)
-          @scroll_field.setHZchar(character)
+          @entry_field.set_horizontal_line_char(character)
+          @scroll_field.set_horizontal_line_char(character)
         end
 
         def setMyBXattr(character)
-          @entry_field.setBXattr(character)
-          @scroll_field.setBXattr(character)
+          @entry_field.set_box_attr(character)
+          @scroll_field.set_box_attr(character)
         end
 
         # This sets the background attribute of the widget.
@@ -563,7 +563,7 @@ module Slithernix
           destroyInfo
 
           # Clean the key bindings.
-          cleanBindings(:AlphaList)
+          clean_bindings(:AlphaList)
 
           @entry_field.destroy
           @scroll_field.destroy
@@ -577,13 +577,13 @@ module Slithernix
         end
 
         # This function sets the pre-process function.
-        def setPreProcess(callback, data)
-          @entry_field.setPreProcess(callback, data)
+        def set_pre_process(callback, data)
+          @entry_field.set_pre_process(callback, data)
         end
 
         # This function sets the post-process function.
-        def setPostProcess(callback, data)
-          @entry_field.setPostProcess(callback, data)
+        def set_post_process(callback, data)
+          @entry_field.set_post_process(callback, data)
         end
 
         def createList(list, list_size)

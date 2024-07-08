@@ -18,7 +18,7 @@ module Slithernix
 
           return nil if rows <= 0
 
-          setBox(box)
+          set_box(box)
           box_height = rows + (2 * @border_size)
 
           @info = []
@@ -88,7 +88,7 @@ module Slithernix
         # This sets multiple attributes of the widget
         def set(mesg, lines, box)
           setMessage(mesg, lines)
-          setBox(box)
+          set_box(box)
         end
 
         # This sets the information within the label.
@@ -166,7 +166,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@shadow_win)
           Slithernix::Cdk.deleteCursesWindow(@win)
 
-          cleanBindings(:Label)
+          clean_bindings(:Label)
 
           Slithernix::Cdk::Screen.unregister(:Label, self)
         end

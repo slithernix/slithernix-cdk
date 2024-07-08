@@ -16,7 +16,7 @@ module Slithernix
           @width = width
           @shadow = shadow
 
-          setBox(box)
+          set_box(box)
           if @win.nil?
             destroy
             # return (0);
@@ -39,7 +39,7 @@ module Slithernix
           return -1 if mesg.nil? || (mesg == '')
 
           # Keep the box info, setting BorderOf()
-          setBox(box)
+          set_box(box)
 
           padding = mesg[-1] == ' ' ? 0 : 1
 
@@ -154,7 +154,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          cleanBindings(:Marquee)
+          clean_bindings(:Marquee)
 
           # Unregister this widget.
           Slithernix::Cdk::Screen.unregister(:Marquee, self)
@@ -162,14 +162,14 @@ module Slithernix
 
         # This erases the widget.
         def erase
-          return unless validCDKObject
+          return unless is_valid_widget?
 
           Slithernix::Cdk.eraseCursesWindow(@win)
           Slithernix::Cdk.eraseCursesWindow(@shadow_win)
         end
 
         # This sets the widget box attribute.
-        def setBox(box)
+        def set_box(box)
           xpos = @win.nil? ? 0 : @win.begx
           ypos = @win.nil? ? 0 : @win.begy
 

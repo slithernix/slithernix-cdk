@@ -77,9 +77,9 @@ module Slithernix
             Slithernix::Cdk::BACKCHAR => Curses::KEY_PPAGE
           }
 
-          setBox(box)
+          set_box(box)
 
-          box_width = setTitle(title, box_width)
+          box_width = set_title(title, box_width)
           box_height += @title_lines
 
           # Make sure we didn't extend beyond the dimensions of the window.
@@ -145,7 +145,7 @@ module Slithernix
             destroy
             return nil
           end
-          setBox(box)
+          set_box(box)
 
           @marker = [0] * Slithernix::Cdk::Widget::Calendar::CALENDAR_LIMIT
 
@@ -210,7 +210,7 @@ module Slithernix
           complete = false
 
           # Set the exit type
-          setExitType(0)
+          set_exit_type(0)
 
           # Refresh the widget field.
           drawField
@@ -224,7 +224,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check a predefined binding
-            if checkBind(:Calendar, input)
+            if check_bind(:Calendar, input)
               checkEarlyExit
               complete = true
             else
@@ -252,13 +252,13 @@ module Slithernix
               when Curses::KEY_HOME
                 setDate(-1, -1, -1)
               when Slithernix::Cdk::KEY_ESC
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Curses::Error
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
-                setExitType(input)
+                set_exit_type(input)
                 ret = getCurrentTime
                 complete = true
               when Slithernix::Cdk::REFRESH
@@ -274,7 +274,7 @@ module Slithernix
             end
           end
 
-          setExitType(0) unless complete
+          set_exit_type(0) unless complete
 
           @result_data = ret
           ret
@@ -298,7 +298,7 @@ module Slithernix
           # Box the widget if asked.
           Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
-          drawTitle(@win)
+          draw_title(@win)
 
           # Draw in the day-of-the-week header.
           (0...7).each do |col|
@@ -393,7 +393,7 @@ module Slithernix
           setMonthAttribute(month_attrib)
           setYearAttribute(year_attrib)
           setHighlight(highlight)
-          setBox(box)
+          set_box(box)
         end
 
         # This sets the date and some attributes.
@@ -469,7 +469,7 @@ module Slithernix
 
         # This erases the calendar widget.
         def erase
-          return unless validCDKObject
+          return unless is_valid_widget?
 
           Slithernix::Cdk.eraseCursesWindow(@label_win)
           Slithernix::Cdk.eraseCursesWindow(@field_win)
@@ -479,7 +479,7 @@ module Slithernix
 
         # This destroys the calendar
         def destroy
-          cleanTitle
+          clean_title
 
           Slithernix::Cdk.deleteCursesWindow(@label_win)
           Slithernix::Cdk.deleteCursesWindow(@field_win)
@@ -487,7 +487,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          cleanBindings(:Calendar)
+          clean_bindings(:Calendar)
 
           # Unregister the widget.
           Slithernix::Cdk::Screen.unregister(:Calendar, self)

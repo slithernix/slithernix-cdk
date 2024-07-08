@@ -23,7 +23,7 @@ module Slithernix
             '$' => Curses::KEY_END
           }
 
-          setBox(box)
+          set_box(box)
 
           # If the height is a negative value, the height will be
           # ROWS-height, otherwise the height will be the given height.
@@ -34,7 +34,7 @@ module Slithernix
           # COLS-width, otherwise the widget will be the given width.
           box_width = Slithernix::Cdk.setWidgetDimension(parent_width, width,
                                                          0)
-          box_width = setTitle(title, box_width)
+          box_width = set_title(title, box_width)
 
           # Set the box height.
           box_height += @title_lines + 1
@@ -117,7 +117,7 @@ module Slithernix
         # This sets the lines and the box attribute of the scrolling window.
         def set(list, lines, box)
           setContents(list, lines)
-          setBox(box)
+          set_box(box)
         end
 
         def setupLine(list, x)
@@ -327,7 +327,7 @@ module Slithernix
           end
 
           # Set the exit type and return.
-          setExitType(0)
+          set_exit_type(0)
         end
 
         # This injects a single character into the widget.
@@ -337,7 +337,7 @@ module Slithernix
           complete = false
 
           # Set the exit type.
-          setExitType(0)
+          set_exit_type(0)
 
           # Draw the window....
           draw(@box)
@@ -352,7 +352,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check for a key binding.
-            if checkBind(:SWindow, input)
+            if check_bind(:SWindow, input)
               complete = true
             else
               case input
@@ -413,14 +413,14 @@ module Slithernix
               when 's', 'S'
                 saveInformation
               when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
-                setExitType(input)
+                set_exit_type(input)
                 ret = 1
                 complete = true
               when Slithernix::Cdk::KEY_ESC
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Curses::Error
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Slithernix::Cdk::REFRESH
                 @screen.erase
@@ -437,7 +437,7 @@ module Slithernix
 
           unless complete
             drawList(@box)
-            setExitType(0)
+            set_exit_type(0)
           end
 
           @return_data = ret
@@ -457,7 +457,7 @@ module Slithernix
           # Box the widget if needed
           Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
-          drawTitle(@win)
+          draw_title(@win)
 
           @win.refresh
 
@@ -509,7 +509,7 @@ module Slithernix
         def destroy
           destroyInfo
 
-          cleanTitle
+          clean_title
 
           # Delete the windows.
           Slithernix::Cdk.deleteCursesWindow(@shadow_win)
@@ -517,7 +517,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          cleanBindings(:SWindow)
+          clean_bindings(:SWindow)
 
           # Unregister this widget.
           Slithernix::Cdk::Screen.unregister(:SWindow, self)
@@ -525,7 +525,7 @@ module Slithernix
 
         # This function erases the scrolling window widget.
         def erase
-          return unless validCDKObject
+          return unless is_valid_widget?
 
           Slithernix::Cdk.eraseCursesWindow(@win)
           Slithernix::Cdk.eraseCursesWindow(@shadow_win)

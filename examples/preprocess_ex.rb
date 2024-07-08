@@ -51,7 +51,7 @@ class PreProcessExample < Example
       1
     end
 
-    widget.setPreProcess(entry_pre_process_cb, nil)
+    widget.set_pre_process(entry_pre_process_cb, nil)
 
     # Activate the entry field.
     info = widget.activate('')

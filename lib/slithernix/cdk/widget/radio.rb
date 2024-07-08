@@ -22,7 +22,7 @@ module Slithernix
 
           bindings[Slithernix::Cdk::BACKCHAR] = Curses::KEY_PPAGE
           bindings[Slithernix::Cdk::FORCHAR]  = Curses::KEY_NPAGE
-          setBox(box)
+          set_box(box)
 
           # If the height is a negative value, height will be ROWS-height,
           # otherwise the height will be the given height.
@@ -40,7 +40,7 @@ module Slithernix
             5,
           )
 
-          box_width = setTitle(title, box_width)
+          box_width = set_title(title, box_width)
 
           # Set the box height.
           if @title_lines > box_height
@@ -176,7 +176,7 @@ module Slithernix
           end
 
           # Set the exit type and return
-          setExitType(0)
+          set_exit_type(0)
           -1
         end
 
@@ -187,7 +187,7 @@ module Slithernix
           complete = false
 
           # Set the exit type
-          setExitType(0)
+          set_exit_type(0)
 
           # Draw the widget list
           drawList(@box)
@@ -206,7 +206,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check for a predefined key binding.
-            if checkBind(:Radio, input)
+            if check_bind(:Radio, input)
               complete = true
             else
               case input
@@ -233,14 +233,14 @@ module Slithernix
               when ' '
                 @selected_item = @current_item
               when Slithernix::Cdk::KEY_ESC
-                setExitType(input)
+                set_exit_type(input)
                 ret = -1
                 complete = true
               when Curses::Error
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
-                setExitType(input)
+                set_exit_type(input)
                 ret = @selected_item
                 complete = true
               when Slithernix::Cdk::REFRESH
@@ -257,7 +257,7 @@ module Slithernix
 
           unless complete
             drawList(@box)
-            setExitType(0)
+            set_exit_type(0)
           end
 
           fixCursorPosition
@@ -277,7 +277,7 @@ module Slithernix
           # Do we need to draw in the shadow?
           Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
 
-          drawTitle(@win)
+          draw_title(@win)
 
           # Draw in the radio list.
           drawList(@box)
@@ -381,7 +381,7 @@ module Slithernix
 
         # This function destroys the radio widget.
         def destroy
-          cleanTitle
+          clean_title
           destroyInfo
 
           # Clean up the windows.
@@ -390,7 +390,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean up the key bindings.
-          cleanBindings(:Radio)
+          clean_bindings(:Radio)
 
           # Unregister this widget.
           Slithernix::Cdk::Screen.unregister(:Radio, self)
@@ -398,7 +398,7 @@ module Slithernix
 
         # This function erases the radio widget
         def erase
-          return unless validCDKObject
+          return unless is_valid_widget?
 
           Slithernix::Cdk.eraseCursesWindow(@win)
           Slithernix::Cdk.eraseCursesWindow(@shadow_win)
@@ -408,7 +408,7 @@ module Slithernix
         def set(highlight, choice_char, box)
           setHighlight(highlight)
           setChoiceCHaracter(choice_char)
-          setBox(box)
+          set_box(box)
         end
 
         # This sets the radio list items.

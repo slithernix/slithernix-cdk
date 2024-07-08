@@ -115,12 +115,12 @@ module Slithernix
 
       def inject(a); end
 
-      def setBox(box)
+      def set_box(box)
         @box = box
         @border_size = @box ? 1 : 0
       end
 
-      def getBox
+      def get_box
         @box
       end
 
@@ -128,49 +128,49 @@ module Slithernix
 
       def unfocus; end
 
-      def saveData; end
+      def save_data; end
 
-      def refreshData; end
+      def refresh_data; end
 
       def destroy; end
 
       # Set the widget's upper-left-corner line-drawing character.
-      def setULchar(ch)
+      def set_upper_left_corner_char(ch)
         @ULChar = ch
       end
 
       # Set the widget's upper-right-corner line-drawing character.
-      def setURchar(ch)
+      def set_upper_right_corner_char(ch)
         @URChar = ch
       end
 
       # Set the widget's lower-left-corner line-drawing character.
-      def setLLchar(ch)
+      def set_lower_left_corner_char(ch)
         @LLChar = ch
       end
 
-      # Set the widget's upper-right-corner line-drawing character.
-      def setLRchar(ch)
+      # Set the widget's lower-right-corner line-drawing character.
+      def set_lower_right_corner_char(ch)
         @LRChar = ch
       end
 
       # Set the widget's horizontal line-drawing character
-      def setHZchar(ch)
+      def set_horizontal_line_char(ch)
         @HZChar = ch
       end
 
       # Set the widget's vertical line-drawing character
-      def setVTchar(ch)
+      def set_vertical_line_char(ch)
         @VTChar = ch
       end
 
       # Set the widget's box-attributes.
-      def setBXattr(ch)
+      def set_box_attr(ch)
         @BXAttr = ch
       end
 
       # This sets the background color of the widget.
-      def setBackgroundColor(color)
+      def set_background_color(color)
         return if color.nil? || color == ''
 
         junk1 = []
@@ -184,7 +184,7 @@ module Slithernix
       end
 
       # Set the widget's title.
-      def setTitle(title, box_width)
+      def set_title(title, box_width)
         if title
           temp = title.split("\n")
           @title_lines = temp.size
@@ -224,7 +224,7 @@ module Slithernix
       end
 
       # Draw the widget's title
-      def drawTitle(_win)
+      def draw_title(_win)
         (0...@title_lines).each do |x|
           Draw.write_chtype(
             @win,
@@ -239,18 +239,18 @@ module Slithernix
       end
 
       # Remove storage for the widget's title.
-      def cleanTitle
+      def clean_title
         @title_lines = String.new
       end
 
       # Set data for preprocessing
-      def setPreProcess(fn, data)
+      def set_pre_process(fn, data)
         @pre_process_func = fn
         @pre_process_data = data
       end
 
       # Set data for postprocessing
-      def setPostProcess(fn, data)
+      def set_post_process(fn, data)
         @post_process_func = fn
         @post_process_data = data
       end
@@ -258,7 +258,7 @@ module Slithernix
       # Set the widget's exit-type based on the input.
       # The .exitType field should have been part of the CDKOBJS struct, but it
       # is used too pervasively in older applications to move (yet).
-      def setExitType(ch)
+      def set_exit_type(ch)
         case ch
         when Curses::Error
           @exit_type = :ERROR
@@ -271,7 +271,7 @@ module Slithernix
         end
       end
 
-      def validCDKObject
+      def is_valid_widget?
         result = false
         if Slithernix::Cdk::ALL_OBJECTS.include?(self)
           result = validObjType(widget_type)
@@ -281,7 +281,7 @@ module Slithernix
 
       def getc
         cdktype = widget_type
-        test = bindableObject(cdktype)
+        test = is_bindable_object?(cdktype)
         result = @input_window.getch
 
         if result.ord >= 0 && !test.nil? && test.binding_list.include?(result) &&
@@ -324,7 +324,7 @@ module Slithernix
 
       # This is one of many methods whose purpose I really don't get. Look
       # into removal. -- snake 2024
-      def bindableObject(_cdktype)
+      def is_bindable_object?(_cdktype)
         return @entry_field if %i[FSelect AlphaList].include?(widget_type)
 
         # if cdktype != widget_type
@@ -338,19 +338,19 @@ module Slithernix
       end
 
       def bind(type, key, function, data)
-        widget = bindableObject(type)
+        widget = is_bindable_object?(type)
         return unless key.ord < Curses::KEY_MAX && widget
 
         widget.binding_list[key] = [function, data] if key.ord != 0
       end
 
       def unbind(type, key)
-        widget = bindableObject(type)
+        widget = is_bindable_object?(type)
         widget&.binding_list&.delete(key)
       end
 
-      def cleanBindings(type)
-        widget = bindableObject(type)
+      def clean_bindings(type)
+        widget = is_bindable_object?(type)
         widget.binding_list.clear if widget&.binding_list
       end
 
@@ -358,8 +358,8 @@ module Slithernix
       # If it does then it runs the command and returns its value, normally true
       # If it doesn't it returns a false.  This way we can 'overwrite' coded
       # bindings.
-      def checkBind(type, key)
-        widg = bindableObject(type)
+      def check_bind(type, key)
+        widg = is_bindable_object?(type)
         if widg&.binding_list&.include?(key)
           function = widg.binding_list[key][0]
           data = widg.binding_list[key][1]
@@ -373,9 +373,9 @@ module Slithernix
       end
 
       # This checks to see if the binding for the key exists.
-      def isBind(type, key)
+      def does_bind_exist?(type, key)
         result = false
-        widg = bindableObject(type)
+        widg = is_bindable_object?(type)
         result = widg.binding_list.include?(key) unless widg.nil?
 
         result

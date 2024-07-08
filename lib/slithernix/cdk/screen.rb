@@ -78,7 +78,7 @@ module Slithernix
           # Update the widget-focus
           if screen.widget_focus == index
             screen.widget_focus -= 1
-            Traverse.set_focus_on_next_widget(screen)
+            Traverse.set_focus_to_next_widget(screen)
           elsif screen.widget_focus > index
             screen.widget_focus -= 1
           end

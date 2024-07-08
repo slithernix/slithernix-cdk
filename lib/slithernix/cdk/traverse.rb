@@ -4,7 +4,7 @@ module Slithernix
   module Cdk
     module Traverse
       def self.reset_screen(screen)
-        refreshDataCDKScreen(screen)
+        refresh_data(screen)
       end
 
       def self.exit_screen_ok(screen)
@@ -38,10 +38,10 @@ module Slithernix
       end
 
       # Set focus to the next widget, returning it.
-      def self.set_focus_on_next_widget(screen)
+      def self.set_focus_to_next_widget(screen)
         result = nil
         curwidg = nil
-        n = getFocusIndex(screen)
+        n = get_focus_index(screen)
         first = n
 
         loop do
@@ -56,15 +56,15 @@ module Slithernix
           end
         end
 
-        setFocusIndex(screen, result ? n : -1)
+        set_focus_index(screen, result ? n : -1)
         result
       end
 
       # Set focus to the previous widget, returning it.
-      def self.set_focus_on_previous_widget(screen)
+      def self.set_focus_to_previous_widget(screen)
         result = nil
         curwidg = nil
-        n = getFocusIndex(screen)
+        n = get_focus_index(screen)
         first = n
 
         loop do
@@ -79,16 +79,16 @@ module Slithernix
           end
         end
 
-        setFocusIndex(screen, result ? n : -1)
+        set_focus_index(screen, result ? n : -1)
         result
       end
 
       # Set focus to a specific widget, returning it.
       # If the widget cannot be found, return nil.
-      def self.setCDKFocusCurrent(screen, newwidg)
+      def self.set_focus_to_widget(screen, newwidg)
         result = nil
         curwidg = nil
-        n = getFocusIndex(screen)
+        n = get_focus_index(screen)
         first = n
 
         loop do
@@ -104,29 +104,28 @@ module Slithernix
           end
         end
 
-        setFocusIndex(screen, result ? n : -1)
+        set_focus_index(screen, result ? n : -1)
         result
       end
 
       # Set focus to the first widget in the screen.
-      def self.setCDKFocusFirst(screen)
-        setFocusIndex(screen, screen.widget_count - 1)
-        switchFocus(set_focus_on_next_widget(screen), nil)
+      def self.set_focus_to_first_widget(screen)
+        set_focus_index(screen, screen.widget_count - 1)
+        switch_focus(set_focus_to_next_widget(screen), nil)
       end
 
       # Set focus to the last widget in the screen.
-      def self.setCDKFocusLast(screen)
-        setFocusIndex(screen, 0)
-        switchFocus(set_focus_on_previous_widget(screen), nil)
+      def self.set_focus_to_last_widget(screen)
+        set_focus_index(screen, 0)
+        switch_focus(set_focus_to_previous_widget(screen), nil)
       end
 
-      def self.traverseCDKOnce(screen, curwidg, key_code,
-                               function_key, func_menu_key)
+      def self.traverse_screen_once(screen, curwidg, key_code, function_key, func_menu_key)
         case key_code
         when Curses::KEY_BTAB
-          switchFocus(set_focus_on_previous_widget(screen), curwidg)
+          switch_focus(set_focus_to_previous_widget(screen), curwidg)
         when Slithernix::Cdk::KEY_TAB
-          switchFocus(set_focus_on_next_widget(screen), curwidg)
+          switch_focus(set_focus_to_next_widget(screen), curwidg)
         when Slithernix::Cdk.KEY_F(10)
           # save data and exit
           exit_screen_ok(screen)
@@ -135,17 +134,17 @@ module Slithernix
         when Slithernix::Cdk.CTRL('R')
           # reset data to defaults
           reset_screen(screen)
-          setFocus(curwidg)
+          set_focus(curwidg)
         when Slithernix::Cdk::REFRESH
           # redraw screen
           screen.refresh
-          setFocus(curwidg)
+          set_focus(curwidg)
         else
           # not everyone wants menus, so we make them optional here
           if func_menu_key&.call(key_code, function_key)
             # find and enable drop down menu
             screen.widget.each do |w|
-              handleMenu(screen, w, curwidg) if w&.widget_type == :Menu
+              handle_menu(screen, w, curwidg) if w&.widget_type == :Menu
             end
           else
             curwidg.inject(key_code)
@@ -154,12 +153,12 @@ module Slithernix
       end
 
       # Traverse the widget on a screen.
-      def self.traverseCDKScreen(screen)
+      def self.traverse_screen(screen)
         result = 0
-        curwidg = setCDKFocusFirst(screen)
+        curwidg = set_focus_to_first_widget(screen)
 
         unless curwidg.nil?
-          refreshDataCDKScreen(screen)
+          refresh_data(screen)
 
           screen.exit_status = Slithernix::Cdk::Screen::NOEXIT
 
@@ -170,11 +169,16 @@ module Slithernix
 
             # TODO: look at more direct way to do this
             check_menu_key = lambda do |key_code, function_key|
-              checkMenuKey(key_code, function_key)
+              check_menu_key(key_code, function_key)
             end
 
-            traverseCDKOnce(screen, curwidg, key,
-                            function[0], check_menu_key)
+            traverse_screen_once(
+              screen,
+              curwidg,
+              key,
+              function[0],
+              check_menu_key,
+            )
           end
 
           if screen.exit_status == Slithernix::Cdk::Screen::EXITOK
@@ -185,7 +189,7 @@ module Slithernix
         result
       end
 
-      def self.limitFocusIndex(screen, value)
+      def self.limit_focus_index(screen, value)
         if value >= screen.widget_count || value.negative?
           0
         else
@@ -193,15 +197,15 @@ module Slithernix
         end
       end
 
-      def self.getFocusIndex(screen)
-        limitFocusIndex(screen, screen.widget_focus)
+      def self.get_focus_index(screen)
+        limit_focus_index(screen, screen.widget_focus)
       end
 
-      def self.setFocusIndex(screen, value)
-        screen.widget_focus = limitFocusIndex(screen, value)
+      def self.set_focus_index(screen, value)
+        screen.widget_focus = limit_focus_index(screen, value)
       end
 
-      def self.unsetFocus(widg)
+      def self.unset_focus(widg)
         Curses.curs_set(0)
         return if widg.nil?
 
@@ -209,7 +213,7 @@ module Slithernix
         widg.unfocus
       end
 
-      def self.setFocus(widg)
+      def self.set_focus(widg)
         unless widg.nil?
           widg.has_focus = true
           widg.focus
@@ -217,22 +221,22 @@ module Slithernix
         Curses.curs_set(1)
       end
 
-      def self.switchFocus(newwidg, oldwidg)
+      def self.switch_focus(newwidg, oldwidg)
         if oldwidg != newwidg
-          unsetFocus(oldwidg)
-          setFocus(newwidg)
+          unset_focus(oldwidg)
+          set_focus(newwidg)
         end
         newwidg
       end
 
-      def self.checkMenuKey(key_code, function_key)
+      def self.check_menu_key(key_code, function_key)
         key_code == Slithernix::Cdk::KEY_ESC && !function_key
       end
 
-      def self.handleMenu(screen, menu, oldwidg)
+      def self.handle_menu(screen, menu, oldwidg)
         done = false
 
-        switchFocus(menu, oldwidg)
+        switch_focus(menu, oldwidg)
         until done
           key = menu.getch([])
 
@@ -249,23 +253,23 @@ module Slithernix
         end
 
         if (newwidg = get_current_focus(screen)).nil?
-          newwidg = set_focus_on_next_widget(screen)
+          newwidg = set_focus_to_next_widget(screen)
         end
 
-        switchFocus(newwidg, menu)
+        switch_focus(newwidg, menu)
       end
 
       # Save data in widget on a screen
-      def self.saveDataCDKScreen(screen)
+      def self.save_data(screen)
         screen.widget.each do |widget|
-          widget&.saveData
+          widget&.save_data
         end
       end
 
       # Refresh data in widget on a screen
-      def self.refreshDataCDKScreen(screen)
+      def self.refresh_data(screen)
         screen.widget.each do |widget|
-          widget&.refreshData
+          widget&.refresh_data
         end
       end
     end

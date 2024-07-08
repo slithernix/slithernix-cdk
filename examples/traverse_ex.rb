@@ -447,7 +447,7 @@ class TraverseExample < Example
       TraverseExample.preHandler(cdktype, widget, client_data, input)
     end
 
-    menu.setPreProcess(pre_handler, nil)
+    menu.set_pre_process(pre_handler, nil)
 
     # Set up the initial display
     TraverseExample.make_any(cdkscreen, 0, :Entry)
@@ -462,7 +462,7 @@ class TraverseExample < Example
     cdkscreen.refresh
 
     # Traverse the screen
-    Slithernix::Cdk::Traverse.traverseCDKScreen(cdkscreen)
+    Slithernix::Cdk::Traverse.traverse_screen(cdkscreen)
 
     mesg = [
       'Done',

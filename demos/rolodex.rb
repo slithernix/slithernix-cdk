@@ -879,7 +879,7 @@ class Rolodex
       end
       1
     end
-    new_rc_file.setPreProcess(entry_pre_process_cb, nil)
+    new_rc_file.set_pre_process(entry_pre_process_cb, nil)
 
     # Get the filename.
     new_filename = new_rc_file.activate([])

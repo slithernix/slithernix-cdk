@@ -19,7 +19,7 @@ module Slithernix
           xpos = xplace
           ypos = yplace
 
-          setBox(box)
+          set_box(box)
           box_height = (@border_size * 2) + 1
 
           # If the field_width is a negative value, the field_width will be
@@ -45,7 +45,7 @@ module Slithernix
           end
 
           old_width = box_width
-          box_width = setTitle(title, box_width)
+          box_width = set_title(title, box_width)
           horizontal_adjust = (box_width - old_width) / 2
 
           box_height += @title_lines
@@ -217,7 +217,7 @@ module Slithernix
           complete = false
 
           # Set the exit type
-          setExitType(0)
+          set_exit_type(0)
 
           # Refresh the widget field. This seems useless?
           # self.drawField
@@ -234,7 +234,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check a predefined binding
-            if checkBind(:Entry, input)
+            if check_bind(:Entry, input)
               complete = true
             else
               curr_pos = @screen_col + @left_char
@@ -312,7 +312,7 @@ module Slithernix
                   end
                 end
               when Slithernix::Cdk::KEY_ESC
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Slithernix::Cdk::ERASE
                 unless @info.empty?
@@ -342,14 +342,14 @@ module Slithernix
                 end
               when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
                 if @info.size >= @min
-                  setExitType(input)
+                  set_exit_type(input)
                   ret = @info
                   complete = true
                 else
                   Slithernix::Cdk.Beep
                 end
               when Curses::Error
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Slithernix::Cdk::REFRESH
                 @screen.erase
@@ -364,7 +364,7 @@ module Slithernix
             end
           end
 
-          setExitType(0) unless complete
+          set_exit_type(0) unless complete
 
           @result_data = ret
           ret
@@ -409,7 +409,7 @@ module Slithernix
           # Box the widget if asked.
           Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
-          drawTitle(@win)
+          draw_title(@win)
 
           @win.refresh
 
@@ -448,7 +448,7 @@ module Slithernix
 
         # This erases an entry widget from the screen.
         def erase
-          return unless validCDKObject
+          return unless is_valid_widget?
 
           Slithernix::Cdk.eraseCursesWindow(@field_win)
           Slithernix::Cdk.eraseCursesWindow(@label_win)
@@ -458,14 +458,14 @@ module Slithernix
 
         # This destroys an entry widget.
         def destroy
-          cleanTitle
+          clean_title
 
           Slithernix::Cdk.deleteCursesWindow(@field_win)
           Slithernix::Cdk.deleteCursesWindow(@label_win)
           Slithernix::Cdk.deleteCursesWindow(@shadow_win)
           Slithernix::Cdk.deleteCursesWindow(@win)
 
-          cleanBindings(:Entry)
+          clean_bindings(:Entry)
 
           Slithernix::Cdk::Screen.unregister(:Entry, self)
         end

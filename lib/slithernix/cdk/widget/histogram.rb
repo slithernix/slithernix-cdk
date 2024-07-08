@@ -12,7 +12,7 @@ module Slithernix
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
 
-          setBox(box)
+          set_box(box)
 
           box_height = Slithernix::Cdk.setWidgetDimension(parent_height,
                                                           height, 2)
@@ -22,7 +22,7 @@ module Slithernix
                                                          0)
           old_width = box_width
 
-          box_width = setTitle(title, -(box_width + 1))
+          box_width = set_title(title, -(box_width + 1))
 
           # Increment the height by number of lines in in the title
           box_height += @title_lines
@@ -103,7 +103,7 @@ module Slithernix
           setValue(low, high, value)
           setFillerChar(filler)
           setStatsAttr(stats_attr)
-          setBox(box)
+          set_box(box)
         end
 
         # Set the values for the widget.
@@ -339,7 +339,7 @@ module Slithernix
           # Do we have a shadow to draw?
           Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow.nil?
 
-          drawTitle(@win)
+          draw_title(@win)
 
           # If the user asked for labels, draw them in.
           if @view_type != :NONE
@@ -386,14 +386,14 @@ module Slithernix
 
         # Destroy the widget.
         def destroy
-          cleanTitle
+          clean_title
 
           # Clean up the windows.
           Slithernix::Cdk.deleteCursesWindow(@shadow_win)
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          cleanBindings(:Histogram)
+          clean_bindings(:Histogram)
 
           # Unregister this widget.
           Slithernix::Cdk::Screen.unregister(:Histogram, self)
@@ -401,7 +401,7 @@ module Slithernix
 
         # Erase the widget from the screen.
         def erase
-          return unless validCDKObject
+          return unless is_valid_widget?
 
           Slithernix::Cdk.eraseCursesWindow(@win)
           Slithernix::Cdk.eraseCursesWindow(@shadow_win)

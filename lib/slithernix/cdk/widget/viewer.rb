@@ -31,7 +31,7 @@ module Slithernix
                                                bindings[Slithernix::Cdk::BACKCHAR] =
                                                  Curses::KEY_PPAGE,
 
-                                               setBox(box)
+                                               set_box(box)
 
           box_height = Slithernix::Cdk.setWidgetDimension(
             parent_height,
@@ -138,16 +138,16 @@ module Slithernix
         # This function sets various attributes of the widget.
         def set(title, list, list_size, button_highlight, attr_interp,
                 show_line_info, box)
-          setTitle(title)
+          set_title(title)
           setHighlight(button_highlight)
           setInfoLine(show_line_info)
-          setBox(box)
+          set_box(box)
           setInfo(list, list_size, attr_interp)
         end
 
         # This sets the title of the viewer. (A nil title is allowed.
         # It just means that the viewer will not have a title when drawn.)
-        def setTitle(title)
+        def set_title(title)
           super(title, -(@box_width + 1))
           @title_adj = @title_lines
 
@@ -369,7 +369,7 @@ module Slithernix
             refresh = false
 
             input = getch([])
-            unless checkBind(:Viewer, input)
+            unless check_bind(:Viewer, input)
               case input
               when Slithernix::Cdk::KEY_TAB
                 if @button_count > 1
@@ -505,10 +505,10 @@ module Slithernix
                 popUpLabel(file_info)
                 refresh = true
               when Slithernix::Cdk::KEY_ESC, Curses::Error
-                setExitType(input)
+                set_exit_type(input)
                 return -1
               when Curses::KEY_ENTER, Slithernix::Cdk::KEY_RETURN
-                setExitType(input)
+                set_exit_type(input)
                 return @current_button
               when Slithernix::Cdk::REFRESH
                 @screen.erase
@@ -737,14 +737,14 @@ module Slithernix
         def destroy
           destroyInfo
 
-          cleanTitle
+          clean_title
 
           # Clean up the windows.
           Slithernix::Cdk.deleteCursesWindow(@shadow_win)
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          cleanBindings(:Viewer)
+          clean_bindings(:Viewer)
 
           # Unregister this widget.
           Slithernix::Cdk::Screen.unregister(:Viewer, self)
@@ -752,7 +752,7 @@ module Slithernix
 
         # This function erases the viewer widget from the screen.
         def erase
-          return unless validCDKObject
+          return unless is_valid_widget?
 
           Slithernix::Cdk.eraseCursesWindow(@win)
           Slithernix::Cdk.eraseCursesWindow(@shadow_win)
@@ -765,7 +765,7 @@ module Slithernix
           # Clear the window.
           @win.erase
 
-          drawTitle(@win)
+          draw_title(@win)
 
           # Draw in the current line at the top.
           if @show_line_info == true

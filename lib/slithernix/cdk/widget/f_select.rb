@@ -20,7 +20,7 @@ module Slithernix
             Slithernix::Cdk::FORCHAR => Curses::KEY_NPAGE
           }
 
-          setBox(box)
+          set_box(box)
 
           # If the height is a negative value the height will be ROWS-height,
           # otherwise the height will be the given height
@@ -123,8 +123,8 @@ module Slithernix
           end
 
           # Set the lower left/right characters of the entry field.
-          @entry_field.setLLchar(Slithernix::Cdk::ACS_LTEE)
-          @entry_field.setLRchar(Slithernix::Cdk::ACS_RTEE)
+          @entry_field.set_lower_left_corner_char(Slithernix::Cdk::ACS_LTEE)
+          @entry_field.set_lower_right_corner_char(Slithernix::Cdk::ACS_RTEE)
 
           # This is a callback to the scrolling list which displays information
           # about the current file.  (and the whole directory as well)
@@ -373,8 +373,8 @@ module Slithernix
                                                               @file_counter, false, @highlight, box, false)
 
           # Set the lower left/right characters of the entry field.
-          @scroll_field.setULchar(Slithernix::Cdk::ACS_LTEE)
-          @scroll_field.setURchar(Slithernix::Cdk::ACS_RTEE)
+          @scroll_field.set_upper_left_corner_char(Slithernix::Cdk::ACS_LTEE)
+          @scroll_field.set_upper_right_corner_char(Slithernix::Cdk::ACS_RTEE)
 
           # Do we want a shadow?
           if shadow
@@ -396,7 +396,7 @@ module Slithernix
 
         # This erases the file selector from the screen.
         def erase
-          return unless validCDKObject
+          return unless is_valid_widget?
 
           @scroll_field.erase
           @entry_field.erase
@@ -477,7 +477,7 @@ module Slithernix
           end
 
           # Set the exit type and exit.
-          setExitType(0)
+          set_exit_type(0)
           0
         end
 
@@ -519,7 +519,7 @@ module Slithernix
             complete = true
           end
 
-          setExitType(0) unless complete
+          set_exit_type(0) unless complete
 
           @result_data = ret
           ret
@@ -793,34 +793,34 @@ module Slithernix
 
         # These functions set the draw characters of the widget.
         def setMyULchar(character)
-          @entry_field.setULchar(character)
+          @entry_field.set_upper_left_corner_char(character)
         end
 
         def setMyURchar(character)
-          @entry_field.setURchar(character)
+          @entry_field.set_upper_right_corner_char(character)
         end
 
         def setMyLLchar(character)
-          @scroll_field.setLLchar(character)
+          @scroll_field.set_lower_left_corner_char(character)
         end
 
         def setMyLRchar(character)
-          @scroll_field.setLRchar(character)
+          @scroll_field.set_lower_right_corner_char(character)
         end
 
         def setMyVTchar(character)
-          @entry_field.setVTchar(character)
-          @scroll_field.setVTchar(character)
+          @entry_field.set_vertical_line_char(character)
+          @scroll_field.set_vertical_line_char(character)
         end
 
         def setMyHZchar(character)
-          @entry_field.setHZchar(character)
-          @scroll_field.setHZchar(character)
+          @entry_field.set_horizontal_line_char(character)
+          @scroll_field.set_horizontal_line_char(character)
         end
 
         def setMyBXattr(character)
-          @entry_field.setBXattr(character)
-          @scroll_field.setBXattr(character)
+          @entry_field.set_box_attr(character)
+          @scroll_field.set_box_attr(character)
         end
 
         # This sets the background attribute of the widget.
@@ -831,7 +831,7 @@ module Slithernix
 
         # This destroys the file selector.
         def destroy
-          cleanBindings(:FSelect)
+          clean_bindings(:FSelect)
 
           # Destroy the other CDK widgets
           @scroll_field.destroy

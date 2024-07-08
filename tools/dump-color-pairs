@@ -52,12 +52,12 @@ end
 color_list.setItems(item, count, true) if c
 
 redraw_title = lambda do |_type, widget, _client_data, _input|
-  widget.setTitle("<C></B></#{widget.getCurrentItem + 1}>COLOR LIST", w_value)
+  widget.set_title("<C></B></#{widget.getCurrentItem + 1}>COLOR LIST", w_value)
   widget.screen.refresh
   true
 end
 
-color_list.setPostProcess(redraw_title, nil)
+color_list.set_post_process(redraw_title, nil)
 
 selection = color_list.activate('')
 

@@ -15,7 +15,7 @@ module Slithernix
 
           return nil if plate.nil? || plate.empty?
 
-          setBox(box)
+          set_box(box)
 
           field_width = plate.size + (2 * @border_size)
 
@@ -47,7 +47,7 @@ module Slithernix
           box_width = field_width + @label_len + (2 * @border_size)
 
           old_width = box_width
-          box_width = setTitle(title, box_width)
+          box_width = set_title(title, box_width)
           horizontal_adjust = (box_width - old_width) / 2
 
           box_height += @title_lines
@@ -229,7 +229,7 @@ module Slithernix
           end
 
           # Set the exit type and return.
-          setExitType(0)
+          set_exit_type(0)
           ret
         end
 
@@ -239,7 +239,7 @@ module Slithernix
           complete = false
           ret = -1
 
-          setExitType(0)
+          set_exit_type(0)
 
           # Move the cursor.
           drawField
@@ -253,7 +253,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check a predefined binding
-            if checkBind(:Template, input)
+            if check_bind(:Template, input)
               complete = true
             else
               case input
@@ -292,15 +292,15 @@ module Slithernix
                 if @info.size < @min
                   Slithernix::Cdk.Beep
                 else
-                  setExitType(input)
+                  set_exit_type(input)
                   ret = @info
                   complete = true
                 end
               when Slithernix::Cdk::KEY_ESC
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Curses::Error
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Slithernix::Cdk::REFRESH
                 @screen.erase
@@ -321,7 +321,7 @@ module Slithernix
             end
           end
 
-          setExitType(0) unless complete
+          set_exit_type(0) unless complete
 
           @return_data = ret
           ret
@@ -413,7 +413,7 @@ module Slithernix
           Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
           Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
-          drawTitle(@win)
+          draw_title(@win)
 
           @win.refresh
 
@@ -476,7 +476,7 @@ module Slithernix
 
         # Destroy this widget.
         def destroy
-          cleanTitle
+          clean_title
 
           # Delete the windows
           Slithernix::Cdk.deleteCursesWindow(@field_win)
@@ -485,14 +485,14 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          cleanBindings(:Template)
+          clean_bindings(:Template)
 
           Slithernix::Cdk::Screen.unregister(:Template, self)
         end
 
         # Erase the widget.
         def erase
-          return unless validCDKObject
+          return unless is_valid_widget?
 
           Slithernix::Cdk.eraseCursesWindow(@field_win)
           Slithernix::Cdk.eraseCursesWindow(@label_win)
@@ -503,7 +503,7 @@ module Slithernix
         # Set the value given to the template
         def set(new_value, box)
           setValue(new_value)
-          setBox(box)
+          set_box(box)
         end
 
         # Set the value given to the template.

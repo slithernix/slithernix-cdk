@@ -17,7 +17,7 @@ module Slithernix
             return nil
           end
 
-          setBox(box)
+          set_box(box)
           box_height = (@border_size * 2) + 1
 
           # Set some basic values of the item list
@@ -35,7 +35,7 @@ module Slithernix
           # Set the box width. Allow an extra char in field width for cursor
           field_width = maximumFieldWidth + 1
           box_width = field_width + @label_len + (2 * @border_size)
-          box_width = setTitle(title, box_width)
+          box_width = set_title(title, box_width)
           box_height += @title_lines
 
           # Make sure we didn't extend beyond the dimensions of the window
@@ -138,7 +138,7 @@ module Slithernix
           end
 
           # Set the exit type and exit.
-          setExitType(0)
+          set_exit_type(0)
           ret
         end
 
@@ -149,7 +149,7 @@ module Slithernix
           complete = false
 
           # Set the exit type.
-          setExitType(0)
+          set_exit_type(0)
 
           # Draw the widget field
           drawField(true)
@@ -163,7 +163,7 @@ module Slithernix
           # Should we continue?
           if pp_return != 0
             # Check a predefined binding.
-            if checkBind(:ItemList, input)
+            if check_bind(:ItemList, input)
               complete = true
             else
               case input
@@ -186,13 +186,13 @@ module Slithernix
               when '$'
                 @current_item = @list_size - 1
               when Slithernix::Cdk::KEY_ESC
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Curses::Error
-                setExitType(input)
+                set_exit_type(input)
                 complete = true
               when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
-                setExitType(input)
+                set_exit_type(input)
                 ret = @current_item
                 complete = true
               when Slithernix::Cdk::REFRESH
@@ -212,7 +212,7 @@ module Slithernix
 
           unless complete
             drawField(true)
-            setExitType(0)
+            set_exit_type(0)
           end
 
           @result_data = ret
@@ -231,7 +231,7 @@ module Slithernix
           # Did we ask for a shadow?
           Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
 
-          drawTitle(@win)
+          draw_title(@win)
 
           # Draw in the label to the widget.
           unless @label_win.nil?
@@ -281,7 +281,7 @@ module Slithernix
 
         # This function removes the widget from the screen.
         def erase
-          return unless validCDKObject
+          return unless is_valid_widget?
 
           Slithernix::Cdk.eraseCursesWindow(@field_win)
           Slithernix::Cdk.eraseCursesWindow(@label_win)
@@ -296,7 +296,7 @@ module Slithernix
 
         # This function destroys the widget and all the memory it used.
         def destroy
-          cleanTitle
+          clean_title
           destroyInfo
 
           # Delete the windows
@@ -306,7 +306,7 @@ module Slithernix
           Slithernix::Cdk.deleteCursesWindow(@win)
 
           # Clean the key bindings.
-          cleanBindings(:ItemList)
+          clean_bindings(:ItemList)
 
           Slithernix::Cdk::Screen.unregister(:ItemList, self)
         end
@@ -314,7 +314,7 @@ module Slithernix
         # This sets multiple attributes of the widget.
         def set(list, count, current, box)
           setValues(list, count, current)
-          setBox(box)
+          set_box(box)
         end
 
         # This function sets the contents of the list
