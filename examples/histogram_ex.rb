@@ -49,7 +49,7 @@ class HistogramExample < CLIExample
     # Is the volume null?
     if volume.nil?
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot make volume histogram.  Is the window big enough?'
       exit # EXIT_FAILURE
@@ -62,7 +62,7 @@ class HistogramExample < CLIExample
     if bass.nil?
       volume.destroy
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot make bass histogram.  Is the window big enough?'
       exit  # EXIT_FAILURE
@@ -76,7 +76,7 @@ class HistogramExample < CLIExample
       volume.destroy
       bass.destroy
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot make treble histogram.  Is the window big enough?'
       exit  # EXIT_FAILURE
@@ -147,7 +147,7 @@ class HistogramExample < CLIExample
     bass.destroy
     treble.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     exit # EXIT_SUCCESS
   end
 end

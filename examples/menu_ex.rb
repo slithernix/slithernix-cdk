@@ -123,7 +123,7 @@ class MenuExample < Example
     menu.destroy
     info_box.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
 
     exit # EXIT_SUCCESS
   end

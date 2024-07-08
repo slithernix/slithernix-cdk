@@ -46,7 +46,7 @@ class TemplateExample < Example
     if phone_number.nil?
       # Exit CDK.
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot create template. Is the window too small?'
       exit # EXIT_FAILURE
@@ -81,7 +81,7 @@ class TemplateExample < Example
     # Clean up
     phone_number.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     # ExitProgram (EXIT_SUCCESS);
   end
 end

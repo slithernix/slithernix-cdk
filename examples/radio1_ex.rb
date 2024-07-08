@@ -60,7 +60,7 @@ class Radio1Example < CLIExample
 
     if radio.nil?
       cdkscreen.destroyCDKScreen
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot make radio widget.  Is the window too small?'
       exit # EXIT_FAILURE
@@ -90,7 +90,7 @@ class Radio1Example < CLIExample
     # Clean up.
     radio.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     exit # EXIT_SUCCESS
   end
 end

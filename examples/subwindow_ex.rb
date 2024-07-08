@@ -76,7 +76,7 @@ class SubwindowExample < CLIExample
     title.destroy
     Slithernix::Cdk.eraseCursesWindow(sub_window)
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
 
     # Tell them what they picked.
     puts format('You picked %s', dow[pick])

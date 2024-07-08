@@ -46,7 +46,7 @@ class LabelExample < Example
     #   destroyCDKScreen (cdkscreen);
     #
     #   # End curses...
-    #   endCDK ();
+    #   end_cdk ();
     #
     #   printf ("Cannot create the label. Is the window too small?\n");
     #   ExitProgram (EXIT_FAILURE);
@@ -59,7 +59,7 @@ class LabelExample < Example
     # Clean up
     demo.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     # ExitProgram (EXIT_SUCCESS);
   end
 end

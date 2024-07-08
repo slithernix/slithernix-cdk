@@ -127,7 +127,7 @@ class SelectionExample < CLIExample
 
     if selection.nil?
       cdkscreen.destroyCDKScreen
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot make selection list.  Is the window too small?'
       exit
@@ -162,7 +162,7 @@ class SelectionExample < CLIExample
     # Clean up.
     selection.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     exit
   end
 end

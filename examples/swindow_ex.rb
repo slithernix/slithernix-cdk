@@ -49,7 +49,7 @@ class SwindowExample < CLIExample
     if swindow.nil?
       # Exit CDK.
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot create the scrolling window. Is the window too small?'
       exit # EXIT_FAILURE
@@ -115,7 +115,7 @@ class SwindowExample < CLIExample
     # Clean up.
     swindow.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     exit # EXIT_SUCCESS
   end
 end

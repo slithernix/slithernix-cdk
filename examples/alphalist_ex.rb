@@ -102,7 +102,7 @@ class AlphalistExample < CLIExample
 
     if alpha_list.nil?
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       warn 'Cannot create widget.'
       exit # EXIT_FAILURE
@@ -234,7 +234,7 @@ class AlphalistExample < CLIExample
     # Clean up.
     alpha_list.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     exit
   end
 end

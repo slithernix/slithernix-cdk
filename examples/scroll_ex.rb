@@ -82,7 +82,7 @@ class ScrollExample < CLIExample
 
     if scroll_list.nil?
       cdkscreen.destroyCDKScreen
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot make scrolling list.  Is the window too small?'
       exit
@@ -138,7 +138,7 @@ class ScrollExample < CLIExample
     # CDKfreeStrings (item);
     scroll_list.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     exit
   end
 end

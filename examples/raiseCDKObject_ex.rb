@@ -147,7 +147,7 @@ class RaiseCDKObjectExample < Example
     label4.destroy
     instruct.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     # ExitProgram (EXIT_SUCCESS);
   end
 end

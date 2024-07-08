@@ -73,7 +73,7 @@ class CalendarExample < Example
     if calendar.nil?
       # Exit CDK.
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot create the calendar. Is the window too small?'
       exit # EXIT_FAILURE
@@ -125,7 +125,7 @@ class CalendarExample < Example
     # Clean up
     calendar.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     $stdout.flush
     puts 'Selected Time: %s' % ret_val.ctime
     # ExitProgram (EXIT_SUCCESS);

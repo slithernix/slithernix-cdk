@@ -55,7 +55,7 @@ class EntryExample < Example
     if directory.nil?
       # Clean p
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot create the entry box. Is the window too small?'
       exit
@@ -91,7 +91,7 @@ class EntryExample < Example
     directory.destroy
     cdkscreen.popup_label(mesg, mesg.size)
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     exit # EXIT_SUCCESS
   end
 end

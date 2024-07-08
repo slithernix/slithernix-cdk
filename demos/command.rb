@@ -271,7 +271,7 @@ class Command
         command_output.destroy
         cdkscreen.destroy
 
-        Slithernix::Cdk::Screen.endCDK
+        Slithernix::Cdk::Screen.end_cdk
 
         exit # EXIT_SUCCESS
       elsif command == 'clear'

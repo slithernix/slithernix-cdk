@@ -74,7 +74,7 @@ class FileView
 
         fselect.destroy
         cdkscreen.destroy
-        Slithernix::Cdk::Screen.endCDK
+        Slithernix::Cdk::Screen.end_cdk
 
         exit
       end
@@ -98,7 +98,7 @@ class FileView
 
     if example.nil?
       cdkscreen.destroy
-      Slithernix::Cdk.endCDK
+      Slithernix::Cdk.end_cdk
       puts 'Cannot create viewer. Is the window too small?'
       exit
     end
@@ -136,7 +136,7 @@ class FileView
 
     example.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
   end
 end
 

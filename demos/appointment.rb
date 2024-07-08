@@ -149,7 +149,7 @@ class Appointment
     # Is the widget nil?
     if calendar.nil?
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot create the calendar. Is the window too small?'
       exit # EXIT_FAILURE
@@ -372,7 +372,7 @@ class Appointment
 
     calendar.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
   end
 end
 

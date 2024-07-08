@@ -66,7 +66,7 @@ class MentryExample < Example
     if widget.nil?
       # Clean up.
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot create CDK widget. Is the window too small?'
       exit
@@ -86,7 +86,7 @@ class MentryExample < Example
     # Clean up.
     widget.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
 
     puts "\n\n"
     puts format('Your message was : <%s>', info)

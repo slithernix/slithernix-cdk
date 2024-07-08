@@ -110,7 +110,7 @@ class CDKScreenExample < Example
       cdkscreen3.destroy
       cdkscreen4.destroy
       cdkscreen5.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
       exit # EXIT__SUCCESS
     end
   end

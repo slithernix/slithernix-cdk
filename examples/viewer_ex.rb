@@ -87,7 +87,7 @@ class ViewerExample < CLIExample
 
       if f_select.nil?
         cdkscreen.destroy
-        Slithernix::Cdk::Screen.endCDK
+        Slithernix::Cdk::Screen.end_cdk
 
         warn 'Cannot create fselect-widget'
         exit
@@ -122,7 +122,7 @@ class ViewerExample < CLIExample
 
         f_select.destroy
         cdkscreen.destroy
-        Slithernix::Cdk::Screen.endCDK
+        Slithernix::Cdk::Screen.end_cdk
         exit
       end
     end
@@ -145,7 +145,7 @@ class ViewerExample < CLIExample
     if example.nil?
       # Exit CDK.
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot create the viewer. Is the window too small?'
       exit
@@ -162,7 +162,7 @@ class ViewerExample < CLIExample
       # Open the file and read the contents.
       lines = Slithernix::Cdk.readFile(params.filename, info)
       if lines == -1
-        Slithernix::Cdk::Screen.endCDK
+        Slithernix::Cdk::Screen.end_cdk
         puts format('Could not open "%s"', params.filename)
         exit
       end
@@ -206,7 +206,7 @@ class ViewerExample < CLIExample
     cdkscreen.popup_label(mesg, 3)
     example.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     exit
   end
 end

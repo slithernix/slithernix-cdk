@@ -47,7 +47,7 @@ class DialogExample < Example
     if question.nil?
       # Shut down Slithernix::Cdk.
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot create the dialog box. Is the window too small?'
       exit # EXIT_FAILURE
@@ -75,7 +75,7 @@ class DialogExample < Example
     # Clean up.
     question.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     exit # EXIT_SUCCESS
   end
 end

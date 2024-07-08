@@ -950,7 +950,7 @@ class Rolodex
         lines_found += 1
       else
         # Bad line in the file
-        Slithernix::Cdk::Screen.endCDK
+        Slithernix::Cdk::Screen.end_cdk
         puts 'Bad line of size %d' % items.size
         print items
         puts
@@ -1652,7 +1652,7 @@ class Rolodex
         rolodex_title.destroy
         cdkscreen.destroy
 
-        Slithernix::Cdk::Screen.endCDK
+        Slithernix::Cdk::Screen.end_cdk
 
         exit # EXIT_SUCCESS
       when 100

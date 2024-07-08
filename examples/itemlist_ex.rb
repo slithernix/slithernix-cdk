@@ -75,7 +75,7 @@ class ItemlistExample < Example
     if monthlist.nil?
       # Clean up.
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot create the itemlist box. Is the window too small?'
       exit
@@ -117,7 +117,7 @@ class ItemlistExample < Example
     # Clean up
     monthlist.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     # ExitProgram (EXIT_SUCCESS);
   end
 end

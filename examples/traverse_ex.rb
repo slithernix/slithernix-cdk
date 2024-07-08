@@ -436,7 +436,7 @@ class TraverseExample < Example
 
     if menu.nil?
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts '? Cannot create menus'
       exit # EXIT_FAILURE
@@ -479,7 +479,7 @@ class TraverseExample < Example
     end
     menu.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
 
     exit # EXIT_SUCCESS
   end

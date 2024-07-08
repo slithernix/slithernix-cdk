@@ -84,7 +84,7 @@ class FselectExample < CLIExample
 
     if fselect.nil?
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       warn 'Cannot create widget.'
       exit # EXIT_FAILURE
@@ -209,7 +209,7 @@ class FselectExample < CLIExample
       # Exit CDK.
       fselect.destroy
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
       exit # EXIT_SUCCESS
     end
 
@@ -222,7 +222,7 @@ class FselectExample < CLIExample
       # Exit CDK.
       fselect.destroy
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts "Can't seem to create viewer. Is the window too small?"
       exit # EXIT_SUCCESS
@@ -234,7 +234,7 @@ class FselectExample < CLIExample
     if lines == -1
       fselect.destroy
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts format('Coult not open "%s"', filename)
 
@@ -271,7 +271,7 @@ class FselectExample < CLIExample
     # Clean up.
     example.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     exit # EXIT_SUCCESS
   end
 end

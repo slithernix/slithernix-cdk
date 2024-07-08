@@ -59,7 +59,7 @@ class SliderExample < Example
     if widget.nil?
       # Exit CDK.
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot make the widget. Is the window too small?'
       exit # EXIT_FAILURE
@@ -88,7 +88,7 @@ class SliderExample < Example
     # Clean up
     widget.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     # ExitProgram (EXIT_SUCCESS);
   end
 end

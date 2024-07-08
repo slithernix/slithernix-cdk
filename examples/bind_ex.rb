@@ -42,7 +42,7 @@ class BindExample < Example
     # Check if we got a nil value back.
     if question.nil?
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot create the dialog box. Is the window too small?'
       exit # EXIT_FAILURE
@@ -120,7 +120,7 @@ class BindExample < Example
     # Clean up and exit.
     question.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     exit # EXIT_SUCCESS
   end
 end

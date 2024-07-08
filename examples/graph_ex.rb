@@ -53,7 +53,7 @@ class GraphExample < CLIExample
     # Is the graph null?
     if graph.nil?
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot make the graph widget.  Is the window too small?'
       exit # EXIT_FAILURE
@@ -66,7 +66,7 @@ class GraphExample < CLIExample
     if pausep.nil?
       graph.destroy
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot make the label widget. Is the window too small?'
       exit # EXIT_FAILURE
@@ -87,7 +87,7 @@ class GraphExample < CLIExample
     graph.destroy
     pausep.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     exit # EXIT_SUCCESS
   end
 end

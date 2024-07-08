@@ -98,7 +98,7 @@ class MarqueeExample < Example
     if scroll_message.nil?
       # Exit Slithernix::Cdk.
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot create the marquee window.  Is the window too small?'
       exit # EXIT_FAILURE
@@ -132,7 +132,7 @@ class MarqueeExample < Example
     # Clean up.
     scroll_message.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     exit # EXIT_SUCCESS
   end
 end

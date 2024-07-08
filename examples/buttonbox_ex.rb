@@ -34,7 +34,7 @@ class ButtonboxExample < Example
 
     if entry.nil?
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       warn 'Cannot create entry-widget'
       exit
@@ -59,7 +59,7 @@ class ButtonboxExample < Example
 
     if button_widget.nil?
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       warn 'Cannot create buttonbox-widget'
       exit
@@ -89,7 +89,7 @@ class ButtonboxExample < Example
     button_widget.destroy
     entry.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
 
     puts format('You typed in (%s) and selected button (%s)',
                 info&.size&.positive? ? info : '<null>', buttons[selection])

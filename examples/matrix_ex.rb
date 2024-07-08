@@ -94,7 +94,7 @@ class MatrixExample < Example
     if course_list.nil?
       # Exit CDK.
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot create the matrix widget. Is the window too small?'
       exit # EXIT_FAILURE
@@ -127,7 +127,7 @@ class MatrixExample < Example
     # Clean up
     course_list.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     # ExitProgram (EXIT_SUCCESS);
   end
 end

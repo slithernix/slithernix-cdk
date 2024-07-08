@@ -78,7 +78,7 @@ module Slithernix
           # Update the widget-focus
           if screen.widget_focus == index
             screen.widget_focus -= 1
-            Traverse.setCDKFocusNext(screen)
+            Traverse.set_focus_on_next_widget(screen)
           elsif screen.widget_focus > index
             screen.widget_focus -= 1
           end
@@ -277,7 +277,7 @@ module Slithernix
       end
 
       # Destroy all the widgets on a screen
-      def destroyCDKScreenObjects
+      def destroy_all_widgets
         (0...@widget_count).each do |x|
           widg = @widget[x]
           before = @widget_count
@@ -290,13 +290,11 @@ module Slithernix
         end
       end
 
-      # This destroys a CDK screen.
       def destroy
         Slithernix::Cdk::ALL_SCREENS.delete(self)
       end
 
-      # This is added to remain consistent
-      def self.endCDK
+      def self.end_cdk
         Curses.echo
         Curses.nocbreak
         Curses.close_screen

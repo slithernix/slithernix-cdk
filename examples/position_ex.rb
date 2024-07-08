@@ -53,7 +53,7 @@ class PositionExample < Example
     if directory.nil?
       # Clean up.
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot create the entry box. Is the window too small?'
       exit # EXIT_FAILURE
@@ -87,7 +87,7 @@ class PositionExample < Example
 
     directory.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     # ExitProgram (EXIT_SUCCESS);
   end
 end

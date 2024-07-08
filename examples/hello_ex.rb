@@ -44,7 +44,7 @@ class HelloExample < Example
       cdkscreen.destroy
 
       # End curses...
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot create the label. Is the window too small?'
       exit #  EXIT_FAILURE
@@ -57,7 +57,7 @@ class HelloExample < Example
     # Clean up
     demo.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     # ExitProgram (EXIT_SUCCESS);
   end
 end

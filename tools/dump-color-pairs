@@ -43,7 +43,7 @@ color_list = Slithernix::Cdk::Widget::Scroll.new(
 )
 
 if color_list.nil?
-  Slithernix::Cdk::Screen.endCDK
+  Slithernix::Cdk::Screen.end_cdk
 
   puts 'Cannot make scrolling list. Is the window too small?'
   exit
@@ -81,4 +81,4 @@ cdkscreen.popup_label(msg, 3)
 
 color_list.destroy
 cdkscreen.destroy
-Slithernix::Cdk::Screen.endCDK
+Slithernix::Cdk::Screen.end_cdk

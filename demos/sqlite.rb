@@ -275,7 +275,7 @@ class SQLiteDemo
         # All done.
         command_entry.destroy
         command_output.destroy
-        Slithernix::Cdk::Screen.endCDK
+        Slithernix::Cdk::Screen.end_cdk
         exit # EXIT_SUCCESS
       elsif command == 'clear'
         # Clear the scrolling window.
@@ -320,7 +320,7 @@ class SQLiteDemo
 
     # Clean up
     @@gp_cdk_screen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     exit # EXIT_SUCCESS
   end
 end

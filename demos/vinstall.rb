@@ -188,7 +188,7 @@ class Vinstall
       # Clean up and leave.
       title_win.destroy
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
       exit # EXIT_FAILURE
     end
 
@@ -196,7 +196,7 @@ class Vinstall
     if Vinstall.verifyDirectory(cdkscreen, dest_dir) != 0
       title_win.destroy
       cdkscreen.destroy
-      Slithernix::Cdk::Screen.endCDK
+      Slithernix::Cdk::Screen.end_cdk
       exit # EXIT_FAILURE
     end
 
@@ -348,7 +348,7 @@ class Vinstall
     progress_bar.destroy
     install_output.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     exit # EXIT_SUCCESS
   end
 end

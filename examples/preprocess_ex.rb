@@ -23,7 +23,7 @@ class PreProcessExample < Example
     if widget.nil?
       # Clean up
       cdkscreen.destroy
-      Slithernix::Cdk.endCDK
+      Slithernix::Cdk.end_cdk
 
       puts 'Cannot create the entry box. Is the window too small?'
       exit # EXIT_FAILURE
@@ -79,7 +79,7 @@ class PreProcessExample < Example
     # Clean up and exit.
     widget.destroy
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     exit # EXIT_SUCCESS
   end
 end

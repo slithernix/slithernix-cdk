@@ -61,7 +61,7 @@ class Viewer2Example < CLIExample
 
       if f_select.nil?
         cdkscreen.destroy
-        Slithernix::Cdk::Screen.endCDK
+        Slithernix::Cdk::Screen.end_cdk
 
         warn 'Cannot create fselect-widget'
         exit # EXIT_FAILURE
@@ -88,7 +88,7 @@ class Viewer2Example < CLIExample
         # Exit CDK.
         f_select.destroy
         cdkscreen.destroy
-        Slithernix::Cdk::Screen.endCDK
+        Slithernix::Cdk::Screen.end_cdk
         exit # EXIT_SUCCESS
       end
     end
@@ -113,7 +113,7 @@ class Viewer2Example < CLIExample
 
     # Clean up.
     cdkscreen.destroy
-    Slithernix::Cdk::Screen.endCDK
+    Slithernix::Cdk::Screen.end_cdk
     exit # EXIT_SUCCESS
   end
 end
