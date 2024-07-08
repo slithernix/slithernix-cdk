@@ -258,7 +258,7 @@ module Slithernix
               when Curses::KEY_END
                 set_position_to_end
                 draw_field
-              when Curses::key_left
+              when Curses::KEY_LEFT
                 if curr_pos <= 0
                   Slithernix::Cdk.beep
                 elsif @screen_col.zero?

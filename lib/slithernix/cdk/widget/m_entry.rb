@@ -9,8 +9,7 @@ module Slithernix
         attr_accessor :info, :current_col, :current_row, :top_row
         attr_reader :disp_type, :field_width, :rows, :field_win
 
-        def initialize(cdkscreen, xplace, yplace, title, label, field_attr,
-                       filler, disp_type, f_width, f_rows, logical_rows, min, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, title, label, field_attr, filler, disp_type, f_width, f_rows, logical_rows, min, box, shadow)
           super()
           Curses.curs_set(1)
           parent_width = cdkscreen.window.maxx
@@ -138,7 +137,7 @@ module Slithernix
           # a callback function, so any personal modifications can be made by
           # creating a new function and calling that one the mentry activation.
           mentry_callback = lambda do |mentry, character|
-            cursor_pos = mentry.getCursorPos
+            cursor_pos = mentry.get_cursor_pos
             newchar = Slithernix::Cdk::Display.filter_by_display_type(
               mentry.disp_type, character
             )
@@ -154,7 +153,7 @@ module Slithernix
 
               mentry.current_col += 1
 
-              mentry.drawField
+              mentry.draw_field
 
               # Have we gone out of bounds
               if mentry.current_col >= mentry.field_width
@@ -168,7 +167,7 @@ module Slithernix
                   # We have to redraw the screen
                   mentry.current_row -= 1
                   mentry.top_row += 1
-                  mentry.drawField
+                  mentry.draw_field
                 end
                 # REMEMBER THIS, this line causes a widget to appear in the top left
                 # mentry.field_win.move(mentry.current_row, mentry.current_col)
@@ -216,7 +215,7 @@ module Slithernix
           0
         end
 
-        def setTopRow(row)
+        def set_top_row(row)
           if @top_row != row
             @top_row = row
             return true
@@ -224,7 +223,7 @@ module Slithernix
           false
         end
 
-        def setCurPos(row, col)
+        def set_cur_pos(row, col)
           if @current_row != row || @current_col != col
             @current_row = row
             @current_col = col
@@ -233,17 +232,17 @@ module Slithernix
           false
         end
 
-        def KEY_LEFT(moved, redraw)
+        def key_left(moved, redraw)
           result = true
           if @current_col != 0
-            moved[0] = setCurPos(@current_row, @current_col - 1)
+            moved[0] = set_cur_pos(@current_row, @current_col - 1)
           elsif @current_row.zero?
             if @top_row != 0
-              moved[0] = setCurPos(@current_row, @field_width - 1)
-              redraw[0] = setTopRow(@top_row - 1)
+              moved[0] = set_cur_pos(@current_row, @field_width - 1)
+              redraw[0] = set_top_row(@top_row - 1)
             end
           else
-            moved[0] = setCurPos(@current_row - 1, @field_width - 1)
+            moved[0] = set_cur_pos(@current_row - 1, @field_width - 1)
           end
 
           unless moved[0] && redraw[0]
@@ -254,13 +253,13 @@ module Slithernix
           result
         end
 
-        def getCursorPos
+        def get_cursor_pos
           ((@current_row + @top_row) * @field_width) + @current_col
         end
 
         # This injects a character into the widget.
         def inject(input)
-          cursor_pos = getCursorPos
+          cursor_pos = get_cursor_pos
           pp_return = 1
           ret = -1
           complete = false
@@ -269,7 +268,7 @@ module Slithernix
           set_exit_type(0)
 
           # Refresh the field.
-          drawField
+          draw_field
 
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
@@ -293,81 +292,79 @@ module Slithernix
 
               case input
               when Curses::KEY_HOME
-                moved = setCurPos(0, 0)
-                redraw = setTopRow(0)
+                moved = set_cur_pos(0, 0)
+                redraw = set_top_row(0)
               when Curses::KEY_END
                 field_characters = @rows * @field_width
                 if @info.size < field_characters
-                  redraw = setTopRow(0)
-                  moved = setCurPos(
+                  redraw = set_top_row(0)
+                  moved = set_cur_pos(
                     @info.size / @field_width, @info.size % @field_width
                   )
                 else
-                  redraw = setTopRow(@info.size / @field_width, @rows + 1)
-                  moved = setCurPos(@rows - 1, @info.size % @field_width)
+                  redraw = set_top_row(@info.size / @field_width, @rows + 1)
+                  moved = set_cur_pos(@rows - 1, @info.size % @field_width)
                 end
               when Curses::KEY_LEFT
                 mtmp = [moved]
                 rtmp = [redraw]
-                self.KEY_LEFT(mtmp, rtmp)
+                self.key_left(mtmp, rtmp)
                 moved = mtmp[0]
                 redraw = rtmp[0]
               when Curses::KEY_RIGHT
                 if @current_col < @field_width - 1
-                  if getCursorPos + 1 <= @info.size
-                    moved = setCurPos(@current_row, @current_col + 1)
+                  if get_cursor_pos + 1 <= @info.size
+                    moved = set_cur_pos(@current_row, @current_col + 1)
                   end
                 elsif @current_row == @rows - 1
                   if @top_row + @current_row + 1 < @logical_rows
-                    moved = setCurPos(@current_row, 0)
-                    redraw = setTopRow(@top_row + 1)
+                    moved = set_cur_pos(@current_row, 0)
+                    redraw = set_top_row(@top_row + 1)
                   end
                 else
-                  moved = setCurPos(@current_row + 1, 0)
+                  moved = set_cur_pos(@current_row + 1, 0)
                 end
                 Slithernix::Cdk.beep unless moved && redraw
               when Curses::KEY_DOWN
                 if @current_row != @rows - 1
-                  if getCursorPos + @field_width + 1 <= @info.size
-                    moved = setCurPos(@current_row + 1, @current_col)
+                  if get_cursor_pos + @field_width + 1 <= @info.size
+                    moved = set_cur_pos(@current_row + 1, @current_col)
                   end
                 elsif @top_row < @logical_rows - @rows
                   if (@top_row + @current_row + 1) * @field_width <= @info.size
-                    redraw = setTopRow(@top_row + 1)
+                    redraw = set_top_row(@top_row + 1)
                   end
                 end
                 Slithernix::Cdk.beep unless moved && redraw
               when Curses::KEY_UP
                 if @current_row != 0
-                  moved = setCurPos(@current_row - 1, @current_col)
+                  moved = set_cur_pos(@current_row - 1, @current_col)
                 elsif @top_row != 0
-                  redraw = setTopRow(@top_row - 1)
+                  redraw = set_top_row(@top_row - 1)
                 end
                 Slithernix::Cdk.beep unless moved && redraw
               when Curses::KEY_BACKSPACE, Curses::KEY_DC
-                if @disp_type == :VIEWONLY
-                  Slithernix::Cdk.beep
-                elsif @info.empty?
+                if @disp_type == :VIEWONLY || @info.empty?
                   Slithernix::Cdk.beep
                 elsif input == Curses::KEY_DC
-                  cursor_pos = getCursorPos
+                  cursor_pos = get_cursor_pos
                   if cursor_pos < @info.size
                     @info = @info[0...cursor_pos] + @info[cursor_pos + 1..]
-                    drawField
+                    draw_field
                   else
                     Slithernix::Cdk.beep
                   end
                 else
                   mtmp = [moved]
                   rtmp = [redraw]
-                  hKL = self.KEY_LEFT(mtmp, rtmp)
+                  hkl = self.key_left(mtmp, rtmp)
                   moved = mtmp[0]
                   [redraw]
-                  if hKL
-                    cursor_pos = getCursorPos
+                  if hkl
+                    cursor_pos = get_cursor_pos
                     if cursor_pos < @info.size
                       @info = @info[0...cursor_pos] + @info[cursor_pos + 1..]
-                      drawField
+                      draw_field
                     else
                       Slithernix::Cdk.beep
                     end
@@ -380,12 +377,12 @@ module Slithernix
                   holder = @info[cursor_pos]
                   @info[cursor_pos] = @info[cursor_pos + 1]
                   @info[cursor_pos + 1] = holder
-                  drawField
+                  draw_field
                 end
               when Slithernix::Cdk::ERASE
                 unless @info.empty?
                   clean
-                  drawField
+                  draw_field
                 end
               when Slithernix::Cdk::CUT
                 if @info.empty?
@@ -393,7 +390,7 @@ module Slithernix
                 else
                   @@g_paste_buffer = @info.clone
                   clean
-                  drawField
+                  draw_field
                 end
               when Slithernix::Cdk::COPY
                 if @info.empty?
@@ -405,7 +402,7 @@ module Slithernix
                 if @@g_paste_buffer.empty?
                   Slithernix::Cdk.beep
                 else
-                  setValue(@@g_paste_buffer)
+                  set_value(@@g_paste_buffer)
                   draw(@box)
                 end
               when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
@@ -416,10 +413,7 @@ module Slithernix
                   ret = @info
                   complete = true
                 end
-              when Curses::Error
-                set_exit_type(input)
-                complete = true
-              when Slithernix::Cdk::KEY_ESC
+              when Curses::Error, Slithernix::Cdk::KEY_ESC
                 set_exit_type(input)
                 complete = true
               when Slithernix::Cdk::REFRESH
@@ -434,7 +428,7 @@ module Slithernix
               end
 
               if redraw
-                drawField
+                draw_field
               elsif moved
                 # @field_win.move(@current_row, @current_col)
                 @field_win.refresh
@@ -455,14 +449,19 @@ module Slithernix
 
         # This moves the mentry field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
-          raise 'WTF'
           windows = [@win, @field_win, @label_win, @shadow_win]
-          move_specific(xplace, yplace, relative, refresh_flag,
-                        windows, [])
+          move_specific(
+            xplace,
+            yplace,
+            relative,
+            refresh_flag,
+            windows,
+            []
+          )
         end
 
         # This function redraws the multiple line entry field.
-        def drawField
+        def draw_field
           currchar = @field_width * @top_row
 
           draw_title(@win)
@@ -512,11 +511,11 @@ module Slithernix
           end
 
           # Draw the mentry field
-          drawField
+          draw_field
         end
 
         # This sets the background attribute of the widget.
-        def setBKattr(attrib)
+        def set_background_attr(attrib)
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
           @label_win&.wbkgd(attrib)
@@ -551,14 +550,14 @@ module Slithernix
 
         # This sets multiple attributes of the widget.
         def set(value, min, box)
-          setValue(value)
-          setMin(min)
+          set_value(value)
+          set_min(min)
           set_box(box)
         end
 
         # This removes the old information in the entry field and keeps the
         # new information given.
-        def setValue(new_value)
+        def set_value(new_value)
           field_characters = @rows * @field_width
 
           @info = new_value
@@ -575,37 +574,37 @@ module Slithernix
           @current_col = new_value.size % @field_width
 
           # Redraw the widget.
-          drawField
+          draw_field
         end
 
-        def getValue
+        def get_value
           @info
         end
 
         # This sets the filler character to use when drawing the widget.
-        def setFillerChar(filler)
+        def set_filler_char(filler)
           @filler = filler.ord
         end
 
-        def getFillerChar
+        def get_filler_char
           @filler
         end
 
         # This sets the character to use when a hidden character type is used
-        def setHiddenChar(character)
+        def set_hidden_char(character)
           @hidden = character
         end
 
-        def getHiddenChar
+        def get_hidden_char
           @hidden
         end
 
         # This sets a minimum length of the widget.
-        def setMin(min)
+        def set_min(min)
           @min = min
         end
 
-        def getMin
+        def get_min
           @min
         end
 
@@ -618,7 +617,7 @@ module Slithernix
         end
 
         # This sets the callback function.
-        def setCB(callback)
+        def set_callback(callback)
           @callbackfn = callback
         end
 
