@@ -401,7 +401,7 @@ module Slithernix
         end
 
         # This sets the background attribute of the widget.
-        def setBKattr(attrib)
+        def set_background_attr(attrib)
           @win.wbkgd(attrib)
           @list_win.wbkgd(attrib)
           @scrollbar_win&.wbkgd(attrib)

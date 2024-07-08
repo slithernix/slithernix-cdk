@@ -257,18 +257,18 @@ module Slithernix
               # {
               #    for (x = 0; x < absoluteDifference; x++)
               #    {
-              #       injectMyScroller (fselect, KEY_UP);
+              #       inject_scroller (fselect, KEY_UP);
               #    }
               # }
               # else if (difference > 0)
               # {
               #    for (x = 0; x < absoluteDifferene; x++)
               #    {
-              #       injectMyScroller (fselect, KEY_DOWN);
+              #       inject_scroller (fselect, KEY_DOWN);
               #    }
               # }
               scrollp.setPosition(index)
-              fselect.drawMyScroller
+              fselect.draw_scroller
 
               # Ok, we found a match, is the next item similar?
               if index + 1 < fselect.file_counter && index + 1 < list.size &&
@@ -326,7 +326,7 @@ module Slithernix
 
             if scrollp.list_size.positive?
               # Move the scrolling list.
-              fselect.injectMyScroller(key)
+              fselect.inject_scroller(key)
 
               # Get the currently highlighted filename.
               current = Slithernix::Cdk.chtype2Char(scrollp.item[scrollp.current_item])
@@ -827,8 +827,8 @@ module Slithernix
 
         # This sets the background attribute of the widget.
         def setBKattr(attrib)
-          @entry_field.setBKattr(attrib)
-          @scroll_field.setBKattr(attrib)
+          @entry_field.set_background_attr(attrib)
+          @scroll_field.set_background_attr(attrib)
         end
 
         # This destroys the file selector.

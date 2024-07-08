@@ -535,7 +535,7 @@ module Slithernix
         end
 
         # This sets the background attribute of the widget.
-        def setBKattr(attrib)
+        def set_background_attr(attrib)
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
           @label_win&.wbkgd(attrib)

@@ -52,7 +52,7 @@ end
 color_list.setItems(item, count, true) if c
 
 redraw_title = lambda do |_type, widget, _client_data, _input|
-  widget.set_title("<C></B></#{widget.getCurrentItem + 1}>COLOR LIST", w_value)
+  widget.set_title("<C></B></#{widget.get_current_item + 1}>COLOR LIST", w_value)
   widget.screen.refresh
   true
 end

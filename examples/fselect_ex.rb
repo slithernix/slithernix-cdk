@@ -20,7 +20,7 @@ class FselectExample < CLIExample
 
   def self.fill_undo(widget, deleted, data)
     top = widget.scroll_field.getCurrentTop
-    item = widget.getCurrentItem
+    item = widget.get_current_item
 
     undo = OpenStruct.new
     undo.deleted = deleted
@@ -92,19 +92,19 @@ class FselectExample < CLIExample
 
     do_delete = lambda do |_cdktype, widget, _fselect, _key|
       size = []
-      list = widget.getContents(size)
+      list = widget.get_contents(size)
       size = size[0]
       result = false
 
       if size.positive?
         save = widget.scroll_field.getCurrentTop
-        first = widget.getCurrentItem
+        first = widget.get_current_item
 
         FselectExample.fill_undo(widget, first, list[first])
         list = list[0...first] + list[first + 1..]
-        widget.setContents(list, size - 1)
+        widget.set_contents(list, size - 1)
         widget.scroll_field.setCurrentTop(save)
-        widget.setCurrentItem(first)
+        widget.set_current_item(first)
         widget.draw(widget.border_size)
         result = true
       end
@@ -113,21 +113,21 @@ class FselectExample < CLIExample
 
     do_delete1 = lambda do |_cdktype, widget, _fselect, _key|
       size = []
-      list = widget.getContents(size)
+      list = widget.get_contents(size)
       size = size[0]
       result = false
 
       if size.positive?
         save = widget.scroll_field.getCurrentTop
-        first = widget.getCurrentItem
+        first = widget.get_current_item
 
         first -= 1
         if (first + 1).positive?
           FselectExample.fill_undo(widget, first, list[first])
           list = list[0...first] + list[first + 1..]
-          widget.setContents(list, size - 1)
+          widget.set_contents(list, size - 1)
           widget.scroll_field.setCurrentTop(save)
-          widget.setCurrentItem(first)
+          widget.set_current_item(first)
           widget.draw(widget.border_size)
           result = true
         end
@@ -153,8 +153,8 @@ class FselectExample < CLIExample
       result = false
 
       if @@my_user_list.size.positive?
-        widget.setContents(@@my_user_list, @@my_user_list.size)
-        widget.setCurrentItem(0)
+        widget.set_contents(@@my_user_list, @@my_user_list.size)
+        widget.set_current_item(0)
         widget.draw(widget.border_size)
         result = true
       end
@@ -165,14 +165,14 @@ class FselectExample < CLIExample
       result = false
       if @@my_undo_list.size.positive?
         size = []
-        oldlist = widget.getContents(size)
+        oldlist = widget.get_contents(size)
         size = size[0] + 1
         deleted = @@my_undo_list[-1].deleted
         original = @@my_user_list[@@my_undo_list[-1].original]
         newlist = oldlist[0..deleted - 1] + [original] + oldlist[deleted..]
-        widget.setContents(newlist, size)
+        widget.set_contents(newlist, size)
         widget.scroll_field.setCurrentTop(@@my_undo_list[-1].topline)
-        widget.setCurrentItem(@@my_undo_list[-1].position)
+        widget.set_current_item(@@my_undo_list[-1].position)
         widget.draw(widget.border_size)
         @@my_undo_list = @@my_undo_list[0...-1]
         result = true

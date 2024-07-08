@@ -19,7 +19,7 @@ module Slithernix
             Slithernix::Cdk::FORCHAR => Curses::KEY_NPAGE
           }
 
-          unless createList(list, list_size)
+          unless create_list(list, list_size)
             destroy
             return nil
           end
@@ -92,7 +92,7 @@ module Slithernix
           end
 
           # Create the entry field.
-          temp_width = if Slithernix::Cdk::Widget::AlphaList.isFullWidth(width)
+          temp_width = if Slithernix::Cdk::Widget::AlphaList.is_full_width?(width)
                        then Slithernix::Cdk::FULL
                        else
                          box_width - 2 - label_len
@@ -128,7 +128,7 @@ module Slithernix
 
             if scrollp.list_size.positive?
               # Adjust the scrolling list.
-              alphalist.injectMyScroller(key)
+              alphalist.inject_scroller(key)
 
               # Set the value in the entry field.
               current = Slithernix::Cdk.chtype2Char(scrollp.item[scrollp.current_item])
@@ -229,7 +229,7 @@ module Slithernix
 
               # Move the highlight bar down to the selected value.
               (0...selected).each do |_x|
-                alphalist.injectMyScroller(Curses::KEY_DOWN)
+                alphalist.inject_scroller(Curses::KEY_DOWN)
               end
 
               # Redraw the alphalist.
@@ -272,7 +272,7 @@ module Slithernix
                                                         alphalist.list.size, pattern)) >= 0
                 # XXX: original uses n scroll downs/ups for <10 positions change
                 scrollp.setPosition(index)
-                alphalist.drawMyScroller
+                alphalist.draw_scroller
               else
                 Slithernix::Cdk.Beep
                 result = 0
@@ -281,7 +281,7 @@ module Slithernix
 
             if empty
               scrollp.setPosition(0)
-              alphalist.drawMyScroller
+              alphalist.draw_scroller
             end
 
             result
@@ -329,7 +329,7 @@ module Slithernix
           # Create the scrolling list.  It overlaps the entry field by one line if
           # we are using box-borders.
           temp_height = @entry_field.win.maxy - @border_size
-          temp_width = if Slithernix::Cdk::Widget::AlphaList.isFullWidth(width)
+          temp_width = if Slithernix::Cdk::Widget::AlphaList.is_full_width?(width)
                        then Slithernix::Cdk::FULL
                        else
                          box_width - 1
@@ -385,25 +385,25 @@ module Slithernix
         # will not draw items highlighted unless it has focus. Temporarily adjust
         # the focus of the scroll widget when drawing on it to get the right
         # highlighting.
-        def saveFocus
+        def save_focus
           @save = @scroll_field.has_focus
           @scroll_field.has_focus = @entry_field.has_focus
         end
 
-        def restoreFocus
+        def restore_focus
           @scroll_field.has_focus = @save
         end
 
-        def drawMyScroller
-          saveFocus
+        def draw_scroller
+          save_focus
           @scroll_field.draw(@scroll_field.box)
-          restoreFocus
+          restore_focus
         end
 
-        def injectMyScroller(key)
-          saveFocus
+        def inject_scroller(key)
+          save_focus
           @scroll_field.inject(key)
-          restoreFocus
+          restore_focus
         end
 
         # This draws the alphalist widget.
@@ -415,7 +415,7 @@ module Slithernix
           @entry_field.draw(@entry_field.box)
 
           # Draw in the scroll field.
-          drawMyScroller
+          draw_scroller
         end
 
         # This activates the alphalist
@@ -455,22 +455,27 @@ module Slithernix
 
         # This sets multiple attributes of the widget.
         def set(list, list_size, filler_char, highlight, box)
-          setContents(list, list_size)
-          setFillerChar(filler_char)
-          setHighlight(highlight)
+          set_contents(list, list_size)
+          set_filler_char(filler_char)
+          set_highlight(highlight)
           set_box(box)
         end
 
         # This function sets the information inside the alphalist.
-        def setContents(list, list_size)
-          return unless createList(list, list_size)
+        def set_contents(list, list_size)
+          return unless create_list(list, list_size)
 
           # Set the information in the scrolling list.
-          @scroll_field.set(@list, @list_size, false,
-                            @scroll_field.highlight, @scroll_field.box)
+          @scroll_field.set(
+            @list,
+            @list_size,
+            false,
+            @scroll_field.highlight,
+            @scroll_field.box,
+          )
 
           # Clean out the entry field.
-          setCurrentItem(0)
+          set_current_item(0)
           @entry_field.clean
 
           # Redraw the widget.
@@ -478,18 +483,17 @@ module Slithernix
           draw(@box)
         end
 
-        # This returns the contents of the widget.
-        def getContents(size)
+        def get_contents(size)
           size << @list_size
           @list
         end
 
         # Get/set the current position in the scroll widget.
-        def getCurrentItem
+        def get_current_item
           @scroll_field.getCurrentItem
         end
 
-        def setCurrentItem(item)
+        def set_current_item(item)
           return unless @list_size != 0
 
           @scroll_field.setCurrentItem(item)
@@ -497,70 +501,70 @@ module Slithernix
         end
 
         # This sets the filler character of the entry field of the alphalist.
-        def setFillerChar(filler_character)
+        def set_filler_char(filler_character)
           @filler_char = filler_character
           @entry_field.setFillerChar(filler_character)
         end
 
-        def getFillerChar
+        def get_filler_char
           @filler_char
         end
 
-        # This sets the highlgith bar attributes
-        def setHighlight(highlight)
+        # This sets the highlight bar attributes
+        def set_highlight(highlight)
           @highlight = highlight
         end
 
-        def getHighlight
+        def get_highlight
           @highlight
         end
 
         # These functions set the drawing characters of the widget.
-        def setMyULchar(character)
+        def set_upper_left_corner_char(character)
           @entry_field.set_upper_left_corner_char(character)
         end
 
-        def setMyURchar(character)
+        def set_upper_right_corner_char(character)
           @entry_field.set_upper_right_corner_char(character)
         end
 
-        def setMyLLchar(character)
+        def set_lower_left_corner_char(character)
           @scroll_field.set_lower_left_corner_char(character)
         end
 
-        def setMyLRchar(character)
+        def set_lower_right_corner_char(character)
           @scroll_field.set_lower_right_corner_char(character)
         end
 
-        def setMyVTchar(character)
+        def set_vertical_line_char(character)
           @entry_field.set_vertical_line_char(character)
           @scroll_field.set_vertical_line_char(character)
         end
 
-        def setMyHZchar(character)
+        def set_horizontal_line_char(character)
           @entry_field.set_horizontal_line_char(character)
           @scroll_field.set_horizontal_line_char(character)
         end
 
-        def setMyBXattr(character)
+        def set_box_attr(character)
           @entry_field.set_box_attr(character)
           @scroll_field.set_box_attr(character)
         end
 
         # This sets the background attribute of the widget.
-        def setBKattr(attrib)
-          @entry_field.setBKattr(attrib)
-          @scroll_field.setBKattr(attrib)
+        def set_background_attr(attrib)
+          @entry_field.set_background_attr(attrib)
+          @scroll_field.set_background_attr(attrib)
         end
 
-        def destroyInfo
+        def destroy_info
           @list = String.new
           @list_size = 0
         end
 
         # This destroys the alpha list
         def destroy
-          destroyInfo
+          destroy_info
 
           # Clean the key bindings.
           clean_bindings(:AlphaList)
@@ -586,7 +590,7 @@ module Slithernix
           @entry_field.set_post_process(callback, data)
         end
 
-        def createList(list, list_size)
+        def create_list(list, list_size)
           if list_size >= 0
             newlist = []
 
@@ -600,13 +604,13 @@ module Slithernix
               end
             end
             if status
-              destroyInfo
+              destroy_info
               @list_size = list_size
               @list = newlist
               @list.sort!
             end
           else
-            destroyInfo
+            destroy_info
             status = true
           end
           status
@@ -620,7 +624,7 @@ module Slithernix
           entry_field.unfocus
         end
 
-        def self.isFullWidth(width)
+        def self.is_full_width?(width)
           width == Slithernix::Cdk::FULL || (Curses.cols != 0 && width >= Curses.cols)
         end
 

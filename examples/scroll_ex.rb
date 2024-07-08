@@ -103,7 +103,7 @@ class ScrollExample < CLIExample
     end
 
     delItemCB = lambda do |_type, widget, _client_data, _input|
-      widget.deleteItem(widget.getCurrentItem)
+      widget.deleteItem(widget.get_current_item)
       widget.screen.refresh
       true
     end

@@ -383,7 +383,7 @@ class TraverseExample < Example
     when Curses::KEY_ENTER, Slithernix::Cdk::KEY_RETURN
       mtmp = []
       stmp = []
-      widget.getCurrentItem(mtmp, stmp)
+      widget.get_current_item(mtmp, stmp)
       mp = mtmp[0]
       sp = stmp[0]
 
