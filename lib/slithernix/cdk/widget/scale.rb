@@ -259,7 +259,7 @@ module Slithernix
             modify = false
           end
           if modify &&
-             ((value, test) = temp.scanf(self.SCAN_FMT)).size == 2 &&
+             ((value, test) = temp.scanf(self.scan_fmt)).size == 2 &&
              test == ' ' &&
              value >= @low && value <= @high
             setValue(value)
@@ -287,7 +287,7 @@ module Slithernix
           set_exit_type(0)
 
           # Draw the field.
-          drawField
+          draw_field
 
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
@@ -303,7 +303,7 @@ module Slithernix
               complete = true
             else
               case input
-              when Curses::KEY_LEFT
+              when Curses::key_left
                 setEditPosition(@field_edit + 1)
               when Curses::KEY_RIGHT
                 setEditPosition(@field_edit - 1)
@@ -367,7 +367,7 @@ module Slithernix
           end
 
           unless complete
-            drawField
+            draw_field
             set_exit_type(0)
           end
 
@@ -403,11 +403,11 @@ module Slithernix
           @win.refresh
 
           # Draw the field window.
-          drawField
+          draw_field
         end
 
         # This draws the widget.
-        def drawField
+        def draw_field
           @field_win.erase
 
           # Draw the value in the field.
@@ -507,7 +507,7 @@ module Slithernix
           super(@win)
         end
 
-        def SCAN_FMT
+        def scan_fmt
           '%d%c'
         end
       end

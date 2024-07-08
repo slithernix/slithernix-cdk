@@ -129,9 +129,9 @@ module Slithernix
         when Slithernix::Cdk.key_f(10)
           # save data and exit
           exit_screen_ok(screen)
-        when Slithernix::Cdk.CTRL('X')
+        when Slithernix::Cdk.ctrl('X')
           exit_screen_cancel(screen)
-        when Slithernix::Cdk.CTRL('R')
+        when Slithernix::Cdk.ctrl('R')
           # reset data to defaults
           reset_screen(screen)
           set_focus(curwidg)

@@ -5,7 +5,7 @@ require_relative 'example'
 
 class ScrollExample < CLIExample
   @@count = 0
-  def self.newLabel(prefix)
+  def self.new_label(prefix)
     result = format('%s%d', prefix, @@count)
     @@count += 1
     result
@@ -90,27 +90,27 @@ class ScrollExample < CLIExample
 
     scroll_list.setItems(item, count, true) if params.c
 
-    addItemCB = lambda do |_type, widget, _client_data, _input|
-      widget.addItem(ScrollExample.newLabel('add'))
+    add_item_callback = lambda do |_type, widget, _client_data, _input|
+      widget.addItem(ScrollExample.new_label('add'))
       widget.screen.refresh
       true
     end
 
-    insItemCB = lambda do |_type, widget, _client_data, _input|
-      widget.insertItem(ScrollExample.newLabel('insert'))
+    insert_item_callback = lambda do |_type, widget, _client_data, _input|
+      widget.insertItem(ScrollExample.new_label('insert'))
       widget.screen.refresh
       true
     end
 
-    delItemCB = lambda do |_type, widget, _client_data, _input|
+    insert_item_callback = lambda do |_type, widget, _client_data, _input|
       widget.deleteItem(widget.get_current_item)
       widget.screen.refresh
       true
     end
 
-    scroll_list.bind(:Scroll, 'a', addItemCB, nil)
-    scroll_list.bind(:Scroll, 'i', insItemCB, nil)
-    scroll_list.bind(:Scroll, 'd', delItemCB, nil)
+    scroll_list.bind(:Scroll, 'a', add_item_callback, nil)
+    scroll_list.bind(:Scroll, 'i', insert_item_callback, nil)
+    scroll_list.bind(:Scroll, 'd', insert_item_callback, nil)
 
     # Activate the scrolling list.
     selection = scroll_list.activate('')

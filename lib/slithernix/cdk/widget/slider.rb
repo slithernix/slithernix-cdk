@@ -29,7 +29,7 @@ module Slithernix
           @label = []
           @label_len = 0
           @label_win = nil
-          high_value_len = formattedSize(high)
+          high_value_len = formatted_size(high)
 
           # If the field_width is a negative will be COLS-field_width,
           # otherwise field_width will be the given width.
@@ -181,7 +181,7 @@ module Slithernix
         # Move the cursor to the given edit-position.
         def moveToEditPosition(_new_position)
           # return @field_win.move(0,
-          #    @field_width + self.formattedSize(@current) - new_position)
+          #    @field_width + self.formatted_size(@current) - new_position)
           @field_win
         end
 
@@ -241,7 +241,7 @@ module Slithernix
           result = false
           modify = true
           base = @field_width
-          need = formattedSize(@current)
+          need = formatted_size(@current)
           temp = String.new
           col = need - @field_edit
 
@@ -262,7 +262,7 @@ module Slithernix
             modify = false
           end
           if modify &&
-             ((value, test) = temp.scanf(self.SCAN_FMT)).size == 2 &&
+             ((value, test) = temp.scanf(self.scan_fmt)).size == 2 &&
              test == ' ' && value >= @low && value <= @high
             setValue(value)
             result = true
@@ -288,7 +288,7 @@ module Slithernix
           set_exit_type(0)
 
           # Draw the field.
-          drawField
+          draw_field
 
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
@@ -304,7 +304,7 @@ module Slithernix
               complete = true
             else
               case input
-              when Curses::KEY_LEFT
+              when Curses::key_left
                 setEditPosition(@field_edit + 1)
               when Curses::KEY_RIGHT
                 setEditPosition(@field_edit - 1)
@@ -367,7 +367,7 @@ module Slithernix
           end
 
           unless complete
-            drawField
+            draw_field
             set_exit_type(0)
           end
 
@@ -416,11 +416,11 @@ module Slithernix
           @win.refresh
 
           # Draw the field window.
-          drawField
+          draw_field
         end
 
         # This draws the widget.
-        def drawField
+        def draw_field
           step = 1.0 * @field_width / (@high - @low)
 
           # Determine how many filler characters need to be drawn.
@@ -485,7 +485,7 @@ module Slithernix
           Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
 
-        def formattedSize(value)
+        def formatted_size(value)
           value.to_s.size
         end
 
@@ -537,7 +537,7 @@ module Slithernix
           draw(@box)
         end
 
-        def SCAN_FMT
+        def scan_fmt
           '%d%c'
         end
 

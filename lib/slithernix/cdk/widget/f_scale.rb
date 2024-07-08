@@ -6,8 +6,7 @@ module Slithernix
   module Cdk
     class Widget
       class FScale < Slithernix::Cdk::Widget::Scale
-        def initialize(cdkscreen, xplace, yplace, title, label, field_attr,
-                       field_width, start, low, high, inc, fast_inc, digits, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, title, label, field_attr, field_width, start, low, high, inc, fast_inc, digits, box, shadow)
           @digits = digits
           super(
             cdkscreen,
@@ -27,7 +26,7 @@ module Slithernix
           )
         end
 
-        def drawField
+        def draw_field
           @field_win.erase
 
           # Draw the value in the field.
@@ -50,15 +49,15 @@ module Slithernix
           @field_win.refresh
         end
 
-        def setDigits(digits)
+        def set_digits(digits)
           @digits = [0, digits].max
         end
 
-        def getDigits
+        def get_digits
           @digits
         end
 
-        def SCAN_FMT
+        def scan_fmt
           '%g%c'
         end
       end

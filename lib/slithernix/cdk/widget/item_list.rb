@@ -6,13 +6,12 @@ module Slithernix
   module Cdk
     class Widget
       class ItemList < Slithernix::Cdk::Widget
-        def initialize(cdkscreen, xplace, yplace, title, label, item, count,
-                       default_item, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, title, label, item, count, default_item, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
 
-          unless createList(item, count)
+          unless create_list(item, count)
             destroy
             return nil
           end
@@ -33,7 +32,7 @@ module Slithernix
           end
 
           # Set the box width. Allow an extra char in field width for cursor
-          field_width = maximumFieldWidth + 1
+          field_width = maximum_field_width + 1
           box_width = field_width + @label_len + (2 * @border_size)
           box_width = set_title(title, box_width)
           box_height += @title_lines
@@ -41,7 +40,7 @@ module Slithernix
           # Make sure we didn't extend beyond the dimensions of the window
           @box_width = [box_width, parent_width].min
           @box_height = [box_height, parent_height].min
-          updateFieldWidth
+          update_field_width
 
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
@@ -60,9 +59,12 @@ module Slithernix
 
           # Make the label window if there was a label.
           if @label.size.positive?
-            @label_win = @win.subwin(1, @label_len,
-                                     ypos + @border_size + @title_lines,
-                                     xpos + @border_size)
+            @label_win = @win.subwin(
+              1,
+              @label_len,
+              ypos + @border_size + @title_lines,
+              xpos + @border_size
+            )
 
             if @label_win.nil?
               destroy
@@ -73,7 +75,7 @@ module Slithernix
           @win.keypad(true)
 
           # Make the field window.
-          unless createFieldWin(
+          unless create_field_win(
             ypos + @border_size + @title_lines,
             xpos + @label_len + @border_size
           )
@@ -99,8 +101,12 @@ module Slithernix
 
           # Do we want a shadow?
           if shadow
-            @shadow_win = Curses::Window.new(box_height, box_width,
-                                             ypos + 1, xpos + 1)
+            @shadow_win = Curses::Window.new(
+              box_height,
+              box_width,
+              ypos + 1, xpos + 1
+            )
+
             if @shadow_win.nil?
               destroy
               return nil
@@ -117,7 +123,7 @@ module Slithernix
 
           # Draw the widget.
           draw(@box)
-          drawField(true)
+          draw_field(true)
 
           if actions.nil? || actions.empty?
             input = 0
@@ -152,7 +158,7 @@ module Slithernix
           set_exit_type(0)
 
           # Draw the widget field
-          drawField(true)
+          draw_field(true)
 
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
@@ -173,7 +179,7 @@ module Slithernix
                 else
                   @current_item = 0
                 end
-              when Curses::KEY_DOWN, Curses::KEY_LEFT, '-', 'p'
+              when Curses::KEY_DOWN, Curses::key_left, '-', 'p'
                 if @current_item.positive?
                   @current_item -= 1
                 else
@@ -205,13 +211,17 @@ module Slithernix
 
             # Should we call a post-process?
             if !complete && @post_process_func
-              @post_process_func.call(:ItemList, self, @post_process_data,
-                                      input)
+              @post_process_func.call(
+                :ItemList,
+                self,
+                @post_process_data,
+                input
+              )
             end
           end
 
           unless complete
-            drawField(true)
+            draw_field(true)
             set_exit_type(0)
           end
 
@@ -222,8 +232,14 @@ module Slithernix
         # This moves the itemlist field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @field_win, @label_win, @shadow_win]
-          move_specific(xplace, yplace, relative, refresh_flag,
-                        windows, [])
+          move_specific(
+            xplace,
+            yplace,
+            relative,
+            refresh_flag,
+            windows,
+            []
+          )
         end
 
         # This draws the widget on the screen.
@@ -237,8 +253,15 @@ module Slithernix
 
           # Draw in the label to the widget.
           unless @label_win.nil?
-            Slithernix::Cdk::Draw.write_chtype(@label_win, 0, 0, @label, Slithernix::Cdk::HORIZONTAL,
-                                               0, @label.size)
+            Slithernix::Cdk::Draw.write_chtype(
+              @label_win,
+              0,
+              0,
+              @label,
+              Slithernix::Cdk::HORIZONTAL,
+              0,
+              @label.size
+            )
           end
 
           # Box the widget if asked.
@@ -247,18 +270,18 @@ module Slithernix
           @win.refresh
 
           # Draw in the field.
-          drawField(false)
+          draw_field(false)
         end
 
         # This sets the background attribute of the widget
-        def setBKattr(attrib)
+        def set_background_attr(attrib)
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
           @label_win&.wbkgd(attrib)
         end
 
         # This function draws the contents of the field.
-        def drawField(highlight)
+        def draw_field(highlight)
           # Declare local vars.
           current_item = @current_item
 
@@ -291,7 +314,7 @@ module Slithernix
           Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
 
-        def destroyInfo
+        def destroy_info
           @list_size = 0
           @item = String.new
         end
@@ -299,7 +322,7 @@ module Slithernix
         # This function destroys the widget and all the memory it used.
         def destroy
           clean_title
-          destroyInfo
+          destroy_info
 
           # Delete the windows
           Slithernix::Cdk.delete_curses_window(@field_win)
@@ -315,13 +338,13 @@ module Slithernix
 
         # This sets multiple attributes of the widget.
         def set(list, count, current, box)
-          setValues(list, count, current)
+          set_values(list, count, current)
           set_box(box)
         end
 
         # This function sets the contents of the list
-        def setValues(item, count, default_item)
-          return unless createList(item, count)
+        def set_values(item, count, default_item)
+          return unless create_list(item, count)
 
           old_width = @field_width
 
@@ -333,9 +356,9 @@ module Slithernix
 
           # This will not resize the outer windows but can still make a usable
           # field width if the title made the outer window wide enough
-          updateFieldWidth
+          update_field_width
           if @field_width > old_width
-            createFieldWin(@field_win.begy, @field_win.begx)
+            create_field_win(@field_win.begy, @field_win.begx)
           end
 
           # Draw the field.
@@ -343,25 +366,25 @@ module Slithernix
           draw(@box)
         end
 
-        def getValues(size)
+        def get_values(size)
           size << @list_size
           @item
         end
 
         # This sets the default/current item of the itemlist
-        def setCurrentItem(current_item)
+        def set_current_item(current_item)
           # Set the default item.
           return unless current_item >= 0 && current_item < @list_size
 
           @current_item = current_item
         end
 
-        def getCurrentItem
+        def get_current_item
           @current_item
         end
 
         # This sets the default item in the list.
-        def setDefaultItem(default_item)
+        def set_default_item(default_item)
           # Make sure the item is in the correct range.
           @default_item = if default_item.negative?
                             0
@@ -372,19 +395,19 @@ module Slithernix
                           end
         end
 
-        def getDefaultItem
+        def get_default_item
           @default_item
         end
 
         def focus
-          drawField(true)
+          draw_field(true)
         end
 
         def unfocus
-          drawField(false)
+          draw_field(false)
         end
 
-        def createList(item, count)
+        def create_list(item, count)
           status = false
           new_items = []
           new_pos = []
@@ -420,7 +443,7 @@ module Slithernix
             end
 
             if status
-              destroyInfo
+              destroy_info
 
               # Copy in the new information
               @list_size = count
@@ -429,7 +452,7 @@ module Slithernix
               @item_len = new_len
             end
           else
-            destroyInfo
+            destroy_info
             status = true
           end
 
@@ -437,7 +460,7 @@ module Slithernix
         end
 
         # Go through the list and determine the widest item.
-        def maximumFieldWidth
+        def maximum_field_width
           max_width = -2**30
 
           (0...@list_size).each do |x|
@@ -446,14 +469,14 @@ module Slithernix
           [max_width, 0].max
         end
 
-        def updateFieldWidth
-          want = maximumFieldWidth + 1
+        def update_field_width
+          want = maximum_field_width + 1
           have = @box_width - @label_len - (2 * @border_size)
           @field_width = [want, have].min
         end
 
         # Make the field window.
-        def createFieldWin(ypos, xpos)
+        def create_field_win(ypos, xpos)
           @field_win = @win.subwin(1, @field_width, ypos, xpos)
           unless @field_win.nil?
             @field_win.keypad(true)

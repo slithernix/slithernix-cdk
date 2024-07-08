@@ -96,13 +96,13 @@ module Slithernix
       def self.draw_obj_box(win, widget)
         attrbox(
           win,
-          widget.ULChar,
-          widget.URChar,
-          widget.LLChar,
-          widget.LRChar,
-          widget.HZChar,
-          widget.VTChar,
-          widget.BXAttr
+          widget.upper_left_corner_char,
+          widget.upper_right_corner_char,
+          widget.lower_left_corner_character,
+          widget.lower_right_corner_character,
+          widget.horizontal_line_char,
+          widget.vertical_line_char,
+          widget.box_attr
         )
       end
 

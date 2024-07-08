@@ -191,7 +191,7 @@ class FselectExample < CLIExample
     # the file selector starts it uses the present directory as a default.
     fselect.set(params.dir, Curses::A_NORMAL, ' ', Curses::A_REVERSE,
                 '</5>', '</48>', '</N>', '</N>', fselect.box)
-    @@my_user_list = fselect.getContents([]).clone
+    @@my_user_list = fselect.get_contents([]).clone
     @@my_undo_list = []
 
     # Activate the file selector.

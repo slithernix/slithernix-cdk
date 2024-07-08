@@ -130,7 +130,7 @@ module Slithernix
             mark = @info_pos
             @info.size
 
-            if input == Curses::KEY_LEFT
+            if input == Curses::key_left
               if mark.zero?
                 failed = true
               else

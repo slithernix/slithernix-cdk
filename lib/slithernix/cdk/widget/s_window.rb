@@ -374,7 +374,7 @@ module Slithernix
                 else
                   Slithernix::Cdk.beep
                 end
-              when Curses::KEY_LEFT
+              when Curses::key_left
                 if @left_char.positive?
                   @left_char -= 1
                 else

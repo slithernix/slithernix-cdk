@@ -97,10 +97,10 @@ module Slithernix
           # Create the scrollbar window.
           if splace == Slithernix::Cdk::RIGHT
             @scrollbar_win = @win.subwin(maxViewSize, 1,
-                                         self.SCREEN_YPOS(ypos), xpos + @box_width - @border_size - 1)
+                                         self.screen_ypos(ypos), xpos + @box_width - @border_size - 1)
           elsif splace == Slithernix::Cdk::LEFT
             @scrollbar_win = @win.subwin(maxViewSize, 1,
-                                         self.SCREEN_YPOS(ypos), self.SCREEN_XPOS(ypos))
+                                         self.screen_ypos(ypos), self.screen_xpos(ypos))
           else
             @scrollbar_win = nil
           end
@@ -158,8 +158,8 @@ module Slithernix
           else
             0
           end
-          self.SCREEN_YPOS(@current_item - @current_top)
-          self.SCREEN_XPOS(0)
+          self.screen_ypos(@current_item - @current_top)
+          self.screen_xpos(0)
 
           # Don't know why this was set up here, since this moves the window -- snake 2024
           # @input_window.move(ypos, xpos)
@@ -224,7 +224,7 @@ module Slithernix
                 self.KEY_DOWN
               when Curses::KEY_RIGHT
                 self.KEY_RIGHT
-              when Curses::KEY_LEFT
+              when Curses::key_left
                 self.KEY_LEFT
               when Curses::KEY_PPAGE
                 self.KEY_PPAGE
@@ -316,8 +316,8 @@ module Slithernix
             k = j + @current_top
             if k < @list_size
               screen_pos = self.SCREENPOS(k, scrollbar_adj)
-              ypos = self.SCREEN_YPOS(j)
-              xpos = self.SCREEN_XPOS(0)
+              ypos = self.screen_ypos(j)
+              xpos = self.screen_xpos(0)
 
               # Draw the empty line.
               Slithernix::Cdk::Draw.write_blanks(
@@ -433,8 +433,8 @@ module Slithernix
           (0...@view_size).each do |j|
             Slithernix::Cdk::Draw.write_blanks(
               @win,
-              self.SCREEN_XPOS(0),
-              self.SCREEN_YPOS(j),
+              self.screen_xpos(0),
+              self.screen_ypos(j),
               Slithernix::Cdk::HORIZONTAL,
               0,
               @win.maxx,

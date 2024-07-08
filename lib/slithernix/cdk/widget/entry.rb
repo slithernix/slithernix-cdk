@@ -147,7 +147,7 @@ module Slithernix
               end
 
               # Update the entry field.
-              entry.drawField
+              entry.draw_field
             end
           end
 
@@ -194,7 +194,7 @@ module Slithernix
           end
         end
 
-        def setPositionToEnd
+        def set_position_to_end
           if @info.size >= @field_width
             if @info.size < @max
               char_count = @field_width - 1
@@ -220,7 +220,7 @@ module Slithernix
           set_exit_type(0)
 
           # Refresh the widget field. This seems useless?
-          # self.drawField
+          # self.draw_field
 
           unless @pre_process_func.nil?
             pp_return = @pre_process_func.call(
@@ -245,7 +245,7 @@ module Slithernix
               when Curses::KEY_HOME
                 @left_char = 0
                 @screen_col = 0
-                drawField
+                draw_field
               when Slithernix::Cdk::TRANSPOSE
                 if curr_pos >= @info.size - 1
                   Slithernix::Cdk.beep
@@ -253,18 +253,18 @@ module Slithernix
                   holder = @info[curr_pos]
                   @info[curr_pos] = @info[curr_pos + 1]
                   @info[curr_pos + 1] = holder
-                  drawField
+                  draw_field
                 end
               when Curses::KEY_END
-                setPositionToEnd
-                drawField
-              when Curses::KEY_LEFT
+                set_position_to_end
+                draw_field
+              when Curses::key_left
                 if curr_pos <= 0
                   Slithernix::Cdk.beep
                 elsif @screen_col.zero?
                   # Scroll left.
                   @left_char -= 1
-                  drawField
+                  draw_field
                 else
                   @screen_col -= 1
                   # @field_win.move(0, @screen_col)
@@ -275,7 +275,7 @@ module Slithernix
                 elsif @screen_col == @field_width - 1
                   # Scroll to the right.
                   @left_char += 1
-                  drawField
+                  draw_field
                 else
                   # Move right.
                   @screen_col += 1
@@ -306,7 +306,7 @@ module Slithernix
                         @left_char -= 1
                       end
                     end
-                    drawField
+                    draw_field
                   else
                     Slithernix::Cdk.beep
                   end
@@ -317,7 +317,7 @@ module Slithernix
               when Slithernix::Cdk::ERASE
                 unless @info.empty?
                   clean
-                  drawField
+                  draw_field
                 end
               when Slithernix::Cdk::CUT
                 if @info.empty?
@@ -325,7 +325,7 @@ module Slithernix
                 else
                   @@g_paste_buffer = @info.clone
                   clean
-                  drawField
+                  draw_field
                 end
               when Slithernix::Cdk::COPY
                 if @info.empty?
@@ -337,8 +337,8 @@ module Slithernix
                 if @@g_paste_buffer.zero?
                   Slithernix::Cdk.beep
                 else
-                  setValue(@@g_paste_buffer)
-                  drawField
+                  set_value(@@g_paste_buffer)
+                  draw_field
                 end
               when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
                 if @info.size >= @min
@@ -422,10 +422,10 @@ module Slithernix
             @label_win.refresh
           end
 
-          drawField
+          draw_field
         end
 
-        def drawField
+        def draw_field
           # Draw in the filler characters.
           @field_win.mvwhline(0, 0, @filler.ord, @field_width)
 
@@ -474,14 +474,14 @@ module Slithernix
 
         # This sets specific attributes of the entry field.
         def set(value, min, max, _box)
-          setValue(value)
-          setMin(min)
-          setMax(max)
+          set_value(value)
+          set_min(min)
+          set_max(max)
         end
 
         # This removes the old information in the entry field and keeps
         # the new information given.
-        def setValue(new_value)
+        def set_value(new_value)
           if new_value.nil?
             @info = String.new
 
@@ -490,47 +490,47 @@ module Slithernix
           else
             @info = new_value.clone
 
-            setPositionToEnd
+            set_position_to_end
           end
         end
 
-        def getValue
+        def get_value
           @info
         end
 
         # This sets the maximum length of the string that will be accepted
-        def setMax(max)
+        def set_max(max)
           @max = max
         end
 
-        def getMax
+        def get_max
           @max
         end
 
         # This sets the minimum length of the string that will be accepted.
-        def setMin(min)
+        def set_min(min)
           @min = min
         end
 
-        def getMin
+        def get_min
           @min
         end
 
         # This sets the filler character to be used in the entry field.
-        def setFillerChar(filler_char)
+        def set_filler_char(filler_char)
           @filler = filler_char
         end
 
-        def getFillerChar
+        def get_filler_char
           @filler
         end
 
         # This sets the character to use when a hidden type is used.
-        def setHiddenChar(_hidden_characer)
+        def set_hidden_char(hidden_characer)
           @hidden = hidden_character
         end
 
-        def getHiddenChar
+        def get_hidden_char
           @hidden
         end
 
@@ -542,7 +542,7 @@ module Slithernix
         end
 
         # This sets the attribute of the entry field.
-        def setHighlight(highlight, cursor)
+        def set_highlight(highlight, cursor)
           @field_win.wbkgd(highlight)
           @field_attr = highlight
           Curses.curs_set(cursor)
@@ -550,7 +550,7 @@ module Slithernix
         end
 
         # This sets the entry field callback function.
-        def setCB(callback)
+        def set_callback(callback)
           @callbackfn = callback
         end
 

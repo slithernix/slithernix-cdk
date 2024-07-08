@@ -100,15 +100,15 @@ module Slithernix
                              @win.subwin(
                                maxViewSize,
                                1,
-                               self.SCREEN_YPOS(ypos),
+                               self.screen_ypos(ypos),
                                xpos + @box_width - @border_size - 1,
                              )
                            elsif splace == Slithernix::Cdk::LEFT
                              @win.subwin(
                                maxViewSize,
                                1,
-                               self.SCREEN_YPOS(ypos),
-                               self.SCREEN_XPOS(xpos),
+                               self.screen_ypos(ypos),
+                               self.screen_xpos(xpos),
                              )
                            end
 
@@ -147,8 +147,8 @@ module Slithernix
         # Put the cursor on the currently-selected item.
         def fixCursorPosition
           @scrollbar_placement == Slithernix::Cdk::LEFT ? 1 : 0
-          self.SCREEN_YPOS(@current_item - @current_top)
-          self.SCREEN_XPOS(0)
+          self.screen_ypos(@current_item - @current_top)
+          self.screen_xpos(0)
 
           # @input_window.move(ypos, xpos)
           @input_window.refresh
@@ -216,7 +216,7 @@ module Slithernix
                 self.KEY_DOWN
               when Curses::KEY_RIGHT
                 self.KEY_RIGHT
-              when Curses::KEY_LEFT
+              when Curses::key_left
                 self.KEY_LEFT
               when Curses::KEY_PPAGE
                 self.KEY_PPAGE
@@ -295,8 +295,8 @@ module Slithernix
             k = j + @current_top
             next unless k < @list_size
 
-            xpos = self.SCREEN_XPOS(0)
-            ypos = self.SCREEN_YPOS(j)
+            xpos = self.screen_xpos(0)
+            ypos = self.screen_ypos(j)
 
             screen_pos = self.SCREENPOS(k, scrollbar_adj)
 
@@ -331,7 +331,7 @@ module Slithernix
             k = @current_item
             if k < @list_size
               screen_pos = self.SCREENPOS(k, scrollbar_adj)
-              ypos = self.SCREEN_YPOS(@current_high)
+              ypos = self.screen_ypos(@current_high)
 
               Slithernix::Cdk::Draw.write_chtype_attrib(
                 @win,
@@ -422,8 +422,8 @@ module Slithernix
           (0...@view_size).each do |j|
             Slithernix::Cdk::Draw.write_blanks(
               @win,
-              self.SCREEN_XPOS(0),
-              self.SCREEN_YPOS(j),
+              self.screen_xpos(0),
+              self.screen_ypos(j),
               Slithernix::Cdk::HORIZONTAL,
               0,
               @box_width - @border_size,

@@ -4,18 +4,23 @@ module Slithernix
   module Cdk
     class Widget
       class Graph < Slithernix::Cdk::Widget
-        def initialize(cdkscreen, xplace, yplace, height, width, title,
-                       xtitle, ytitle)
+        def initialize(cdkscreen, xplace, yplace, height, width, title, xtitle, ytitle)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
 
           set_box(false)
 
-          box_height = Slithernix::Cdk.set_widget_dimension(parent_height,
-                                                            height, 3)
-          box_width = Slithernix::Cdk.set_widget_dimension(parent_width, width,
-                                                           0)
+          box_height = Slithernix::Cdk.set_widget_dimension(
+            parent_height,
+            height,
+            3,
+          )
+          box_width = Slithernix::Cdk.set_widget_dimension(
+            parent_width,
+            width,
+            0
+          )
           box_width = set_title(title, box_width)
           box_height += @title_lines
           box_width = [parent_width, box_width].min
@@ -24,8 +29,13 @@ module Slithernix
           # Rejustify the x and y positions if we need to
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
-                                  box_height)
+          Slithernix::Cdk.alignxy(
+            cdkscreen.window,
+            xtmp,
+            ytmp,
+            box_width,
+            box_height
+          )
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -108,14 +118,14 @@ module Slithernix
 
         # Set multiple attributes of the widget
         def set(values, count, graph_char, start_at_zero, display_type)
-          ret = setValues(values, count, start_at_zero)
-          setCharacters(graph_char)
-          setDisplayType(display_type)
+          ret = set_values(values, count, start_at_zero)
+          set_characters(graph_char)
+          set_display_type(display_type)
           ret
         end
 
         # Set the scale factors for the graph after wee have loaded new values.
-        def setScales
+        def set_scales
           @xscale = (@maxx - @minx) / [1, @box_height - @title_lines - 5].max
           @xscale = 1 if @xscale <= 0
 
@@ -124,7 +134,7 @@ module Slithernix
         end
 
         # Set the values of the graph.
-        def setValues(values, count, start_at_zero)
+        def set_values(values, count, start_at_zero)
           min = 2**30
           max = -2**30
 
@@ -153,18 +163,18 @@ module Slithernix
           # Check the start at zero status.
           @minx = 0 if start_at_zero
 
-          setScales
+          set_scales
 
           true
         end
 
-        def getValues(size)
+        def get_values(size)
           size << @count
           @values
         end
 
         # Set the value of the graph at the given index.
-        def setValue(index, value, start_at_zero)
+        def set_value(index, value, start_at_zero)
           # Make sure the index is within range.
           return false if index.negative? || index >= @count
 
@@ -176,17 +186,17 @@ module Slithernix
           # Check the start at zero status
           @minx = 0 if start_at_zero
 
-          setScales
+          set_scales
 
           true
         end
 
-        def getValue(index)
+        def get_value(index)
           index >= 0 and index < @count ? @values[index] : 0
         end
 
         # Set the characters of the graph widget.
-        def setCharacters(characters)
+        def set_characters(characters)
           char_count = []
           new_tokens = Slithernix::Cdk.char_to_chtype(characters, char_count, [])
 
@@ -196,12 +206,12 @@ module Slithernix
           true
         end
 
-        def getCharacters
+        def get_characters
           @graph_char
         end
 
         # Set the character of the graph widget of the given index.
-        def setCharacter(index, character)
+        def set_character(index, character)
           # Make sure the index is within range
           return false if index.negative? || index > @count
 
@@ -218,21 +228,21 @@ module Slithernix
           true
         end
 
-        def getCharacter(index)
+        def get_character(index)
           graph_char[index]
         end
 
         # Set the display type of the graph.
-        def setDisplayType(type)
+        def set_display_type(type)
           @display_type = type
         end
 
-        def getDisplayType
+        def get_display_type
           @display_type
         end
 
         # Set the background attribute of the widget.
-        def setBKattr(attrib)
+        def set_background_attr(attrib)
           @win.wbkgd(attrib)
         end
 
@@ -253,8 +263,13 @@ module Slithernix
           # Adjust the window if we need to.
           xtmp = [xpos]
           [ypos]
-          Slithernix::Cdk.alignxy(@screen.window, xtmp, ytmp, @box_width,
-                                  @box_height)
+          Slithernix::Cdk.alignxy(
+            @screen.window,
+            xtmp,
+            ytmp,
+            @box_width,
+            @box_height,
+          )
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -423,8 +438,11 @@ module Slithernix
           # Draw in the axis corners.
           @win.mvwaddch(@title_lines, 2, Slithernix::Cdk::ACS_URCORNER)
           @win.mvwaddch(@box_height - 3, 2, Slithernix::Cdk::ACS_LLCORNER)
-          @win.mvwaddch(@box_height - 3, @box_width,
-                        Slithernix::Cdk::ACS_URCORNER)
+          @win.mvwaddch(
+            @box_height - 3,
+            @box_width,
+            Slithernix::Cdk::ACS_URCORNER
+          )
 
           # Refresh and lets see it
           @win.refresh

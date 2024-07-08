@@ -3,9 +3,23 @@
 module Slithernix
   module Cdk
     class Widget
-      attr_accessor :screen_index, :screen, :has_focus, :is_visible, :box,
-                    :ULChar, :URChar, :LLChar, :LRChar, :HZChar, :VTChar, :BXAttr
-      attr_reader :binding_list, :accepts_focus, :exit_type, :border_size
+      attr_accessor :screen_index,
+                    :screen,
+                    :has_focus,
+                    :is_visible,
+                    :box,
+                    :upper_left_corner_char,
+                    :upper_right_corner_char,
+                    :lower_left_corner_character,
+                    :lower_right_corner_character,
+                    :horizontal_line_char,
+                    :vertical_line_char,
+                    :box_attr
+
+      attr_reader :binding_list,
+                  :accepts_focus,
+                  :exit_type,
+                  :border_size
 
       @@g_paste_buffer = String.new
 
@@ -16,13 +30,13 @@ module Slithernix
         Slithernix::Cdk::ALL_OBJECTS << self
 
         # set default line-drawing characters
-        @ULChar = Slithernix::Cdk::ACS_ULCORNER
-        @URChar = Slithernix::Cdk::ACS_URCORNER
-        @LLChar = Slithernix::Cdk::ACS_LLCORNER
-        @LRChar = Slithernix::Cdk::ACS_LRCORNER
-        @HZChar = Slithernix::Cdk::ACS_HLINE
-        @VTChar = Slithernix::Cdk::ACS_VLINE
-        @BXAttr = Curses::A_NORMAL
+        @upper_left_corner_char = Slithernix::Cdk::ACS_ULCORNER
+        @upper_right_corner_char = Slithernix::Cdk::ACS_URCORNER
+        @lower_left_corner_character = Slithernix::Cdk::ACS_LLCORNER
+        @lower_right_corner_character = Slithernix::Cdk::ACS_LRCORNER
+        @horizontal_line_char = Slithernix::Cdk::ACS_HLINE
+        @vertical_line_char = Slithernix::Cdk::ACS_VLINE
+        @box_attr = Curses::A_NORMAL
 
         # set default exit-types
         @exit_type = :NEVER_ACTIVATED
@@ -38,16 +52,16 @@ module Slithernix
         self.class.name.to_sym
       end
 
-      def validObjType(_type)
+      def valid_widget_type(_type)
         # dummy version for now
         true
       end
 
-      def SCREEN_XPOS(n)
+      def screen_xpos(n)
         n + @border_size
       end
 
-      def SCREEN_YPOS(n)
+      def screen_ypos(n)
         n + @border_size + @title_lines
       end
 
@@ -66,8 +80,7 @@ module Slithernix
         )
       end
 
-      def move_specific(xplace, yplace, relative, refresh_flag, windows,
-                        subwidgets)
+      def move_specific(xplace, yplace, relative, refresh_flag, windows, subwidgets)
         current_x = @win.begx
         current_y = @win.begy
         xpos = xplace
@@ -136,37 +149,37 @@ module Slithernix
 
       # Set the widget's upper-left-corner line-drawing character.
       def set_upper_left_corner_char(ch)
-        @ULChar = ch
+        @upper_left_corner_char = ch
       end
 
       # Set the widget's upper-right-corner line-drawing character.
       def set_upper_right_corner_char(ch)
-        @URChar = ch
+        @upper_right_corner_char = ch
       end
 
       # Set the widget's lower-left-corner line-drawing character.
       def set_lower_left_corner_char(ch)
-        @LLChar = ch
+        @lower_left_corner_character = ch
       end
 
       # Set the widget's lower-right-corner line-drawing character.
       def set_lower_right_corner_char(ch)
-        @LRChar = ch
+        @lower_right_corner_character = ch
       end
 
       # Set the widget's horizontal line-drawing character
       def set_horizontal_line_char(ch)
-        @HZChar = ch
+        @horizontal_line_char = ch
       end
 
       # Set the widget's vertical line-drawing character
       def set_vertical_line_char(ch)
-        @VTChar = ch
+        @vertical_line_char = ch
       end
 
       # Set the widget's box-attributes.
       def set_box_attr(ch)
-        @BXAttr = ch
+        @box_attr = ch
       end
 
       # This sets the background color of the widget.
@@ -274,7 +287,7 @@ module Slithernix
       def is_valid_widget?
         result = false
         if Slithernix::Cdk::ALL_OBJECTS.include?(self)
-          result = validObjType(widget_type)
+          result = valid_widget_type(widget_type)
         end
         result
       end
@@ -305,7 +318,7 @@ module Slithernix
           when Slithernix::Cdk::FORCHAR
             result = Curses::KEY_RIGHT
           when Slithernix::Cdk::BACKCHAR
-            result = Curses::KEY_LEFT
+            result = Curses::key_left
           when Slithernix::Cdk::NEXT
             result = Slithernix::Cdk::KEY_TAB
           when Slithernix::Cdk::PREV
@@ -409,7 +422,7 @@ module Slithernix
             else
               Slithernix::Cdk.beep
             end
-          when Curses::KEY_LEFT, '4'
+          when Curses::key_left, '4'
             if win.begx > beg_x
               move(-1, 0, true, true)
             else

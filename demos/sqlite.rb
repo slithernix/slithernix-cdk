@@ -166,7 +166,7 @@ class SQLiteDemo
       history.current -= 1
 
       # Display the command.
-      entry.setValue(history.cmd_history[history.current])
+      entry.set_value(history.cmd_history[history.current])
       entry.draw(entry.box)
       true
     end
@@ -189,7 +189,7 @@ class SQLiteDemo
       end
 
       # Display the command.
-      entry.setValue(history.cmd_history[history.current])
+      entry.set_value(history.cmd_history[history.current])
       entry.draw(entry.box)
       true
     end
@@ -224,7 +224,7 @@ class SQLiteDemo
       # Check the results of the selection.
       if selection >= 0
         # Get the command and stick it back in the entry field.
-        entry.setValue(history.cmd_history[selection])
+        entry.set_value(history.cmd_history[selection])
       end
 
       # Redraw the screen.
@@ -246,7 +246,7 @@ class SQLiteDemo
 
     command_entry.bind(:Entry, Curses::KEY_UP, history_up_cb, history)
     command_entry.bind(:Entry, Curses::KEY_DOWN, history_down_cb, history)
-    command_entry.bind(:Entry, Slithernix::Cdk.CTRL('^'), list_history_cb,
+    command_entry.bind(:Entry, Slithernix::Cdk.ctrl('^'), list_history_cb,
                        history)
     command_entry.bind(:Entry, Slithernix::Cdk::KEY_TAB, view_history_cb,
                        command_output)

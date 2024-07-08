@@ -414,7 +414,7 @@ module Slithernix
                 else
                   Slithernix::Cdk.beep
                 end
-              when Curses::KEY_LEFT
+              when Curses::key_left
                 if @left_char.positive?
                   @left_char -= 1
                   refresh = true
@@ -827,13 +827,13 @@ module Slithernix
 
           # Draw the separation line.
           if @button_count.positive?
-            boxattr = @BXAttr
+            boxattr = @box_attr
 
             (1..@box_width).each do |x|
               @win.mvwaddch(
                 @box_height - 3,
                 x,
-                @HZChar | boxattr,
+                @horizontal_line_char | boxattr,
               )
             end
 

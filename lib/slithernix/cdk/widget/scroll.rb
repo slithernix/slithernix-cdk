@@ -91,15 +91,15 @@ module Slithernix
                              @win.subwin(
                                maxViewSize,
                                1,
-                               self.SCREEN_YPOS(ypos),
+                               self.screen_ypos(ypos),
                                xpos + box_width - @border_size - 1,
                              )
                            elsif splace == Slithernix::Cdk::LEFT
                              @win.subwin(
                                maxViewSize,
                                1,
-                               self.SCREEN_YPOS(ypos),
-                               self.SCREEN_XPOS(xpos),
+                               self.screen_ypos(ypos),
+                               self.screen_xpos(xpos),
                              )
                            end
 
@@ -107,8 +107,8 @@ module Slithernix
           @list_win = @win.subwin(
             maxViewSize,
             box_width - (2 * @border_size) - scroll_adjust,
-            self.SCREEN_YPOS(ypos),
-            self.SCREEN_XPOS(xpos) + (splace == Slithernix::Cdk::LEFT ? 1 : 0),
+            self.screen_ypos(ypos),
+            self.screen_xpos(xpos) + (splace == Slithernix::Cdk::LEFT ? 1 : 0),
           )
 
           # Set the rest of the variables
@@ -159,8 +159,8 @@ module Slithernix
         # Put the cursor on the currently-selected item's row.
         def fixCursorPosition
           @scrollbar_placement == LEFT ? 1 : 0
-          self.SCREEN_YPOS(@current_item - @current_top)
-          self.SCREEN_XPOS(0)
+          self.screen_ypos(@current_item - @current_top)
+          self.screen_xpos(0)
 
           # Another .move that breaks a bunch of stuff!, BIGLY!!!
           # @input_window.move(ypos, xpos)
@@ -227,7 +227,7 @@ module Slithernix
                 self.KEY_DOWN
               when Curses::KEY_RIGHT
                 self.KEY_RIGHT
-              when Curses::KEY_LEFT
+              when Curses::key_left
                 self.KEY_LEFT
               when Curses::KEY_PPAGE
                 self.KEY_PPAGE
@@ -893,7 +893,7 @@ module Slithernix
               else
                 Slithernix::Cdk.beep
               end
-            elsif [Curses::KEY_LEFT, '4'].include?(key)
+            elsif [Curses::key_left, '4'].include?(key)
               if @win.begx.positive?
                 move(-1, 0, true, true)
               else

@@ -81,14 +81,14 @@ class CalendarExample < Example
 
     # This adds a marker ot the calendar.
     create_calendar_mark = lambda do |_widget_type, calendar, _client_data, _key|
-      calendar.setMarker(calendar.day, calendar.month, calendar.year)
+      calendar.set_marker(calendar.day, calendar.month, calendar.year)
       calendar.draw(calendar.box)
       false
     end
 
     # This removes a marker from the calendar.
     remove_calendar_mark = lambda do |_widget_type, calendar, _client_data, _key|
-      calendar.removeMarker(calendar.day, calendar.month, calendar.year)
+      calendar.remove_marker(calendar.day, calendar.month, calendar.year)
       calendar.draw(calendar.box)
       false
     end

@@ -3,8 +3,8 @@
 
 require_relative 'example'
 
-class RaiseCDKObjectExample < Example
-  def self.MY_LABEL(widg)
+class RaiseWidgetExample < Example
+  def self.my_label(widg)
     widg.screen_index | 0x30 | Curses::A_UNDERLINE | Curses::A_BOLD
   end
 
@@ -108,11 +108,11 @@ class RaiseCDKObjectExample < Example
     instruct.set_vertical_line_char(' '.ord | Curses::A_NORMAL)
     instruct.set_horizontal_line_char(' '.ord | Curses::A_NORMAL)
 
-    label1.set_lower_right_corner_char(MY_LABEL(label1))
-    label2.set_lower_right_corner_char(MY_LABEL(label2))
-    label3.set_lower_right_corner_char(MY_LABEL(label3))
-    label4.set_lower_right_corner_char(MY_LABEL(label4))
-    instruct.set_lower_right_corner_char(MY_LABEL(instruct))
+    label1.set_lower_right_corner_char(my_label(label1))
+    label2.set_lower_right_corner_char(my_label(label2))
+    label3.set_lower_right_corner_char(my_label(label3))
+    label4.set_lower_right_corner_char(my_label(label4))
+    instruct.set_lower_right_corner_char(my_label(instruct))
 
     cdkscreen.refresh
 
@@ -132,11 +132,11 @@ class RaiseCDKObjectExample < Example
         next
       end
 
-      label1.set_lower_right_corner_char(MY_LABEL(label1))
-      label2.set_lower_right_corner_char(MY_LABEL(label2))
-      label3.set_lower_right_corner_char(MY_LABEL(label3))
-      label4.set_lower_right_corner_char(MY_LABEL(label4))
-      instruct.set_lower_right_corner_char(MY_LABEL(instruct))
+      label1.set_lower_right_corner_char(my_label(label1))
+      label2.set_lower_right_corner_char(my_label(label2))
+      label3.set_lower_right_corner_char(my_label(label3))
+      label4.set_lower_right_corner_char(my_label(label4))
+      instruct.set_lower_right_corner_char(my_label(instruct))
       cdkscreen.refresh
     end
 
@@ -152,4 +152,4 @@ class RaiseCDKObjectExample < Example
   end
 end
 
-RaiseCDKObjectExample.main
+RaiseWidgetExample.main

@@ -8,8 +8,7 @@ module Slithernix
       class ButtonBox < Slithernix::Cdk::Widget
         attr_reader :current_button
 
-        def initialize(cdkscreen, x_pos, y_pos, height, width, title, rows, cols,
-                       buttons, button_count, highlight, box, shadow)
+        def initialize(cdkscreen, x_pos, y_pos, height, width, title, rows, cols, buttons, button_count, highlight, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -33,13 +32,19 @@ module Slithernix
 
           # If the height is a negative value, the height will be
           # ROWS-height, otherwise the height will be the given height.
-          box_height = Slithernix::Cdk.set_widget_dimension(parent_height,
-                                                            height, rows + 1)
+          box_height = Slithernix::Cdk.set_widget_dimension(
+            parent_height,
+            height,
+            rows + 1,
+          )
 
           # If the width is a negative value, the width will be
           # COLS-width, otherwise the width will be the given width.
-          box_width = Slithernix::Cdk.set_widget_dimension(parent_width, width,
-                                                           0)
+          box_width = Slithernix::Cdk.set_widget_dimension(
+            parent_width,
+            width,
+            0,
+          )
 
           box_width = set_title(title, box_width)
 
@@ -76,8 +81,13 @@ module Slithernix
           # Now we have to readjust the x and y positions
           xtmp = [x_pos]
           ytmp = [y_pos]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
-                                  box_height)
+          Slithernix::Cdk.alignxy(
+            cdkscreen.window,
+            xtmp,
+            ytmp,
+            box_width,
+            box_height,
+          )
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -125,20 +135,18 @@ module Slithernix
             )
           end
 
-          # Register this baby.
           cdkscreen.register(:ButtonBox, self)
         end
 
-        # This activates the widget.
         def activate(actions)
           # Draw the buttonbox box.
           draw(@box)
 
           if actions.nil? || actions.empty?
-            while true
+            loop do
               input = getch([])
 
-              # Inject the characer into the widget.
+              # Inject the character into the widget.
               ret = inject(input)
               return ret if @exit_type != :EARLY_EXIT
             end
@@ -178,7 +186,7 @@ module Slithernix
               complete = true
             else
               case input
-              when Curses::KEY_LEFT, Curses::KEY_BTAB, Curses::KEY_BACKSPACE
+              when Curses::key_left, Curses::KEY_BTAB, Curses::KEY_BACKSPACE
                 if @current_button - @rows < first_button
                   @current_button = last_button
                 else
@@ -226,7 +234,7 @@ module Slithernix
           end
 
           unless complete
-            drawButtons
+            draw_buttons
             set_exit_type(0)
           end
 
@@ -236,21 +244,21 @@ module Slithernix
 
         # This sets multiple attributes of the widget.
         def set(highlight, box)
-          setHighlight(highlight)
+          set_highlight(highlight)
           set_box(box)
         end
 
         # This sets the highlight attribute for the buttonboxes
-        def setHighlight(highlight)
+        def set_highlight(highlight)
           @highlight = highlight
         end
 
-        def getHighlight
+        def get_highlight
           @highlight
         end
 
         # This sets th background attribute of the widget.
-        def setBKattr(attrib)
+        def set_background_attr(attrib)
           @win.wbkgd(attrib)
         end
 
@@ -268,11 +276,11 @@ module Slithernix
           draw_title(@win)
 
           # Draw in the buttons.
-          drawButtons
+          draw_buttons
         end
 
         # This draws the buttons on the button box widget.
-        def drawButtons
+        def draw_buttons
           row = @title_lines + 1
           col = @col_adjust / 2
           current_button = 0
@@ -337,15 +345,15 @@ module Slithernix
           Slithernix::Cdk::Screen.unregister(:ButtonBox, self)
         end
 
-        def setCurrentButton(button)
+        def set_current_button(button)
           @current_button = button if button >= 0 && button < @button_count
         end
 
-        def getCurrentButton
+        def get_current_button
           @current_button
         end
 
-        def getButtonCount
+        def get_button_count
           @button_count
         end
 

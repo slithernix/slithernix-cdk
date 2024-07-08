@@ -118,7 +118,7 @@ class Command
       history.current -= 1
 
       # Display the command.
-      entry.setValue(history.command[history.current])
+      entry.set_value(history.command[history.current])
       entry.draw(entry.box)
       false
     end
@@ -141,7 +141,7 @@ class Command
       end
 
       # Display the command.
-      entry.setValue(history.command[history.current])
+      entry.set_value(history.command[history.current])
       entry.draw(entry.box)
       false
     end
@@ -199,7 +199,7 @@ class Command
       # Check the results of the selection.
       if selection >= 0
         # Get the command and stick it back in the entry field
-        entry.setValue(history.command[selection])
+        entry.set_value(history.command[selection])
       end
 
       # Redraw the screen.
@@ -244,9 +244,9 @@ class Command
     command_entry.bind(:Entry, Curses::KEY_DOWN, history_down_cb, history)
     command_entry.bind(:Entry, Slithernix::Cdk::KEY_TAB, view_history_cb,
                        command_output)
-    command_entry.bind(:Entry, Slithernix::Cdk.CTRL('^'), list_history_cb,
+    command_entry.bind(:Entry, Slithernix::Cdk.ctrl('^'), list_history_cb,
                        history)
-    command_entry.bind(:Entry, Slithernix::Cdk.CTRL('G'), jump_window_cb,
+    command_entry.bind(:Entry, Slithernix::Cdk.ctrl('G'), jump_window_cb,
                        command_output)
 
     # Draw the screen.

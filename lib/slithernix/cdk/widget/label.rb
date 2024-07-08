@@ -87,12 +87,12 @@ module Slithernix
 
         # This sets multiple attributes of the widget
         def set(mesg, lines, box)
-          setMessage(mesg, lines)
+          set_message(mesg, lines)
           set_box(box)
         end
 
         # This sets the information within the label.
-        def setMessage(info, info_size)
+        def set_message(info, info_size)
           # Clean out the old message.`
           (0...@rows).each do |x|
             @info[x] = String.new
@@ -117,7 +117,7 @@ module Slithernix
           draw(@box)
         end
 
-        def getMessage(size)
+        def get_message(size)
           size << @rows
           @info
         end
@@ -127,7 +127,7 @@ module Slithernix
         end
 
         # This sets the background attribute of the widget.
-        def setBKattr(attrib)
+        def set_background_attr(attrib)
           @win.wbkgd(attrib)
         end
 
@@ -143,9 +143,15 @@ module Slithernix
 
           # Draw in the message.
           (0...@rows).each do |x|
-            Slithernix::Cdk::Draw.write_chtype(@win,
-                                               @info_pos[x] + @border_size, x + @border_size,
-                                               @info[x], Slithernix::Cdk::HORIZONTAL, 0, @info_len[x])
+            Slithernix::Cdk::Draw.write_chtype(
+              @win,
+              @info_pos[x] + @border_size,
+              x + @border_size,
+              @info[x],
+              Slithernix::Cdk::HORIZONTAL,
+              0,
+              @info_len[x]
+            )
           end
 
           # Refresh the window

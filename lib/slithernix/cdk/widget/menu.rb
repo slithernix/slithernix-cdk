@@ -235,7 +235,7 @@ module Slithernix
               complete = true
             else
               case input
-              when Curses::KEY_LEFT
+              when Curses::key_left
                 acrossSubmenus(-1)
               when Curses::KEY_RIGHT, Slithernix::Cdk::KEY_TAB
                 acrossSubmenus(1)

@@ -36,7 +36,7 @@ class Appointment
 
     # Split each line up and create an appointment.
     (0...lines_read).each do |x|
-      temp = lines[x].split(Slithernix::Cdk.CTRL('V').chr)
+      temp = lines[x].split(Slithernix::Cdk.ctrl('V').chr)
       segments =  temp.size
 
       # A valid line has 5 elements:
@@ -70,13 +70,13 @@ class Appointment
       fd.puts format(
         '%d%c%d%c%d%c%d%c%s',
         appointment.day,
-        Slithernix::Cdk.CTRL('V').chr,
+        Slithernix::Cdk.ctrl('V').chr,
         appointment.month,
-        Slithernix::Cdk.CTRL('V').chr,
+        Slithernix::Cdk.ctrl('V').chr,
         appointment.year,
-        Slithernix::Cdk.CTRL('V').chr,
+        Slithernix::Cdk.ctrl('V').chr,
         Appointment::APPOINTMENT_TYPE.index(appointment.type),
-        Slithernix::Cdk.CTRL('V').chr,
+        Slithernix::Cdk.ctrl('V').chr,
         appointment.description,
       )
     end
@@ -224,7 +224,7 @@ class Appointment
       calendar.draw(calendar.box)
 
       # Set the marker.
-      calendar.setMarker(calendar.day, calendar.month, calendar.year, marker)
+      calendar.set_marker(calendar.day, calendar.month, calendar.year, marker)
 
       # Keep the marker.
       info.appointment << OpenStruct.new
@@ -254,7 +254,7 @@ class Appointment
       end
 
       # Remove the marker from the calendar.
-      calendar.removeMarker(calendar.day, calendar.month, calendar.year)
+      calendar.remove_marker(calendar.day, calendar.month, calendar.year)
 
       # Redraw the calendar.
       calendar.draw(calendar.box)
@@ -357,7 +357,7 @@ class Appointment
           Appointment::APPOINTMENT_TYPE.index(appointment.type)
       ]
 
-      calendar.setMarker(
+      calendar.set_marker(
         appointment.day,
         appointment.month,
         appointment.year,

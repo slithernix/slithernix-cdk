@@ -6,12 +6,21 @@ module Slithernix
   module Cdk
     class Widget
       class FSelect < Slithernix::Cdk::Widget
-        attr_reader :scroll_field, :entry_field, :dir_attribute,
-                    :file_attribute, :link_attribute, :highlight, :sock_attribute, :field_attribute, :filler_character, :dir_contents, :file_counter, :pwd, :pathname
+        attr_reader :scroll_field,
+                    :entry_field,
+                    :dir_attribute,
+                    :file_attribute,
+                    :link_attribute,
+                    :highlight,
+                    :sock_attribute,
+                    :field_attribute,
+                    :filler_character,
+                    :dir_contents,
+                    :file_counter,
+                    :pwd,
+                    :pathname
 
-        def initialize(cdkscreen, xplace, yplace, height, width, title, label,
-                       field_attribute, filler_char, highlight, d_attribute, f_attribute,
-                       l_attribute, s_attribute, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, height, width, title, label, field_attribute, filler_char, highlight, d_attribute, f_attribute, l_attribute, s_attribute, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -88,14 +97,14 @@ module Slithernix
           @pwd = Dir.getwd
 
           # Get the contents of the current directory
-          setDirContents
+          set_dir_contents
 
           # Create the entry field in the selector
           label_len = []
           Slithernix::Cdk.char_to_chtype(label, label_len, [])
           label_len = label_len[0]
 
-          temp_width = if Slithernix::Cdk::Widget::FSelect.isFullWidth(width)
+          temp_width = if Slithernix::Cdk::Widget::FSelect.is_full_width?(width)
                        then Slithernix::Cdk::FULL
                        else
                          box_width - 2 - label_len
@@ -205,9 +214,9 @@ module Slithernix
             end
 
             # Try to expand the filename if it starts with a ~
-            unless (new_filename = Slithernix::Cdk::Widget::FSelect.expandTilde(filename)).nil?
+            unless (new_filename = Slithernix::Cdk::Widget::FSelect.expand_tilde(filename)).nil?
               filename = new_filename
-              entry.setValue(filename)
+              entry.set_value(filename)
               entry.draw(entry.box)
             end
 
@@ -233,13 +242,13 @@ module Slithernix
             # If we can, change into the directory.
             # XXX original: if isDirectory (with 0 as success result)
             if is_directory
-              entry.setValue(filename)
+              entry.set_value(filename)
               entry.draw(entry.box)
             end
 
             # Create the file list.
             list = (0...fselect.file_counter).map do |x|
-              fselect.contentToPath(fselect.dir_contents[x])
+              fselect.content_to_path(fselect.dir_contents[x])
             end
 
             # Look for a unique filename match.
@@ -309,7 +318,7 @@ module Slithernix
                 end
               else
                 # Set the entry field with the found item.
-                entry.setValue(list[index])
+                entry.set_value(list[index])
                 entry.draw(entry.box)
               end
             end
@@ -338,7 +347,7 @@ module Slithernix
               )
 
               # Set the value in the entry field.
-              entry.setValue(temp)
+              entry.set_value(temp)
               entry.draw(entry.box)
 
               return true
@@ -354,15 +363,15 @@ module Slithernix
           @entry_field.bind(:Entry, Curses::KEY_NPAGE, adjust_scroll_cb, self)
           @entry_field.bind(:Entry, Slithernix::Cdk::KEY_TAB,
                             complete_filename_cb, self)
-          @entry_field.bind(:Entry, Slithernix::Cdk.CTRL('^'),
+          @entry_field.bind(:Entry, Slithernix::Cdk.ctrl('^'),
                             display_file_info_cb, self)
 
           # Put the current working directory in the entry field.
-          @entry_field.setValue(@pwd)
+          @entry_field.set_value(@pwd)
 
           # Create the scrolling list in the selector.
           temp_height = @entry_field.win.maxy - @border_size
-          temp_width = if Slithernix::Cdk::Widget::FSelect.isFullWidth(width)
+          temp_width = if Slithernix::Cdk::Widget::FSelect.is_full_width?(width)
                        then Slithernix::Cdk::FULL
                        else
                          box_width - 1
@@ -408,8 +417,14 @@ module Slithernix
           windows = [@win, @shadow_win]
           subwidgets = [@entry_field, @scroll_field]
 
-          move_specific(xplace, yplace, relative, refresh_flag,
-                        windows, subwidgets)
+          move_specific(
+            xplace,
+            yplace,
+            relative,
+            refresh_flag,
+            windows,
+            subwidgets
+          )
         end
 
         # The fselect's focus resides in the entry widget. But the scroll widget
@@ -417,28 +432,28 @@ module Slithernix
         # the focus of the scroll widget when drawing on it to get the right
         # highlighting.
 
-        def saveFocus
+        def save_focus
           @save = @scroll_field.has_focus
           @scroll_field.has_focus = @entry_field.has_focus
         end
 
-        def restoreFocus
+        def restore_focus
           @scroll_field.has_focus = @save
         end
 
-        def drawMyScroller
-          saveFocus
+        def draw_scroller
+          save_focus
           @scroll_field.draw(@scroll_field.box)
-          restoreFocus
+          restore_focus
         end
 
-        def injectMyScroller(key)
-          saveFocus
+        def inject_scroller(key)
+          save_focus
           @scroll_field.inject(key)
-          restoreFocus
+          restore_focus
         end
 
-        # This draws the file selector widget.
+        # This draws the file selector.
         def draw(_box)
           # Draw in the shadow if we need to.
           unless @shadow_win.nil?
@@ -449,7 +464,7 @@ module Slithernix
           @entry_field.draw(@entry_field.box)
 
           # Draw in the scroll field.
-          drawMyScroller
+          draw_scroller
         end
 
         # This means you want to use the given file selector. It takes input
@@ -511,7 +526,7 @@ module Slithernix
                 @box)
 
             # Redraw the scrolling list.
-            drawMyScroller
+            draw_scroller
           else
             # It's a regular file, create the full path
             @pathname = filename.clone
@@ -528,8 +543,7 @@ module Slithernix
         end
 
         # This function sets the information inside the file selector.
-        def set(directory, field_attrib, filler, highlight, dir_attribute,
-                file_attribute, link_attribute, sock_attribute, _box)
+        def set(directory, field_attrib, filler, highlight, dir_attribute, file_attribute, link_attribute, sock_attribute, _box)
           fscroll = @scroll_field
           fentry = @entry_field
           new_directory = String.new
@@ -540,13 +554,13 @@ module Slithernix
           @highlight = highlight
 
           # Set the attributes of the entry field/scrolling list.
-          setFillerChar(filler)
-          setHighlight(highlight)
+          set_filler_char(filler)
+          set_highlight(highlight)
 
           # Only do the directory stuff if the directory is not nil.
           if directory&.size&.positive?
             # Try to expand the directory if it starts with a ~
-            temp_dir = Slithernix::Cdk::Widget::FSelect.expandTilde(directory)
+            temp_dir = Slithernix::Cdk::Widget::FSelect.expand_tilde(directory)
             new_directory = if temp_dir&.size&.positive?
                               temp_dir
                             else
@@ -585,11 +599,11 @@ module Slithernix
           @sock_attribute = sock_attribute.clone
 
           # Set the contents of the entry field.
-          fentry.setValue(@pwd)
+          fentry.set_value(@pwd)
           fentry.draw(fentry.box)
 
           # Get the directory contents.
-          unless setDirContents
+          unless set_dir_contents
             Slithernix::Cdk.beep
             return
           end
@@ -599,7 +613,7 @@ module Slithernix
         end
 
         # This creates a list of the files in the current directory.
-        def setDirContents
+        def set_dir_contents
           dir_list = []
 
           # Get the directory contents
@@ -642,13 +656,13 @@ module Slithernix
           true
         end
 
-        def getDirContents(count)
+        def get_dir_contents(count)
           count << @file_counter
           @dir_contents
         end
 
         # This sets the current directory of the file selector.
-        def setDirectory(directory)
+        def set_directory(directory)
           fentry = @entry_field
           fscroll = @scroll_field
           result = 1
@@ -660,11 +674,11 @@ module Slithernix
               @pwd = Dir.getwd
 
               # Set the contents of the entry field.
-              fentry.setValue(@pwd)
+              fentry.set_value(@pwd)
               fentry.draw(fentry.box)
 
               # Get the directory contents.
-              if setDirContents
+              if set_dir_contents
                 # Set the values in the scrolling list.
                 fscroll.setItems(@dir_contents, @file_counter, false)
               else
@@ -677,96 +691,96 @@ module Slithernix
           result
         end
 
-        def getDirectory
+        def get_directory
           @pwd
         end
 
         # This sets the filler character of the entry field.
-        def setFillerChar(filler)
+        def set_filler_char(filler)
           @filler_character = filler
-          @entry_field.setFillerChar(filler)
+          @entry_field.set_filler_char(filler)
         end
 
-        def getFillerChar
+        def get_filler_char
           @filler_character
         end
 
         # This sets the highlight bar of the scrolling list.
-        def setHighlight(highlight)
+        def set_highlight(highlight)
           @highlight = highlight
           @scroll_field.setHighlight(highlight)
         end
 
-        def getHighlight
+        def get_highlight
           @highlight
         end
 
         # This sets the attribute of the directory attribute in the
         # scrolling list.
-        def setDirAttribute(attribute)
+        def set_dir_attribute(attribute)
           # Make sure they are not the same.
           return unless @dir_attribute != attribute
 
           @dir_attribute = attribute
-          setDirContents
+          set_dir_contents
         end
 
-        def getDirAttribute
+        def get_dir_attribute
           @dir_attribute
         end
 
         # This sets the attribute of the link attribute in the scrolling list.
-        def setLinkAttribute(attribute)
+        def set_link_attribute(attribute)
           # Make sure they are not the same.
           return unless @link_attribute != attribute
 
           @link_attribute = attribute
-          setDirContents
+          set_dir_contents
         end
 
-        def getLinkAttribute
+        def get_link_attribute
           @link_attribute
         end
 
         # This sets the attribute of the socket attribute in the scrolling list.
-        def setSocketAttribute(attribute)
+        def set_socket_attribute(attribute)
           # Make sure they are not the same.
           return unless @sock_attribute != attribute
 
           @sock_attribute = attribute
-          setDirContents
+          set_dir_contents
         end
 
-        def getSocketAttribute
+        def get_socket_attribute
           @sock_attribute
         end
 
         # This sets the attribute of the file attribute in the scrolling list.
-        def setFileAttribute(attribute)
+        def set_file_attribute(attribute)
           # Make sure they are not the same.
           return unless @file_attribute != attribute
 
           @file_attribute = attribute
-          setDirContents
+          set_dir_contents
         end
 
-        def getFileAttribute
+        def get_file_attribute
           @file_attribute
         end
 
         # this sets the contents of the widget
-        def setContents(list, list_size)
+        def set_contents(list, list_size)
           scrollp = @scroll_field
           entry = @entry_field
 
-          return unless createList(list, list_size)
+          return unless create_list(list, list_size)
 
           # Set the information in the scrolling list.
           scrollp.set(@dir_contents, @file_counter, false, scrollp.highlight,
                       scrollp.box)
 
           # Clean out the entry field.
-          setCurrentItem(0)
+          set_current_item(0)
           entry.clean
 
           # Redraw the widget.
@@ -774,59 +788,59 @@ module Slithernix
           draw(@box)
         end
 
-        def getContents(size)
+        def get_contents(size)
           size << @file_counter
           @dir_contents
         end
 
         # Get/set the current position in the scroll wiget.
-        def getCurrentItem
+        def get_current_item
           @scroll_field.getCurrent
         end
 
-        def setCurrentItem(item)
+        def set_current_item(item)
           return unless @file_counter != 0
 
           @scroll_field.setCurrent(item)
 
-          data = contentToPath(@dir_contents[@scroll_field.getCurrentItem])
-          @entry_field.setValue(data)
+          data = content_to_path(@dir_contents[@scroll_field.getCurrentItem])
+          @entry_field.set_value(data)
         end
 
         # These functions set the draw characters of the widget.
-        def setMyULchar(character)
+        def set_upper_left_corner_char(character)
           @entry_field.set_upper_left_corner_char(character)
         end
 
-        def setMyURchar(character)
+        def set_upper_right_corner_char(character)
           @entry_field.set_upper_right_corner_char(character)
         end
 
-        def setMyLLchar(character)
+        def set_lower_left_corner_char(character)
           @scroll_field.set_lower_left_corner_char(character)
         end
 
-        def setMyLRchar(character)
+        def set_lower_right_corner_char(character)
           @scroll_field.set_lower_right_corner_char(character)
         end
 
-        def setMyVTchar(character)
+        def set_vertical_line_char(character)
           @entry_field.set_vertical_line_char(character)
           @scroll_field.set_vertical_line_char(character)
         end
 
-        def setMyHZchar(character)
+        def set_horizontal_line_char(character)
           @entry_field.set_horizontal_line_char(character)
           @scroll_field.set_horizontal_line_char(character)
         end
 
-        def setMyBXattr(character)
+        def set_box_attr(character)
           @entry_field.set_box_attr(character)
           @scroll_field.set_box_attr(character)
         end
 
         # This sets the background attribute of the widget.
-        def setBKattr(attrib)
+        def set_background_attr(attrib)
           @entry_field.set_background_attr(attrib)
           @scroll_field.set_background_attr(attrib)
         end
@@ -858,7 +872,7 @@ module Slithernix
         end
 
         # Return the plain string that corresponds to an item in dir_contents
-        def contentToPath(content)
+        def content_to_path(content)
           # XXX direct translation of original but might be redundant
           temp_chtype = Slithernix::Cdk.char_to_chtype(content, [], [])
           temp_char = Slithernix::Cdk.chtype_string_to_unformatted_string(temp_chtype)
@@ -870,16 +884,16 @@ module Slithernix
         end
 
         # Currently a wrapper for File.expand_path
-        def self.expandTilde(filename)
+        def self.expand_tilde(filename)
           File.expand_path(filename)
         end
 
-        def destroyInfo
+        def destroy_info
           @dir_contents = []
           @file_counter = 0
         end
 
-        def createList(list, list_size)
+        def create_list(list, list_size)
           status = false
 
           if list_size >= 0
@@ -896,12 +910,12 @@ module Slithernix
             end
 
             if status
-              destroyInfo
+              destroy_info
               @file_counter = list_size
               @dir_contents = newlist
             end
           else
-            destroyInfo
+            destroy_info
             status = true
           end
           status
@@ -915,7 +929,7 @@ module Slithernix
           @entry_field.unfocus
         end
 
-        def self.isFullWidth(width)
+        def self.is_full_width?(width)
           width == Slithernix::Cdk::FULL || (Curses.cols != 0 && width >= Curses.cols)
         end
 

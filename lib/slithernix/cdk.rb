@@ -28,13 +28,12 @@ Curses.ESCDELAY = 0
 
 module Slithernix
   module Cdk
-    # some useful global values
-    # but these aren't global variables? -- snake 2024
-
-    def self.CTRL(c)
+    def self.ctrl(c)
       c.ord & 0x1f
     end
 
+    # some useful global values
+    # but these aren't global variables? -- snake 2024
     VERSION_MAJOR = 0
     VERSION_MINOR = 0
     VERSION_PATCH = 1
@@ -61,18 +60,18 @@ module Slithernix
     MAX_ITEMS = 2000
     MAX_BUTTONS = 200
 
-    REFRESH = self.CTRL('L')
-    PASTE = self.CTRL('V')
-    COPY = self.CTRL('Y')
-    ERASE = self.CTRL('U')
-    CUT = self.CTRL('X')
-    BEGOFLINE = self.CTRL('A')
-    ENDOFLINE = self.CTRL('E')
-    BACKCHAR = self.CTRL('B')
-    FORCHAR = self.CTRL('F')
-    TRANSPOSE = self.CTRL('T')
-    NEXT = self.CTRL('N')
-    PREV = self.CTRL('P')
+    REFRESH = self.ctrl('L')
+    PASTE = self.ctrl('V')
+    COPY = self.ctrl('Y')
+    ERASE = self.ctrl('U')
+    CUT = self.ctrl('X')
+    BEGOFLINE = self.ctrl('A')
+    ENDOFLINE = self.ctrl('E')
+    BACKCHAR = self.ctrl('B')
+    FORCHAR = self.ctrl('F')
+    TRANSPOSE = self.ctrl('T')
+    NEXT = self.ctrl('N')
+    PREV = self.ctrl('P')
     DELETE = "\177".ord
     KEY_ESC = "\033".ord
     KEY_RETURN = "\012".ord
@@ -81,8 +80,9 @@ module Slithernix
     ALL_SCREENS = []
     ALL_OBJECTS = []
 
-    # ACS constants have been removed from ruby curses, putting them here
-    # note that this is garbage and likely to break all over the place.
+    # ACS constants seem to have been removed from ruby curses, putting
+    # them here. note that this is garbage and likely to break all over
+    # the place.
     ACS_BLOCK     = 0x30 | Curses::A_ALTCHARSET
     ACS_BOARD     = 0x65 | Curses::A_ALTCHARSET
     ACS_BTEE      = 0x76 | Curses::A_ALTCHARSET
@@ -782,7 +782,7 @@ module Slithernix
       )
 
       # Set the default value.
-      widget.setValue(init_value)
+      widget.set_value(init_value)
 
       # Get the string.
       widget.activate([])
@@ -794,7 +794,7 @@ module Slithernix
       end
 
       # Return a copy of the string typed in.
-      value = entry.getValue.clone
+      value = entry.get_value.clone
       widget.destroy
       value
     end

@@ -10,10 +10,9 @@ module Slithernix
 
         MIN_DIALOG_WIDTH = 10
 
-        def initialize(cdkscreen, xplace, yplace, mesg, rows, button_label,
-                       button_count, highlight, separator, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, mesg, rows, button_label, button_count, highlight, separator, box, shadow)
           super()
-          box_width = Dialog::MIN_DIALOG_WIDTH
+          box_width = MIN_DIALOG_WIDTH
           max_message_width = -1
           button_width = 0
           xpos = xplace
@@ -182,7 +181,7 @@ module Slithernix
               complete = true
             else
               case input
-              when Curses::KEY_LEFT, Curses::KEY_BTAB, Curses::KEY_BACKSPACE
+              when Curses::key_left, Curses::KEY_BTAB, Curses::KEY_BACKSPACE
                 if @current_button == first_button
                   @current_button = last_button
                 else
@@ -219,7 +218,7 @@ module Slithernix
           end
 
           unless complete
-            drawButtons
+            draw_buttons
             @win.refresh
             set_exit_type(0)
           end
@@ -251,7 +250,7 @@ module Slithernix
           end
 
           # Draw in the buttons.
-          drawButtons
+          draw_buttons
 
           @win.refresh
         end
@@ -279,36 +278,36 @@ module Slithernix
 
         # This sets attributes of the dialog box.
         def set(highlight, separator, box)
-          setHighlight(highlight)
-          setSeparator(separator)
+          set_highlight(highlight)
+          set_separator(separator)
           set_box(box)
         end
 
         # This sets the highlight attribute for the buttons.
-        def setHighlight(highlight)
+        def set_highlight(highlight)
           @highlight = highlight
         end
 
-        def getHighlight
+        def get_highlight
           @highlight
         end
 
         # This sets whether or not the dialog box will have a separator line.
-        def setSeparator(separator)
+        def set_separator(separator)
           @separator = separator
         end
 
-        def getSeparator
+        def get_separator
           @separator
         end
 
         # This sets the background attribute of the widget.
-        def setBKattr(attrib)
+        def set_background_attr(attrib)
           @win.wbkgd(attrib)
         end
 
         # This draws the dialog buttons and the separation line.
-        def drawButtons
+        def draw_buttons
           (0...@button_count).each do |x|
             Slithernix::Cdk::Draw.write_chtype(
               @win,
@@ -323,7 +322,7 @@ module Slithernix
 
           # Draw the separation line.
           if @separator
-            boxattr = @BXAttr
+            boxattr = @box_attr
 
             (1...@box_width).each do |x|
               @win.mvwaddch(

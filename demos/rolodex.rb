@@ -783,7 +783,7 @@ class Rolodex
       # Only split lines which do not start with a #
       next unless lines[x].size.positive? && lines[x][0] != '#'
 
-      items = lines[x].split(Slithernix::Cdk.CTRL('V').chr)
+      items = lines[x].split(Slithernix::Cdk.ctrl('V').chr)
 
       # Only take the ones which fit the format.
       if items.size == 3
@@ -829,9 +829,9 @@ class Rolodex
       fd.puts format(
         '%s%c%s%c%s',
         group.name,
-        Slithernix::Cdk.CTRL('V').chr,
+        Slithernix::Cdk.ctrl('V').chr,
         group.desc,
-        Slithernix::Cdk.CTRL('V').chr,
+        Slithernix::Cdk.ctrl('V').chr,
         group.dbm
       )
     end
@@ -922,7 +922,7 @@ class Rolodex
       next unless lines[x].size.positive? && lines[x][0] != '#'
 
       # Split the string.
-      items = lines[x].split(Slithernix::Cdk.CTRL('V').chr)
+      items = lines[x].split(Slithernix::Cdk.ctrl('V').chr)
 
       if items.size == 8
         phone_data.record[lines_found] =
@@ -989,34 +989,34 @@ class Rolodex
         fd.puts format(
           '%s%c%d%c%s%c-%c-%c-%c-%c%s',
           phone_record.name,
-          Slithernix::Cdk.CTRL('V').chr,
+          Slithernix::Cdk.ctrl('V').chr,
           Rolodex::TYPE_MAP[phone_record.line_type],
-          Slithernix::Cdk.CTRL('V').chr,
+          Slithernix::Cdk.ctrl('V').chr,
           phone_record.phone_number,
-          Slithernix::Cdk.CTRL('V').chr,
-          Slithernix::Cdk.CTRL('V').chr,
-          Slithernix::Cdk.CTRL('V').chr,
-          Slithernix::Cdk.CTRL('V').chr,
-          Slithernix::Cdk.CTRL('V').chr,
+          Slithernix::Cdk.ctrl('V').chr,
+          Slithernix::Cdk.ctrl('V').chr,
+          Slithernix::Cdk.ctrl('V').chr,
+          Slithernix::Cdk.ctrl('V').chr,
+          Slithernix::Cdk.ctrl('V').chr,
           phone_record.desc
         )
       else
         fd.puts format(
           '%s%c%d%c%s%c%s%c%s%c%s%c%s',
           phone_record.name,
-          Slithernix::Cdk.CTRL('V').chr,
+          Slithernix::Cdk.ctrl('V').chr,
           Rolodex::TYPE_MAP[phone_record.line_type],
-          Slithernix::Cdk.CTRL('V').chr,
+          Slithernix::Cdk.ctrl('V').chr,
           phone_record.phone_number,
-          Slithernix::Cdk.CTRL('V').chr,
+          Slithernix::Cdk.ctrl('V').chr,
           phone_record.address,
-          Slithernix::Cdk.CTRL('V').chr,
+          Slithernix::Cdk.ctrl('V').chr,
           phone_record.city,
-          Slithernix::Cdk.CTRL('V').chr,
+          Slithernix::Cdk.ctrl('V').chr,
           phone_record.province,
-          Slithernix::Cdk.CTRL('V').chr,
+          Slithernix::Cdk.ctrl('V').chr,
           phone_record.postal_code,
-          Slithernix::Cdk.CTRL('V').chr,
+          Slithernix::Cdk.ctrl('V').chr,
           phone_record.desc
         )
       end

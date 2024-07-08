@@ -131,7 +131,7 @@ module Slithernix
 
               # Set the value in the entry field.
               current = Slithernix::Cdk.chtype_string_to_unformatted_string(scrollp.item[scrollp.current_item])
-              entry.setValue(current)
+              entry.set_value(current)
               entry.draw(entry.box)
               return true
             end
@@ -164,7 +164,7 @@ module Slithernix
 
             # Did we find the last word in the list?
             if index == alphalist.list.size - 1
-              entry.setValue(alphalist.list[index])
+              entry.set_value(alphalist.list[index])
               entry.draw(entry.box)
               return true
             end
@@ -496,13 +496,13 @@ module Slithernix
           return unless @list_size != 0
 
           @scroll_field.setCurrentItem(item)
-          @entry_field.setValue(@list[@scroll_field.getCurrentItem])
+          @entry_field.set_value(@list[@scroll_field.getCurrentItem])
         end
 
         # This sets the filler character of the entry field of the alphalist.
         def set_filler_char(filler_character)
           @filler_char = filler_character
-          @entry_field.setFillerChar(filler_character)
+          @entry_field.set_filler_char(filler_character)
         end
 
         def get_filler_char

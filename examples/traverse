@@ -376,7 +376,7 @@ class TraverseExample < Example
   end
 
   # Whenever we get a menu selection, create the selected widget.
-  def self.preHandler(_cdktype, widget, _client_data, input)
+  def self.pre_handler(_cdktype, widget, _client_data, input)
     screen = nil
 
     case input
@@ -444,7 +444,7 @@ class TraverseExample < Example
     TraverseExample.rebind_esc(menu)
 
     pre_handler = lambda do |cdktype, widget, client_data, input|
-      TraverseExample.preHandler(cdktype, widget, client_data, input)
+      TraverseExample.pre_handler(cdktype, widget, client_data, input)
     end
 
     menu.set_pre_process(pre_handler, nil)

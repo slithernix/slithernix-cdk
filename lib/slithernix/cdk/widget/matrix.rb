@@ -419,7 +419,7 @@ module Slithernix
                   @ccol += 1
                   moved_cell = true
                 end
-              when Curses::KEY_LEFT, Curses::KEY_BTAB
+              when Curses::key_left, Curses::KEY_BTAB
                 if @ccol == 1
                   # Are we at the far left?
                   if @lcol != 1
@@ -520,7 +520,7 @@ module Slithernix
                 else
                   Slithernix::Cdk.beep
                 end
-              when Slithernix::Cdk.CTRL('G')
+              when Slithernix::Cdk.ctrl('G')
                 jumpToCell(-1, -1)
                 draw(@box)
               when Slithernix::Cdk::PASTE

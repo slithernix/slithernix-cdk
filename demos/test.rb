@@ -174,7 +174,7 @@ module Util
     x_pos = 0
 
     Pastel.new
-    curses_window.addstr("Hit CTRL-B then CTRL-C to terminate an unresponsive process\n")
+    curses_window.addstr("Hit ctrl-B then ctrl-C to terminate an unresponsive process\n")
     y_pos += 1
     exit_status = 1
 
@@ -212,8 +212,10 @@ module Util
             # output.each_char do |c|
             #  if regular_character? c
             #    curses_window.addch c
-            #    x_pos += 1 if (c != "\n" and c != "")
-            #    y_pos += 1 if (c == "\n" or c == "")
+            #    x_pos += 1 if (c != "\n" and c != "
+")
+            #    y_pos += 1 if (c == "\n" or c == "
+")
             #  end
             # end
 

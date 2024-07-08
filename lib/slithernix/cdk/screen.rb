@@ -44,7 +44,7 @@ module Slithernix
           @widget.concat(Array.new(@widget_limit - @widget.size, nil))
         end
 
-        return unless widget.validObjType(cdktype)
+        return unless widget.valid_widget_type(cdktype)
 
         set_screen_index(@widget_count, widget)
         @widget_count += 1
@@ -52,7 +52,7 @@ module Slithernix
 
       # This removes an widget from the CDK screen.
       def self.unregister(cdktype, widget)
-        return unless widget.validObjType(cdktype) && widget.screen_index >= 0
+        return unless widget.valid_widget_type(cdktype) && widget.screen_index >= 0
 
         screen = widget.screen
 
@@ -112,7 +112,7 @@ module Slithernix
 
       # This 'brings' a CDK widget to the top of the stack.
       def self.raise_widget(cdktype, widget)
-        return unless widget.validObjType(cdktype)
+        return unless widget.valid_widget_type(cdktype)
 
         screen = widget.screen
         screen.swap_indices(widget.screen_index, screen.widget_count - 1)
@@ -120,7 +120,7 @@ module Slithernix
 
       # This 'lowers' a widget.
       def self.lower_widget(cdktype, widget)
-        return unless widget.validObjType(cdktype)
+        return unless widget.valid_widget_type(cdktype)
 
         widget.screen.swap_indices(widget.screen_index, 0)
       end
@@ -245,7 +245,7 @@ module Slithernix
         # drawn after all the invisible ones are erased
         (0...@widget_count).each do |x|
           widg = @widget[x]
-          if widg.validObjType(widg.widget_type)
+          if widg.valid_widget_type(widg.widget_type)
             if widg.is_visible
               visible = x if visible.negative?
               focused = x if widg.has_focus && focused.negative?
@@ -256,7 +256,7 @@ module Slithernix
 
           widg = @widget[x]
 
-          next unless widg.validObjType(widg.widget_type)
+          next unless widg.valid_widget_type(widg.widget_type)
 
           widg.has_focus = (x == focused)
 
@@ -269,7 +269,7 @@ module Slithernix
         # We just call the widget erase function
         (0...@widget_count).each do |x|
           widg = @widget[x]
-          widg.erase if widg.validObjType(widg.widget_type)
+          widg.erase if widg.valid_widget_type(widg.widget_type)
         end
 
         # Refresh the screen.
@@ -282,7 +282,7 @@ module Slithernix
           widg = @widget[x]
           before = @widget_count
 
-          next unless widg.validObjType(widg.widget_type)
+          next unless widg.valid_widget_type(widg.widget_type)
 
           widg.erase
           widg.destroy

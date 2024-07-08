@@ -28,7 +28,7 @@ module Slithernix
         end
 
         # This draws the widget.
-        def drawField
+        def draw_field
           step = 1.0 * @field_width / (@high - @low)
 
           # Determine how many filler characters need to be drawn.
@@ -61,22 +61,22 @@ module Slithernix
           @field_win.refresh
         end
 
-        def formattedSize(value)
+        def formatted_size(value)
           digits = [@digits, 30].min
           format = format('%%.%if', digits)
           temp = format(format, value)
           temp.size
         end
 
-        def setDigits(digits)
+        def set_digits(digits)
           @digits = [0, digits].max
         end
 
-        def getDigits
+        def get_digits
           @digits
         end
 
-        def SCAN_FMT
+        def scan_fmt
           '%g%c'
         end
       end

@@ -6,20 +6,25 @@ module Slithernix
   module Cdk
     class Widget
       class Histogram < Slithernix::Cdk::Widget
-        def initialize(cdkscreen, xplace, yplace, height, width, orient,
-                       title, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, height, width, orient, title, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
 
           set_box(box)
 
-          box_height = Slithernix::Cdk.set_widget_dimension(parent_height,
-                                                            height, 2)
+          box_height = Slithernix::Cdk.set_widget_dimension(
+            parent_height,
+            height,
+            2
+          )
           old_height = box_height
+          box_width = Slithernix::Cdk.set_widget_dimension(
+            parent_width,
+            width,
+            0
+          )
 
-          box_width = Slithernix::Cdk.set_widget_dimension(parent_width, width,
-                                                           0)
           old_width = box_width
 
           box_width = set_title(title, -(box_width + 1))
@@ -34,8 +39,13 @@ module Slithernix
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
-                                  box_height)
+          Slithernix::Cdk.alignxy(
+            cdkscreen.window,
+            xtmp,
+            ytmp,
+            box_width,
+            box_height
+          )
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -96,18 +106,17 @@ module Slithernix
         end
 
         # Set various widget attributes
-        def set(view_type, stats_pos, stats_attr, low, high, value, filler,
-                box)
-          setDisplayType(view_type)
-          setStatsPos(stats_pos)
-          setValue(low, high, value)
-          setFillerChar(filler)
-          setStatsAttr(stats_attr)
+        def set(view_type, stats_pos, stats_attr, low, high, value, filler, box)
+          set_display_type(view_type)
+          set_stats_pos(stats_pos)
+          set_value(low, high, value)
+          set_filler_char(filler)
+          set_stats_attr(stats_attr)
           set_box(box)
         end
 
         # Set the values for the widget.
-        def setValue(low, high, value)
+        def set_value(low, high, value)
           # We should error check the information we have.
           @low = low <= high ? low : 0
           @high = low <= high ? high : 0
@@ -266,56 +275,56 @@ module Slithernix
           end
         end
 
-        def getValue
+        def get_value
           @value
         end
 
-        def getLowValue
+        def get_low_value
           @low
         end
 
-        def getHighValue
+        def get_high_value
           @high
         end
 
         # Set the histogram display type
-        def setDisplayType(view_type)
+        def set_display_type(view_type)
           @view_type = view_type
         end
 
-        def getViewType
+        def get_view_type
           @view_type
         end
 
         # Set the position of the statistics information.
-        def setStatsPos(stats_pos)
+        def set_stats_pos(stats_pos)
           @stats_pos = stats_pos
         end
 
-        def getStatsPos
+        def get_stats_pos
           @stats_pos
         end
 
         # Set the attribute of the statistics.
-        def setStatsAttr(stats_attr)
+        def set_stats_attr(stats_attr)
           @stats_attr = stats_attr
         end
 
-        def getStatsAttr
+        def get_stats_attr
           @stats_attr
         end
 
         # Set the character to use when drawing the widget.
-        def setFillerChar(character)
+        def set_filler_char(character)
           @filler = character
         end
 
-        def getFillerChar
+        def get_filler_char
           @filler
         end
 
         # Set the background attribute of the widget.
-        def setBKattr(attrib)
+        def set_background_attr(attrib)
           @win.wbkgd(attrib)
         end
 
@@ -345,20 +354,44 @@ module Slithernix
           if @view_type != :NONE
             # Draw in the low label.
             if @low_string.size.positive?
-              Slithernix::Cdk::Draw.write_char_attrib(@win, @lowx, @lowy, @low_string,
-                                                      @stats_attr, @orient, 0, @low_string.size)
+              Slithernix::Cdk::Draw.write_char_attrib(
+                @win,
+                @lowx,
+                @lowy,
+                @low_string,
+                @stats_attr,
+                @orient,
+                0,
+                @low_string.size
+              )
             end
 
             # Draw in the current value label.
             if @cur_string.size.positive?
-              Slithernix::Cdk::Draw.write_char_attrib(@win, @curx, @cury, @cur_string,
-                                                      @stats_attr, @orient, 0, @cur_string.size)
+              Slithernix::Cdk::Draw.write_char_attrib(
+                @win,
+                @curx,
+                @cury,
+                @cur_string,
+                @stats_attr,
+                @orient,
+                0,
+                @cur_string.size
+              )
             end
 
             # Draw in the high label.
             if @high_string.size.positive?
-              Slithernix::Cdk::Draw.write_char_attrib(@win, @highx, @highy, @high_string,
-                                                      @stats_attr, @orient, 0, @high_string.size)
+              Slithernix::Cdk::Draw.write_char_attrib(
+                @win,
+                @highx,
+                @highy,
+                @high_string,
+                @stats_attr,
+                @orient,
+                0,
+                @high_string.size
+              )
             end
           end
 
