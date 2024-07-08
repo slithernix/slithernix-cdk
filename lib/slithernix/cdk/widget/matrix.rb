@@ -257,7 +257,7 @@ module Slithernix
               matrix.CurMatrixCell.move(1,
                                         matrix.info[matrix.row][matrix.col].size + 1)
               matrix.CurMatrixCell.addch(
-                if Slithernix::Cdk::Display.isHiddenDisplayType(disptype)
+                if Slithernix::Cdk::Display.is_hidden_display_type?(disptype)
                 then matrix.filler
                 else
                   plainchar
@@ -634,7 +634,7 @@ module Slithernix
 
           # If the column is only one char.
           (1..@colwidths[@ccol]).each do |x|
-            ch = if x <= infolen && !Slithernix::Cdk::Display.isHiddenDisplayType(disptype)
+            ch = if x <= infolen && !Slithernix::Cdk::Display.is_hidden_display_type?(disptype)
                  then Slithernix::Cdk.CharOf(@info[@row][@col][x - 1])
                  else
                    @filler
@@ -678,7 +678,7 @@ module Slithernix
 
           # Draw in the cell info.
           (1..@colwidths[col]).each do |x|
-            ch = if x <= infolen && !Slithernix::Cdk::Display.isHiddenDisplayType(disptype)
+            ch = if x <= infolen && !Slithernix::Cdk::Display.is_hidden_display_type?(disptype)
                  then Slithernix::Cdk.CharOf(@info[vrow][vcol][x - 1]).ord | highlight
                  else
                    @filler

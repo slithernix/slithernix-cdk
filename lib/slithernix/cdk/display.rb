@@ -4,7 +4,7 @@ module Slithernix
   module Cdk
     module Display
       # Given a string, returns the equivalent display type
-      def self.char2DisplayType(string)
+      def self.char_to_display_type(string)
         table = {
           'CHAR' => :CHAR,
           'HCHAR' => :HCHAR,
@@ -32,7 +32,7 @@ module Slithernix
       end
 
       # Tell if a display type is "hidden"
-      def self.isHiddenDisplayType(type)
+      def self.is_hidden_display_type?(type)
         case type
         when :HCHAR, :HINT, :HMIXED, :LHCHAR, :LHMIXED, :UHCHAR, :UHMIXED
           true

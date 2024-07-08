@@ -474,7 +474,7 @@ module Slithernix
           (0...@rows).each do |x|
             (0...@field_width).each do |y|
               if currchar < lastpos
-                if Slithernix::Cdk::Display.isHiddenDisplayType(@disp_type)
+                if Slithernix::Cdk::Display.is_hidden_display_type?(@disp_type)
                   @field_win.mvwaddch(x, y, @filler)
                 else
                   @field_win.mvwaddch(x, y, @info[currchar].ord | @field_attr)

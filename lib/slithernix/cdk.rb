@@ -16,13 +16,13 @@ Pathname.glob("#{File.dirname(__FILE__)}/cdk/widget/*.rb").each do |f|
   require f
 end
 
-trace = TracePoint.new(:call) do |tp|
-  File.open('/tmp/execution_trace.log', 'a') do |f|
-    f.puts "Called method '#{tp.method_id}' at #{tp.path}:#{tp.lineno}"
-  end
-end
+#trace = TracePoint.new(:call) do |tp|
+#  File.open('/tmp/execution_trace.log', 'a') do |f|
+#    f.puts "Called method '#{tp.method_id}' at #{tp.path}:#{tp.lineno}"
+#  end
+#end
 
-trace.enable
+#trace.enable
 
 module Slithernix
   module Cdk

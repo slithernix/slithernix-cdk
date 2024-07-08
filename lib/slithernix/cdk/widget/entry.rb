@@ -430,7 +430,7 @@ module Slithernix
           # If there is information in the field then draw it in.
           if @info&.size&.positive?
             # Redraw the field.
-            if Slithernix::Cdk::Display.isHiddenDisplayType(@disp_type)
+            if Slithernix::Cdk::Display.is_hidden_display_type?(@disp_type)
               (@left_char...@info.size).each do |x|
                 @field_win.mvwaddch(0, x - @left_char, @hidden)
               end
