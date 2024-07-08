@@ -26,7 +26,7 @@ module Slithernix
       end
 
       # This prints out a box around a window with attributes
-      def self.boxWindow(window, attr)
+      def self.box_window(window, attr)
         tlx = 0
         tly = 0
         brx = window.maxx - 1
