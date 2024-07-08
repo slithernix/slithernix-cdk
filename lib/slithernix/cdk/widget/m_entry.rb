@@ -500,7 +500,9 @@ module Slithernix
           end
 
           # Do we need to draw in the shadow?
-          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
+          unless @shadow_win.nil?
+            Slithernix::Cdk::Draw.draw_shadow(@shadow_win)
+          end
 
           # Draw in the label to the widget.
           unless @label_win.nil?

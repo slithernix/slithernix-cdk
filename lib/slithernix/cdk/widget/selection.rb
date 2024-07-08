@@ -291,7 +291,9 @@ module Slithernix
         # This function draws the selection list.
         def draw(box)
           # Draw in the shadow if we need to.
-          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
+          unless @shadow_win.nil?
+            Slithernix::Cdk::Draw.draw_shadow(@shadow_win)
+          end
 
           draw_title(@win)
 

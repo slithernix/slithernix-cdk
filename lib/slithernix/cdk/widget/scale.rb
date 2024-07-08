@@ -385,7 +385,9 @@ module Slithernix
         # This function draws the widget.
         def draw(box)
           # Draw the shadow.
-          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
+          unless @shadow_win.nil?
+            Slithernix::Cdk::Draw.draw_shadow(@shadow_win)
+          end
 
           # Box the widget if asked.
           Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box

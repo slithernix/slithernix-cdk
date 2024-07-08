@@ -303,7 +303,9 @@ module Slithernix
         # This function draws the scrolling list widget.
         def draw(box)
           # Draw in the shadow if we need to.
-          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
+          unless @shadow_win.nil?
+            Slithernix::Cdk::Draw.draw_shadow(@shadow_win)
+          end
 
           draw_title(@win)
 
@@ -813,7 +815,9 @@ module Slithernix
         # This draws the button widget
         def draw(_box)
           # Is there a shadow?
-          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
+          unless @shadow_win.nil?
+            Slithernix::Cdk::Draw.draw_shadow(@shadow_win)
+          end
 
           # Box the widget if asked.
           Slithernix::Cdk::Draw.draw_obj_box(@win, self) if @box

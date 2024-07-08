@@ -410,7 +410,9 @@ module Slithernix
 
         # Draw the template widget.
         def draw(box)
-          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
+          unless @shadow_win.nil?
+            Slithernix::Cdk::Draw.draw_shadow(@shadow_win)
+          end
           Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
           draw_title(@win)

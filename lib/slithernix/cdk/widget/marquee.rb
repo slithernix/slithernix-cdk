@@ -138,7 +138,9 @@ module Slithernix
           @box = box
 
           # Do we need to draw a shadow???
-          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
+          unless @shadow_win.nil?
+            Slithernix::Cdk::Draw.draw_shadow(@shadow_win)
+          end
 
           # Box it if needed.
           Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box

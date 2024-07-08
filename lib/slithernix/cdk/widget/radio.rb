@@ -275,7 +275,9 @@ module Slithernix
         # This function draws the radio widget.
         def draw(_box)
           # Do we need to draw in the shadow?
-          Slithernix::Cdk::Draw.draw_shadow(@shadow_win) unless @shadow_win.nil?
+          unless @shadow_win.nil?
+            Slithernix::Cdk::Draw.draw_shadow(@shadow_win)
+          end
 
           draw_title(@win)
 
