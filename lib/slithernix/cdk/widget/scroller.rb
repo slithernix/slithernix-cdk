@@ -5,7 +5,7 @@ module Slithernix
   module Cdk
     class Widget
       class Scroller < Slithernix::Cdk::Widget
-        def KEY_UP
+        def key_up
           if @list_size.positive?
             if @current_item.positive?
               if @current_high.zero?
@@ -27,7 +27,7 @@ module Slithernix
           end
         end
 
-        def KEY_DOWN
+        def key_down
           if @list_size.positive?
             if @current_item < @list_size - 1
               if @current_high == @view_size - 1
@@ -49,7 +49,7 @@ module Slithernix
           end
         end
 
-        def KEY_LEFT
+        def key_left
           if @list_size.positive?
             if @left_char.zero?
               Slithernix::Cdk.beep
@@ -61,7 +61,7 @@ module Slithernix
           end
         end
 
-        def KEY_RIGHT
+        def key_right
           if @list_size.positive?
             if @left_char >= @max_left_char
               Slithernix::Cdk.beep
@@ -73,14 +73,14 @@ module Slithernix
           end
         end
 
-        def KEY_PPAGE
+        def key_ppage
           if @list_size.positive?
             if @current_top.positive?
               if @current_top >= @view_size - 1
                 @current_top -= @view_size - 1
                 @current_item -= @view_size - 1
               else
-                self.KEY_HOME
+                self.key_home
               end
             else
               Slithernix::Cdk.beep
@@ -90,7 +90,7 @@ module Slithernix
           end
         end
 
-        def KEY_NPAGE
+        def key_npage
           if @list_size.positive?
             if @current_top < @max_top_item
               if @current_top + @view_size - 1 <= @max_top_item
@@ -109,13 +109,13 @@ module Slithernix
           end
         end
 
-        def KEY_HOME
+        def key_home
           @current_top = 0
           @current_item = 0
           @current_high = 0
         end
 
-        def KEY_END
+        def key_end
           if @max_top_item == -1
             @current_top = 0
             @current_item = @last_item - 1
@@ -126,13 +126,13 @@ module Slithernix
           @current_high = @view_size - 1
         end
 
-        def maxViewSize
+        def max_view_size
           @box_height - ((2 * @border_size) + @title_lines)
         end
 
         # Set variables that depend upon the list_size
-        def setViewSize(list_size)
-          @view_size = maxViewSize
+        def set_view_size(list_size)
+          @view_size = max_view_size
           @list_size = list_size
           @last_item = list_size - 1
           @max_top_item = list_size - @view_size
@@ -142,9 +142,9 @@ module Slithernix
             @max_top_item = 0
           end
 
-          if @list_size.positive? && maxViewSize.positive?
-            @step = 1.0 * maxViewSize / @list_size
-            @toggle_size = if @list_size > maxViewSize
+          if @list_size.positive? && max_view_size.positive?
+            @step = 1.0 * max_view_size / @list_size
+            @toggle_size = if @list_size > max_view_size
                            then 1
                            else
                              @step.ceil
@@ -155,9 +155,9 @@ module Slithernix
           end
         end
 
-        def setPosition(item)
+        def set_position(item)
           if item <= 0
-            self.KEY_HOME
+            self.key_home
           elsif item > @list_size - 1
             @current_top = @max_top_item
             @current_item = @list_size - 1
@@ -178,7 +178,7 @@ module Slithernix
         end
 
         def set_current_item(item)
-          setPosition(item)
+          set_position(item)
         end
       end
     end

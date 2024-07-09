@@ -273,10 +273,10 @@ module Slithernix
               # {
               #    for (x = 0; x < absoluteDifferene; x++)
               #    {
-              #       inject_scroller (fselect, KEY_DOWN);
+              #       inject_scroller (fselect, key_down);
               #    }
               # }
-              scrollp.setPosition(index)
+              scrollp.set_position(index)
               fselect.draw_scroller
 
               # Ok, we found a match, is the next item similar?
@@ -795,7 +795,7 @@ module Slithernix
 
         # Get/set the current position in the scroll wiget.
         def get_current_item
-          @scroll_field.getCurrent
+          @scroll_field.get_current
         end
 
         def set_current_item(item)

@@ -8,8 +8,7 @@ module Slithernix
       class Selection < Slithernix::Cdk::Widget::Scroller
         attr_reader :selections
 
-        def initialize(cdkscreen, xplace, yplace, splace, height, width,
-                       title, list, list_size, choices, choice_count, highlight, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, splace, height, width, title, list, list_size, choices, choice_count, highlight, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -21,14 +20,13 @@ module Slithernix
             '>' => Curses::KEY_END
           }
 
-          bindings[Slithernix::Cdk::BACKCHAR] = Curses::KEY_PPAGE,
-                                                bindings[Slithernix::Cdk::FORCHAR] =
-                                                  Curses::KEY_NPAGE,
+          bindings[Slithernix::Cdk::BACKCHAR] = Curses::KEY_PPAGE
+          bindings[Slithernix::Cdk::FORCHAR] = Curses::KEY_NPAGE
 
-                                                if choice_count <= 0
-                                                  destroy
-                                                  return nil
-                                                end
+          unless choice_count.positive?
+            destroy
+            raise ArgumentError, "choice_count must be a positive integer"
+          end
 
           @choice = []
           @choicelen = []
@@ -72,13 +70,18 @@ module Slithernix
           @box_width = [box_width, parent_width].min
           @box_height = [box_height, parent_height].min
 
-          setViewSize(list_size)
+          set_view_size(list_size)
 
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, @box_width,
-                                  @box_height)
+          Slithernix::Cdk.alignxy(
+            cdkscreen.window,
+            xtmp,
+            ytmp,
+            @box_width,
+            @box_height,
+          )
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -96,11 +99,19 @@ module Slithernix
 
           # Create the scrollbar window.
           if splace == Slithernix::Cdk::RIGHT
-            @scrollbar_win = @win.subwin(maxViewSize, 1,
-                                         self.screen_ypos(ypos), xpos + @box_width - @border_size - 1)
+            @scrollbar_win = @win.subwin(
+              max_view_size,
+              1,
+              self.screen_ypos(ypos),
+              xpos + @box_width - @border_size - 1,
+            )
           elsif splace == Slithernix::Cdk::LEFT
-            @scrollbar_win = @win.subwin(maxViewSize, 1,
-                                         self.screen_ypos(ypos), self.screen_xpos(ypos))
+            @scrollbar_win = @win.subwin(
+              max_view_size,
+              1,
+              self.screen_ypos(ypos),
+              self.screen_xpos(ypos),
+            )
           else
             @scrollbar_win = nil
           end
@@ -128,9 +139,9 @@ module Slithernix
           end
 
           # Each item in the needs to be converted to chtype array
-          widest_item = createList(list, list_size)
+          widest_item = create_list(list, list_size)
           if widest_item.positive?
-            updateViewWidth(widest_item)
+            update_view_width(widest_item)
           elsif list_size.positive?
             destroy
             return nil
@@ -138,30 +149,29 @@ module Slithernix
 
           # Do we need to create a shadow.
           if shadow
-            @shadow_win = Curses::Window.new(box_height, box_width,
-                                             ypos + 1, xpos + 1)
+            @shadow_win = Curses::Window.new(
+              box_height,
+              box_width,
+              ypos + 1,
+              xpos + 1,
+            )
           end
 
-          # Setup the key bindings
           bindings.each do |from, to|
             bind(:Selection, from, :getc, to)
           end
 
-          # Register this baby.
           cdkscreen.register(:Selection, self)
         end
 
         # Put the cursor on the currently-selected item.
-        def fixCursorPosition
-          if @scrollbar_placement == Slithernix::Cdk::LEFT
-                          then 1
-          else
-            0
-          end
+        def fix_cursor_position
+          @scrollbar_placement == Slithernix::Cdk::LEFT ? 1 : 0
           self.screen_ypos(@current_item - @current_top)
           self.screen_xpos(0)
 
-          # Don't know why this was set up here, since this moves the window -- snake 2024
+          # Don't know why this was set up here, since this moves the window
+          # -- snake 2024
           # @input_window.move(ypos, xpos)
           @input_window.refresh
         end
@@ -173,7 +183,7 @@ module Slithernix
 
           if actions.nil? || actions.empty?
             while true
-              fixCursorPosition
+              fix_cursor_position
               input = getch([])
 
               # Inject the character into the widget.
@@ -203,7 +213,7 @@ module Slithernix
           set_exit_type(0)
 
           # Draw the widget list.
-          drawList(@box)
+          draw_list(@box)
 
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
@@ -218,26 +228,16 @@ module Slithernix
               complete = true
             else
               case input
-              when Curses::KEY_UP
-                self.KEY_UP
-              when Curses::KEY_DOWN
-                self.KEY_DOWN
-              when Curses::KEY_RIGHT
-                self.KEY_RIGHT
-              when Curses::KEY_LEFT
-                self.KEY_LEFT
-              when Curses::KEY_PPAGE
-                self.KEY_PPAGE
-              when Curses::KEY_NPAGE
-                self.KEY_NPAGE
-              when Curses::KEY_HOME
-                self.KEY_HOME
-              when Curses::KEY_END
-                self.KEY_END
-              when '$'
-                @left_char = @max_left_char
-              when '|'
-                @left_char = 0
+              when Curses::KEY_UP then self.key_up
+              when Curses::KEY_DOWN then self.key_down
+              when Curses::KEY_RIGHT then self.key_right
+              when Curses::KEY_LEFT then self.key_left
+              when Curses::KEY_PPAGE then self.key_ppage
+              when Curses::KEY_NPAGE then self.key_npage
+              when Curses::KEY_HOME then self.key_home
+              when Curses::KEY_END then self.key_end
+              when '$' then @left_char = @max_left_char
+              when '|' then @left_char = 0
               when ' '
                 if (@mode[@current_item]).zero?
                   if @selections[@current_item] == @choice_count - 1
@@ -248,10 +248,7 @@ module Slithernix
                 else
                   Slithernix::Cdk.beep
                 end
-              when Slithernix::Cdk::KEY_ESC
-                set_exit_type(input)
-                complete = true
-              when Curses::Error
+              when Slithernix::Cdk::KEY_ESC, Curses::Error
                 set_exit_type(input)
                 complete = true
               when Curses::KEY_ENTER, Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN
@@ -266,26 +263,36 @@ module Slithernix
 
             # Should we call a post-process?
             if !complete && @post_process_func
-              @post_process_func.call(:Selection, self, @post_process_data,
-                                      input)
+              @post_process_func.call(
+                :Selection,
+                self,
+                @post_process_data,
+                input
+              )
             end
           end
 
           unless complete
-            drawList(@box)
+            draw_list(@box)
             set_exit_type(0)
           end
 
           @result_data = ret
-          fixCursorPosition
+          fix_cursor_position
           ret
         end
 
         # This moves the selection field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @scrollbar_win, @shadow_win]
-          move_specific(xplace, yplace, relative, refresh_flag,
-                        windows, [])
+          move_specific(
+            xplace,
+            yplace,
+            relative,
+            refresh_flag,
+            windows,
+            [],
+          )
         end
 
         # This function draws the selection list.
@@ -298,11 +305,11 @@ module Slithernix
           draw_title(@win)
 
           # Redraw the list
-          drawList(box)
+          draw_list(box)
         end
 
         # This function draws the selection list window.
-        def drawList(_box)
+        def draw_list(_box)
           scrollbar_adj = @scrollbar_placement == LEFT ? 1 : 0
           screen_pos = 0
           sel_item = -1
@@ -315,7 +322,7 @@ module Slithernix
           while j < @view_size && (j + @current_top) < @list_size
             k = j + @current_top
             if k < @list_size
-              screen_pos = self.SCREENPOS(k, scrollbar_adj)
+              screen_pos = self.screen_position(k, scrollbar_adj)
               ypos = self.screen_ypos(j)
               xpos = self.screen_xpos(0)
 
@@ -379,23 +386,23 @@ module Slithernix
           # Box it if needed
           Slithernix::Cdk::Draw.draw_obj_box(@win, self) if @box
 
-          fixCursorPosition
+          fix_cursor_position
         end
 
         # This sets the background attribute of the widget.
-        def setBKattr(attrib)
+        def set_background_attr(attrib)
           @win.wbkgd(attrib)
           @scrollbar_win&.wbkgd(attrib)
         end
 
-        def destroyInfo
+        def destroy_info
           @item = []
         end
 
         # This function destroys the selection list.
         def destroy
           clean_title
-          destroyInfo
+          destroy_info
 
           # Clean up the windows.
           Slithernix::Cdk.delete_curses_window(@scrollbar_win)
@@ -419,14 +426,14 @@ module Slithernix
 
         # This function sets a couple of the selection list attributes
         def set(highlight, choices, box)
-          setChoices(choices)
-          setHighlight(highlight)
+          set_choices(choices)
+          set_highlight(highlight)
           set_box(box)
         end
 
         # This sets the selection list items.
-        def setItems(list, list_size)
-          widest_item = createList(list, list_size)
+        def set_items(list, list_size)
+          widest_item = create_list(list, list_size)
           return if widest_item <= 0
 
           # Clean up the display
@@ -441,43 +448,43 @@ module Slithernix
             )
           end
 
-          setViewSize(list_size)
+          set_view_size(list_size)
           set_current_item(0)
 
-          updateViewWidth(widest_item)
+          update_view_width(widest_item)
         end
 
-        def getItems(list)
+        def get_items(list)
           @item.each do |item|
             list << Slithernix::Cdk.chtype_string_to_unformatted_string(item)
           end
           @list_size
         end
 
-        def setSelectionTitle(title)
+        def set_selection_title(title)
           # Make sure the title isn't nil
           return if title.nil?
 
           set_title(title, -(@box_width + 1))
 
-          setViewSize(@list_size)
+          set_view_size(@list_size)
         end
 
-        def getTitle
+        def get_title
           Slithernix::Cdk.chtype_string_to_unformatted_string(@title)
         end
 
         # This sets the highlight bar.
-        def setHighlight(highlight)
+        def set_highlight(highlight)
           @highlight = highlight
         end
 
-        def getHighlight
+        def get_highlight
           @highlight
         end
 
         # This sets the default choices for the selection list.
-        def setChoices(choices)
+        def set_choices(choices)
           # Set the choice values in the selection list.
           (0...@list_size).each do |j|
             @selections[j] = if (choices[j]).negative?
@@ -490,12 +497,12 @@ module Slithernix
           end
         end
 
-        def getChoices
+        def get_choices
           @selections
         end
 
         # This sets a single item's choice value.
-        def setChoice(index, choice)
+        def set_choice(index, choice)
           correct_choice = choice
           correct_index = index
 
@@ -517,7 +524,7 @@ module Slithernix
           @selections[correct_index] = correct_choice
         end
 
-        def getChoice(index)
+        def get_choice(index)
           # Make sure the index isn't out of range.
           if index.negative?
             @selections[0]
@@ -530,19 +537,19 @@ module Slithernix
 
         # This sets the modes of the items in the selection list. Currently
         # there are only two: editable=0 and read-only=1
-        def setModes(modes)
+        def set_modes(modes)
           # set the modes
           (0...@list_size).each do |j|
             @mode[j] = modes[j]
           end
         end
 
-        def getModes
+        def get_modes
           @mode
         end
 
         # This sets a single mode of an item in the selection list.
-        def setMode(index, mode)
+        def set_mode(index, mode)
           # Make sure the index isn't out of range.
           if index.negative?
             @mode[0] = mode
@@ -553,7 +560,7 @@ module Slithernix
           end
         end
 
-        def getMode(index)
+        def get_mode(index)
           # Make sure the index isn't out of range
           if index.negative?
             @mode[0]
@@ -564,20 +571,20 @@ module Slithernix
           end
         end
 
-        def getCurrent
+        def get_current
           @current_item
         end
 
         # methods for generic type methods
         def focus
-          drawList(@box)
+          draw_list(@box)
         end
 
         def unfocus
-          drawList(@box)
+          draw_list(@box)
         end
 
-        def createList(list, list_size)
+        def create_list(list, list_size)
           status = 0
           widest_item = 0
 
@@ -586,7 +593,7 @@ module Slithernix
             new_len = []
             new_pos = []
 
-            box_width = self.AvailableWidth
+            box_width = self.available_width
             adjust = @maxchoicelen + @border_size
 
             status = 1
@@ -611,7 +618,7 @@ module Slithernix
             end
 
             if status
-              destroyInfo
+              destroy_info
 
               @item = new_list
               @item_pos = new_pos
@@ -620,7 +627,7 @@ module Slithernix
               @mode = [0] * list_size
             end
           else
-            destroyInfo
+            destroy_info
           end
 
           (status ? widest_item : 0)
@@ -628,19 +635,19 @@ module Slithernix
 
         # Determine how many characters we can shift to the right
         # before all the items have been scrolled off the screen.
-        def AvailableWidth
+        def available_width
           @box_width - (2 * @border_size) - @maxchoicelen
         end
 
-        def updateViewWidth(widest)
-          @max_left_char = @box_width > widest ? 0 : widest - self.AvailableWidth
+        def update_view_width(widest)
+          @max_left_char = @box_width > widest ? 0 : widest - self.available_width
         end
 
-        def WidestItem
-          @max_left_char + self.AvailableWidth
+        def widest_item
+          @max_left_char + self.available_width
         end
 
-        def SCREENPOS(n, scrollbar_adj)
+        def screen_position(n, scrollbar_adj)
           @item_pos[n] - @left_char + scrollbar_adj
         end
 

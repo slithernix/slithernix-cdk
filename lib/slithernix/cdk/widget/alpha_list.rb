@@ -270,7 +270,7 @@ module Slithernix
               elsif (index = Slithernix::Cdk.search_list(alphalist.list,
                                                          alphalist.list.size, pattern)) >= 0
                 # XXX: original uses n scroll downs/ups for <10 positions change
-                scrollp.setPosition(index)
+                scrollp.set_position(index)
                 alphalist.draw_scroller
               else
                 Slithernix::Cdk.beep
@@ -279,7 +279,7 @@ module Slithernix
             end
 
             if empty
-              scrollp.setPosition(0)
+              scrollp.set_position(0)
               alphalist.draw_scroller
             end
 

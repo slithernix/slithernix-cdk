@@ -67,7 +67,7 @@ module Slithernix
                        end
           @box_height = [box_height, parent_height].min
 
-          setViewSize(list_size)
+          set_view_size(list_size)
 
           # Rejustify the x and y positions if we need to.
           xtmp = [xpos]
@@ -89,14 +89,14 @@ module Slithernix
           # Create the scrollbar window.
           @scrollbar_win = if splace == Slithernix::Cdk::RIGHT
                              @win.subwin(
-                               maxViewSize,
+                               max_view_size,
                                1,
                                self.screen_ypos(ypos),
                                xpos + box_width - @border_size - 1,
                              )
                            elsif splace == Slithernix::Cdk::LEFT
                              @win.subwin(
-                               maxViewSize,
+                               max_view_size,
                                1,
                                self.screen_ypos(ypos),
                                self.screen_xpos(xpos),
@@ -105,7 +105,7 @@ module Slithernix
 
           # create the list window
           @list_win = @win.subwin(
-            maxViewSize,
+            max_view_size,
             box_width - (2 * @border_size) - scroll_adjust,
             self.screen_ypos(ypos),
             self.screen_xpos(xpos) + (splace == Slithernix::Cdk::LEFT ? 1 : 0),
@@ -124,7 +124,7 @@ module Slithernix
           @input_window = @win
           @shadow = shadow
 
-          setPosition(0)
+          set_position(0)
 
           # Create the scrolling list item list and needed variables.
           return nil if create_item_list(numbers, list, list_size) <= 0
@@ -222,21 +222,21 @@ module Slithernix
             if check_bind(:Scroll, input) == false
               case input
               when Curses::KEY_UP
-                self.KEY_UP
+                self.key_up
               when Curses::KEY_DOWN
-                self.KEY_DOWN
+                self.key_down
               when Curses::KEY_RIGHT
-                self.KEY_RIGHT
+                self.key_right
               when Curses::KEY_LEFT
-                self.KEY_LEFT
+                self.key_left
               when Curses::KEY_PPAGE
-                self.KEY_PPAGE
+                self.key_ppage
               when Curses::KEY_NPAGE
-                self.KEY_NPAGE
+                self.key_npage
               when Curses::KEY_HOME
-                self.KEY_HOME
+                self.key_home
               when Curses::KEY_END
-                self.KEY_END
+                self.key_end
               when '$'
                 @left_char = @max_left_char
               when '|'
@@ -289,7 +289,7 @@ module Slithernix
           end
           @current_top = item
 
-          setPosition(item)
+          set_position(item)
         end
 
         # This moves the scroll field to the given location.
@@ -520,8 +520,8 @@ module Slithernix
                                                Slithernix::Cdk::HORIZONTAL, 0, @box_width - 2)
           end
 
-          setViewSize(list_size)
-          setPosition(0)
+          set_view_size(list_size)
+          set_position(0)
           @left_char = 0
         end
 
@@ -594,7 +594,7 @@ module Slithernix
             widest_item = [@item_len[item_number], widest_item].max
 
             update_view_width(widest_item)
-            setViewSize(@list_size + 1)
+            set_view_size(@list_size + 1)
           end
         end
 
@@ -622,7 +622,7 @@ module Slithernix
             widest_item = [@item_len[@current_item], widest_item].max
 
             update_view_width(widest_item)
-            setViewSize(@list_size + 1)
+            set_view_size(@list_size + 1)
             resequence
           end
         end
@@ -636,16 +636,16 @@ module Slithernix
           @item_len = @item_len[0...position] + @item_len[position + 1..]
           @item_pos = @item_pos[0...position] + @item_pos[position + 1..]
 
-          setViewSize(@list_size - 1)
+          set_view_size(@list_size - 1)
 
           resequence if @list_size.positive?
 
-          if @list_size < maxViewSize
+          if @list_size < max_view_size
             @win.erase # force the next redraw to be complete
           end
 
           # do this to update the view size, etc
-          setPosition(@current_item)
+          set_position(@current_item)
         end
 
         def focus
@@ -783,12 +783,12 @@ module Slithernix
 
         # This sets multiple attributes of the widget.
         def set(mesg, box)
-          setMessage(mesg)
+          set_message(mesg)
           set_box(box)
         end
 
         # This sets the information within the button.
-        def setMessage(info)
+        def set_message(info)
           info_len = []
           info_pos = []
           @info = Slithernix::Cdk.char_to_chtype(info, info_len, info_pos)

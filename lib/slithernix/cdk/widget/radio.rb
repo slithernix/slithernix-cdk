@@ -57,7 +57,7 @@ module Slithernix
           @box_width = [box_width, parent_width].min
           @box_height = [box_height, parent_height].min
 
-          setViewSize(list_size)
+          set_view_size(list_size)
 
           # Each item in the needs to be converted to chtype array
           widest_item = create_list(list, list_size, @box_width)
@@ -97,14 +97,14 @@ module Slithernix
           # Create the scrollbar window.
           @scrollbar_win = if splace == Slithernix::Cdk::RIGHT
                              @win.subwin(
-                               maxViewSize,
+                               max_view_size,
                                1,
                                self.screen_ypos(ypos),
                                xpos + @box_width - @border_size - 1,
                              )
                            elsif splace == Slithernix::Cdk::LEFT
                              @win.subwin(
-                               maxViewSize,
+                               max_view_size,
                                1,
                                self.screen_ypos(ypos),
                                self.screen_xpos(xpos),
@@ -210,21 +210,21 @@ module Slithernix
             else
               case input
               when Curses::KEY_UP
-                self.KEY_UP
+                self.key_up
               when Curses::KEY_DOWN
-                self.KEY_DOWN
+                self.key_down
               when Curses::KEY_RIGHT
-                self.KEY_RIGHT
+                self.key_right
               when Curses::KEY_LEFT
-                self.KEY_LEFT
+                self.key_left
               when Curses::KEY_PPAGE
-                self.KEY_PPAGE
+                self.key_ppage
               when Curses::KEY_NPAGE
-                self.KEY_NPAGE
+                self.key_npage
               when Curses::KEY_HOME
-                self.KEY_HOME
+                self.key_home
               when Curses::KEY_END
-                self.KEY_END
+                self.key_end
               when '$'
                 @left_char = @max_left_char
               when '|'
@@ -435,7 +435,7 @@ module Slithernix
             )
           end
 
-          setViewSize(list_size)
+          set_view_size(list_size)
 
           set_current_item(0)
           @left_char = 0
@@ -491,7 +491,7 @@ module Slithernix
 
         # This sets the current highlighted item of the widget
         def set_current_item(item)
-          setPosition(item)
+          set_position(item)
           @selected_item = item
         end
 

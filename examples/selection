@@ -133,7 +133,7 @@ class SelectionExample < CLIExample
       exit
     end
 
-    selection.setItems(item, item.size) if params.c
+    selection.set_items(item, item.size) if params.c
 
     # Activate the selection list.
     selection.activate([])
