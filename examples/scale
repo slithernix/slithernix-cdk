@@ -25,7 +25,7 @@ class ScaleExample < Example
       param.low = l
     end
 
-    opts.on('-i INC', OptionParser::DecimalInteger, 'Increment amount') do |i|
+    opts.on('-i INC', OptionParser::DecimalInteger, 'increment amount') do |i|
       param.inc = i
     end
 

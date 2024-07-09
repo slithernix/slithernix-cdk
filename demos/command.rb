@@ -114,7 +114,7 @@ class Command
         return false
       end
 
-      # Decrement the counter.
+      # decrement the counter.
       history.current -= 1
 
       # Display the command.
@@ -130,7 +130,7 @@ class Command
         return false
       end
 
-      # Increment the counter.
+      # increment the counter.
       history.current += 1
 
       # If we are at the end, clear the entry field.
@@ -233,7 +233,7 @@ class Command
       scale.destroy
 
       # Jump to the line.
-      swindow.jumpToLine(line)
+      swindow.jump_to_line(line)
 
       # Redraw the widget.
       entry.draw(entry.box)
@@ -308,7 +308,7 @@ class Command
         history.current = history.count
 
         # Jump to the bottom of the scrolling window.
-        command_output.jumpToLine(Slithernix::Cdk::BOTTOM)
+        command_output.jump_to_line(Slithernix::Cdk::BOTTOM)
 
         # Insert a line providing the command.
         command_output.add(format('Command: </R>%s', command),

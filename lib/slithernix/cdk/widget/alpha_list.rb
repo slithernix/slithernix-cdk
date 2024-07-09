@@ -489,14 +489,14 @@ module Slithernix
 
         # Get/set the current position in the scroll widget.
         def get_current_item
-          @scroll_field.getCurrentItem
+          @scroll_field.get_current_item
         end
 
         def set_current_item(item)
           return unless @list_size != 0
 
-          @scroll_field.setCurrentItem(item)
-          @entry_field.set_value(@list[@scroll_field.getCurrentItem])
+          @scroll_field.set_current_item(item)
+          @entry_field.set_value(@list[@scroll_field.get_current_item])
         end
 
         # This sets the filler character of the entry field of the alphalist.

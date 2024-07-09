@@ -117,7 +117,7 @@ module Slithernix
           @input_window = @win
           @shadow = shadow
 
-          setCurrentItem(0)
+          set_current_item(0)
 
           # Each choice has to be converted from string to chtype array
           (0...choice_count).each do |j|
@@ -442,7 +442,7 @@ module Slithernix
           end
 
           setViewSize(list_size)
-          setCurrentItem(0)
+          set_current_item(0)
 
           updateViewWidth(widest_item)
         end

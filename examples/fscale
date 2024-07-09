@@ -25,7 +25,7 @@ class FScaleExample < Example
       param.low = l
     end
 
-    opts.on('-i INC', OptionParser::DecimalNumeric, 'Increment amount') do |i|
+    opts.on('-i INC', OptionParser::DecimalNumeric, 'increment amount') do |i|
       param.inc = i
     end
 

@@ -53,7 +53,7 @@ class TraverseExample < Example
   end
 
   def self.make_button(cdkscreen, x, y)
-    Slithernix::Cdk::BUTTON.new(cdkscreen, x, y, 'A Button!', nil, true, false)
+    Slithernix::Cdk::Button.new(cdkscreen, x, y, 'A Button!', nil, true, false)
   end
 
   def self.make_buttonbox(cdkscreen, x, y)

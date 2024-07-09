@@ -22,7 +22,7 @@ begin
     # Add a line with current timestamp
     add_line(win, y_pos, "Line #{lines_added + 1}: #{Time.now}")
 
-    # Increment line position and count
+    # increment line position and count
     y_pos += 1
     lines_added += 1
 

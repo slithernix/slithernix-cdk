@@ -19,7 +19,7 @@ class FselectExample < CLIExample
   end
 
   def self.fill_undo(widget, deleted, data)
-    top = widget.scroll_field.getCurrentTop
+    top = widget.scroll_field.get_current_top
     item = widget.get_current_item
 
     undo = OpenStruct.new
@@ -97,13 +97,13 @@ class FselectExample < CLIExample
       result = false
 
       if size.positive?
-        save = widget.scroll_field.getCurrentTop
+        save = widget.scroll_field.get_current_top
         first = widget.get_current_item
 
         FselectExample.fill_undo(widget, first, list[first])
         list = list[0...first] + list[first + 1..]
         widget.set_contents(list, size - 1)
-        widget.scroll_field.setCurrentTop(save)
+        widget.scroll_field.set_current_top(save)
         widget.set_current_item(first)
         widget.draw(widget.border_size)
         result = true
@@ -118,7 +118,7 @@ class FselectExample < CLIExample
       result = false
 
       if size.positive?
-        save = widget.scroll_field.getCurrentTop
+        save = widget.scroll_field.get_current_top
         first = widget.get_current_item
 
         first -= 1
@@ -126,7 +126,7 @@ class FselectExample < CLIExample
           FselectExample.fill_undo(widget, first, list[first])
           list = list[0...first] + list[first + 1..]
           widget.set_contents(list, size - 1)
-          widget.scroll_field.setCurrentTop(save)
+          widget.scroll_field.set_current_top(save)
           widget.set_current_item(first)
           widget.draw(widget.border_size)
           result = true
@@ -171,7 +171,7 @@ class FselectExample < CLIExample
         original = @@my_user_list[@@my_undo_list[-1].original]
         newlist = oldlist[0..deleted - 1] + [original] + oldlist[deleted..]
         widget.set_contents(newlist, size)
-        widget.scroll_field.setCurrentTop(@@my_undo_list[-1].topline)
+        widget.scroll_field.set_current_top(@@my_undo_list[-1].topline)
         widget.set_current_item(@@my_undo_list[-1].position)
         widget.draw(widget.border_size)
         @@my_undo_list = @@my_undo_list[0...-1]

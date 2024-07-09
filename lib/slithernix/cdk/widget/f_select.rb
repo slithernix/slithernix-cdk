@@ -609,7 +609,7 @@ module Slithernix
           end
 
           # Set the values in the scrolling list.
-          fscroll.setItems(@dir_contents, @file_counter, false)
+          fscroll.set_items(@dir_contents, @file_counter, false)
         end
 
         # This creates a list of the files in the current directory.
@@ -680,7 +680,7 @@ module Slithernix
               # Get the directory contents.
               if set_dir_contents
                 # Set the values in the scrolling list.
-                fscroll.setItems(@dir_contents, @file_counter, false)
+                fscroll.set_items(@dir_contents, @file_counter, false)
               else
                 result = 0
               end
@@ -708,7 +708,7 @@ module Slithernix
         # This sets the highlight bar of the scrolling list.
         def set_highlight(highlight)
           @highlight = highlight
-          @scroll_field.setHighlight(highlight)
+          @scroll_field.set_highlight(highlight)
         end
 
         def get_highlight
@@ -803,7 +803,7 @@ module Slithernix
 
           @scroll_field.setCurrent(item)
 
-          data = content_to_path(@dir_contents[@scroll_field.getCurrentItem])
+          data = content_to_path(@dir_contents[@scroll_field.get_current_item])
           @entry_field.set_value(data)
         end
 

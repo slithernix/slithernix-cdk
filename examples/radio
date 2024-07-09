@@ -84,7 +84,7 @@ class RadioExample < CLIExample
       exit
     end
 
-    radio.setItems(item, count) if params.c
+    radio.set_items(item, count) if params.c
 
     # Loop until the user selects a file, or cancels
     loop do
@@ -114,7 +114,7 @@ class RadioExample < CLIExample
           if count.positive?
             Dir.chdir(item[selection])
             item = nitem
-            radio.setItems(item, count)
+            radio.set_items(item, count)
           end
         else
           mesg = [

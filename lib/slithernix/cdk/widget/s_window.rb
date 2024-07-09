@@ -6,34 +6,41 @@ module Slithernix
   module Cdk
     class Widget
       class SWindow < Slithernix::Cdk::Widget
-        def initialize(cdkscreen, xplace, yplace, height, width, title,
-                       save_lines, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, height, width, title, save_lines, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
           bindings = {
-            Slithernix::Cdk::BACKCHAR => Curses::KEY_PPAGE,
             'b' => Curses::KEY_PPAGE,
             'B' => Curses::KEY_PPAGE,
-            Slithernix::Cdk::FORCHAR => Curses::KEY_NPAGE,
             ' ' => Curses::KEY_NPAGE,
             'f' => Curses::KEY_NPAGE,
             'F' => Curses::KEY_NPAGE,
             '|' => Curses::KEY_HOME,
-            '$' => Curses::KEY_END
+            '$' => Curses::KEY_END,
           }
+
+          bindings[Slithernix::Cdk::BACKCHAR] = Curses::KEY_PPAGE
+          bindings[Slithernix::Cdk::FORCHAR] = Curses::KEY_NPAGE
 
           set_box(box)
 
           # If the height is a negative value, the height will be
           # ROWS-height, otherwise the height will be the given height.
-          box_height = Slithernix::Cdk.set_widget_dimension(parent_height,
-                                                            height, 0)
+          box_height = Slithernix::Cdk.set_widget_dimension(
+            parent_height,
+            height,
+            0,
+          )
 
           # If the width is a negative value, the width will be
           # COLS-width, otherwise the widget will be the given width.
-          box_width = Slithernix::Cdk.set_widget_dimension(parent_width, width,
-                                                           0)
+          box_width = Slithernix::Cdk.set_widget_dimension(
+            parent_width,
+            width,
+            0,
+          )
+
           box_width = set_title(title, box_width)
 
           # Set the box height.
@@ -49,8 +56,13 @@ module Slithernix
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
-                                  box_height)
+          Slithernix::Cdk.alignxy(
+            cdkscreen.window,
+            xtmp,
+            ytmp,
+            box_width,
+            box_height,
+          )
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -90,7 +102,7 @@ module Slithernix
           @input_window = @win
           @shadow = shadow
 
-          unless createList(save_lines)
+          unless create_list(save_lines)
             destroy
             return nil
           end
@@ -116,11 +128,11 @@ module Slithernix
 
         # This sets the lines and the box attribute of the scrolling window.
         def set(list, lines, box)
-          setContents(list, lines)
+          set_contents(list, lines)
           set_box(box)
         end
 
-        def setupLine(list, x)
+        def setup_line(list, x)
           list_len = []
           list_pos = []
           @list[x] = Slithernix::Cdk.char_to_chtype(list, list_len, list_pos)
@@ -134,14 +146,14 @@ module Slithernix
         end
 
         # This sets all the lines inside the scrolling window.
-        def setContents(list, list_size)
+        def set_contents(list, list_size)
           # First let's clean all the lines in the window.
           clean
-          createList(list_size)
+          create_list(list_size)
 
           # Now let's set all the lines inside the window.
           (0...list_size).each do |x|
-            setupLine(list[x], x)
+            setup_line(list[x], x)
           end
 
           # Set some more important members of the scrolling window.
@@ -153,12 +165,12 @@ module Slithernix
           @left_char = 0
         end
 
-        def getContents(size)
+        def get_contents(size)
           size << @list_size
           @list
         end
 
-        def freeLine(x)
+        def free_line(x)
           #  if x < @list_size
           #    @list[x] = 0
           #  end
@@ -183,7 +195,7 @@ module Slithernix
             @list_len = [@list_len[0]] + @list_len
 
             # Add it into the scrolling window.
-            setupLine(list, 0)
+            setup_line(list, 0)
 
             # set some variables.
             @current_top = 0
@@ -199,14 +211,14 @@ module Slithernix
             @list += ['']
             @list_pos += [0]
             @list_len += [0]
-            setupLine(list, @list_size)
+            setup_line(list, @list_size)
 
             @max_left_char = @widest_line - (@box_width - 2)
 
-            # Increment the item count and zero out the next row.
+            # increment the item count and zero out the next row.
             if @list_size < @save_lines
               @list_size += 1
-              freeLine(@list_size)
+              free_line(@list_size)
             end
 
             # Set the maximum top line.
@@ -220,11 +232,11 @@ module Slithernix
           end
 
           # Draw in the list.
-          drawList(@box)
+          draw_list(@box)
         end
 
         # This jumps to a given line.
-        def jumpToLine(line)
+        def jump_to_line(line)
           # Make sure the line is in bounds.
           @current_top = if line == Slithernix::Cdk::BOTTOM || line >= @list_size
                            # We are moving to the last page.
@@ -250,7 +262,7 @@ module Slithernix
         def clean
           # Clean up the memory used...
           (0...@list_size).each do |x|
-            freeLine(x)
+            free_line(x)
           end
 
           # Reset some variables.
@@ -289,7 +301,7 @@ module Slithernix
 
           # Start nuking elements from the window
           (start..finish).each do |x|
-            freeLine(x)
+            free_line(x)
 
             next unless x < list_size - 1
 
@@ -409,17 +421,14 @@ module Slithernix
               when 'G', '>'
                 @current_top = @max_top_line
               when 'l', 'L'
-                loadInformation
+                load_information
               when 's', 'S'
-                saveInformation
+                save_information
               when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
                 set_exit_type(input)
                 ret = 1
                 complete = true
-              when Slithernix::Cdk::KEY_ESC
-                set_exit_type(input)
-                complete = true
-              when Curses::Error
+              when Slithernix::Cdk::KEY_ESC, Curses::Error
                 set_exit_type(input)
                 complete = true
               when Slithernix::Cdk::REFRESH
@@ -430,13 +439,17 @@ module Slithernix
 
             # Should we call a post-process?
             if !complete && @post_process_func
-              @post_process_func.call(:SWindow, self, @post_process_data,
-                                      input)
+              @post_process_func.call(
+                :SWindow,
+                self,
+                @post_process_data,
+                input
+              )
             end
           end
 
           unless complete
-            drawList(@box)
+            draw_list(@box)
             set_exit_type(0)
           end
 
@@ -464,11 +477,11 @@ module Slithernix
           @win.refresh
 
           # Draw in the list.
-          drawList(box)
+          draw_list(box)
         end
 
         # This draws in the contents of the scrolling window
-        def drawList(_box)
+        def draw_list(_box)
           # Determine the last line to draw.
           last_line = [@list_size, @view_size].min
 
@@ -481,13 +494,25 @@ module Slithernix
 
             # Write in the correct line.
             if screen_pos >= 0
-              Slithernix::Cdk::Draw.write_chtype(@field_win, screen_pos, x,
-                                                 @list[x + @current_top], Slithernix::Cdk::HORIZONTAL, 0,
-                                                 @list_len[x + @current_top])
+              Slithernix::Cdk::Draw.write_chtype(
+                @field_win,
+                screen_pos,
+                x,
+                @list[x + @current_top],
+                Slithernix::Cdk::HORIZONTAL,
+                0,
+                @list_len[x + @current_top],
+              )
             else
-              Slithernix::Cdk::Draw.write_chtype(@field_win, 0, x, @list[x + @current_top],
-                                                 Slithernix::Cdk::HORIZONTAL, @left_char - @list_pos[x + @current_top],
-                                                 @list_len[x + @current_top])
+              Slithernix::Cdk::Draw.write_chtype(
+                @field_win,
+                0,
+                x,
+                @list[x + @current_top],
+                Slithernix::Cdk::HORIZONTAL,
+                @left_char - @list_pos[x + @current_top],
+                @list_len[x + @current_top],
+              )
             end
           end
 
@@ -495,13 +520,13 @@ module Slithernix
         end
 
         # This sets the background attribute of the widget.
-        def setBKattr(attrib)
+        def set_background_attr(attrib)
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
         end
 
         # Free any storage associated with the info-list.
-        def destroyInfo
+        def destroy_info
           @list = []
           @list_pos = []
           @list_len = []
@@ -509,7 +534,7 @@ module Slithernix
 
         # This function destroys the scrolling window widget.
         def destroy
-          destroyInfo
+          destroy_info
 
           clean_title
 
@@ -583,7 +608,7 @@ module Slithernix
           count
         end
 
-        def showMessage2(msg, msg2, filename)
+        def show_two_messages(msg, msg2, filename)
           mesg = [
             msg,
             msg2,
@@ -596,7 +621,7 @@ module Slithernix
 
         # This function allows the user to dump the information from the
         # scrolling window to a file.
-        def saveInformation
+        def save_information
           # Create the entry field to get the filename.
           entry = Slithernix::Cdk::Widget::Entry.new(
             @screen,
@@ -638,11 +663,11 @@ module Slithernix
           # Was the save successful?
           if lines_saved == -1
             # Nope, tell 'em
-            showMessage2('<C></B/16>Error', '<C>Could not save to the file.',
-                         filename)
+            show_two_messages('<C></B/16>Error', '<C>Could not save to the file.',
+                              filename)
           else
             # Yep, let them know how many lines were saved.
-            showMessage2(
+            show_two_messages(
               '<C></B/5>Save Successful',
               format('<C>There were %d lines saved to the file', lines_saved),
               filename
@@ -657,7 +682,7 @@ module Slithernix
 
         # This function allows the user to load new information into the scrolling
         # window.
-        def loadInformation
+        def load_information
           # Create the file selector to choose the file.
           fselect = Slithernix::Cdk::Widget::FSelect.new(
             @screen,
@@ -733,7 +758,7 @@ module Slithernix
             # Check the answer.
             if [-1, 0].include?(answer)
               # Save the information.
-              saveInformation
+              save_information
             end
           end
 
@@ -751,7 +776,7 @@ module Slithernix
           # if (lines == -1)
           # {
           #   /* The file read didn't work. */
-          #   showMessage2 (swindow,
+          #   show_two_messages (swindow,
           #                 "<C></B/16>Error",
           #                 "<C>Could not read the file",
           #                 filename);
@@ -794,7 +819,7 @@ module Slithernix
           draw(@box)
         end
 
-        def createList(list_size)
+        def create_list(list_size)
           status = false
 
           if list_size >= 0
@@ -803,13 +828,13 @@ module Slithernix
             new_len = []
 
             status = true
-            destroyInfo
+            destroy_info
 
             @list = new_list
             @list_pos = new_pos
             @list_len = new_len
           else
-            destroyInfo
+            destroy_info
             status = false
           end
           status

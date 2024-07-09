@@ -29,7 +29,7 @@ module Slithernix
 
           box_width = set_title(title, -(box_width + 1))
 
-          # Increment the height by number of lines in in the title
+          # increment the height by number of lines in in the title
           box_height += @title_lines
 
           # Make sure we didn't extend beyond the dimensions of the window.

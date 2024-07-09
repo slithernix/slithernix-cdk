@@ -716,7 +716,7 @@ module Slithernix
 
         # This increments the current year by the given value.
         def increment_calendar_year(adjust)
-          # Increment the year.
+          # increment the year.
           @year += adjust
 
           # If we are in Feb make sure we don't trip into voidness.
@@ -750,7 +750,7 @@ module Slithernix
             return
           end
 
-          # Decrement the year.
+          # decrement the year.
           @year -= adjust
 
           # If we are in Feb make sure we don't trip into voidness.

@@ -173,11 +173,11 @@ module Slithernix
         end
 
         # Get/Set the current item number of the scroller.
-        def getCurrentItem
+        def get_current_item
           @current_item
         end
 
-        def setCurrentItem(item)
+        def set_current_item(item)
           setPosition(item)
         end
       end

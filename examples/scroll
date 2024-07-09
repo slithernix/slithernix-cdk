@@ -88,22 +88,22 @@ class ScrollExample < CLIExample
       exit
     end
 
-    scroll_list.setItems(item, count, true) if params.c
+    scroll_list.set_items(item, count, true) if params.c
 
     add_item_callback = lambda do |_type, widget, _client_data, _input|
-      widget.addItem(ScrollExample.new_label('add'))
+      widget.add_item(ScrollExample.new_label('add'))
       widget.screen.refresh
       true
     end
 
     insert_item_callback = lambda do |_type, widget, _client_data, _input|
-      widget.insertItem(ScrollExample.new_label('insert'))
+      widget.insert_item(ScrollExample.new_label('insert'))
       widget.screen.refresh
       true
     end
 
     insert_item_callback = lambda do |_type, widget, _client_data, _input|
-      widget.deleteItem(widget.get_current_item)
+      widget.delete_item(widget.get_current_item)
       widget.screen.refresh
       true
     end

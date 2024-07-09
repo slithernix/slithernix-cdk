@@ -6,8 +6,7 @@ module Slithernix
   module Cdk
     class Widget
       class Radio < Slithernix::Cdk::Widget::Scroller
-        def initialize(cdkscreen, xplace, yplace, splace, height, width,
-                       title, list, list_size, choice_char, def_item, highlight, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, splace, height, width, title, list, list_size, choice_char, def_item, highlight, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -61,9 +60,9 @@ module Slithernix
           setViewSize(list_size)
 
           # Each item in the needs to be converted to chtype array
-          widest_item = createList(list, list_size, @box_width)
+          widest_item = create_list(list, list_size, @box_width)
           if widest_item.positive?
-            updateViewWidth(widest_item)
+            update_view_width(widest_item)
           elsif list_size.positive?
             destroy
             return nil
@@ -128,7 +127,7 @@ module Slithernix
           @accepts_focus = true
           @shadow = shadow
 
-          setCurrentItem(0)
+          set_current_item(0)
 
           # Do we need to create the shadow?
           if shadow
@@ -145,7 +144,7 @@ module Slithernix
         end
 
         # Put the cursor on the currently-selected item.
-        def fixCursorPosition
+        def fix_cursor_position
           @scrollbar_placement == Slithernix::Cdk::LEFT ? 1 : 0
           self.screen_ypos(@current_item - @current_top)
           self.screen_xpos(0)
@@ -161,7 +160,7 @@ module Slithernix
 
           if actions.nil? || actions.empty?
             while true
-              fixCursorPosition
+              fix_cursor_position
               input = getch([])
 
               # Inject the character into the widget.
@@ -190,7 +189,7 @@ module Slithernix
           set_exit_type(0)
 
           # Draw the widget list
-          drawList(@box)
+          draw_list(@box)
 
           # Check if there is a pre-process function to be called
           unless @pre_process_func.nil?
@@ -256,11 +255,11 @@ module Slithernix
           end
 
           unless complete
-            drawList(@box)
+            draw_list(@box)
             set_exit_type(0)
           end
 
-          fixCursorPosition
+          fix_cursor_position
           @return_data = ret
           ret
         end
@@ -282,11 +281,11 @@ module Slithernix
           draw_title(@win)
 
           # Draw in the radio list.
-          drawList(@box)
+          draw_list(@box)
         end
 
         # This redraws the radio list.
-        def drawList(box)
+        def draw_list(box)
           scrollbar_adj = @scrollbar_placement == Slithernix::Cdk::LEFT ? 1 : 0
           screen_pos = 0
 
@@ -298,11 +297,17 @@ module Slithernix
             xpos = self.screen_xpos(0)
             ypos = self.screen_ypos(j)
 
-            screen_pos = self.SCREENPOS(k, scrollbar_adj)
+            screen_pos = self.screen_pos(k, scrollbar_adj)
 
             # Draw the empty string.
-            Slithernix::Cdk::Draw.write_blanks(@win, xpos, ypos, Slithernix::Cdk::HORIZONTAL, 0,
-                                               @box_width - @border_size)
+            Slithernix::Cdk::Draw.write_blanks(
+              @win,
+              xpos,
+              ypos,
+              Slithernix::Cdk::HORIZONTAL,
+              0,
+              @box_width - @border_size,
+            )
 
             # Draw the line.
             Slithernix::Cdk::Draw.write_chtype(
@@ -330,7 +335,7 @@ module Slithernix
           if @has_focus
             k = @current_item
             if k < @list_size
-              screen_pos = self.SCREENPOS(k, scrollbar_adj)
+              screen_pos = self.screen_pos(k, scrollbar_adj)
               ypos = self.screen_ypos(@current_high)
 
               Slithernix::Cdk::Draw.write_chtype_attrib(
@@ -368,23 +373,23 @@ module Slithernix
           # Box it if needed.
           Slithernix::Cdk::Draw.draw_obj_box(@win, self) if box
 
-          fixCursorPosition
+          fix_cursor_position
         end
 
         # This sets the background attribute of the widget.
-        def setBKattr(attrib)
+        def set_background_attr(attrib)
           @win.wbkgd(attrib)
           @scrollbar_win&.wbkgd(attrib)
         end
 
-        def destroyInfo
+        def destroy_info
           @item = String.new
         end
 
         # This function destroys the radio widget.
         def destroy
           clean_title
-          destroyInfo
+          destroy_info
 
           # Clean up the windows.
           Slithernix::Cdk.delete_curses_window(@scrollbar_win)
@@ -408,14 +413,14 @@ module Slithernix
 
         # This sets various attributes of the radio list.
         def set(highlight, choice_char, box)
-          setHighlight(highlight)
+          set_highlight(highlight)
           setChoiceCHaracter(choice_char)
           set_box(box)
         end
 
         # This sets the radio list items.
-        def setItems(list, list_size)
-          widest_item = createList(list, list_size, @box_width)
+        def set_items(list, list_size)
+          widest_item = create_list(list, list_size, @box_width)
           return if widest_item <= 0
 
           # Clean up the display.
@@ -432,14 +437,14 @@ module Slithernix
 
           setViewSize(list_size)
 
-          setCurrentItem(0)
+          set_current_item(0)
           @left_char = 0
           @selected_item = 0
 
-          updateViewWidth(widest_item)
+          update_view_width(widest_item)
         end
 
-        def getItems(list)
+        def get_items(list)
           (0...@list_size).each do |j|
             list << Slithernix::Cdk.chtype_string_to_unformatted_string(@item[j])
           end
@@ -447,71 +452,71 @@ module Slithernix
         end
 
         # This sets the highlight bar of the radio list.
-        def setHighlight(highlight)
+        def set_highlight(highlight)
           @highlight = highlight
         end
 
-        def getHighlight
+        def get_highlight
           @highlight
         end
 
         # This sets the character to use when selecting na item in the list.
-        def setChoiceCharacter(character)
+        def set_choice_character(character)
           @choice_char = character
         end
 
-        def getChoiceCharacter
+        def get_choice_character
           @choice_char
         end
 
         # This sets the character to use to drw the left side of the choice box
         # on the list
-        def setLeftBrace(character)
+        def set_left_brace(character)
           @left_box_char = character
         end
 
-        def getLeftBrace
+        def get_left_brace
           @left_box_char
         end
 
         # This sets the character to use to draw the right side of the choice box
         # on the list
-        def setRightBrace(character)
+        def set_right_brace(character)
           @right_box_char = character
         end
 
-        def getRightBrace
+        def get_right_brace
           @right_box_char
         end
 
         # This sets the current highlighted item of the widget
-        def setCurrentItem(item)
+        def set_current_item(item)
           setPosition(item)
           @selected_item = item
         end
 
-        def getCurrentItem
+        def get_current_item
           @current_item
         end
 
         # This sets the selected item of the widget
-        def setSelectedItem(item)
+        def set_selected_item(item)
           @selected_item = item
         end
 
-        def getSelectedItem
+        def get_selected_item
           @selected_item
         end
 
         def focus
-          drawList(@box)
+          draw_list(@box)
         end
 
         def unfocus
-          drawList(@box)
+          draw_list(@box)
         end
 
-        def createList(list, list_size, box_width)
+        def create_list(list, list_size, box_width)
           status = false
           widest_item = 0
 
@@ -539,7 +544,7 @@ module Slithernix
               widest_item = [widest_item, new_len[j]].max
             end
             if status
-              destroyInfo
+              destroy_info
               @item = new_list
               @item_len = new_len
               @item_pos = new_pos
@@ -551,23 +556,23 @@ module Slithernix
 
         # Determine how many characters we can shift to the right
         # before all the items have been scrolled off the screen.
-        def AvailableWidth
+        def available_width
           @box_width - (2 * @border_size) - 3
         end
 
-        def updateViewWidth(widest)
+        def update_view_width(widest)
           @max_left_char = if @box_width > widest
                            then 0
                            else
-                             widest - self.AvailableWidth
+                             widest - self.available_width
                            end
         end
 
-        def WidestItem
-          @max_left_char + self.AvailableWidth
+        def widest_item
+          @max_left_char + self.available_width
         end
 
-        def SCREENPOS(n, scrollbar_adj)
+        def screen_pos(n, scrollbar_adj)
           @item_pos[n] - @left_char + scrollbar_adj + @border_size
         end
       end

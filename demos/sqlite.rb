@@ -162,7 +162,7 @@ class SQLiteDemo
         return true
       end
 
-      # Decrement the counter.
+      # decrement the counter.
       history.current -= 1
 
       # Display the command.
@@ -178,7 +178,7 @@ class SQLiteDemo
         return true
       end
 
-      # Increment the counter...
+      # increment the counter...
       history.current += 1
 
       # If we are at the end, clear the entry field.

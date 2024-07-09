@@ -6,22 +6,21 @@ module Slithernix
   module Cdk
     class Widget
       class Scale < Slithernix::Cdk::Widget
-        def initialize(cdkscreen, xplace, yplace, title, label, field_attr,
-                       field_width, start, low, high, inc, fast_inc, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, title, label, field_attr, field_width, start, low, high, inc, fast_inc, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
           bindings = {
             'u' => Curses::KEY_UP,
             'U' => Curses::KEY_PPAGE,
-            Slithernix::Cdk::BACKCHAR => Curses::KEY_PPAGE,
-            Slithernix::Cdk::FORCHAR => Curses::KEY_NPAGE,
             'g' => Curses::KEY_HOME,
             '^' => Curses::KEY_HOME,
             'G' => Curses::KEY_END,
             '$' => Curses::KEY_END
           }
 
+          bindings[Slithernix::Cdk::BACKCHAR] = Curses::KEY_PPAGE
+          bindings[Slithernix::Cdk::FORCHAR] = Curses::KEY_NPAGE
           set_box(box)
 
           box_height = (@border_size * 2) + 1
@@ -56,14 +55,23 @@ module Slithernix
           # Make sure we didn't extend beyond the dimensions of the window.
           box_width = [box_width, parent_width].min
           box_height = [box_height, parent_height].min
-          field_width = [field_width,
-                         box_width - @label_len - (2 * @border_size)].min
+          field_width = [
+            field_width,
+            box_width - @label_len - (2 * @border_size),
+          ].min
 
           # Rejustify the x and y positions if we need to.
           xtmp = [xplace]
           ytmp = [yplace]
-          Slithernix::Cdk.alignxy(cdkscreen.window, xtmp, ytmp, box_width,
-                                  box_height)
+
+          Slithernix::Cdk.alignxy(
+            cdkscreen.window,
+            xtmp,
+            ytmp,
+            box_width,
+            box_height,
+          )
+
           xpos = xtmp[0]
           ypos = ytmp[0]
 
@@ -78,9 +86,12 @@ module Slithernix
 
           # Create the widget's label window.
           if @label.size.positive?
-            @label_win = @win.subwin(1, @label_len,
-                                     ypos + @title_lines + @border_size,
-                                     xpos + horizontal_adjust + @border_size)
+            @label_win = @win.subwin(
+              1,
+              @label_len,
+              ypos + @title_lines + @border_size,
+              xpos + horizontal_adjust + @border_size,
+            )
             if @label_win.nil?
               destroy
               return nil
@@ -88,9 +99,12 @@ module Slithernix
           end
 
           # Create the widget's data field window.
-          @field_win = @win.subwin(1, field_width,
-                                   ypos + @title_lines + @border_size,
-                                   xpos + @label_len + horizontal_adjust + @border_size)
+          @field_win = @win.subwin(
+            1,
+            field_width,
+            ypos + @title_lines + @border_size,
+            xpos + @label_len + horizontal_adjust + @border_size,
+          )
 
           if @field_win.nil?
             destroy
@@ -165,7 +179,7 @@ module Slithernix
         end
 
         # Check if the value lies outsid the low/high range. If so, force it in.
-        def limitCurrentValue
+        def limit_current_value
           if @current < @low
             @current = @low
             Slithernix::Cdk.beep
@@ -178,7 +192,7 @@ module Slithernix
         # Move the cursor to the given edit-position
         # Once again, I cannot figure out why this move method is called
         # and removing the call fixes the widget.
-        def moveToEditPosition(_new_position)
+        def move_to_edit_position(_new_position)
           # return @field_win.move(0, @field_width - new_position - 1)
           # return @field_win.move(24, @field_width - new_position - 1)
           @field_win
@@ -186,16 +200,16 @@ module Slithernix
 
         # Check if the cursor is on a valid edit-position. This must be one of
         # the non-blank cells in the field.
-        def validEditPosition(new_position)
+        def valid_edit_position(new_position)
           return false if new_position <= 0 || new_position >= @field_width
-          return false if moveToEditPosition(new_position) == Curses::Error
+          return false if move_to_edit_position(new_position) == Curses::Error
 
           ch = @field_win.inch
           return true if ch.chr != ' '
 
           if new_position > 1
             # Don't use recursion - only one level is wanted
-            if moveToEditPosition(new_position - 1) == Curses::Error
+            if move_to_edit_position(new_position - 1) == Curses::Error
               return false
             end
 
@@ -208,12 +222,12 @@ module Slithernix
         # Set the edit position. Normally the cursor is one cell to the right of
         # the editable field.  Moving it left over the field allows the user to
         # modify cells by typing in replacement characters for the field's value.
-        def setEditPosition(new_position)
+        def set_edit_position(new_position)
           if new_position.negative?
             Slithernix::Cdk.beep
           elsif new_position.zero?
             @field_edit = new_position
-          elsif validEditPosition(new_position)
+          elsif valid_edit_position(new_position)
             @field_edit = new_position
           else
             Slithernix::Cdk.beep
@@ -222,7 +236,7 @@ module Slithernix
 
         # Remove the character from the string at the given column, if it is blank.
         # Returns true if a change was made.
-        def self.removeChar(string, col)
+        def self.remove_char(string, col)
           result = false
           if col >= 0 && string[col] != ' '
             while col < string.size - 1
@@ -236,7 +250,7 @@ module Slithernix
         end
 
         # Perform an editing function for the field.
-        def performEdit(input)
+        def perform_edit(input)
           result = false
           modify = true
           base = 0
@@ -251,10 +265,10 @@ module Slithernix
             temp[col] = input.chr
           elsif input == Curses::KEY_BACKSPACE
             # delete the char before the cursor
-            modify = Slithernix::Cdk::Widget::Scale.removeChar(temp, col - 1)
+            modify = Slithernix::Cdk::Widget::Scale.remove_char(temp, col - 1)
           elsif input == Curses::KEY_DC
             # delete the char at the cursor
-            modify = Slithernix::Cdk::Widget::Scale.removeChar(temp, col)
+            modify = Slithernix::Cdk::Widget::Scale.remove_char(temp, col)
           else
             modify = false
           end
@@ -262,18 +276,18 @@ module Slithernix
              ((value, test) = temp.scanf(self.scan_fmt)).size == 2 &&
              test == ' ' &&
              value >= @low && value <= @high
-            setValue(value)
+            set_value(value)
             result = true
           end
 
           result
         end
 
-        def self.Decrement(value, by)
+        def self.decrement(value, by)
           [value - by, value].min
         end
 
-        def self.Increment(value, by)
+        def self.increment(value, by)
           [value + by, value].max
         end
 
@@ -304,21 +318,29 @@ module Slithernix
             else
               case input
               when Curses::KEY_LEFT
-                setEditPosition(@field_edit + 1)
+                set_edit_position(@field_edit + 1)
               when Curses::KEY_RIGHT
-                setEditPosition(@field_edit - 1)
+                set_edit_position(@field_edit - 1)
               when Curses::KEY_DOWN
-                @current = Slithernix::Cdk::Widget::Scale.Decrement(@current,
-                                                                    @inc)
+                @current = Slithernix::Cdk::Widget::Scale.decrement(
+                  @current,
+                  @inc
+                )
               when Curses::KEY_UP
-                @current = Slithernix::Cdk::Widget::Scale.Increment(@current,
-                                                                    @inc)
+                @current = Slithernix::Cdk::Widget::Scale.increment(
+                  @current,
+                  @inc
+                )
               when Curses::KEY_PPAGE
-                @current = Slithernix::Cdk::Widget::Scale.Increment(@current,
-                                                                    @fastinc)
+                @current = Slithernix::Cdk::Widget::Scale.increment(
+                  @current,
+                  @fastinc
+                )
               when Curses::KEY_NPAGE
-                @current = Slithernix::Cdk::Widget::Scale.Decrement(@current,
-                                                                    @fastinc)
+                @current = Slithernix::Cdk::Widget::Scale.decrement(
+                  @current,
+                  @fastinc
+                )
               when Curses::KEY_HOME
                 @current = @low
               when Curses::KEY_END
@@ -353,16 +375,20 @@ module Slithernix
                     Slithernix::Cdk.beep
                   end
                 else
-                  Slithernix::Cdk.beep unless performEdit(input)
+                  Slithernix::Cdk.beep unless perform_edit(input)
                 end
               end
             end
-            limitCurrentValue
+            limit_current_value
 
             # Should we call a post-process?
             if !complete && @post_process_func
-              @post_process_func.call(widget_type, self,
-                                      @post_process_data, input)
+              @post_process_func.call(
+                widget_type,
+                self,
+                @post_process_data,
+                input,
+              )
             end
           end
 
@@ -378,8 +404,14 @@ module Slithernix
         # This moves the widget's data field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @label_win, @field_win, @shadow_win]
-          move_specific(xplace, yplace, relative, refresh_flag,
-                        windows, [])
+          move_specific(
+            xplace,
+            yplace,
+            relative,
+            refresh_flag,
+            windows,
+            []
+          )
         end
 
         # This function draws the widget.
@@ -412,16 +444,23 @@ module Slithernix
 
           # Draw the value in the field.
           temp = @current.to_s
-          Slithernix::Cdk::Draw.write_char_attrib(@field_win,
-                                                  @field_width - temp.size - 1, 0, temp, @field_attr,
-                                                  Slithernix::Cdk::HORIZONTAL, 0, temp.size)
+          Slithernix::Cdk::Draw.write_char_attrib(
+            @field_win,
+            @field_width - temp.size - 1,
+            0,
+            temp,
+            @field_attr,
+            Slithernix::Cdk::HORIZONTAL,
+            0,
+            temp.size
+          )
 
-          moveToEditPosition(@field_edit)
+          move_to_edit_position(@field_edit)
           @field_win.refresh
         end
 
         # This sets the background attribute of teh widget.
-        def setBKattr(attrib)
+        def set_background_attr(attrib)
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
           @label_win&.wbkgd(attrib)
@@ -457,23 +496,23 @@ module Slithernix
 
         # This function sets the low/high/current values of the widget.
         def set(low, high, value, box)
-          setLowHigh(low, high)
-          setValue(value)
+          set_low_high(low, high)
+          set_value(value)
           set_box(box)
         end
 
         # This sets the widget's value
-        def setValue(value)
+        def set_value(value)
           @current = value
-          limitCurrentValue
+          limit_current_value
         end
 
-        def getValue
+        def get_value
           @current
         end
 
         # This function sets the low/high values of the widget.
-        def setLowHigh(low, high)
+        def set_low_high(low, high)
           # Make sure the values aren't out of bounds.
           if low <= high
             @low = low
@@ -484,14 +523,14 @@ module Slithernix
           end
 
           # Make sure the user hasn't done something silly.
-          limitCurrentValue
+          limit_current_value
         end
 
-        def getLowValue
+        def get_low_value
           @low
         end
 
-        def getHighValue
+        def get_high_value
           @high
         end
 

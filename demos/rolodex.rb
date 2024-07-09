@@ -1158,7 +1158,7 @@ class Rolodex
           phone_record.name,
           Rolodex::LINE_TYPE[Rolodex::TYPE_MAP[phone_record.line_type]]
         )
-        scrollp.addItem(temp)
+        scrollp.add_item(temp)
       end
 
       # Redraw the scrolling list.
@@ -1200,7 +1200,7 @@ class Rolodex
         phone_data.count -= 1
 
         # Nuke the entry.
-        scrollp.deleteItem(position)
+        scrollp.delete_item(position)
       end
 
       # Redraw the scrolling list.
@@ -1398,7 +1398,7 @@ class Rolodex
       group_list[group_count].name,
     )
 
-    # Increment the group count.
+    # increment the group count.
     group_count += 1
     @@g_group_modified = 1
 
