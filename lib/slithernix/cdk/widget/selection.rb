@@ -224,7 +224,7 @@ module Slithernix
                 self.KEY_DOWN
               when Curses::KEY_RIGHT
                 self.KEY_RIGHT
-              when Curses::key_left
+              when Curses::KEY_LEFT
                 self.KEY_LEFT
               when Curses::KEY_PPAGE
                 self.KEY_PPAGE

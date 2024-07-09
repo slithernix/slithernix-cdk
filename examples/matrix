@@ -116,8 +116,8 @@ class MatrixExample < Example
         '<L>You exited the matrix normally',
         format('Current cell (%d,%d)', course_list.crow, course_list.ccol),
         '<L>To get the contents of the matrix cell, you can',
-        '<L>use getCell():',
-        course_list.getCell(course_list.crow, course_list.ccol),
+        '<L>use get_cell():',
+        course_list.get_cell(course_list.crow, course_list.ccol),
         '',
         '<C>Press any key to continue.'
       ]

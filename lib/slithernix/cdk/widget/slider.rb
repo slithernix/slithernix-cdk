@@ -304,7 +304,7 @@ module Slithernix
               complete = true
             else
               case input
-              when Curses::key_left
+              when Curses::KEY_LEFT
                 setEditPosition(@field_edit + 1)
               when Curses::KEY_RIGHT
                 setEditPosition(@field_edit - 1)

@@ -318,7 +318,7 @@ module Slithernix
           when Slithernix::Cdk::FORCHAR
             result = Curses::KEY_RIGHT
           when Slithernix::Cdk::BACKCHAR
-            result = Curses::key_left
+            result = Curses::KEY_LEFT
           when Slithernix::Cdk::NEXT
             result = Slithernix::Cdk::KEY_TAB
           when Slithernix::Cdk::PREV
@@ -422,7 +422,7 @@ module Slithernix
             else
               Slithernix::Cdk.beep
             end
-          when Curses::key_left, '4'
+          when Curses::KEY_LEFT, '4'
             if win.begx > beg_x
               move(-1, 0, true, true)
             else

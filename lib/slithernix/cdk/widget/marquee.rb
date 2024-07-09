@@ -177,7 +177,7 @@ module Slithernix
 
           super
 
-          layoutWidget(xpos, ypos)
+          layout_widget(xpos, ypos)
         end
 
         def position
@@ -185,15 +185,15 @@ module Slithernix
         end
 
         # This sets the background attribute of the widget.
-        def setBKattr(attrib)
+        def set_background_attr(attrib)
           Curses.wbkgd(@win, attrib)
         end
 
-        def layoutWidget(xpos, ypos)
+        def layout_widget(xpos, ypos)
           parent_width = @screen.window.maxx
 
-          Slithernix::Cdk::Widget::Marquee.discardWin(@win)
-          Slithernix::Cdk::Widget::Marquee.discardWin(@shadow_win)
+          Slithernix::Cdk::Widget::Marquee.discard_win(@win)
+          Slithernix::Cdk::Widget::Marquee.discard_win(@shadow_win)
 
           box_width = Slithernix::Cdk.set_widget_dimension(
             parent_width,
@@ -228,11 +228,15 @@ module Slithernix
           # Do we want a shadow?
           return unless @shadow
 
-          @shadow_win = @screen.window.subwin(box_height, box_width,
-                                              ytmp[0] + 1, xtmp[0] + 1)
+          @shadow_win = @screen.window.subwin(
+            box_height,
+            box_width,
+            ytmp[0] + 1,
+            xtmp[0] + 1
+          )
         end
 
-        def self.discardWin(winp)
+        def self.discard_win(winp)
           return if winp.nil?
 
           winp.erase

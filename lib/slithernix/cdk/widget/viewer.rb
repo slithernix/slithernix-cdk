@@ -414,7 +414,7 @@ module Slithernix
                 else
                   Slithernix::Cdk.beep
                 end
-              when Curses::key_left
+              when Curses::KEY_LEFT
                 if @left_char.positive?
                   @left_char -= 1
                   refresh = true

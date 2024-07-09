@@ -227,7 +227,7 @@ module Slithernix
                 self.KEY_DOWN
               when Curses::KEY_RIGHT
                 self.KEY_RIGHT
-              when Curses::key_left
+              when Curses::KEY_LEFT
                 self.KEY_LEFT
               when Curses::KEY_PPAGE
                 self.KEY_PPAGE
@@ -893,7 +893,7 @@ module Slithernix
               else
                 Slithernix::Cdk.beep
               end
-            elsif [Curses::key_left, '4'].include?(key)
+            elsif [Curses::KEY_LEFT, '4'].include?(key)
               if @win.begx.positive?
                 move(-1, 0, true, true)
               else

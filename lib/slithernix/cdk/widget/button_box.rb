@@ -186,7 +186,7 @@ module Slithernix
               complete = true
             else
               case input
-              when Curses::key_left, Curses::KEY_BTAB, Curses::KEY_BACKSPACE
+              when Curses::KEY_LEFT, Curses::KEY_BTAB, Curses::KEY_BACKSPACE
                 if @current_button - @rows < first_button
                   @current_button = last_button
                 else

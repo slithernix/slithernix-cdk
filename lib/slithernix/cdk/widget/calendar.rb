@@ -267,7 +267,7 @@ module Slithernix
                 decrement_calendar_day(7)
               when Curses::KEY_DOWN
                 increment_calendar_day(7)
-              when Curses::key_left
+              when Curses::KEY_LEFT
                 decrement_calendar_day(1)
               when Curses::KEY_RIGHT
                 increment_calendar_day(1)

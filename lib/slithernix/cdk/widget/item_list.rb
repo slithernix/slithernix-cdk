@@ -179,7 +179,7 @@ module Slithernix
                 else
                   @current_item = 0
                 end
-              when Curses::KEY_DOWN, Curses::key_left, '-', 'p'
+              when Curses::KEY_DOWN, Curses::KEY_LEFT, '-', 'p'
                 if @current_item.positive?
                   @current_item -= 1
                 else

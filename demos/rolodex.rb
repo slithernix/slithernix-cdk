@@ -1552,7 +1552,7 @@ class Rolodex
       menu.screen.popup_label(mesg, mesg.size)
 
       # Redraw the submenu window.
-      menu.drawSubwin
+      menu.draw_subwin
       false
     end
 

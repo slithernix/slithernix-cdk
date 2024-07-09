@@ -1,5 +1,15 @@
 SlitherNix CDK TODO List (You can find the original Tawny list below)
 
+* Marquee example can't be exited cleanly
+
+  exit on q
+
+* MEntry doesn't work right anymore
+
+  Backspace doesn't delete chars. it does reposition the cursor, which
+  can be seen because if you type 'abcd' and hit backspace a couple times
+  and type any letter it'll appear in the middle.
+
 * Viewer doesn't exit cleanly on escpae
 
 * Viewer widget scrolls too far
