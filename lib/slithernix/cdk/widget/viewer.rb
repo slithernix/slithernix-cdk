@@ -9,8 +9,7 @@ module Slithernix
         DOWN = 0
         UP = 1
 
-        def initialize(cdkscreen, xplace, yplace, height, width, buttons,
-                       button_count, button_highlight, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, height, width, buttons, button_count, button_highlight, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -27,11 +26,10 @@ module Slithernix
             '$' => Curses::KEY_END
           }
 
-          bindings[Slithernix::Cdk::FORCHAR] = Curses::KEY_NPAGE,
-                                               bindings[Slithernix::Cdk::BACKCHAR] =
-                                                 Curses::KEY_PPAGE,
+          bindings[Slithernix::Cdk::FORCHAR] = Curses::KEY_NPAGE
+          bindings[Slithernix::Cdk::BACKCHAR] = Curses::KEY_PPAGE
 
-                                               set_box(box)
+          set_box(box)
 
           box_height = Slithernix::Cdk.set_widget_dimension(
             parent_height,
@@ -62,7 +60,7 @@ module Slithernix
           @win = Curses::Window.new(box_height, box_width, ypos, xpos)
           if @win.nil?
             destroy
-            return nil
+            raise StandardError, "error creating window"
           end
 
           # Turn the keypad on for the viewer.
@@ -136,13 +134,12 @@ module Slithernix
         end
 
         # This function sets various attributes of the widget.
-        def set(title, list, list_size, button_highlight, attr_interp,
-                show_line_info, box)
+        def set(title, list, list_size, button_highlight, attr_interp, show_line_info, box)
           set_title(title)
-          setHighlight(button_highlight)
-          setInfoLine(show_line_info)
+          set_highlight(button_highlight)
+          set_info_line(show_line_info)
           set_box(box)
-          setInfo(list, list_size, attr_interp)
+          set_info(list, list_size, attr_interp)
         end
 
         # This sets the title of the viewer. (A nil title is allowed.
@@ -155,11 +152,11 @@ module Slithernix
           @view_size = @box_height - (@title_lines + 1) - 2
         end
 
-        def getTitle
+        def get_title
           @title
         end
 
-        def setupLine(interpret, list, x)
+        def setup_line(interpret, list, x)
           # Did they ask for attribute interpretation?
           if interpret
             list_len = []
@@ -199,12 +196,12 @@ module Slithernix
           @widest_line = [@widest_line, @list_len[x]].max
         end
 
-        def freeLine(x)
+        def free_line(x)
           @list[x] = String.new if x < @list_size
         end
 
         # This function sets the contents of the viewer.
-        def setInfo(list, list_size, interpret)
+        def set_info(list, list_size, interpret)
           current_line = 0
           viewer_size = list_size
 
@@ -226,7 +223,7 @@ module Slithernix
           # Clean out the old viewer info. (if there is any)
           @in_progress = true
           clean
-          createList(viewer_size)
+          create_list(viewer_size)
 
           # Keep some semi-permanent info
           @interpret = interpret
@@ -255,7 +252,7 @@ module Slithernix
                   bw_msg = '<C></K>Link Failed: Could not open the file %s'
                   fopen_fmt = Curses.has_colors? ? color_msg : bw_msg
                   temp = fopen_fmt % filename
-                  setupLine(true, temp, current_line)
+                  setup_line(true, temp, current_line)
                   current_line += 1
                 else
                   # For each line read, copy it into the viewer.
@@ -263,13 +260,13 @@ module Slithernix
                   (0...file_len).each do |file_line|
                     break if current_line >= viewer_size
 
-                    setupLine(false, file_contents[file_line], current_line)
+                    setup_line(false, file_contents[file_line], current_line)
                     @characters += @list_len[current_line]
                     current_line += 1
                   end
                 end
               elsif current_line < viewer_size
-                setupLine(@interpret, list[x], current_line)
+                setup_line(@interpret, list[x], current_line)
                 @characters += @list_len[current_line]
                 current_line += 1
               end
@@ -296,26 +293,26 @@ module Slithernix
           @list_size
         end
 
-        def getInfo(size)
+        def get_info(size)
           size << @list_size
           @list
         end
 
         # This function sets the highlight type of the buttons.
-        def setHighlight(button_highlight)
+        def set_highlight(button_highlight)
           @button_highlight = button_highlight
         end
 
-        def getHighlight
+        def get_highlight
           @button_highlight
         end
 
-        # This sets whether or not you wnat to set the viewer info line.
-        def setInfoLine(show_line_info)
+        # This sets whether or not you want to set the viewer info line.
+        def set_info_line(show_line_info)
           @show_line_info = show_line_info
         end
 
-        def getInfoLine
+        def get_info_line
           @show_line_info
         end
 
@@ -323,7 +320,7 @@ module Slithernix
         def clean
           # Clean up the memory used...
           (0...@list_size).each do |x|
-            freeLine(x)
+            free_line(x)
           end
 
           # Reset some variables.
@@ -337,11 +334,11 @@ module Slithernix
           draw(@box)
         end
 
-        def PatternNotFound(pattern)
+        def pattern_not_found(pattern)
           temp_info = [
             "</U/5>Pattern '%s' not found.<!U!5>" % pattern,
           ]
-          popUpLabel(temp_info)
+          pop_up_label(temp_info)
         end
 
         # This function actually controls the viewer...
@@ -380,7 +377,7 @@ module Slithernix
                   end
 
                   # Redraw the buttons.
-                  drawButtons
+                  draw_buttons
                 end
               when Slithernix::Cdk::PREV
                 if @button_count > 1
@@ -391,7 +388,7 @@ module Slithernix
                   end
 
                   # Redraw the buttons.
-                  drawButtons
+                  draw_buttons
                 end
               when Curses::KEY_UP
                 if @current_top.positive?
@@ -473,36 +470,36 @@ module Slithernix
                 end
               when '?'
                 @search_direction = Slithernix::Cdk::Widget::Viewer::UP
-                getAndStorePattern(@screen)
-                unless searchForWord(@search_pattern, @search_direction)
-                  self.PatternNotFound(@search_pattern)
+                get_and_store_pattern(@screen)
+                unless search_for_word(@search_pattern, @search_direction)
+                  self.pattern_not_found(@search_pattern)
                 end
                 refresh = true
               when '/'
                 @search_direction = Slithernix::Cdk::Widget::Viewer :DOWN
-                getAndStorePattern(@screen)
-                unless searchForWord(@search_pattern, @search_direction)
-                  self.PatternNotFound(@search_pattern)
+                get_and_store_pattern(@screen)
+                unless search_for_word(@search_pattern, @search_direction)
+                  self.pattern_not_found(@search_pattern)
                 end
                 refresh = true
               when 'N', 'n'
                 if @search_pattern == ''
                   temp_info[0] = '</5>There is no pattern in the buffer.<!5>'
-                  popUpLabel(temp_info)
-                elsif !searchForWord(@search_pattern,
+                  pop_up_label(temp_info)
+                elsif !search_for_word(@search_pattern,
                                      if input == 'n'
                                      then @search_direction
                                      else
                                        1 - @search_direction
                                      end)
-                  self.PatternNotFound(@search_pattern)
+                  self.pattern_not_found(@search_pattern)
                 end
                 refresh = true
               when ':'
-                @current_top = jumpToLine
+                @current_top = jump_to_line
                 refresh = true
               when 'i', 's', 'S'
-                popUpLabel(file_info)
+                pop_up_label(file_info)
                 refresh = true
               when Slithernix::Cdk::KEY_ESC, Curses::Error
                 set_exit_type(input)
@@ -518,12 +515,12 @@ module Slithernix
               end
             end
 
-            drawInfo if refresh
+            draw_info if refresh
           end
         end
 
         # This searches the document looking for the given word.
-        def getAndStorePattern(screen)
+        def get_and_store_pattern(screen)
           # Not sure why this temp business is here. Perhaps is
           # supposed to be used when searching?
           # temp = '</5>Search Down: <!5>'
@@ -570,7 +567,7 @@ module Slithernix
 
         # This searches for a line containing the word and realigns the value on
         # the screen.
-        def searchForWord(pattern, direction)
+        def search_for_word(pattern, direction)
           found = false
 
           # If the pattern is empty then return.
@@ -625,7 +622,7 @@ module Slithernix
         end
 
         # This allows us to 'jump' to a given line in the file.
-        def jumpToLine
+        def jump_to_line
           newline = Slithernix::Cdk::Scale.new(
             @screen,
             Slithernix::Cdk::CENTER,
@@ -648,7 +645,7 @@ module Slithernix
         end
 
         # This pops a little message up on the screen.
-        def popUpLabel(mesg)
+        def pop_up_label(mesg)
           # Set up variables.
           label = Slithernix::Cdk::Label.new(
             @screen,
@@ -684,11 +681,11 @@ module Slithernix
           end
 
           # Draw the info in the viewer.
-          drawInfo
+          draw_info
         end
 
         # This redraws the viewer buttons.
-        def drawButtons
+        def draw_buttons
           # No buttons, no drawing
           return if @button_count.zero?
 
@@ -723,11 +720,11 @@ module Slithernix
         end
 
         # This sets the background attribute of the widget.
-        def setBKattr(attrib)
+        def set_background_attr(attrib)
           @win.wbkgd(attrib)
         end
 
-        def destroyInfo
+        def destroy_info
           @list = []
           @list_pos = []
           @list_len = []
@@ -735,7 +732,7 @@ module Slithernix
 
         # This function destroys the viewer widget.
         def destroy
-          destroyInfo
+          destroy_info
 
           clean_title
 
@@ -759,7 +756,7 @@ module Slithernix
         end
 
         # This draws the viewer info lines.
-        def drawInfo
+        def draw_info
           temp = String.new
 
           # Clear the window.
@@ -850,14 +847,14 @@ module Slithernix
             )
           end
 
-          drawButtons
+          draw_buttons
         end
 
         # The list_size may be negative, to assign no definite limit.
-        def createList(list_size)
+        def create_list(list_size)
           status = false
 
-          destroyInfo
+          destroy_info
 
           if list_size >= 0
             status = true

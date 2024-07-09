@@ -6,8 +6,7 @@ module Slithernix
   module Cdk
     class Widget
       class Template < Slithernix::Cdk::Widget
-        def initialize(cdkscreen, xplace, yplace, title, label, plate,
-                       overlay, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, title, label, plate, overlay, box, shadow)
           super()
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
@@ -76,10 +75,9 @@ module Slithernix
           # Make the template window
           @win = Curses::Window.new(box_height, box_width, ypos, xpos)
 
-          # Is the template window nil?
           if @win.nil?
             destroy
-            return nil
+            raise StandardError, "could not create template window"
           end
           @win.keypad(true)
 
@@ -175,9 +173,9 @@ module Slithernix
               end
 
               if change
-                if validTemplate(test)
+                if valid_template(test)
                   @info = test
-                  drawField
+                  draw_field
                 else
                   failed = true
                 end
@@ -191,11 +189,10 @@ module Slithernix
               @plate_pos += amount
               @screen_pos += amount
 
-              adjustCursor(amount)
+              adjust_cursor(amount)
             end
           end
 
-          # Do we need to create a shadow?
           if shadow
             @shadow_win = Curses::Window.new(
               box_height,
@@ -208,7 +205,7 @@ module Slithernix
           cdkscreen.register(:Template, self)
         end
 
-        # This actually manages the tempalte widget
+        # This actually manages the template widget
         def activate(actions)
           draw(@box)
 
@@ -242,12 +239,16 @@ module Slithernix
           set_exit_type(0)
 
           # Move the cursor.
-          drawField
+          draw_field
 
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
-            pp_return = @pre_process_func.call(:Template, self,
-                                               @pre_process_data, input)
+            pp_return = @pre_process_func.call(
+              :Template,
+              self,
+              @pre_process_data,
+              input,
+            )
           end
 
           # Should we continue?
@@ -260,13 +261,13 @@ module Slithernix
               when Slithernix::Cdk::ERASE
                 if @info.size.positive?
                   clean
-                  drawField
+                  draw_field
                 end
               when Slithernix::Cdk::CUT
                 if @info.size.positive?
                   @@g_paste_buffer = @info.clone
                   clean
-                  drawField
+                  draw_field
                 else
                   Slithernix::Cdk.beep
                 end
@@ -284,7 +285,7 @@ module Slithernix
                   (0...@@g_paste_buffer.size).each do |x|
                     @callbackfn.call(self, @@g_paste_buffer[x])
                   end
-                  drawField
+                  draw_field
                 else
                   Slithernix::Cdk.beep
                 end
@@ -296,10 +297,7 @@ module Slithernix
                   ret = @info
                   complete = true
                 end
-              when Slithernix::Cdk::KEY_ESC
-                set_exit_type(input)
-                complete = true
-              when Curses::Error
+              when Slithernix::Cdk::KEY_ESC, Curses::Error
                 set_exit_type(input)
                 complete = true
               when Slithernix::Cdk::REFRESH
@@ -327,12 +325,12 @@ module Slithernix
           ret
         end
 
-        def validTemplate(input)
+        def valid_template(input)
           pp = 0
           ip = 0
           while ip < input.size && pp < @plate.size
             newchar = input[ip]
-            while pp < @plate.size && !Slithernix::Cdk::Widget::Template.isPlateChar(@plate[pp])
+            while pp < @plate.size && !Slithernix::Cdk::Widget::Template.is_plate_char?(@plate[pp])
               pp += 1
             end
             return false if pp == @plate.size
@@ -367,7 +365,7 @@ module Slithernix
           if @info.size.positive?
             mixed_string = String.new
             while plate_pos < @plate_len && info_pos < @info.size
-              mixed_string << if Slithernix::Cdk::Widget::Template.isPlateChar(@plate[plate_pos])
+              mixed_string << if Slithernix::Cdk::Widget::Template.is_plate_char?(@plate[plate_pos])
                               then info_pos += 1
                                    @info[info_pos - 1]
                               else
@@ -386,7 +384,7 @@ module Slithernix
           unmixed_string = String.new
 
           while pos < @info.size
-            if Slithernix::Cdk::Widget::Template.isPlateChar(@plate[pos])
+            if Slithernix::Cdk::Widget::Template.is_plate_char?(@plate[pos])
               unmixed_string << info[pos]
             end
             pos += 1
@@ -419,31 +417,45 @@ module Slithernix
 
           @win.refresh
 
-          drawField
+          draw_field
         end
 
         # Draw the template field
-        def drawField
+        def draw_field
           field_color = 0
 
           # Draw in the label and the template widget.
           unless @label_win.nil?
-            Slithernix::Cdk::Draw.write_chtype(@label_win, 0, 0, @label, Slithernix::Cdk::HORIZONTAL,
-                                               0, @label_len)
+            Slithernix::Cdk::Draw.write_chtype(
+              @label_win,
+              0,
+              0,
+              @label,
+              Slithernix::Cdk::HORIZONTAL,
+              0,
+              @label_len,
+            )
             @label_win.refresh
           end
 
           # Draw in the template
           if @overlay.size.positive?
-            Slithernix::Cdk::Draw.write_chtype(@field_win, 0, 0, @overlay, Slithernix::Cdk::HORIZONTAL,
-                                               0, @overlay_len)
+            Slithernix::Cdk::Draw.write_chtype(
+              @field_win,
+              0,
+              0,
+              @overlay,
+              Slithernix::Cdk::HORIZONTAL,
+              0,
+              @overlay_len,
+            )
           end
 
           # Adjust the cursor.
           if @info.size.positive?
             pos = 0
             (0...[@field_width, @plate.size].min).each do |x|
-              unless Slithernix::Cdk::Widget::Template.isPlateChar(@plate[x]) && pos < @info.size
+              unless Slithernix::Cdk::Widget::Template.is_plate_char?(@plate[x]) && pos < @info.size
                 next
               end
 
@@ -453,15 +465,15 @@ module Slithernix
             end
             # @field_win.move(0, @screen_pos)
           else
-            adjustCursor(1)
+            adjust_cursor(1)
           end
           @field_win.refresh
         end
 
         # Adjust the cursor for the template
-        def adjustCursor(direction)
+        def adjust_cursor(direction)
           while @plate_pos < [@field_width, @plate.size].min &&
-                !Slithernix::Cdk::Widget::Template.isPlateChar(@plate[@plate_pos])
+                !Slithernix::Cdk::Widget::Template.is_plate_char?(@plate[@plate_pos])
             @plate_pos += direction
             @screen_pos += direction
           end
@@ -470,7 +482,7 @@ module Slithernix
         end
 
         # Set the background attribute of the widget.
-        def setBKattr(attrib)
+        def set_background_attr(attrib)
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
           @label_win&.wbkgd(attrib)
@@ -504,12 +516,12 @@ module Slithernix
 
         # Set the value given to the template
         def set(new_value, box)
-          setValue(new_value)
+          set_value(new_value)
           set_box(box)
         end
 
         # Set the value given to the template.
-        def setValue(new_value)
+        def set_value(new_value)
           # Just to be sure, let's make sure the new value isn't nil
           if new_value.nil?
             clean
@@ -527,16 +539,16 @@ module Slithernix
           end
         end
 
-        def getValue
+        def get_value
           @info
         end
 
         # Set the minimum number of characters to enter into the widget.
-        def setMin(min)
+        def set_min(min)
           @min = min if min >= 0
         end
 
-        def getMin
+        def get_min
           @min
         end
 
@@ -549,7 +561,7 @@ module Slithernix
         end
 
         # Set the callback function for the widget.
-        def setCB(callback)
+        def set_callback(callback)
           @callbackfn = callback
         end
 
@@ -561,7 +573,7 @@ module Slithernix
           draw(@box)
         end
 
-        def self.isPlateChar(c)
+        def self.is_plate_char?(c)
           '#ACcMXz'.include?(c.chr)
         end
 
