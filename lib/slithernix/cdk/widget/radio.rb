@@ -297,7 +297,7 @@ module Slithernix
             xpos = self.screen_xpos(0)
             ypos = self.screen_ypos(j)
 
-            screen_pos = self.screen_pos(k, scrollbar_adj)
+            screen_pos = self.screen_position(k, scrollbar_adj)
 
             # Draw the empty string.
             Slithernix::Cdk::Draw.write_blanks(
@@ -335,7 +335,7 @@ module Slithernix
           if @has_focus
             k = @current_item
             if k < @list_size
-              screen_pos = self.screen_pos(k, scrollbar_adj)
+              screen_pos = self.screen_position(k, scrollbar_adj)
               ypos = self.screen_ypos(@current_high)
 
               Slithernix::Cdk::Draw.write_chtype_attrib(
@@ -572,7 +572,7 @@ module Slithernix
           @max_left_char + self.available_width
         end
 
-        def screen_pos(n, scrollbar_adj)
+        def screen_position(n, scrollbar_adj)
           @item_pos[n] - @left_char + scrollbar_adj + @border_size
         end
       end
