@@ -8,6 +8,7 @@ module Slithernix
       class Template < Slithernix::Cdk::Widget
         def initialize(cdkscreen, xplace, yplace, title, label, plate, overlay, box, shadow)
           super()
+          Curses.curs_set(1)
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
           box_height = box ? 3 : 1
@@ -463,7 +464,7 @@ module Slithernix
               @field_win.mvwaddch(0, x, @info[pos].ord | field_color)
               pos += 1
             end
-            # @field_win.move(0, @screen_pos)
+            @field_win.setpos(0, @screen_pos)
           else
             adjust_cursor(1)
           end
@@ -477,7 +478,7 @@ module Slithernix
             @plate_pos += direction
             @screen_pos += direction
           end
-          # @field_win.move(0, @screen_pos)
+          @field_win.setpos(0, @screen_pos)
           @field_win.refresh
         end
 

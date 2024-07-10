@@ -19,9 +19,9 @@ module Slithernix
           @button_pos = []
           @column_widths = []
 
-          if button_count <= 0
+          unless button_count.positive?
             destroy
-            return nil
+            raise ArgumentError, "button_count must be a positive integer"
           end
 
           set_box(box)
@@ -318,10 +318,9 @@ module Slithernix
             end
           end
 
-          # This seems to just cause the window display to be all messed up
-          # if cur_row >= 0 && cur_col >= 0
-          #  @win.move(cur_row, cur_col)
-          # end
+          if cur_row >= 0 && cur_col >= 0
+            @win.setpos(cur_row, cur_col)
+          end
           @win.refresh
         end
 

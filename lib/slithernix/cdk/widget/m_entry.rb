@@ -169,8 +169,7 @@ module Slithernix
                   mentry.top_row += 1
                   mentry.draw_field
                 end
-                # REMEMBER THIS, this line causes a widget to appear in the top left
-                # mentry.field_win.move(mentry.current_row, mentry.current_col)
+                mentry.field_win.setpos(mentry.current_row, mentry.current_col)
                 mentry.field_win.refresh
               end
             end
@@ -430,7 +429,7 @@ module Slithernix
               if redraw
                 draw_field
               elsif moved
-                # @field_win.move(@current_row, @current_col)
+                @field_win.setpos(@current_row, @current_col)
                 @field_win.refresh
               end
             end
@@ -486,7 +485,7 @@ module Slithernix
           end
 
           # Refresh the screen.
-          # @field_win.move(@current_row, @current_col)
+          @field_win.setpos(@current_row, @current_col)
           @field_win.refresh
         end
 
@@ -622,7 +621,7 @@ module Slithernix
         end
 
         def focus
-          # @field_win.move(0, @current_col)
+          @field_win.setpos(0, @current_col)
           @field_win.refresh
         end
 

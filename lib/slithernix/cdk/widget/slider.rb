@@ -196,10 +196,11 @@ module Slithernix
         end
 
         # Move the cursor to the given edit-position.
-        def move_to_edit_position(_new_position)
-          # return @field_win.move(0,
-          #    @field_width + self.formatted_size(@current) - new_position)
-          @field_win
+        def move_to_edit_position(new_position)
+          @field_win.setpos(
+            0,
+            @field_width + self.formatted_size(@current) - new_position,
+          )
         end
 
         # Check if the cursor is on a valid edit-position. This must be one of

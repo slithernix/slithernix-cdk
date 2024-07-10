@@ -736,12 +736,10 @@ module Slithernix
       end
     end
 
-    # wtf? --snake
     def self.digit?(character)
       !character.match(/^[[:digit:]]$/).nil?
     end
 
-    # again, wtf? --snake
     def self.alpha?(character)
       !character.match(/^[[:alpha:]]$/).nil?
     end

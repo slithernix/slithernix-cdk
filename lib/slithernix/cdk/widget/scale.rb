@@ -192,9 +192,8 @@ module Slithernix
         # Move the cursor to the given edit-position
         # Once again, I cannot figure out why this move method is called
         # and removing the call fixes the widget.
-        def move_to_edit_position(_new_position)
-          # return @field_win.move(0, @field_width - new_position - 1)
-          # return @field_win.move(24, @field_width - new_position - 1)
+        def move_to_edit_position(new_position)
+          @field_win.setpos(0, @field_width - new_position - 1)
           @field_win
         end
 
