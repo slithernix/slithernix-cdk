@@ -16,6 +16,7 @@ module Slithernix
 
         def initialize(cdkscreen, xplace, yplace, rows, cols, vrows, vcols, title, rowtitles, coltitles, colwidths, colvalues, rspace, cspace, filler, dominant, box, box_cell, shadow)
           super()
+          Curses.curs_set(1)
           parent_width = cdkscreen.window.maxx
           parent_height = cdkscreen.window.maxy
           box_width = 0
@@ -157,8 +158,11 @@ module Slithernix
             end
             coltitle_len = []
             coltitle_pos = []
-            @coltitle[x] = Slithernix::Cdk.char_to_chtype(coltitles[x] || '',
-                                                          coltitle_len, coltitle_pos)
+            @coltitle[x] = Slithernix::Cdk.char_to_chtype(
+              coltitles[x] || '',
+              coltitle_len,
+              coltitle_pos,
+            )
             @coltitle_len[x] = coltitle_len[0]
             @coltitle_pos[x] = @border_size + Slithernix::Cdk.justify_string(
               colwidths[x],

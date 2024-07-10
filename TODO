@@ -1,5 +1,7 @@
 SlitherNix CDK TODO List (You can find the original Tawny list below)
 
+* Scroll/Selection should be able to re-start at beginning if scrolled to end
+
 * Marquee example can't be exited cleanly
 
   exit on q
@@ -52,10 +54,10 @@ SlitherNix CDK TODO List (You can find the original Tawny list below)
                        ^^^^^^^
     from ./command.rb:278:in `<main>'
 
-* Appointment Demo doesn't really do anything
+* Appointment Demo needs a key thing
 
-  I assume this thing should pop up widgets to take down appointment
-  information.
+  It's operated by various keystrokes and there is no indication on the screen
+  as to what they are, you are just supposed to know.
 
 * Graph widget a little off
 

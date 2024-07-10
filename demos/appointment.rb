@@ -212,7 +212,7 @@ class Appointment
 
       # Get the description.
       description = entry.activate([])
-      if description.zero?
+      if description&.size&.zero?
         entry.destroy
         calendar.draw(calendar.box)
         return false
