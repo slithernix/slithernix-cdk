@@ -146,10 +146,10 @@ module Slithernix
         # Put the cursor on the currently-selected item.
         def fix_cursor_position
           @scrollbar_placement == Slithernix::Cdk::LEFT ? 1 : 0
-          self.screen_ypos(@current_item - @current_top)
-          self.screen_xpos(0)
+          ypos = self.screen_ypos(@current_item - @current_top)
+          xpos = self.screen_xpos(0)
 
-          # @input_window.move(ypos, xpos)
+          @input_window.setpos(ypos, xpos)
           @input_window.refresh
         end
 

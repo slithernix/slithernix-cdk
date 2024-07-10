@@ -221,7 +221,7 @@ module Slithernix
           set_exit_type(0)
 
           # Refresh the widget field. This seems useless?
-          # self.draw_field
+          #self.draw_field
 
           unless @pre_process_func.nil?
             pp_return = @pre_process_func.call(
@@ -268,7 +268,7 @@ module Slithernix
                   draw_field
                 else
                   @screen_col -= 1
-                  # @field_win.move(0, @screen_col)
+                  @field_win.setpos(0, @screen_col)
                 end
               when Curses::KEY_RIGHT
                 if curr_pos >= @info.size
@@ -280,7 +280,7 @@ module Slithernix
                 else
                   # Move right.
                   @screen_col += 1
-                  # @field_win.move(0, @screen_col)
+                  @field_win.setpos(0, @screen_col)
                 end
               when Curses::KEY_BACKSPACE, Curses::KEY_DC
                 if @disp_type == :VIEWONLY
@@ -454,7 +454,7 @@ module Slithernix
                 )
               end
             end
-            # @field_win.move(0, @screen_col)
+            @field_win.setpos(0, @screen_col)
           end
 
           # This makes sure the cursor is at the beginning of the entry field
@@ -571,7 +571,7 @@ module Slithernix
         end
 
         def focus
-          # @field_win.move(0, @screen_col)
+          @field_win.setpos(0, @screen_col)
           @field_win.refresh
         end
 
