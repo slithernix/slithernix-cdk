@@ -9,8 +9,7 @@ module Slithernix
         attr_accessor :info, :left_char, :screen_col
         attr_reader :win, :box_height, :box_width, :max, :field_width, :min
 
-        def initialize(cdkscreen, xplace, yplace, title, label, field_attr,
-                       filler, disp_type, f_width, min, max, box, shadow)
+        def initialize(cdkscreen, xplace, yplace, title, label, field_attr, filler, disp_type, f_width, min, max, box, shadow)
           super()
           Curses.curs_set(1)
           parent_width = cdkscreen.window.maxx
@@ -51,14 +50,16 @@ module Slithernix
           box_height += @title_lines
 
           # Make sure we didn't extend beyond the dimensinos of the window.
-          box_width = [box_width, parent_width].min
-          box_height = [box_height, parent_height].min
-          field_width = [field_width,
-                         box_width - @label_len - (2 * @border_size)].min
+          box_width = [ box_width, parent_width ].min
+          box_height = [ box_height, parent_height ].min
+          field_width = [
+            field_width,
+            box_width - @label_len - (2 * @border_size),
+          ].min
 
           # Rejustify the x and y positions if we need to.
-          xtmp = [xpos]
-          ytmp = [ypos]
+          xtmp = [ xpos ]
+          ytmp = [ ypos ]
           Slithernix::Cdk.alignxy(
             cdkscreen.window,
             xtmp,
@@ -311,9 +312,6 @@ module Slithernix
                     Slithernix::Cdk.beep
                   end
                 end
-              when Slithernix::Cdk::KEY_ESC
-                set_exit_type(input)
-                complete = true
               when Slithernix::Cdk::ERASE
                 unless @info.empty?
                   clean
@@ -348,7 +346,7 @@ module Slithernix
                 else
                   Slithernix::Cdk.beep
                 end
-              when Curses::Error
+              when Slithernix::Cdk::KEY_ESC, Curses::Error
                 set_exit_type(input)
                 complete = true
               when Slithernix::Cdk::REFRESH
@@ -417,8 +415,15 @@ module Slithernix
 
           # Draw in the label to the widget.
           unless @label_win.nil?
-            Slithernix::Cdk::Draw.write_chtype(@label_win, 0, 0, @label, Slithernix::Cdk::HORIZONTAL, 0,
-                                               @label_len)
+            Slithernix::Cdk::Draw.write_chtype(
+              @label_win,
+              0,
+              0,
+              @label,
+              Slithernix::Cdk::HORIZONTAL,
+              0,
+              @label_len,
+            )
             @label_win.refresh
           end
 
@@ -434,15 +439,28 @@ module Slithernix
             # Redraw the field.
             if Slithernix::Cdk::Display.is_hidden_display_type?(@disp_type)
               (@left_char...@info.size).each do |x|
-                @field_win.mvwaddch(0, x - @left_char, @hidden)
+                @field_win.mvwaddch(
+                  0,
+                  x - @left_char,
+                  @hidden,
+                )
               end
             else
               (@left_char...@info.size).each do |x|
-                @field_win.mvwaddch(0, x - @left_char,
-                                    @info[x].ord | @field_attr)
+                @field_win.mvwaddch(
+                  0,
+                  x - @left_char,
+                  @info[x].ord | @field_attr,
+                )
               end
             end
             # @field_win.move(0, @screen_col)
+          end
+
+          # This makes sure the cursor is at the beginning of the entry field
+          # when nothing is in the buffer.
+          if @info&.size&.zero?
+            @field_win.setpos(0,0)
           end
 
           @field_win.refresh
@@ -534,14 +552,12 @@ module Slithernix
           @hidden
         end
 
-        # This sets the background attribute of the widget.
         def set_background_attr(attrib)
           @win.wbkgd(attrib)
           @field_win.wbkgd(attrib)
           @label_win&.wbkgd(attrib)
         end
 
-        # This sets the attribute of the entry field.
         def set_highlight(highlight, cursor)
           @field_win.wbkgd(highlight)
           @field_attr = highlight

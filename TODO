@@ -1,5 +1,10 @@
 SlitherNix CDK TODO List (You can find the original Tawny list below)
 
+* Entry widget doesn't properly display @info when you go beyond its width
+
+  Simply enter a string longer than the width then start using backspace
+  to delete it, once you go back to the left, it won't display.
+
 * Marquee example can't be exited cleanly
 
   exit on q

@@ -18,13 +18,13 @@ end
 
 Curses.ESCDELAY = 0
 
-# trace = TracePoint.new(:call) do |tp|
-#  File.open('/tmp/execution_trace.log', 'a') do |f|
-#    f.puts "Called method '#{tp.method_id}' at #{tp.path}:#{tp.lineno}"
-#  end
+#trace = TracePoint.new(:call) do |tp|
+# File.open('/tmp/execution_trace.log', 'a') do |f|
+#   f.puts "Called method '#{tp.method_id}' at #{tp.path}:#{tp.lineno}"
 # end
-
-# trace.enable
+#end
+#
+#trace.enable
 
 module Slithernix
   module Cdk
