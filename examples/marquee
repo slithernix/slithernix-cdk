@@ -74,8 +74,6 @@ class MarqueeExample < Example
 
   # This program demonstrates the Cdk marquee widget.
   def self.main
-    # Declare variables.
-
     params = parse(ARGV)
 
     if params.start_attr.size.positive?
@@ -90,18 +88,22 @@ class MarqueeExample < Example
     # Set up CDK colors
     Slithernix::Cdk::Draw.init_color
 
-    scroll_message = Slithernix::Cdk::Widget::Marquee.new(cdkscreen,
-                                                          params.x_value, params.y_value, params.width,
-                                                          params.box, params.shadow)
+    scroll_message = Slithernix::Cdk::Widget::Marquee.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value,
+      params.width,
+      params.box,
+      params.shadow
+    )
 
     # Check if the marquee is nil.
     if scroll_message.nil?
-      # Exit Slithernix::Cdk.
       cdkscreen.destroy
       Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot create the marquee window.  Is the window too small?'
-      exit # EXIT_FAILURE
+      exit
     end
 
     # Draw the CDK screen.
@@ -112,28 +114,28 @@ class MarqueeExample < Example
       # Get the current time
       current_time = Time.new.ctime
 
-      message = if params.start_attr.size.positive?
-                  format('%s%s%s (This Space For Rent) ', params.start_attr,
-                         current_time, params.end_attr)
-                else
-                  format('%s (This Space For Rent)', current_time)
-                end
+      message = format('%s (This Space For Rent)', current_time)
+      if params.start_attr.size.positive?
+        format(
+          '%s%s%s (This Space For Rent) ',
+          params.start_attr,
+          current_time,
+          params.end_attr,
+        )
+      end
     elsif params.start_attr.size.positive?
       message = format('%s%s%s ', params.start_attr, mesg, params.end_attr)
     else
       message = format('%s ', params.message)
     end
 
-    # Run the marquee.
     scroll_message.activate(message, params.delay, params.repeat_count, true)
     scroll_message.activate(message, params.delay, params.repeat_count, false)
     scroll_message.activate(message, params.delay, params.repeat_count, true)
 
-    # Clean up.
-    scroll_message.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.end_cdk
-    exit # EXIT_SUCCESS
+    exit
   end
 end
 

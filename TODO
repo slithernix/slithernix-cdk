@@ -6,12 +6,6 @@ SlitherNix CDK TODO List (You can find the original Tawny list below)
 
   exit on q
 
-* MEntry doesn't work right anymore
-
-  Backspace doesn't delete chars. it does reposition the cursor, which
-  can be seen because if you type 'abcd' and hit backspace a couple times
-  and type any letter it'll appear in the middle.
-
 * Viewer doesn't exit cleanly on escpae
 
 * Viewer widget scrolls too far
@@ -32,10 +26,6 @@ SlitherNix CDK TODO List (You can find the original Tawny list below)
   Basically what it says, the listing of the group box says stays small
 
 * Traverse example can't be exited cleanly
-
-* Subwindow example broken
-
-  Top of the box not working,
 
 * GNU Readline integration for entry
 
@@ -71,11 +61,6 @@ SlitherNix CDK TODO List (You can find the original Tawny list below)
                                         ^^^^^^
   Did you mean?  times
     from ./calendar_ex.rb:139:in `<main>'
-
-* Fix matrix widget
-
-  This is supposed to show entry widgets in each column like a spreadsheet,
-  but it shows the entry widget on the top left outside the matrix.
 
 
 * Aesthetics

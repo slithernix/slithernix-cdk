@@ -54,8 +54,14 @@ class MatrixExample < Example
 
     coltitle = []
     unless params.cancel_col
-      coltitle = ['', '</B/5>Course', '</B/33>Lec 1', '</B/33>Lec 2',
-                  '</B/33>Lec 3', '</B/7>Flag']
+      coltitle = [
+        '',
+        '</B/5>Course',
+        '</B/33>Lec 1',
+        '</B/33>Lec 2',
+        '</B/33>Lec 3',
+        '</B/7>Flag',
+      ]
     end
     colwidth = [0, 7, 7, 7, 7, 1]
     colvalue = %i[UMIXED UMIXED UMIXED UMIXED UMIXED UMIXED]
@@ -92,12 +98,11 @@ class MatrixExample < Example
     )
 
     if course_list.nil?
-      # Exit CDK.
       cdkscreen.destroy
       Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot create the matrix widget. Is the window too small?'
-      exit # EXIT_FAILURE
+      exit
     end
 
     # Activate the matrix
@@ -128,7 +133,6 @@ class MatrixExample < Example
     course_list.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.end_cdk
-    # ExitProgram (EXIT_SUCCESS);
   end
 end
 

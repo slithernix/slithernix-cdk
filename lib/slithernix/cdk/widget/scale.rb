@@ -257,7 +257,7 @@ module Slithernix
           temp = String.new
           col = need - @field_edit - 1
 
-          @field_win.move(0, base)
+          @field_win.setpos(0, base)
           @field_win.winnstr(temp, need)
           temp << ' '
           if Slithernix::Cdk.is_char?(input) # Replace the char at the cursor

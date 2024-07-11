@@ -257,7 +257,7 @@ module Slithernix
             elsif charcount == matrix.colwidths[matrix.col]
               Slithernix::Cdk.beep
             else
-              matrix.current_cell.move(
+              matrix.current_cell.setpos(
                 1,
                 matrix.info[matrix.row][matrix.col].size + 1,
               )
@@ -347,9 +347,9 @@ module Slithernix
 
           # Move the cursor to the correct position within the cell.
           if @colwidths[@ccol] == 1
-            self.current_cell.move(1, 1)
+            self.current_cell.setpos(1, 1)
           else
-            self.current_cell.move(1, @info[@row][@col].size + 1)
+            self.current_cell.setpos(1, @info[@row][@col].size + 1)
           end
 
           # Put the focus on the current cell.
@@ -598,9 +598,9 @@ module Slithernix
               # Move to the correct position in the cell.
               if refresh_cells || moved_cell
                 if @colwidths[@ccol] == 1
-                  self.current_cell.move(1, 1)
+                  self.current_cell.setpos(1, 1)
                 else
-                  self.current_cell.move(1, self.current_info.size + 1)
+                  self.current_cell.setpos(1, self.current_info.size + 1)
                 end
                 self.current_cell.refresh
               end
@@ -649,7 +649,7 @@ module Slithernix
                  end
             self.current_cell.mvwaddch(1, x, ch.ord | highlight)
           end
-          self.current_cell.move(1, infolen + 1)
+          self.current_cell.setpos(1, infolen + 1)
           self.current_cell.refresh
         end
 
@@ -700,7 +700,7 @@ module Slithernix
             @cell[row][col].mvwaddch(1, x, ch.ord | highlight)
           end
 
-          @cell[row][col].move(1, infolen + 1)
+          @cell[row][col].setpos(1, infolen + 1)
           @cell[row][col].refresh
 
           # Only draw the box iff the user asked for a box.

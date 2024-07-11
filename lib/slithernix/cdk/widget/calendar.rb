@@ -377,8 +377,15 @@ module Slithernix
                 else
                   marker |= get_marker(day, @month, year_index)
                 end
-                Slithernix::Cdk::Draw.write_char_attrib(@field_win, xpos, ypos, temp, marker,
-                                                        Slithernix::Cdk::HORIZONTAL, 0, 2)
+                Slithernix::Cdk::Draw.write_char_attrib(
+                  @field_win,
+                  xpos,
+                  ypos,
+                  temp,marker,
+                  Slithernix::Cdk::HORIZONTAL,
+                  0,
+                  2,
+                )
               end
               day += 1
             end
@@ -413,10 +420,10 @@ module Slithernix
               year_len
             )
 
-            @label_win.move(0, 0)
+            @label_win.setpos(0, 0)
             @label_win.refresh
           elsif save_y >= 0
-            @input_window.move(save_y, save_x)
+            @input_window.setpos(save_y, save_x)
             @input_window.refresh
           end
         end
@@ -535,8 +542,12 @@ module Slithernix
           if oldmarker.zero?
             set_calendar_cell(day, month, year_index, marker)
           else
-            set_calendar_cell(day, month, year_index,
-                              oldmarker | Curses::A_BLINK)
+            set_calendar_cell(
+              day,
+              month,
+              year_index,
+              oldmarker | Curses::A_BLINK,
+            )
           end
         end
 

@@ -19,7 +19,7 @@ module Slithernix
           set_box(box)
           if @win.nil?
             destroy
-            # return (0);
+            raise StandardError, "could not create curses window"
           end
 
           cdkscreen.register(:Marquee, self)

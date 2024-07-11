@@ -62,13 +62,21 @@ class CalendarExample < Example
     Slithernix::Cdk::Draw.init_color
 
     # Declare the calendar widget.
-    calendar = Slithernix::Cdk::Widget::Calendar.new(cdkscreen, params.x_value, params.y_value,
-                                                     params.title, params.day, params.month, params.year,
-                                                     Curses.color_pair(16) | Curses::A_BOLD,
-                                                     Curses.color_pair(24) | Curses::A_BOLD,
-                                                     Curses.color_pair(32) | Curses::A_BOLD,
-                                                     Curses.color_pair(40) | Curses::A_REVERSE,
-                                                     params.box, params.shadow)
+    calendar = Slithernix::Cdk::Widget::Calendar.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value,
+      params.title,
+      params.day,
+      params.month,
+      params.year,
+      Curses.color_pair(16) | Curses::A_BOLD,
+      Curses.color_pair(24) | Curses::A_BOLD,
+      Curses.color_pair(32) | Curses::A_BOLD,
+      Curses.color_pair(40) | Curses::A_REVERSE,
+      params.box,
+      params.shadow,
+    )
 
     if calendar.nil?
       # Exit CDK.
@@ -76,12 +84,12 @@ class CalendarExample < Example
       Slithernix::Cdk::Screen.end_cdk
 
       puts 'Cannot create the calendar. Is the window too small?'
-      exit # EXIT_FAILURE
+      exit
     end
 
     # This adds a marker ot the calendar.
     create_calendar_mark = lambda do |_widget_type, calendar, _client_data, _key|
-      calendar.set_marker(calendar.day, calendar.month, calendar.year)
+      calendar.set_marker(calendar.day, calendar.month, calendar.year, Curses::A_BLINK)
       calendar.draw(calendar.box)
       false
     end
