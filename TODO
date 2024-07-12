@@ -1,5 +1,13 @@
 SlitherNix CDK TODO List (You can find the original Tawny list below)
 
+* mentry broken when you go beyond the screen then hit home and end a couple times
+
+ /home/snake/work/src/git/github.com/slithernix/slithernix-cdk/lib/slithernix/cdk/widget/m_entry.rb:217:in `set_top_row': wrong number of arguments (given 2, expected 1) (ArgumentError)
+	from /home/snake/work/src/git/github.com/slithernix/slithernix-cdk/lib/slithernix/cdk/widget/m_entry.rb:304:in `inject'
+	from /home/snake/work/src/git/github.com/slithernix/slithernix-cdk/lib/slithernix/cdk/widget/m_entry.rb:202:in `activate'
+	from examples/mentry:83:in `main'
+	from examples/mentry:97:in `<main>'
+
 * Widgets do not scale
 
   Generating a scrolling list of 65k entries is insanely slow. Basically need
