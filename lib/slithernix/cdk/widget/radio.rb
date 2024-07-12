@@ -557,15 +557,12 @@ module Slithernix
         # Determine how many characters we can shift to the right
         # before all the items have been scrolled off the screen.
         def available_width
-          @box_width - (2 * @border_size) - 3
+          super - 3
         end
 
         def update_view_width(widest)
-          @max_left_char = if @box_width > widest
-                           then 0
-                           else
-                             widest - self.available_width
-                           end
+          c = @box_width > widest ? 0 : widest - self.available_width
+          @max_left_char = c
         end
 
         def screen_position(n, scrollbar_adj)

@@ -130,6 +130,10 @@ module Slithernix
           @box_height - ((2 * @border_size) + @title_lines)
         end
 
+        def available_width
+          @box_width - (2 * @border_size)
+        end
+
         # Set variables that depend upon the list_size
         def set_view_size(list_size)
           @view_size = max_view_size
@@ -142,16 +146,12 @@ module Slithernix
             @max_top_item = 0
           end
 
+          @step = 1
+          @toggle_size = 1
+
           if @list_size.positive? && max_view_size.positive?
             @step = 1.0 * max_view_size / @list_size
-            @toggle_size = if @list_size > max_view_size
-                           then 1
-                           else
-                             @step.ceil
-                           end
-          else
-            @step = 1
-            @toggle_size = 1
+            @toggle_size = @list_size > max_view_size ? 1 : @step.ceil
           end
         end
 
