@@ -1,28 +1,30 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'optparse'
 require_relative '../lib/slithernix/cdk'
 
 class Clock
-  def Clock.main
+  def self.main
     box_label = OptionParser.getopts('b')['b']
 
     # Set up CDK
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.init_color
 
     # Set the labels up.
     mesg = [
-        '</1/B>HH:MM:SS',
+      '</1/B>HH:MM:SS',
     ]
 
     # Declare the labels.
-    demo = Cdk::LABEL.new(
+    demo = Slithernix::Cdk::Widget::Label.new(
       cdkscreen,
-      Cdk::CENTER,
-      Cdk::CENTER,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::CENTER,
       mesg,
       1,
       box_label,
@@ -35,10 +37,10 @@ class Clock
       cdkscreen.destroy
 
       # End curses...
-      Cdk.endCDK
+      Slithernix::Cdk.end_cdk
 
-      puts "Cannot create the label. Is the window too small?"
-      exit  # EXIT_FAILURE
+      puts 'Cannot create the label. Is the window too small?'
+      exit
     end
 
     Curses.curs_set(0)
@@ -51,11 +53,12 @@ class Clock
 
       # Put the current time in a string.
       mesg = [
-        '<C></B/29>%02d:%02d:%02d' % [
+        format(
+          '<C></B/242>%02d:%02d:%02d',
           current_time.hour,
           current_time.min,
-          current_time.sec,
-        ]
+          current_time.sec
+        )
       ]
 
       # Set the label contents
@@ -72,8 +75,7 @@ class Clock
     # Clean up
     demo.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
-    #ExitProgram (EXIT_SUCCESS);
+    Slithernix::Cdk::Screen.end_cdk
   end
 end
 

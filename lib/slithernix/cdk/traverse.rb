@@ -1,287 +1,271 @@
-module Cdk
-  module Traverse
-    def Traverse.resetCDKScreen(screen)
-      refreshDataCDKScreen(screen)
-    end
+# frozen_string_literal: true
 
-    def Traverse.exitOKCDKScreen(screen)
-      screen.exit_status = Cdk::Screen::EXITOK
-    end
-
-    def Traverse.exitCancelCDKScreen(screen)
-      screen.exit_status = Cdk::Screen::EXITCANCEL
-    end
-
-    def Traverse.exitOKCDKScreenOf(obj)
-      exitOKCDKScreen(obj.screen)
-    end
-
-    def Traverse.exitCancelCDKScreenOf(obj)
-      exitCancelCDKScreen(obj.screen)
-    end
-
-    def Traverse.resetCDKScreenOf(obj)
-      resetCDKScreen(obj.screen)
-    end
-
-    # Returns the object on which the focus lies.
-    def Traverse.getCDKFocusCurrent(screen)
-      result = nil
-      n = screen.object_focus
-
-      if n >= 0 && n < screen.object_count
-        result = screen.object[n]
+module Slithernix
+  module Cdk
+    module Traverse
+      def self.reset_screen(screen)
+        refresh_data(screen)
       end
 
-      return result
-    end
+      def self.exit_screen_ok(screen)
+        screen.exit_status = Slithernix::Cdk::Screen::EXITOK
+      end
 
-    # Set focus to the next object, returning it.
-    def Traverse.setCDKFocusNext(screen)
-      result = nil
-      curobj = nil
-      n = getFocusIndex(screen)
-      first = n
+      def self.exit_screen_cancel(screen)
+        screen.exit_status = Slithernix::Cdk::Screen::EXITCANCEL
+      end
 
-      while true
-        n+= 1
-        if n >= screen.object_count
-          n = 0
-        end
-        curobj = screen.object[n]
-        if !(curobj.nil?) && curobj.accepts_focus
-          result = curobj
-          break
-        else
-          if n == first
+      def self.exit_widget_screen_ok(widg)
+        exit_screen_ok(widg.screen)
+      end
+
+      def self.exit_widget_screen_cancel(widg)
+        exit_screen_cancel(widg.screen)
+      end
+
+      def self.reset_widget_screen(widg)
+        reset_screen(widg.screen)
+      end
+
+      # Returns the widget on which the focus lies.
+      def self.get_current_focus(screen)
+        result = nil
+        n = screen.widget_focus
+
+        result = screen.widget[n] if n >= 0 && n < screen.widget_count
+
+        result
+      end
+
+      # Set focus to the next widget, returning it.
+      def self.set_focus_to_next_widget(screen)
+        result = nil
+        curwidg = nil
+        n = get_focus_index(screen)
+        first = n
+
+        loop do
+          n += 1
+          n = 0 if n >= screen.widget_count
+          curwidg = screen.widget[n]
+          if curwidg&.accepts_focus
+            result = curwidg
+            break
+          elsif n == first
             break
           end
         end
+
+        set_focus_index(screen, result ? n : -1)
+        result
       end
 
-      setFocusIndex(screen, if !(result.nil?) then n else -1 end)
-      return result
-    end
+      # Set focus to the previous widget, returning it.
+      def self.set_focus_to_previous_widget(screen)
+        result = nil
+        curwidg = nil
+        n = get_focus_index(screen)
+        first = n
 
-    # Set focus to the previous object, returning it.
-    def Traverse.setCDKFocusPrevious(screen)
-      result = nil
-      curobj = nil
-      n = getFocusIndex(screen)
-      first = n
+        loop do
+          n -= 1
+          n = screen.widget_count - 1 if n.negative?
+          curwidg = screen.widget[n]
+          if curwidg&.accepts_focus
+            result = curwidg
+            break
+          elsif n == first
+            break
+          end
+        end
 
-      while true
-        n -= 1
-        if n < 0
-          n = screen.object_count - 1
-        end
-        curobj = screen.object[n]
-        if !(curobj.nil?) && curobj.accepts_focus
-          result = curobj
-          break
-        elsif n == first
-          break
-        end
+        set_focus_index(screen, result ? n : -1)
+        result
       end
 
-      setFocusIndex(screen, if !(result.nil?) then n else -1 end)
-      return result
-    end
+      # Set focus to a specific widget, returning it.
+      # If the widget cannot be found, return nil.
+      def self.set_focus_to_widget(screen, newwidg)
+        result = nil
+        curwidg = nil
+        n = get_focus_index(screen)
+        first = n
 
-    # Set focus to a specific object, returning it.
-    # If the object cannot be found, return nil.
-    def Traverse.setCDKFocusCurrent(screen, newobj)
-      result = nil
-      curobj = nil
-      n = getFocusIndex(screen)
-      first = n
+        loop do
+          n += 1
+          n = 0 if n >= screen.widget_count
 
-      while true
-        n += 1
-        if n >= screen.object_count
-          n = 0
+          curwidg = screen.widget[n]
+          if curwidg == newwidg
+            result = curwidg
+            break
+          elsif n == first
+            break
+          end
         end
 
-        curobj = screen.object[n]
-        if curobj == newobj
-          result = curobj
-          break
-        elsif n == first
-          break
-        end
+        set_focus_index(screen, result ? n : -1)
+        result
       end
 
-      setFocusIndex(screen, if !(result.nil?) then n else -1 end)
-      return result
-    end
+      # Set focus to the first widget in the screen.
+      def self.set_focus_to_first_widget(screen)
+        set_focus_index(screen, screen.widget_count - 1)
+        switch_focus(set_focus_to_next_widget(screen), nil)
+      end
 
-    # Set focus to the first object in the screen.
-    def Traverse.setCDKFocusFirst(screen)
-      setFocusIndex(screen, screen.object_count - 1)
-      return switchFocus(setCDKFocusNext(screen), nil)
-    end
+      # Set focus to the last widget in the screen.
+      def self.set_focus_to_last_widget(screen)
+        set_focus_index(screen, 0)
+        switch_focus(set_focus_to_previous_widget(screen), nil)
+      end
 
-    # Set focus to the last object in the screen.
-    def Traverse.setCDKFocusLast(screen)
-      setFocusIndex(screen, 0)
-      return switchFocus(setCDKFocusPrevious(screen), nil)
-    end
-
-    def Traverse.traverseCDKOnce(screen, curobj, key_code,
-        function_key, func_menu_key)
-      case key_code
-      when Curses::KEY_BTAB
-        switchFocus(setCDKFocusPrevious(screen), curobj)
-      when Cdk::KEY_TAB
-        switchFocus(setCDKFocusNext(screen), curobj)
-      when Cdk.KEY_F(10)
-        # save data and exit
-        exitOKCDKScreen(screen)
-      when Cdk.CTRL('X')
-        exitCancelCDKScreen(screen)
-      when Cdk.CTRL('R')
-        # reset data to defaults
-        resetCDKScreen(screen)
-        setFocus(curobj)
-      when Cdk::REFRESH
-        # redraw screen
-        screen.refresh
-        setFocus(curobj)
-      else
-        # not everyone wants menus, so we make them optional here
-        if !(func_menu_key.nil?) &&
-            (func_menu_key.call(key_code, function_key))
-          # find and enable drop down menu
-          screen.object.each do |object|
-            if !(object.nil?) && object.object_type == :MENU
-              Traverse.handleMenu(screen, object, curobj)
+      def self.traverse_screen_once(screen, curwidg, key_code, function_key, func_menu_key)
+        case key_code
+        when Curses::KEY_BTAB
+          switch_focus(set_focus_to_previous_widget(screen), curwidg)
+        when Slithernix::Cdk::KEY_TAB
+          switch_focus(set_focus_to_next_widget(screen), curwidg)
+        when Slithernix::Cdk.key_f(10)
+          # save data and exit
+          exit_screen_ok(screen)
+        when Slithernix::Cdk.ctrl('X')
+          exit_screen_cancel(screen)
+        when Slithernix::Cdk.ctrl('R')
+          # reset data to defaults
+          reset_screen(screen)
+          set_focus(curwidg)
+        when Slithernix::Cdk::REFRESH
+          # redraw screen
+          screen.refresh
+          set_focus(curwidg)
+        else
+          # not everyone wants menus, so we make them optional here
+          if func_menu_key&.call(key_code, function_key)
+            # find and enable drop down menu
+            screen.widget.each do |w|
+              handle_menu(screen, w, curwidg) if w&.widget_type == :Menu
             end
+          else
+            curwidg.inject(key_code)
           end
-        else
-          curobj.inject(key_code)
         end
       end
-    end
 
-    # Traverse the widgets on a screen.
-    def Traverse.traverseCDKScreen(screen)
-      result = 0
-      curobj = setCDKFocusFirst(screen)
+      # Traverse the widget on a screen.
+      def self.traverse_screen(screen)
+        result = 0
+        curwidg = set_focus_to_first_widget(screen)
 
-      unless curobj.nil?
-        refreshDataCDKScreen(screen)
+        unless curwidg.nil?
+          refresh_data(screen)
 
-        screen.exit_status = Cdk::Screen::NOEXIT
+          screen.exit_status = Slithernix::Cdk::Screen::NOEXIT
 
-        while !((curobj = getCDKFocusCurrent(screen)).nil?) &&
-            screen.exit_status == Cdk::Screen::NOEXIT
-          function = []
-          key = curobj.getch(function)
+          while !(curwidg = get_current_focus(screen)).nil? &&
+                screen.exit_status == Slithernix::Cdk::Screen::NOEXIT
+            function = []
+            key = curwidg.getch(function)
 
-          # TODO look at more direct way to do this
-          check_menu_key = lambda do |key_code, function_key|
-            Traverse.checkMenuKey(key_code, function_key)
+            # TODO: look at more direct way to do this
+            check_menu_key = lambda do |key_code, function_key|
+              check_menu_key(key_code, function_key)
+            end
+
+            traverse_screen_once(
+              screen,
+              curwidg,
+              key,
+              function[0],
+              check_menu_key,
+            )
           end
 
+          if screen.exit_status == Slithernix::Cdk::Screen::EXITOK
+            save_data(screen)
+            result = 1
+          end
+        end
+        result
+      end
 
-          Traverse.traverseCDKOnce(screen, curobj, key,
-              function[0], check_menu_key)
+      def self.limit_focus_index(screen, value)
+        (value >= screen.widget_count || value.negative?) ? 0 : value
+      end
+
+      def self.get_focus_index(screen)
+        limit_focus_index(screen, screen.widget_focus)
+      end
+
+      def self.set_focus_index(screen, value)
+        screen.widget_focus = limit_focus_index(screen, value)
+      end
+
+      def self.unset_focus(widg)
+        Curses.curs_set(0)
+        return if widg.nil?
+
+        widg.has_focus = false
+        widg.unfocus
+      end
+
+      def self.set_focus(widg)
+        unless widg.nil?
+          widg.has_focus = true
+          widg.focus
+        end
+        Curses.curs_set(1)
+      end
+
+      def self.switch_focus(newwidg, oldwidg)
+        if oldwidg != newwidg
+          unset_focus(oldwidg)
+          set_focus(newwidg)
+        end
+        newwidg
+      end
+
+      def self.check_menu_key(key_code, function_key)
+        key_code == Slithernix::Cdk::KEY_ESC && !function_key
+      end
+
+      def self.handle_menu(screen, menu, oldwidg)
+        done = false
+
+        switch_focus(menu, oldwidg)
+        until done
+          key = menu.getch([])
+
+          case key
+          when Slithernix::Cdk::KEY_TAB
+            done = true
+          when Slithernix::Cdk::KEY_ESC
+            # cleanup the menu
+            menu.inject(key)
+            done = true
+          else
+            done = (menu.inject(key) >= 0)
+          end
         end
 
-        if screen.exit_status == Cdk::Screen::EXITOK
-          saveDataCDKScreen(screen)
-          result = 1
+        if (newwidg = get_current_focus(screen)).nil?
+          newwidg = set_focus_to_next_widget(screen)
         end
+
+        switch_focus(newwidg, menu)
       end
-      return result
-    end
 
-    private
-
-    def Traverse.limitFocusIndex(screen, value)
-      if value >= screen.object_count || value < 0
-        0
-      else
-        value
-      end
-    end
-
-    def Traverse.getFocusIndex(screen)
-      return limitFocusIndex(screen, screen.object_focus)
-    end
-
-    def Traverse.setFocusIndex(screen, value)
-      screen.object_focus = limitFocusIndex(screen, value)
-    end
-
-    def Traverse.unsetFocus(obj)
-      Curses.curs_set(0)
-      unless obj.nil?
-        obj.has_focus = false
-        obj.unfocus
-      end
-    end
-
-    def Traverse.setFocus(obj)
-      unless obj.nil?
-        obj.has_focus = true
-        obj.focus
-      end
-      Curses.curs_set(1)
-    end
-
-    def Traverse.switchFocus(newobj, oldobj)
-      if oldobj != newobj
-        Traverse.unsetFocus(oldobj)
-        Traverse.setFocus(newobj)
-      end
-      return newobj
-    end
-
-    def Traverse.checkMenuKey(key_code, function_key)
-      key_code == Cdk::KEY_ESC && !function_key
-    end
-
-    def Traverse.handleMenu(screen, menu, oldobj)
-      done = false
-
-      switchFocus(menu, oldobj)
-      while !done
-        key = menu.getch([])
-
-        case key
-        when Cdk::KEY_TAB
-          done = true
-        when Cdk::KEY_ESC
-          # cleanup the menu
-          menu.inject(key)
-          done = true
-        else
-          done = (menu.inject(key) >= 0)
+      # Save data in widget on a screen
+      def self.save_data(screen)
+        screen.widget.each do |widget|
+          widget&.save_data
         end
       end
 
-      if (newobj = Traverse.getCDKFocusCurrent(screen)).nil?
-        newobj = Traverse.setCDKFocusNext(screen)
-      end
-
-      return switchFocus(newobj, menu)
-    end
-
-    # Save data in widgets on a screen
-    def Traverse.saveDataCDKScreen(screen)
-      screen.object.each do |object|
-        unless object.nil?
-          object.saveData
-        end
-      end
-    end
-
-    # Refresh data in widgets on a screen
-    def Traverse.refreshDataCDKScreen(screen)
-      screen.object.each do |object|
-        unless object.nil?
-          object.refreshData
+      # Refresh data in widget on a screen
+      def self.refresh_data(screen)
+        screen.widget.each do |widget|
+          widget&.refresh_data
         end
       end
     end

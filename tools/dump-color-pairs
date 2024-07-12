@@ -1,0 +1,91 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../lib/slithernix/cdk'
+require 'pry-remote'
+
+box = true
+shadow = false
+x_value = Slithernix::Cdk::CENTER
+y_value = Slithernix::Cdk::CENTER
+h_value = Curses.lines - 7
+c = false
+spos = Slithernix::Cdk::RIGHT
+title = '<C></B></89>COLOR LIST'
+
+curses_win = Curses.init_screen
+cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
+
+color_pairs = Slithernix::Cdk::Draw.init_color
+cp_size = color_pairs.size
+w_value = "#{cp_size}.    THIS IS COLOR PAIR #{cp_size}  ".size
+
+item = []
+count = color_pairs.size
+
+color_pairs.each_key do |pair_id|
+  item << "</B></#{pair_id}> THIS IS COLOR PAIR #{pair_id} "
+end
+
+color_list = Slithernix::Cdk::Widget::Scroll.new(
+  cdkscreen,
+  x_value,
+  y_value,
+  spos,
+  h_value,
+  w_value,
+  title,
+  c ? nil : item,
+  c ? 0 : count,
+  true,
+  Curses::A_REVERSE,
+  box,
+  shadow,
+)
+
+if color_list.nil?
+  Slithernix::Cdk::Screen.end_cdk
+  puts 'Cannot make scrolling list. Is the window too small?'
+  exit
+end
+
+color_list.set_items(item, count, true) if c
+
+redraw_title = lambda do |_type, widget, _client_data, _input|
+  title = "<C></B></#{widget.get_current_item + 1}>COLOR LIST"
+  widget.set_title(title, w_value)
+  widget.screen.refresh
+  true
+end
+
+color_list.set_post_process(redraw_title, nil)
+
+selection = color_list.activate('')
+
+case color_list.exit_type
+when :ESCAPE_HIT
+  msg = [
+    '<C>You hit escape. No color selected',
+    '',
+    '<C>Press any key to continue.',
+  ]
+when :NORMAL
+  the_item = Slithernix::Cdk.chtype_string_to_unformatted_string(
+    color_list.item[selection]
+  )
+  msg = [
+    '<C>You selected the following color ',
+    format(
+      '<C></B></%<selection_plus_one>d>%<truncated_item>s',
+      selection_plus_one: selection + 1,
+      truncated_item: the_item[0, 236]
+    ),
+    '<C>Press any key to continue.'
+  ]
+end
+
+cdkscreen.popup_label(msg, 3)
+
+color_list.destroy
+cdkscreen.destroy
+Slithernix::Cdk::Screen.end_cdk

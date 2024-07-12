@@ -1,0 +1,109 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative 'example'
+
+class SubwindowExample < CLIExample
+  def self.parse_opts(opts, params)
+    opts.banner = 'Usage: subwindow_ex.rb [options]'
+
+    params.box = true
+    params.shadow = false
+    params.x_value = Slithernix::Cdk::CENTER
+    params.y_value = Slithernix::Cdk::CENTER
+    params.h_value = 10
+    params.w_value = 15
+    params.spos = Slithernix::Cdk::RIGHT
+
+    super
+
+    opts.on(
+      '-s SCROLL_POS',
+      OptionParser::DecimalInteger,
+      'location for the scrollbar'
+    ) do |spos|
+      params.spos = spos
+    end
+  end
+
+  # This demo displays the ability to put widget within a curses subwindow.
+  def self.main
+    dow = %w[
+      Monday
+      Tuesday
+      Wednesday
+      Thursday
+      Friday
+      Saturday
+      Sunday
+    ]
+
+    # Declare variables.
+    params = parse(ARGV)
+
+    # Start curses
+    Curses.init_screen
+
+    # Create a basic window.
+    sub_window = Curses::Window.new(
+      Curses.lines - 5, Curses.cols - 10, 2, 5
+    )
+
+    # Start Slithernix::Cdk.
+    cdkscreen = Slithernix::Cdk::Screen.new(sub_window)
+
+    # Box our window.
+    sub_window.box(Slithernix::Cdk::ACS_VLINE, Slithernix::Cdk::ACS_HLINE)
+    sub_window.refresh
+
+    # Create a basic scrolling list inside the window.
+    dow_list = Slithernix::Cdk::Widget::Scroll.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value,
+      params.spos,
+      params.h_value,
+      params.w_value,
+      '<C></U>Pick a Day',
+      dow,
+      7,
+      false,
+      Curses::A_REVERSE,
+      params.box,
+      params.shadow
+    )
+
+    mesg = [
+      '<C><#HL(30)>',
+      '<C>This is a Cdk scrolling list',
+      '<C>inside a curses window.',
+      '<C><#HL(30)>'
+    ]
+
+    title = Slithernix::Cdk::Widget::Label.new(
+      cdkscreen,
+      Slithernix::Cdk::CENTER,
+      0,
+      mesg,
+      4,
+      false,
+      false
+    )
+
+    cdkscreen.refresh
+
+    pick = dow_list.activate('')
+
+    dow_list.destroy
+    title.destroy
+    Slithernix::Cdk.erase_curses_window(sub_window)
+    cdkscreen.destroy
+    Slithernix::Cdk::Screen.end_cdk
+
+    # Tell them what they picked.
+    puts format('You picked %s', dow[pick])
+    exit
+  end
+end
+
+SubwindowExample.main

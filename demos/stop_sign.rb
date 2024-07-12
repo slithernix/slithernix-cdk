@@ -1,55 +1,77 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require_relative '../lib/slithernix/cdk'
 
 class StopSign
-  def StopSign.main
+  RED = 17.freeze
+  YELLOW = 177.freeze
+  GREEN = 33.freeze
+
+  def self.main
     # Set up CDK
+
     curses_win = Curses.init_screen
-    cdkscreen = Cdk::Screen.new(curses_win)
+    cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
     # Set up CDK colors
-    Cdk::Draw.initCDKColor
+    Slithernix::Cdk::Draw.init_color
 
     # Set the labels up.
     mesg = [
-        '<C><#HL(40)>',
-        '<C>Press </B/16>r<!B!16> for the </B/16>red light',
-        '<C>Press </B/32>y<!B!32> for the </B/32>yellow light',
-        '<C>Press </B/24>g<!B!24> for the </B/24>green light',
-        '<C><#HL(40)>',
+      '<C><#HL(40)>',
+      "<C>Press </B/#{RED}>r<!B!#{RED}> for the </B/#{RED}>red light",
+      "<C>Press </B/#{YELLOW}>y<!B!#{YELLOW}> for the </B/#{YELLOW}>yellow light",
+      "<C>Press </B/#{GREEN}>g<!B!#{GREEN}> for the </B/#{GREEN}>green light",
+      '<C><#HL(40)>',
     ]
     sign = [
-        ' <#DI> ',
-        ' <#DI> ',
-        ' <#DI> ',
+      ' <#DI> ',
+      ' <#DI> ',
+      ' <#DI> ',
     ]
 
     # Declare the labels.
-    title = Cdk::LABEL.new(cdkscreen, Cdk::CENTER, Cdk::TOP,
-                           mesg, 5, false, false)
-    stop_sign = Cdk::LABEL.new(cdkscreen, Cdk::CENTER, Cdk::CENTER,
-                               sign, 3, true, true)
+    title = Slithernix::Cdk::Widget::Label.new(
+      cdkscreen,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::TOP,
+      mesg,
+      5,
+      false,
+      false
+    )
+
+    stop_sign = Slithernix::Cdk::Widget::Label.new(
+      cdkscreen,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::CENTER,
+      sign,
+      3,
+      true,
+      true
+    )
 
     # Do this until they hit q or escape.
-    while true
+    loop do
       title.draw(false)
       stop_sign.draw(true)
 
       key = stop_sign.getch([])
-      if key == Cdk::KEY_ESC || key == 'q' || key == 'Q'
+      if [Slithernix::Cdk::KEY_ESC, 'q', 'Q'].include?(key)
         break
-      elsif key == 'r' || key == 'R'
-        sign[0] = ' </B/16><#DI> '
+      elsif %w[r R].include?(key)
+        sign[0] = " </B/#{RED}><#DI> "
         sign[1] = ' o '
         sign[2] = ' o '
-      elsif key == 'y' || key == 'Y'
+      elsif %w[y Y].include?(key)
         sign[0] = ' o '
-        sign[1] = ' </B/32><#DI> '
+        sign[1] = " </B/#{YELLOW}><#DI> "
         sign[2] = ' o '
-      elsif key == 'g' || key == 'G'
+      elsif %w[g G].include?(key)
         sign[0] = ' o '
         sign[1] = ' o '
-        sign[2] = ' </B/24><#DI> '
+        sign[2] = " </B/#{GREEN}><#DI> "
       end
 
       # Set the contents of the label and re-draw it.
@@ -60,8 +82,8 @@ class StopSign
     title.destroy
     stop_sign.destroy
     cdkscreen.destroy
-    Cdk::Screen.endCDK
-    #ExitProgram (EXIT_SUCCESS);
+    Slithernix::Cdk::Screen.end_cdk
+    # ExitProgram (EXIT_SUCCESS);
   end
 end
 

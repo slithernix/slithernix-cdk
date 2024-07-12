@@ -1,28 +1,95 @@
 SlitherNix CDK TODO List (You can find the original Tawny list below)
 
-* Fix matrix widget
+* mentry broken when you go beyond the screen then hit home and end a couple times
 
-  This thing is just totally hosed. I am not really sure what it's supposed
-  to look like in the first place so I may have to check out the actual CDK
-  or maybe the python one if it is still maintained.
+ /home/snake/work/src/git/github.com/slithernix/slithernix-cdk/lib/slithernix/cdk/widget/m_entry.rb:217:in `set_top_row': wrong number of arguments (given 2, expected 1) (ArgumentError)
+	from /home/snake/work/src/git/github.com/slithernix/slithernix-cdk/lib/slithernix/cdk/widget/m_entry.rb:304:in `inject'
+	from /home/snake/work/src/git/github.com/slithernix/slithernix-cdk/lib/slithernix/cdk/widget/m_entry.rb:202:in `activate'
+	from examples/mentry:83:in `main'
+	from examples/mentry:97:in `<main>'
 
-* Fix selection widget
+* Widgets do not scale
 
-  The selection widget appears to call .position or something because when
-  you use the arrows to move through the menu, the menu itself moves with
-  the arrow.
+  Generating a scrolling list of 65k entries is insanely slow. Basically need
+  to support pagination/lazy loading of data somehow.
 
-* Fix position widget
+* If template comes up first in traverse, other widgets don't appear until you hit enter
 
-  Have no idea what this widget is supposed to do but it is totally broken.
+* AlphaList doesn't work right on unsorted list
 
-* Traverse Example has broken widgets
+  Can see it in the traverse example,
 
-  I haven't looked into which widgets this thing uses but it has the issue
-  the selection widget has where if you move up/down in the menu it moves the
-  actual menu with the arrow direction. It's also not justified properly and
-  it appears the entry box is hosed as well. There's some kind of off-by-one
-  error in there.
+* UScale broken inside traverse
+
+  Goes on forever
+
+* Traverse focus should highlight a box's border
+
+  Instead it moves the cursor, cursor should only be on on
+  certain widgets.
+
+* Scroll/Selection should be able to re-start at beginning if scrolled to end
+
+* Marquee example can't be exited cleanly
+
+  exit on q
+
+* Viewer doesn't exit cleanly on escpae
+
+* Viewer widget scrolls too far
+
+  It should stop when at 100 but goes down too far shows a bunch of
+  blank space.
+
+* Figure out how to do a kind of standardish-RGB integration
+
+  Right now it's just color pairs. Should find a way to look up via RGB stuff
+
+* Down the road, add yaml description feature
+
+  Basically, create a way to describe a TUI via a yaml manifest
+
+* RoloDex example doesn't expand box size after adding new entries
+
+  Basically what it says, the listing of the group box says stays small
+
+* Traverse example can't be exited cleanly
+
+* GNU Readline integration for entry
+
+  That way we get shit like history and other readline things, ctrl-w
+  home, etc. Probably should be a construction parameter.
+
+* Traverse example's "center" isn't aligned
+
+  Should above that middle window.
+
+* Little command shell demo exits uncleanly on escape
+
+  ./command.rb:216:in `main': undefined method `upcase' for 1:Integer (NoMethodError)
+
+        upper = command.upcase
+                       ^^^^^^^
+    from ./command.rb:278:in `<main>'
+
+* Appointment Demo needs a key thing
+
+  It's operated by various keystrokes and there is no indication on the screen
+  as to what they are, you are just supposed to know.
+
+* Graph widget a little off
+
+  It has the wrong names on the axes, and 5 is printed twice.
+
+* Calendar example doesn't exit cleanly on escape press
+
+  ./calendar_ex.rb:134:in `main': undefined method `ctime' for -1:Integer (NoMethodError)
+
+      puts 'Selected Time: %s' % ret_val.ctime
+                                        ^^^^^^
+  Did you mean?  times
+    from ./calendar_ex.rb:139:in `<main>'
+
 
 * Aesthetics
 
