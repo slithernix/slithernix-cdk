@@ -181,6 +181,12 @@ module Slithernix
           set_position(item)
         end
 
+        def update_view_width(widest)
+          @max_left_char = widest - self.available_width
+          @max_left_char = 0 if @box_width > widest
+          @max_left_char
+        end
+
         def widest_item
           @max_left_char + self.available_width
         end

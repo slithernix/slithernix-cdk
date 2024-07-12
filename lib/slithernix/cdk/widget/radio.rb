@@ -560,11 +560,6 @@ module Slithernix
           super - 3
         end
 
-        def update_view_width(widest)
-          c = @box_width > widest ? 0 : widest - self.available_width
-          @max_left_char = c
-        end
-
         def screen_position(n, scrollbar_adj)
           @item_pos[n] - @left_char + scrollbar_adj + @border_size
         end
