@@ -569,19 +569,6 @@ module Slithernix
           end
         end
 
-        def get_current
-          @current_item
-        end
-
-        # methods for generic type methods
-        def focus
-          draw_list(@box)
-        end
-
-        def unfocus
-          draw_list(@box)
-        end
-
         def create_list(list, list_size)
           status = 0
           widest_item = 0
@@ -634,11 +621,7 @@ module Slithernix
         # Determine how many characters we can shift to the right
         # before all the items have been scrolled off the screen.
         def available_width
-          @box_width - (2 * @border_size) - @maxchoicelen
-        end
-
-        def update_view_width(widest)
-          @max_left_char = @box_width > widest ? 0 : widest - self.available_width
+          super - @maxchoicelen
         end
 
         def screen_position(n, scrollbar_adj)

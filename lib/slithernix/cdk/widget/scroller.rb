@@ -126,33 +126,24 @@ module Slithernix
           @current_high = @view_size - 1
         end
 
+        def available_width
+          @box_width - (2 * @border_size)
+        end
+
+        def focus
+          draw_list(@box)
+        end
+
+        def get_current_item
+          @current_item
+        end
+
         def max_view_size
           @box_height - ((2 * @border_size) + @title_lines)
         end
 
-        # Set variables that depend upon the list_size
-        def set_view_size(list_size)
-          @view_size = max_view_size
-          @list_size = list_size
-          @last_item = list_size - 1
-          @max_top_item = list_size - @view_size
-
-          if list_size < @view_size
-            @view_size = list_size
-            @max_top_item = 0
-          end
-
-          if @list_size.positive? && max_view_size.positive?
-            @step = 1.0 * max_view_size / @list_size
-            @toggle_size = if @list_size > max_view_size
-                           then 1
-                           else
-                             @step.ceil
-                           end
-          else
-            @step = 1
-            @toggle_size = 1
-          end
+        def set_current_item(item)
+          set_position(item)
         end
 
         def set_position(item)
@@ -172,13 +163,35 @@ module Slithernix
           end
         end
 
-        # Get/Set the current item number of the scroller.
-        def get_current_item
-          @current_item
+        # Set variables that depend upon the list_size
+        def set_view_size(list_size)
+          @view_size = max_view_size
+          @list_size = list_size
+          @last_item = list_size - 1
+          @max_top_item = list_size - @view_size
+
+          if list_size < @view_size
+            @view_size = list_size
+            @max_top_item = 0
+          end
+
+          @step = 1
+          @toggle_size = 1
+
+          if @list_size.positive? && max_view_size.positive?
+            @step = 1.0 * max_view_size / @list_size
+            @toggle_size = @list_size > max_view_size ? 1 : @step.ceil
+          end
         end
 
-        def set_current_item(item)
-          set_position(item)
+        def unfocus
+          draw_list(@box)
+        end
+
+        def update_view_width(widest)
+          @max_left_char = widest - self.available_width
+          @max_left_char = 0 if @box_width > widest
+          @max_left_char
         end
 
         def widest_item

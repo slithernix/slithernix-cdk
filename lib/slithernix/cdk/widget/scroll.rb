@@ -659,16 +659,6 @@ module Slithernix
           draw_current
           @list_win.refresh
         end
-
-        def available_width
-          @box_width - (2 * @border_size)
-        end
-
-        def update_view_width(widest)
-          @max_left_char = widest - self.available_width
-          @max_left_char = 0 if @box_width > widest
-          @max_left_char
-        end
       end
     end
   end

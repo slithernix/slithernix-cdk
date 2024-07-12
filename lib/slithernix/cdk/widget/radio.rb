@@ -495,10 +495,6 @@ module Slithernix
           @selected_item = item
         end
 
-        def get_current_item
-          @current_item
-        end
-
         # This sets the selected item of the widget
         def set_selected_item(item)
           @selected_item = item
@@ -506,14 +502,6 @@ module Slithernix
 
         def get_selected_item
           @selected_item
-        end
-
-        def focus
-          draw_list(@box)
-        end
-
-        def unfocus
-          draw_list(@box)
         end
 
         def create_list(list, list_size, box_width)
@@ -538,9 +526,11 @@ module Slithernix
                 status = false
                 break
               end
-              new_pos[j] =
-                Slithernix::Cdk.justify_string(box_width, new_len[j],
-                                               new_pos[j]) + 3
+              new_pos[j] = Slithernix::Cdk.justify_string(
+                box_width,
+                new_len[j],
+                new_pos[j],
+              ) + 3
               widest_item = [widest_item, new_len[j]].max
             end
             if status
@@ -557,15 +547,7 @@ module Slithernix
         # Determine how many characters we can shift to the right
         # before all the items have been scrolled off the screen.
         def available_width
-          @box_width - (2 * @border_size) - 3
-        end
-
-        def update_view_width(widest)
-          @max_left_char = if @box_width > widest
-                           then 0
-                           else
-                             widest - self.available_width
-                           end
+          super - 3
         end
 
         def screen_position(n, scrollbar_adj)
