@@ -568,10 +568,6 @@ module Slithernix
                            end
         end
 
-        def widest_item
-          @max_left_char + self.available_width
-        end
-
         def screen_position(n, scrollbar_adj)
           @item_pos[n] - @left_char + scrollbar_adj + @border_size
         end

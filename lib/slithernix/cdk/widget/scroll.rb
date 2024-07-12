@@ -669,12 +669,7 @@ module Slithernix
           @max_left_char = 0 if @box_width > widest
           @max_left_char
         end
-
-        def widest_item
-          @max_left_char + self.available_width
-        end
       end
-
     end
   end
 end

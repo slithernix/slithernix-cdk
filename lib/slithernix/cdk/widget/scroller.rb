@@ -180,6 +180,10 @@ module Slithernix
         def set_current_item(item)
           set_position(item)
         end
+
+        def widest_item
+          @max_left_char + self.available_width
+        end
       end
     end
   end
