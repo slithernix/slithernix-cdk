@@ -126,12 +126,41 @@ module Slithernix
           @current_high = @view_size - 1
         end
 
+        def available_width
+          @box_width - (2 * @border_size)
+        end
+
+        def focus
+          draw_list(@box)
+        end
+
+        def get_current_item
+          @current_item
+        end
+
         def max_view_size
           @box_height - ((2 * @border_size) + @title_lines)
         end
 
-        def available_width
-          @box_width - (2 * @border_size)
+        def set_current_item(item)
+          set_position(item)
+        end
+
+        def set_position(item)
+          if item <= 0
+            self.key_home
+          elsif item > @list_size - 1
+            @current_top = @max_top_item
+            @current_item = @list_size - 1
+            @current_high = @view_size - 1
+          elsif item >= @current_top && item < @current_top + @view_size
+            @current_item = item
+            @current_high = item - @current_top
+          else
+            @current_top = item - (@view_size - 1)
+            @current_item = item
+            @current_high = @view_size - 1
+          end
         end
 
         # Set variables that depend upon the list_size
@@ -155,30 +184,8 @@ module Slithernix
           end
         end
 
-        def set_position(item)
-          if item <= 0
-            self.key_home
-          elsif item > @list_size - 1
-            @current_top = @max_top_item
-            @current_item = @list_size - 1
-            @current_high = @view_size - 1
-          elsif item >= @current_top && item < @current_top + @view_size
-            @current_item = item
-            @current_high = item - @current_top
-          else
-            @current_top = item - (@view_size - 1)
-            @current_item = item
-            @current_high = @view_size - 1
-          end
-        end
-
-        # Get/Set the current item number of the scroller.
-        def get_current_item
-          @current_item
-        end
-
-        def set_current_item(item)
-          set_position(item)
+        def unfocus
+          draw_list(@box)
         end
 
         def update_view_width(widest)

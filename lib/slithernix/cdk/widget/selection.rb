@@ -569,19 +569,6 @@ module Slithernix
           end
         end
 
-        def get_current
-          @current_item
-        end
-
-        # methods for generic type methods
-        def focus
-          draw_list(@box)
-        end
-
-        def unfocus
-          draw_list(@box)
-        end
-
         def create_list(list, list_size)
           status = 0
           widest_item = 0
