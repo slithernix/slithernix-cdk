@@ -280,7 +280,7 @@ module Slithernix
             result << Slithernix::Cdk::L_MARKER
             if (table[key] & tmpattr).nonzero?
               result << '!'
-              tmpattr &= ~(table[key])
+              tmpattr = tmpattr.clear_bits(table[key])
             else
               result << '/'
               tmpattr |= table[key]
@@ -290,8 +290,8 @@ module Slithernix
           end
           # XXX: Only checks if terminal has colours not if colours are started
           if Curses.has_colors? && ((tmpattr & Curses::A_COLOR) != (newattr & Curses::A_COLOR))
-            oldpair = Curses.PAIR_NUMBER(tmpattr)
-            newpair = Curses.PAIR_NUMBER(newattr)
+            oldpair = Curses.pair_number(tmpattr)
+            newpair = Curses.pair_number(newattr)
             unless found
               found = true
               result << Slithernix::Cdk::L_MARKER
@@ -303,8 +303,8 @@ module Slithernix
               result << '/'
               result << newpair.to_s
             end
-            tmpattr &= ~Curses::A_COLOR
-            newattr &= ~Curses::A_COLOR
+            tmpattr = tmpattr.clear_bits(Curses::A_COLOR)
+            newattr = newattr.clear_bits(Curses::A_COLOR)
           end
 
           break unless found
@@ -486,7 +486,7 @@ module Slithernix
             when '!'
               mask = []
               from = encode_attribute(string, from, mask)
-              attrib &= ~(mask[0])
+              attrib = attrib.clear_bits(mask[0])
             end
           elsif string[from] == L_MARKER &&
                 ['/', '!', '#'].include?(string[from + 1])
@@ -924,8 +924,15 @@ module Slithernix
       if lines == -1
         lines
       else
-        view_info(screen, title, info, lines, buttons,
-                  button_count, true)
+        view_info(
+          screen,
+          title,
+          info,
+          lines,
+          buttons,
+          button_count,
+          true
+        )
       end
     end
   end

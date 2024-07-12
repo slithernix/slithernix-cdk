@@ -1,5 +1,25 @@
 SlitherNix CDK TODO List (You can find the original Tawny list below)
 
+* Widgets do not scale
+
+  Generating a scrolling list of 65k entries is insanely slow. Basically need
+  to support pagination/lazy loading of data somehow.
+
+* If template comes up first in traverse, other widgets don't appear until you hit enter
+
+* AlphaList doesn't work right on unsorted list
+
+  Can see it in the traverse example,
+
+* UScale broken inside traverse
+
+  Goes on forever
+
+* Traverse focus should highlight a box's border
+
+  Instead it moves the cursor, cursor should only be on on
+  certain widgets.
+
 * Scroll/Selection should be able to re-start at beginning if scrolled to end
 
 * Marquee example can't be exited cleanly

@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require_relative '../lib/slithernix/cdk'
+require 'pry-remote'
 
 box = true
 shadow = false
@@ -16,8 +17,8 @@ curses_win = Curses.init_screen
 cdkscreen = Slithernix::Cdk::Screen.new(curses_win)
 
 color_pairs = Slithernix::Cdk::Draw.init_color
-
-w_value = "#{color_pairs.size}.    THIS IS COLOR PAIR #{color_pairs.size}  ".size
+cp_size = color_pairs.size
+w_value = "#{cp_size}.    THIS IS COLOR PAIR #{cp_size}  ".size
 
 item = []
 count = color_pairs.size
@@ -44,7 +45,6 @@ color_list = Slithernix::Cdk::Widget::Scroll.new(
 
 if color_list.nil?
   Slithernix::Cdk::Screen.end_cdk
-
   puts 'Cannot make scrolling list. Is the window too small?'
   exit
 end
@@ -52,7 +52,8 @@ end
 color_list.set_items(item, count, true) if c
 
 redraw_title = lambda do |_type, widget, _client_data, _input|
-  widget.set_title("<C></B></#{widget.get_current_item + 1}>COLOR LIST", w_value)
+  title = "<C></B></#{widget.get_current_item + 1}>COLOR LIST"
+  widget.set_title(title, w_value)
   widget.screen.refresh
   true
 end
@@ -69,10 +70,16 @@ when :ESCAPE_HIT
     '<C>Press any key to continue.',
   ]
 when :NORMAL
-  the_item = Slithernix::Cdk.chtype_string_to_unformatted_string(color_list.item[selection])
+  the_item = Slithernix::Cdk.chtype_string_to_unformatted_string(
+    color_list.item[selection]
+  )
   msg = [
     '<C>You selected the following color ',
-    format('<C></B></%d>%.*s', selection + 1, 236, the_item),
+    format(
+      '<C></B></%<selection_plus_one>d>%<truncated_item>s',
+      selection_plus_one: selection + 1,
+      truncated_item: the_item[0, 236]
+    ),
     '<C>Press any key to continue.'
   ]
 end

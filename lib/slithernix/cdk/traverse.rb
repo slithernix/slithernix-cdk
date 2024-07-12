@@ -182,7 +182,7 @@ module Slithernix
           end
 
           if screen.exit_status == Slithernix::Cdk::Screen::EXITOK
-            saveDataCDKScreen(screen)
+            save_data(screen)
             result = 1
           end
         end

@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'curses'
+require 'pry-remote'
 
 # Initialize curses
 Curses.init_screen
@@ -11,6 +12,7 @@ win = Curses.stdscr
 y_pos = 0
 lines_added = 0
 
+binding.remote_pry
 # Function to add a line to the window
 def add_line(window, y_position, text)
   window.setpos(y_position, 0)

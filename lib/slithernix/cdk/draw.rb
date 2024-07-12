@@ -3,19 +3,19 @@
 module Slithernix
   module Cdk
     module Draw
-      # It'd be nice if curses could do 65535 or true color.
-      # It only supports 256 color pairs.
       def self.init_color
         return nil unless Curses.has_colors?
 
         Curses.start_color
         limit = [Curses.colors, 256].min
         limit = Math.sqrt(limit)
+
+        color_values = 0...limit
         color_pairs = {}
 
         pair = 1
-        (0...limit).each do |fg|
-          (0...limit).each do |bg|
+        color_values.each do |fg|
+          color_values.each do |bg|
             Curses.init_pair(pair, fg, bg)
             color_pairs[pair] = [fg, bg]
             pair += 1

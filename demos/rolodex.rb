@@ -1229,7 +1229,6 @@ class Rolodex
     name_list.bind(:Scroll, Curses::KEY_DC, delete_phone_entry_cb, phone_data)
     name_list.bind(:Scroll, '?', phone_entry_help_cb, nil)
 
-    # Let them play.
     selection = 0
     while selection >= 0
       # Get the information they want to view.
@@ -1237,14 +1236,11 @@ class Rolodex
 
       # Display the information.
       if selection >= 0
-        # Display the information.
         Rolodex.display_phone_info(screen, phone_data.record[selection])
       end
     end
 
-    # Save teh rolodex information to file.
     if Rolodex.save_phone_data_file(group_dbm, phone_data).zero?
-      # Something happened.
       mesg = [
         '<C>Could not save phone data to data file.',
         '<C>All changes have been lost.'

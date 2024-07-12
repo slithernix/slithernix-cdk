@@ -64,11 +64,23 @@ class FSliderExample < Example
     Slithernix::Cdk::Draw.init_color
 
     # Create the widget
-    widget = Slithernix::Cdk::Widget::FSlider.new(cdkscreen, params.x_value, params.y_value,
-                                                  title, label,
-                                                  Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord,
-                                                  params.width, params.low, params.low, params.high, params.inc,
-                                                  (params.inc * 2), params.digits, params.box, params.shadow)
+    widget = Slithernix::Cdk::Widget::FSlider.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value,
+      title,
+      label,
+      Curses::A_REVERSE | Curses.color_pair(29) | ' '.ord,
+      params.width,
+      params.low,
+      params.low,
+      params.high,
+      params.inc,
+      (params.inc * 2),
+      params.digits,
+      params.box,
+      params.shadow,
+    )
 
     # Is the widget nll?
     if widget.nil?

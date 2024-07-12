@@ -40,7 +40,7 @@ class Clock
       Slithernix::Cdk.end_cdk
 
       puts 'Cannot create the label. Is the window too small?'
-      exit # EXIT_FAILURE
+      exit
     end
 
     Curses.curs_set(0)
@@ -53,8 +53,12 @@ class Clock
 
       # Put the current time in a string.
       mesg = [
-        format('<C></B/29>%02d:%02d:%02d', current_time.hour,
-               current_time.min, current_time.sec)
+        format(
+          '<C></B/242>%02d:%02d:%02d',
+          current_time.hour,
+          current_time.min,
+          current_time.sec
+        )
       ]
 
       # Set the label contents
@@ -72,7 +76,6 @@ class Clock
     demo.destroy
     cdkscreen.destroy
     Slithernix::Cdk::Screen.end_cdk
-    # ExitProgram (EXIT_SUCCESS);
   end
 end
 
