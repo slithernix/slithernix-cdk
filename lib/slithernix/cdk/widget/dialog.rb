@@ -38,7 +38,11 @@ module Slithernix
           (0...rows).each do |x|
             info_len = []
             info_pos = []
-            @info << Slithernix::Cdk.char_to_chtype(mesg[x], info_len, info_pos)
+            @info << Slithernix::Cdk.char_to_chtype(
+              mesg[x],
+              info_len,
+              info_pos,
+            )
             @info_len << info_len[0]
             @info_pos << info_pos[0]
             max_message_width = [max_message_width, info_len[0]].max

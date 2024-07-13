@@ -30,7 +30,11 @@ module Slithernix
             # Translate the string to a chtype array
             info_len = []
             info_pos = []
-            @info << Slithernix::Cdk.char_to_chtype(mesg[x], info_len, info_pos)
+            @info << Slithernix::Cdk.char_to_chtype(
+              mesg[x],
+              info_len,
+              info_pos,
+            )
             @info_len << info_len[0]
             @info_pos << info_pos[0]
             box_width = [box_width, @info_len[x]].max
@@ -106,10 +110,17 @@ module Slithernix
           (0...@rows).each do |x|
             info_len = []
             info_pos = []
-            @info[x] = Slithernix::Cdk.char_to_chtype(info[x], info_len, info_pos)
+            @info[x] = Slithernix::Cdk.char_to_chtype(
+              info[x],
+              info_len,
+              info_pos,
+            )
             @info_len[x] = info_len[0]
-            @info_pos[x] = Slithernix::Cdk.justify_string(@box_width - (2 * @border_size),
-                                                          @info_len[x], info_pos[0])
+            @info_pos[x] = Slithernix::Cdk.justify_string(
+              @box_width - (2 * @border_size),
+              @info_len[x],
+              info_pos[0],
+            )
           end
 
           # Redraw the label widget.

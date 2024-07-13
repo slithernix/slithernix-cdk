@@ -62,7 +62,7 @@ module Slithernix
           # Make sure we didn't extend beyond the dimensions of the window.
           @box_width = box_width
           @box_width = parent_width - scroll_adjust if box_width > parent_width
-          @box_height = [ box_height, parent_height ].min
+          @box_height = [box_height, parent_height].min
 
           set_view_size(list_size)
 
@@ -83,7 +83,7 @@ module Slithernix
           @win = Curses::Window.new(@box_height, @box_width, ypos, xpos)
 
           # Is the scrolling window null?
-          return StandardError, "could not create curses window" if @win.nil?
+          return StandardError, 'could not create curses window' if @win.nil?
 
           # Turn the keypad on for the window
           @win.keypad(true)
@@ -287,7 +287,7 @@ module Slithernix
 
         # This moves the scroll field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
-          windows = [ @win, @list_win, @shadow_win, @scrollbar_win ]
+          windows = [@win, @list_win, @shadow_win, @scrollbar_win]
           move_specific(
             xplace,
             yplace,
@@ -451,7 +451,11 @@ module Slithernix
 
           item_len = []
           item_pos = []
-          @item[which] = Slithernix::Cdk.char_to_chtype(value, item_len, item_pos)
+          @item[which] = Slithernix::Cdk.char_to_chtype(
+            value,
+            item_len,
+            item_pos,
+          )
           @item_len[which] = item_len[0]
           @item_pos[which] = item_pos[0]
 
@@ -584,8 +588,7 @@ module Slithernix
           if alloc_list_arrays(
             @list_size,
             @list_size + 1
-          ) &&
-          alloc_list_item(
+          ) && alloc_list_item(
             item_number,
             temp,
             have,
@@ -609,11 +612,9 @@ module Slithernix
           if alloc_list_arrays(
             @list_size,
             @list_size + 1
-          ) &&
-          insert_list_item(
+          ) && insert_list_item(
             @current_item
-          ) &&
-          alloc_list_item(
+          ) && alloc_list_item(
             @current_item,
             temp,
             have,

@@ -96,7 +96,7 @@ module Slithernix
             )
             if @label_win.nil?
               destroy
-              raise StandardError, "could not create label sub-window"
+              raise StandardError, 'could not create label sub-window'
             end
           end
 
@@ -110,7 +110,7 @@ module Slithernix
 
           if @field_win.nil?
             destroy
-            raise StandardError, "could not create data field sub-window"
+            raise StandardError, 'could not create data field sub-window'
           end
           @field_win.keypad(true)
           @win.keypad(true)
@@ -146,7 +146,7 @@ module Slithernix
             )
             if @shadow_win.nil?
               destroy
-              raise StandardError, "could not create shadow window"
+              raise StandardError, 'could not create shadow window'
             end
           end
 

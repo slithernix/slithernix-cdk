@@ -203,7 +203,8 @@ class Rolodex
         entry.destroy
 
         # Print the group
-        if Rolodex.print_group(group_list[x], '/tmp/rolodex.tmp', printer).zero?
+        pg = Rolodex.print_group(group_list[x], '/tmp/rolodex.tmp', printer)
+        if pg.zero?
           # The group could not be printed.
           mesg = [
             format(
@@ -1623,7 +1624,11 @@ class Rolodex
       case selection
       when 0
         # Open the rolodex RC file.
-        group_count = Rolodex.open_new_rc_file(cdkscreen, group_list, group_count)
+        group_count = Rolodex.open_new_rc_file(
+          cdkscreen,
+          group_list,
+          group_count
+        )
       when 1
         # Write out the RC file.
         ret = Rolodex.write_rc_file(

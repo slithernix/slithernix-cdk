@@ -519,7 +519,11 @@ module Slithernix
             (0...list_size).each do |j|
               lentmp = []
               postmp = []
-              new_list << Slithernix::Cdk.char_to_chtype(list[j], lentmp, postmp)
+              new_list << Slithernix::Cdk.char_to_chtype(
+                list[j],
+                lentmp,
+                postmp,
+              )
               new_len << lentmp[0]
               new_pos << postmp[0]
               if new_list[j].nil? || new_list[j].empty?

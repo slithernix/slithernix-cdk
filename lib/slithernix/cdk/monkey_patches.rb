@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'pry-remote'
 
 class Integer
@@ -15,55 +16,8 @@ end
 
 # I hate this but, whatever
 module Curses
-#  MAGIC_COLOR_PAIR_INDEX = 42.freeze
-#
-#  @color_pairs = [ ]
-#  @max_color_pairs = 0
-#
-#  class << self
-#    alias_method :original_init_pair, :init_pair
-#    alias_method :original_color_pair, :color_pair
-#    alias_method :original_pair_content, :pair_content
-#    alias_method :original_pair_number, :pair_number
-#  end
-#
-#  def self.ruby_color_pair_verify(cp)
-#    raise StandardError, "colors aren't available!" unless Curses.has_colors?
-#
-#    if @max_color_pairs != (Curses.colors ** 2)
-#      @max_color_pairs = Curses.colors ** 2
-#    end
-#
-#    unless cp <= @max_color_pairs
-#      raise ArgumentError, "Invalid pair number #{cp}/#{@max_color_pairs}"
-#    end
-#  end
-#
-#  def self.color_pair(cp)
-#    ruby_color_pair_verify cp
-#    fg, bg = pair_content(cp)
-#    original_init_pair(
-#      MAGIC_COLOR_PAIR_INDEX,
-#      fg,
-#      bg,
-#    )
-#    original_color_pair(MAGIC_COLOR_PAIR_INDEX)
-#  end
-#
-#  def self.init_pair(cp, fg, bg)
-#    true
-#  end
-#
   def self.napms(ms)
     sleep(ms / 1000.0)
-  end
-
-  def self.pair_content(cp)
-    [ cp / Curses.colors, cp % Curses.colors ]
-  end
-
-  def self.pair_number(attr)
-    attr
   end
 
   def self.unctrl(ch)

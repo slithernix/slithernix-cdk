@@ -50,16 +50,16 @@ module Slithernix
           box_height += @title_lines
 
           # Make sure we didn't extend beyond the dimensinos of the window.
-          box_width = [ box_width, parent_width ].min
-          box_height = [ box_height, parent_height ].min
+          box_width = [box_width, parent_width].min
+          box_height = [box_height, parent_height].min
           field_width = [
             field_width,
             box_width - @label_len - (2 * @border_size),
           ].min
 
           # Rejustify the x and y positions if we need to.
-          xtmp = [ xpos ]
-          ytmp = [ ypos ]
+          xtmp = [xpos]
+          ytmp = [ypos]
           Slithernix::Cdk.alignxy(
             cdkscreen.window,
             xtmp,
@@ -221,7 +221,7 @@ module Slithernix
           set_exit_type(0)
 
           # Refresh the widget field. This seems useless?
-          #self.draw_field
+          # self.draw_field
 
           unless @pre_process_func.nil?
             pp_return = @pre_process_func.call(
@@ -332,7 +332,7 @@ module Slithernix
                   @@g_paste_buffer = @info.clone
                 end
               when Slithernix::Cdk::PASTE
-                if @@g_paste_buffer.zero?
+                if @@g_paste_buffer&.empty?
                   Slithernix::Cdk.beep
                 else
                   set_value(@@g_paste_buffer)
@@ -459,10 +459,7 @@ module Slithernix
 
           # This makes sure the cursor is at the beginning of the entry field
           # when nothing is in the buffer.
-          if @info&.size&.zero?
-            @field_win.setpos(0,0)
-          end
-
+          @field_win.setpos(0, 0) if @info&.size&.zero?
           @field_win.refresh
         end
 
@@ -544,7 +541,7 @@ module Slithernix
         end
 
         # This sets the character to use when a hidden type is used.
-        def set_hidden_char(hidden_characer)
+        def set_hidden_char(hidden_character)
           @hidden = hidden_character
         end
 

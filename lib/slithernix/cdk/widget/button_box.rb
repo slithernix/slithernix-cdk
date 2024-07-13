@@ -21,7 +21,7 @@ module Slithernix
 
           unless button_count.positive?
             destroy
-            raise ArgumentError, "button_count must be a positive integer"
+            raise ArgumentError, 'button_count must be a positive integer'
           end
 
           set_box(box)
@@ -51,7 +51,11 @@ module Slithernix
           # Translate the buttons string to a chtype array
           (0...button_count).each do |x|
             button_len = []
-            @button << Slithernix::Cdk.char_to_chtype(buttons[x], button_len, [])
+            @button << Slithernix::Cdk.char_to_chtype(
+              buttons[x],
+              button_len,
+              []
+            )
             @button_len << button_len[0]
           end
 
@@ -318,9 +322,7 @@ module Slithernix
             end
           end
 
-          if cur_row >= 0 && cur_col >= 0
-            @win.setpos(cur_row, cur_col)
-          end
+          @win.setpos(cur_row, cur_col) if cur_row >= 0 && cur_col >= 0
           @win.refresh
         end
 

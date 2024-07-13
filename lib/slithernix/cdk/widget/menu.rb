@@ -183,14 +183,15 @@ module Slithernix
         def within_submenu(step)
           next_item = Slithernix::Cdk::Widget::Menu.wrapped(
             @current_subtitle + step,
-            @subsize[@current_title])
+            @subsize[@current_title],
+          )
 
           return unless next_item != @current_subtitle
 
+          ts = 1 + @pull_win[@current_title].begy + @subsize[@current_title]
           ymax = @screen.window.maxy
 
-          if 1 + @pull_win[@current_title].begy + @subsize[@current_title] >=
-             ymax
+          if ts >= ymax
             @current_subtitle = next_item
             draw_subwin
           else
@@ -211,7 +212,8 @@ module Slithernix
 
         def across_submenus(step)
           next_item = Slithernix::Cdk::Widget::Menu.wrapped(
-            @current_title + step, @menu_items
+            @current_title + step,
+            @menu_items,
           )
 
           return unless next_item != @current_title

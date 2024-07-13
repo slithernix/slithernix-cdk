@@ -78,7 +78,7 @@ module Slithernix
 
           if @win.nil?
             destroy
-            raise StandardError, "could not create template window"
+            raise StandardError, 'could not create template window'
           end
           @win.keypad(true)
 

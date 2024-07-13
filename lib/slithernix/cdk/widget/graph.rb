@@ -198,7 +198,11 @@ module Slithernix
         # Set the characters of the graph widget.
         def set_characters(characters)
           char_count = []
-          new_tokens = Slithernix::Cdk.char_to_chtype(characters, char_count, [])
+          new_tokens = Slithernix::Cdk.char_to_chtype(
+            characters,
+            char_count,
+            [],
+          )
 
           return false if char_count[0] != @count
 
@@ -217,7 +221,11 @@ module Slithernix
 
           # Convert the string given to us
           char_count = []
-          new_tokens = Slithernix::Cdk.char_to_chtype(character, char_count, [])
+          new_tokens = Slithernix::Cdk.char_to_chtype(
+            character,
+            char_count,
+            [],
+          )
 
           # Check if the number of characters back is the same as the number
           # of elements in the list.

@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# TODO another atrocious widget, needs massive refactoring
 
 require_relative '../widget'
 
@@ -9,21 +8,6 @@ module Slithernix
       class Calendar < Slithernix::Cdk::Widget
         attr_accessor :week_base
         attr_reader :day, :month, :year
-#        MONTHS = [
-#          { name: "NULL", days: -1 },
-#          { name: "January", days: 31 },
-#          { name: "February", days: 28 },
-#          { name: "March", days: 31 },
-#          { name: "April", days: 30 },
-#          { name: "May", days: 31 },
-#          { name: "June", days: 30 },
-#          { name: "July", days: 31 },
-#          { name: "August", days: 31 },
-#          { name: "September", days: 30 },
-#          { name: "October", days: 31 },
-#          { name: "November", days: 30 },
-#          { name: "December", days: 31 }
-#        ].freeze
 
         MONTHNAMES = %w[
           NULL
@@ -198,12 +182,14 @@ module Slithernix
           )
 
           # If a shadow was requested, then create the shadow window.
-          @shadow_win = Curses::Window.new(
-            box_height,
-            box_width,
-            ypos + 1,
-            xpos + 1,
-          ) if shadow
+          if shadow
+            @shadow_win = Curses::Window.new(
+              box_height,
+              box_width,
+              ypos + 1,
+              xpos + 1,
+            )
+          end
 
           # Setup the key bindings.
           bindings.each do |from, to|
@@ -381,7 +367,8 @@ module Slithernix
                   @field_win,
                   xpos,
                   ypos,
-                  temp,marker,
+                  temp,
+                  marker,
                   Slithernix::Cdk::HORIZONTAL,
                   0,
                   2,

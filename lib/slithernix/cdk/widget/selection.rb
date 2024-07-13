@@ -25,7 +25,7 @@ module Slithernix
 
           unless choice_count.positive?
             destroy
-            raise ArgumentError, "choice_count must be a positive integer"
+            raise ArgumentError, 'choice_count must be a positive integer'
           end
 
           @choice = []
@@ -97,23 +97,19 @@ module Slithernix
           # Turn the keypad on for this window.
           @win.keypad(true)
 
-          # Create the scrollbar window.
+          xp = nil
+          xp = screen_xpos(xpos) if splace == Slithernix::Cdk::LEFT
           if splace == Slithernix::Cdk::RIGHT
+            xp = xpos + @box_width - @border_size - 1
+          end
+
+          if xp
             @scrollbar_win = @win.subwin(
               max_view_size,
               1,
               screen_ypos(ypos),
-              xpos + @box_width - @border_size - 1,
+              xp,
             )
-          elsif splace == Slithernix::Cdk::LEFT
-            @scrollbar_win = @win.subwin(
-              max_view_size,
-              1,
-              screen_ypos(ypos),
-              screen_xpos(ypos),
-            )
-          else
-            @scrollbar_win = nil
           end
 
           # Set the rest of the variables
@@ -133,7 +129,11 @@ module Slithernix
           # Each choice has to be converted from string to chtype array
           (0...choice_count).each do |j|
             choicelen = []
-            @choice << Slithernix::Cdk.char_to_chtype(choices[j], choicelen, [])
+            @choice << Slithernix::Cdk.char_to_chtype(
+              choices[j],
+              choicelen,
+              [],
+            )
             @choicelen << choicelen[0]
             @maxchoicelen = [@maxchoicelen, choicelen[0]].max
           end

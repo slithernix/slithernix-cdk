@@ -52,7 +52,9 @@ module Slithernix
 
       # This removes an widget from the CDK screen.
       def self.unregister(cdktype, widget)
-        return unless widget.valid_widget_type(cdktype) && widget.screen_index >= 0
+        unless widget.valid_widget_type(cdktype) && widget.screen_index >= 0
+          return
+        end
 
         screen = widget.screen
 

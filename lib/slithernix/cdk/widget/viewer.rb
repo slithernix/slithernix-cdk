@@ -212,7 +212,9 @@ module Slithernix
           if list.size.positive? && interpret
             (0...list_size).each do |x|
               filename = String.new
-              next unless Slithernix::Cdk.check_for_link(list[x], filename) == 1
+              unless Slithernix::Cdk.check_for_link(list[x], filename) == 1
+                next
+              end
 
               file_contents = []
               file_len = Slithernix::Cdk.read_file(filename, file_contents)

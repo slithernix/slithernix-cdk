@@ -4,9 +4,9 @@
 require_relative '../lib/slithernix/cdk'
 
 class StopSign
-  RED = 17.freeze
-  YELLOW = 177.freeze
-  GREEN = 33.freeze
+  RED = 17
+  YELLOW = 177
+  GREEN = 33
 
   def self.main
     # Set up CDK

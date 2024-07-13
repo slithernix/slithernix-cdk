@@ -1126,9 +1126,11 @@ module Slithernix
           if (col == -1) || (col > @cols)
             # Create the column scale widget.
             scale = Slithernix::Cdk::Scale.new(
-              @screen,Slithernix::Cdk::CENTER,
+              @screen,
               Slithernix::Cdk::CENTER,
-              '<C>Jump to which column','</5/B>Col: ',
+              Slithernix::Cdk::CENTER,
+              '<C>Jump to which column',
+              '</5/B>Col: ',
               Curses::A_NORMAL,
               5,
               1,

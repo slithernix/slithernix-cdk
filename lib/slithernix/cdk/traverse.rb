@@ -190,7 +190,7 @@ module Slithernix
       end
 
       def self.limit_focus_index(screen, value)
-        (value >= screen.widget_count || value.negative?) ? 0 : value
+        value >= screen.widget_count || value.negative? ? 0 : value
       end
 
       def self.get_focus_index(screen)
