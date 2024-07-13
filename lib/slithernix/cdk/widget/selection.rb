@@ -485,13 +485,7 @@ module Slithernix
         def set_choices(choices)
           # Set the choice values in the selection list.
           (0...@list_size).each do |j|
-            @selections[j] = if (choices[j]).negative?
-                               0
-                             elsif choices[j] > @choice_count
-                               @choice_count - 1
-                             else
-                               choices[j]
-                             end
+            @selections[j] = choices[j].clamp(0, @choice_count - 1)
           end
         end
 
@@ -585,7 +579,11 @@ module Slithernix
             (0...list_size).each do |j|
               lentmp = []
               postmp = []
-              new_list << Slithernix::Cdk.char_to_chtype(list[j], lentmp, postmp)
+              new_list << Slithernix::Cdk.char_to_chtype(
+                list[j],
+                lentmp,
+                postmp,
+              )
               new_len << lentmp[0]
               new_pos << postmp[0]
               # if new_list[j].size == 0
