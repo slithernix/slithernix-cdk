@@ -60,7 +60,7 @@ module Slithernix
           @win = Curses::Window.new(box_height, box_width, ypos, xpos)
           if @win.nil?
             destroy
-            raise StandardError, "error creating window"
+            raise StandardError, 'error creating window'
           end
 
           # Turn the keypad on for the viewer.
@@ -486,13 +486,10 @@ module Slithernix
                 if @search_pattern == ''
                   temp_info[0] = '</5>There is no pattern in the buffer.<!5>'
                   pop_up_label(temp_info)
-                elsif !search_for_word(@search_pattern,
-                                     if input == 'n'
-                                     then @search_direction
-                                     else
-                                       1 - @search_direction
-                                     end)
-                  pattern_not_found(@search_pattern)
+                elsif !search_for_word(
+                  @search_pattern,
+                  input == 'n' ? @search_direction : 1 - @search_direction
+                ) then pattern_not_found(@search_pattern)
                 end
                 refresh = true
               when ':'

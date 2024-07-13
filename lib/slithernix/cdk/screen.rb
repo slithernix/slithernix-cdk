@@ -18,7 +18,7 @@ module Slithernix
         window ||= Curses.init_screen
         Curses.curs_set(0)
         # initialization for the first time
-        if Slithernix::Cdk::ALL_SCREENS.empty?
+        if Slithernix::Cdk.all_screens.empty?
           # Set up basic curses settings.
           # #ifdef HAVE_SETLOCALE
           # setlocale (LC_ALL, "");
@@ -28,7 +28,7 @@ module Slithernix
           Curses.cbreak
         end
 
-        Slithernix::Cdk::ALL_SCREENS << self
+        Slithernix::Cdk.all_screens << self
         @widget_count = 0
         @widget_limit = 2
         @widget = Array.new(@widget_limit, nil)
@@ -291,7 +291,7 @@ module Slithernix
       end
 
       def destroy
-        Slithernix::Cdk::ALL_SCREENS.delete(self)
+        Slithernix::Cdk.all_screens.delete(self)
       end
 
       def self.end_cdk

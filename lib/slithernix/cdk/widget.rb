@@ -27,7 +27,7 @@ module Slithernix
         @has_focus = true
         @is_visible = true
 
-        Slithernix::Cdk::ALL_OBJECTS << self
+        Slithernix::Cdk.all_objects << self
 
         # set default line-drawing characters
         @upper_left_corner_char = Slithernix::Cdk::ACS_ULCORNER
@@ -286,7 +286,7 @@ module Slithernix
 
       def is_valid_widget?
         result = false
-        if Slithernix::Cdk::ALL_OBJECTS.include?(self)
+        if Slithernix::Cdk.all_objects.include?(self)
           result = valid_widget_type(widget_type)
         end
         result

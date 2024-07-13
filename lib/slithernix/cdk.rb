@@ -18,14 +18,6 @@ end
 
 Curses.ESCDELAY = 0
 
-#trace = TracePoint.new(:call) do |tp|
-# File.open('/tmp/execution_trace.log', 'a') do |f|
-#   f.puts "Called method '#{tp.method_id}' at #{tp.path}:#{tp.lineno}"
-# end
-#end
-#
-#trace.enable
-
 module Slithernix
   module Cdk
     def self.ctrl(c)
@@ -77,9 +69,6 @@ module Slithernix
     KEY_RETURN = "\012".ord
     KEY_TAB = "\t".ord
 
-    ALL_SCREENS = []
-    ALL_OBJECTS = []
-
     # ACS constants seem to have been removed from ruby curses, putting
     # them here. note that this is garbage and likely to break all over
     # the place.
@@ -116,6 +105,17 @@ module Slithernix
     ACS_ULCORNER  = 0x6c | Curses::A_ALTCHARSET
     ACS_URCORNER  = 0x6b | Curses::A_ALTCHARSET
     ACS_VLINE     = 0x78 | Curses::A_ALTCHARSET
+
+    @all_screens = []
+    @all_objects = []
+
+    def self.all_screens
+      @all_screens
+    end
+
+    def self.all_objects
+      @all_objects
+    end
 
     # This beeps then flushes the stdout stream
     def self.beep

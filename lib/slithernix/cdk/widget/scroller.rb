@@ -178,10 +178,12 @@ module Slithernix
           @step = 1
           @toggle_size = 1
 
-          if @list_size.positive? && max_view_size.positive?
-            @step = 1.0 * max_view_size / @list_size
-            @toggle_size = @list_size > max_view_size ? 1 : @step.ceil
+          unless @list_size.positive? && max_view_size.positive?
+            return @toggle_size
           end
+
+          @step = 1.0 * max_view_size / @list_size
+          @toggle_size = @list_size > max_view_size ? 1 : @step.ceil
         end
 
         def unfocus
