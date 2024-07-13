@@ -91,11 +91,10 @@ module Slithernix
           end
 
           # Create the entry field.
-          temp_width = if Slithernix::Cdk::Widget::AlphaList.is_full_width?(width)
-                       then Slithernix::Cdk::FULL
-                       else
-                         box_width - 2 - label_len
-                       end
+          temp_width = box_width - 2 - label_len
+          if Slithernix::Cdk::Widget::AlphaList.is_full_width?(width)
+            temp_width = Slithernix::Cdk::FULL
+          end
 
           @entry_field = Slithernix::Cdk::Widget::Entry.new(
             cdkscreen,
@@ -121,7 +120,7 @@ module Slithernix
           @entry_field.set_lower_right_corner_char(Slithernix::Cdk::ACS_RTEE)
 
           # Callback functions
-          adjust_alphalist_cb = lambda do |_widget_type, _widget, alphalist, key|
+          adjust_alphalist_cb = lambda do |_wt, _w, alphalist, key|
             scrollp = alphalist.scroll_field
             entry = alphalist.entry_field
 
@@ -130,7 +129,9 @@ module Slithernix
               alphalist.inject_scroller(key)
 
               # Set the value in the entry field.
-              current = Slithernix::Cdk.chtype_string_to_unformatted_string(scrollp.item[scrollp.current_item])
+              current = Slithernix::Cdk.chtype_string_to_unformatted_string(
+                scrollp.item[scrollp.current_item]
+              )
               entry.set_value(current)
               entry.draw(entry.box)
               return true
@@ -139,7 +140,7 @@ module Slithernix
             false
           end
 
-          complete_word_cb = lambda do |_widget_type, _widget, alphalist, _key|
+          complete_word_cb = lambda do |_wt, _w, alphalist, _k|
             entry = alphalist.entry_field
             scrollp = nil
             alt_words = []
@@ -173,15 +174,7 @@ module Slithernix
             len = [entry.info.size, alphalist.list[index + 1].size].min
             ret = alphalist.list[index + 1][0...len] <=> entry.info
             if ret.zero?
-              current_index = index
-
-              # Start looking for alternate words
-              # FIXME(original): bsearch would be more suitable.
-              while current_index < alphalist.list.size &&
-                    (alphalist.list[current_index][0...len] <=> entry.info).zero?
-                alt_words << alphalist.list[current_index]
-                current_index += 1
-              end
+              alt_words = find_alt_words(alphalist, entry, len)
 
               # Determine the height of the scrolling list.
               height = alt_words.size < 8 ? alt_words.size + 3 : 11
@@ -241,7 +234,7 @@ module Slithernix
             true
           end
 
-          pre_process_entry_field = lambda do |_widget_type, _widget, alphalist, input|
+          pre_process_entry_field = lambda do |_wt, _w, alphalist, input|
             scrollp = alphalist.scroll_field
             entry = alphalist.entry_field
             entry.info.size
@@ -267,9 +260,15 @@ module Slithernix
 
               if pattern.empty?
                 empty = true
-              elsif (index = Slithernix::Cdk.search_list(alphalist.list,
-                                                         alphalist.list.size, pattern)) >= 0
-                # XXX: original uses n scroll downs/ups for <10 positions change
+              elsif (
+                index = Slithernix::Cdk.search_list(
+                  alphalist.list,
+                  alphalist.list.size,
+                  pattern
+                )
+              ) >= 0
+                # XXX: original uses n scroll downs/ups for <10 positions
+                # change
                 scrollp.set_position(index)
                 alphalist.draw_scroller
               else
@@ -325,14 +324,13 @@ module Slithernix
           # Set up the post-process function for the entry field.
           @entry_field.set_pre_process(pre_process_entry_field, self)
 
-          # Create the scrolling list.  It overlaps the entry field by one line if
-          # we are using box-borders.
+          # Create the scrolling list. It overlaps the entry field by one line
+          # if we are using box-borders.
           temp_height = @entry_field.win.maxy - @border_size
-          temp_width = if Slithernix::Cdk::Widget::AlphaList.is_full_width?(width)
-                       then Slithernix::Cdk::FULL
-                       else
-                         box_width - 1
-                       end
+          temp_width = box_width - 1
+          if Slithernix::Cdk::Widget::AlphaList.is_full_width?(width)
+            temp_width = Slithernix::Cdk::FULL
+          end
 
           @scroll_field = Slithernix::Cdk::Widget::Scroll.new(
             cdkscreen,
@@ -372,6 +370,18 @@ module Slithernix
           Slithernix::Cdk.erase_curses_window(@win)
         end
 
+        def find_alt_words(alphalist, entry, len)
+          start_index = alphalist.list.bsearch_index do |word|
+            (word[0...len] <=> entry.info) >= 0
+          end
+
+          return [] unless start_index
+
+          alphalist.list[start_index..].take_while do |word|
+            (word[0...len] <=> entry.info).zero?
+          end
+        end
+
         # This moves the alphalist field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @shadow_win]
@@ -380,10 +390,10 @@ module Slithernix
                         windows, subwidgets)
         end
 
-        # The alphalist's focus resides in the entry widget. But the scroll widget
-        # will not draw items highlighted unless it has focus. Temporarily adjust
-        # the focus of the scroll widget when drawing on it to get the right
-        # highlighting.
+        # The alphalist's focus resides in the entry widget. But the scroll
+        # widget will not draw items highlighted unless it has focus.
+        # Temporarily adjust the focus of the scroll widget when drawing on it
+        # to get the right highlighting.
         def save_focus
           @save = @scroll_field.has_focus
           @scroll_field.has_focus = @entry_field.has_focus
@@ -624,7 +634,8 @@ module Slithernix
         end
 
         def self.is_full_width?(width)
-          width == Slithernix::Cdk::FULL || (Curses.cols != 0 && width >= Curses.cols)
+          return true if width == Slithernix::Cdk::FULL
+          (Curses.cols != 0 && width >= Curses.cols)
         end
 
         def position

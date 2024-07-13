@@ -263,6 +263,9 @@ module Slithernix
       end
 
       # Set data for postprocessing
+      # Note these lambdas across the codebase generally take four arguments:
+      # cdktype, widget, post_process_data, data
+      # I think this can be made a little clearer somehow, revisit.
       def set_post_process(fn, data)
         @post_process_func = fn
         @post_process_data = data
@@ -272,15 +275,17 @@ module Slithernix
       # The .exitType field should have been part of the CDKOBJS struct, but it
       # is used too pervasively in older applications to move (yet).
       def set_exit_type(ch)
-        case ch
+        @exit_type = case ch
         when Curses::Error
-          @exit_type = :ERROR
+          :ERROR
         when Slithernix::Cdk::KEY_ESC
-          @exit_type = :ESCAPE_HIT
-        when Slithernix::Cdk::KEY_TAB, Curses::KEY_ENTER, Slithernix::Cdk::KEY_RETURN
-          @exit_type = :NORMAL
+          :ESCAPE_HIT
+        when Slithernix::Cdk::KEY_TAB,
+             Curses::KEY_ENTER,
+             Slithernix::Cdk::KEY_RETURN
+          :NORMAL
         when 0
-          @exit_type = :EARLY_EXIT
+          :EARLY_EXIT
         end
       end
 
@@ -297,42 +302,46 @@ module Slithernix
         test = is_bindable_object?(cdktype)
         result = @input_window.getch
 
-        if result.ord >= 0 && !test.nil? && test.binding_list.include?(result) &&
-           test.binding_list[result][0] == :getc
-          result = test.binding_list[result][1]
-        elsif test.nil? || !test.binding_list.include?(result) ||
-              test.binding_list[result][0].nil?
-          case result
-          when "\r", "\n"
-            result = Curses::KEY_ENTER
-          when "\t"
-            result = Slithernix::Cdk::KEY_TAB
-          when Slithernix::Cdk::DELETE
-            result = Curses::KEY_DC
-          when "\b"
-            result = Curses::KEY_BACKSPACE
-          when Slithernix::Cdk::BEGOFLINE
-            result = Curses::KEY_HOME
-          when Slithernix::Cdk::ENDOFLINE
-            result = Curses::KEY_END
-          when Slithernix::Cdk::FORCHAR
-            result = Curses::KEY_RIGHT
-          when Slithernix::Cdk::BACKCHAR
-            result = Curses::KEY_LEFT
-          when Slithernix::Cdk::NEXT
-            result = Slithernix::Cdk::KEY_TAB
-          when Slithernix::Cdk::PREV
-            result = Curses::KEY_BTAB
-          end
+        if bindable?(result, test)
+          test.binding_list[result][1]
+        else
+          map_special_keys(result)
         end
+      end
 
-        result
+      def bindable?(result, test)
+        result.ord >= 0 &&
+          test &&
+          test.binding_list.include?(result) &&
+          test.binding_list[result][0] == :getc
+      end
+
+      def map_special_keys(key)
+        key_map = {
+          "\r" => Curses::KEY_ENTER,
+          "\n" => Curses::KEY_ENTER,
+          "\t" => Slithernix::Cdk::KEY_TAB,
+          Slithernix::Cdk::DELETE => Curses::KEY_DC,
+          "\b" => Curses::KEY_BACKSPACE,
+          Slithernix::Cdk::BEGOFLINE => Curses::KEY_HOME,
+          Slithernix::Cdk::ENDOFLINE => Curses::KEY_END,
+          Slithernix::Cdk::FORCHAR => Curses::KEY_RIGHT,
+          Slithernix::Cdk::BACKCHAR => Curses::KEY_LEFT,
+          Slithernix::Cdk::NEXT => Slithernix::Cdk::KEY_TAB,
+          Slithernix::Cdk::PREV => Curses::KEY_BTAB
+        }
+
+        key_map.fetch(key, key)
       end
 
       def getch(function_key)
         key = getc
-        function_key << (key.ord >= Curses::KEY_MIN && key.ord <= Curses::KEY_MAX)
+        function_key << function_key?(key)
         key
+      end
+
+      def function_key?(key)
+        key.ord.between?(Curses::KEY_MIN, Curses::KEY_MAX)
       end
 
       # This is one of many methods whose purpose I really don't get. Look
@@ -368,9 +377,9 @@ module Slithernix
       end
 
       # This checks to see if the binding for the key exists:
-      # If it does then it runs the command and returns its value, normally true
-      # If it doesn't it returns a false.  This way we can 'overwrite' coded
-      # bindings.
+      # If it does then it runs the command and returns its value, normally
+      # true If it doesn't it returns a false.  This way we can 'overwrite'
+      # coded bindings.
       def check_bind(type, key)
         widg = is_bindable_object?(type)
         if widg&.binding_list&.include?(key)

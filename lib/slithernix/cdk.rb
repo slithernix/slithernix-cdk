@@ -251,9 +251,9 @@ module Slithernix
     end
 
     # The reverse of encode_attribute
-    # Well, almost.  If attributes such as bold and underline are combined in the
-    # same string, we do not necessarily reconstruct them in the same order.
-    # Also, alignment markers and tabs are lost.
+    # Well, almost.  If attributes such as bold and underline are combined in
+    # the same string, we do not necessarily reconstruct them in the same
+    # order. Also, alignment markers and tabs are lost.
 
     def self.decode_attribute(string, from, oldattr, newattr)
       table = {
@@ -288,8 +288,8 @@ module Slithernix
             result << key
             break
           end
-          # XXX: Only checks if terminal has colours not if colours are started
-          if Curses.has_colors? && ((tmpattr & Curses::A_COLOR) != (newattr & Curses::A_COLOR))
+
+          if self.needs_color_change?(tmpattr, newattr)
             oldpair = Curses.pair_number(tmpattr)
             newpair = Curses.pair_number(newattr)
             unless found
@@ -328,8 +328,9 @@ module Slithernix
       if string.size.positive?
         used = 0
 
-        # The original code makes two passes since it has to pre-allocate space but
-        # we should be able to make do with one since we can dynamically size it
+        # The original code makes two passes since it has to pre-allocate space
+        # but we should be able to make do with one since we can dynamically
+        # size it.
         adjust = 0
         attrib = Curses::A_NORMAL
         last_char = 0
@@ -659,23 +660,23 @@ module Slithernix
 
     # Returns the filename portion of the given pathname, i.e. after the last
     # slash
-    # For now this function is just a wrapper for File.basename kept for ease of
-    # porting and will be completely replaced in the future
+    # For now this function is just a wrapper for File.basename kept for ease
+    # of porting and will be completely replaced in the future
     def self.basename(pathname)
       File.basename(pathname)
     end
 
     # Returns the directory for the given pathname, i.e. the part before the
     # last slash
-    # For now this function is just a wrapper for File.dirname kept for ease of
-    # porting and will be completely replaced in the future
+    # For now this function is just a wrapper for File.dirname kept for ease
+    # of porting and will be completely replaced in the future
     def self.dirname(pathname)
       File.dirname(pathname)
     end
 
     # If the dimension is a negative value, the dimension will be the full
-    # height/width of the parent window - the value of the dimension. Otherwise,
-    # the dimension will be the given value.
+    # height/width of the parent window - the value of the dimension.
+    # Otherwise, the dimension will be the given value.
     def self.set_widget_dimension(parent_dim, proposed_dim, adjustment)
       # If the user passed in FULL, return the parents size
       if [FULL, 0].include?(proposed_dim)
@@ -728,7 +729,12 @@ module Slithernix
       old_window = window
       window.move(ypos, xpos)
       begin
-        # window = Curses::Window.new(old_window.begy, old_window.begx, ypos, xpos)
+        # window = Curses::Window.new(
+        # old_window.begy,
+        # old_window.begx,
+        # ypos,
+        # xpos
+        # )
         old_window.erase
         # window
       rescue StandardError
@@ -935,5 +941,12 @@ module Slithernix
         )
       end
     end
+
+    private
+
+      def self.needs_color_change?(tmpattr, newattr)
+        return false unless Curses.has_colors?
+        (tmpattr & Curses::A_COLOR) != (newattr & Curses::A_COLOR)
+      end
   end
 end

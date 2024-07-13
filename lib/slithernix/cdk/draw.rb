@@ -106,7 +106,8 @@ module Slithernix
         )
       end
 
-      # This draws a line on the given window. (odd angle lines not working yet)
+      # This draws a line on the given window. (odd angle lines not working
+      # yet)
       def self.draw_line(window, startx, starty, endx, endy, line)
         xdiff = endx - startx
         ydiff = endy - starty

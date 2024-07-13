@@ -33,37 +33,31 @@ module Slithernix
 
       # Tell if a display type is "hidden"
       def self.is_hidden_display_type?(type)
-        case type
-        when :HCHAR, :HINT, :HMIXED, :LHCHAR, :LHMIXED, :UHCHAR, :UHMIXED
-          true
-        when :CHAR, :INT, :INVALID, :LCHAR, :LMIXED, :MIXED, :UCHAR, :UMIXED, :VIEWONLY
-          false
-        end
+        hidden_types = %i[
+          HCHAR HINT HMIXED LHCHAR LHMIXED UHCHAR UHMIXED
+        ]
+        hidden_types.include?(type)
       end
 
       # Given a character input, check if it is allowed by the display type
       # and return the character to apply to the display, or ERR if not
       def self.filter_by_display_type(type, input)
-        result = input
-        if !Slithernix::Cdk.is_char?(input)
-          result = Curses::Error
-        elsif %i[INT
-                 HINT].include?(type) && !Slithernix::Cdk.digit?(result.chr)
-          result = Curses::Error
-        elsif %i[CHAR UCHAR LCHAR UHCHAR
-                 LHCHAR].include?(type) && Slithernix::Cdk.digit?(result.chr)
-          result = Curses::Error
-        elsif type == :VIEWONLY
-          result = ERR
-        elsif %i[UCHAR UHCHAR UMIXED
-                 UHMIXED].include?(type) && Slithernix::Cdk.alpha?(result.chr)
-          result = result.chr.upcase.ord
-        elsif %i[LCHAR LHCHAR LMIXED
-                 LHMIXED].include?(type) && Slithernix::Cdk.alpha?(result.chr)
-          result = result.chr.downcase.ord
-        end
+        return Curses::Error unless Slithernix::Cdk.is_char?(input)
 
-        result
+        case type
+        when :INT, :HINT
+          Slithernix::Cdk.digit?(input.chr) ? input : Curses::Error
+        when :CHAR, :UCHAR, :LCHAR, :UHCHAR, :LHCHAR
+          Slithernix::Cdk.digit?(input.chr) ? Curses::Error : input
+        when :VIEWONLY
+          ERR
+        when :UCHAR, :UHCHAR, :UMIXED, :UHMIXED
+          Slithernix::Cdk.alpha?(input.chr) ? input.chr.upcase.ord : input
+        when :LCHAR, :LHCHAR, :LMIXED, :LHMIXED
+          Slithernix::Cdk.alpha?(input.chr) ? input.chr.downcase.ord : input
+        else
+          input
+        end
       end
     end
   end

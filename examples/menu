@@ -65,12 +65,27 @@ class MenuExample < Example
       '                                          '
     ]
 
-    info_box = Slithernix::Cdk::Widget::Label.new(cdkscreen, Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER,
-                                                  mesg, 4, true, true)
+    info_box = Slithernix::Cdk::Widget::Label.new(
+      cdkscreen,
+      Slithernix::Cdk::CENTER,
+      Slithernix::Cdk::CENTER,
+      mesg,
+      4,
+      true,
+      true,
+    )
 
     # Create the menu.
-    menu = Slithernix::Cdk::Widget::Menu.new(cdkscreen, menu_list, 3, submenusize, menuloc,
-                                             Slithernix::Cdk::TOP, Curses::A_UNDERLINE, Curses::A_REVERSE)
+    menu = Slithernix::Cdk::Widget::Menu.new(
+      cdkscreen,
+      menu_list,
+      3,
+      submenusize,
+      menuloc,
+      Slithernix::Cdk::TOP,
+      Curses::A_UNDERLINE,
+      Curses::A_REVERSE,
+    )
 
     # Create the post process function
     display_callback = lambda do |_cdktype, menu, info_box, _key|
