@@ -272,7 +272,7 @@ module Slithernix
             modify = false
           end
           if modify &&
-             ((value, test) = temp.scanf(self.scan_fmt)).size == 2 &&
+             ((value, test) = temp.scanf(scan_fmt)).size == 2 &&
              test == ' ' &&
              value >= @low && value <= @high
             set_value(value)

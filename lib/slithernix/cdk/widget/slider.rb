@@ -199,7 +199,7 @@ module Slithernix
         def move_to_edit_position(new_position)
           @field_win.setpos(
             0,
-            @field_width + self.formatted_size(@current) - new_position,
+            @field_width + formatted_size(@current) - new_position,
           )
         end
 
@@ -280,7 +280,7 @@ module Slithernix
             modify = false
           end
           if modify &&
-             ((value, test) = temp.scanf(self.scan_fmt)).size == 2 &&
+             ((value, test) = temp.scanf(scan_fmt)).size == 2 &&
              test == ' ' && value >= @low && value <= @high
             set_value(value)
             result = true

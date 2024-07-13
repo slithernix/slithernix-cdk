@@ -307,7 +307,7 @@ module Slithernix
               when Curses::KEY_LEFT
                 mtmp = [moved]
                 rtmp = [redraw]
-                self.key_left(mtmp, rtmp)
+                key_left(mtmp, rtmp)
                 moved = mtmp[0]
                 redraw = rtmp[0]
               when Curses::KEY_RIGHT
@@ -356,7 +356,7 @@ module Slithernix
                 else
                   mtmp = [moved]
                   rtmp = [redraw]
-                  hkl = self.key_left(mtmp, rtmp)
+                  hkl = key_left(mtmp, rtmp)
                   moved = mtmp[0]
                   [redraw]
                   if hkl

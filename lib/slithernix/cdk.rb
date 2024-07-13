@@ -60,18 +60,18 @@ module Slithernix
     MAX_ITEMS = 2000
     MAX_BUTTONS = 200
 
-    REFRESH = self.ctrl('L')
-    PASTE = self.ctrl('V')
-    COPY = self.ctrl('Y')
-    ERASE = self.ctrl('U')
-    CUT = self.ctrl('X')
-    BEGOFLINE = self.ctrl('A')
-    ENDOFLINE = self.ctrl('E')
-    BACKCHAR = self.ctrl('B')
-    FORCHAR = self.ctrl('F')
-    TRANSPOSE = self.ctrl('T')
-    NEXT = self.ctrl('N')
-    PREV = self.ctrl('P')
+    REFRESH = ctrl('L')
+    PASTE = ctrl('V')
+    COPY = ctrl('Y')
+    ERASE = ctrl('U')
+    CUT = ctrl('X')
+    BEGOFLINE = ctrl('A')
+    ENDOFLINE = ctrl('E')
+    BACKCHAR = ctrl('B')
+    FORCHAR = ctrl('F')
+    TRANSPOSE = ctrl('T')
+    NEXT = ctrl('N')
+    PREV = ctrl('P')
     DELETE = "\177".ord
     KEY_ESC = "\033".ord
     KEY_RETURN = "\012".ord
@@ -559,7 +559,7 @@ module Slithernix
       newstring = String.new
 
       string&.each do |char|
-        newstring << self.chtype_to_char(char)
+        newstring << chtype_to_char(char)
       end
 
       newstring
@@ -732,7 +732,7 @@ module Slithernix
         old_window.erase
         # window
       rescue StandardError
-        self.beep
+        beep
       end
     end
 

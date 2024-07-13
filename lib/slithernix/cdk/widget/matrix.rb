@@ -312,7 +312,7 @@ module Slithernix
 
           if actions.nil? || actions.empty?
             while true
-              @input_window = self.current_cell
+              @input_window = current_cell
               @input_window.keypad(true)
               input = getch([])
 
@@ -347,9 +347,9 @@ module Slithernix
 
           # Move the cursor to the correct position within the cell.
           if @colwidths[@ccol] == 1
-            self.current_cell.setpos(1, 1)
+            current_cell.setpos(1, 1)
           else
-            self.current_cell.setpos(1, @info[@row][@col].size + 1)
+            current_cell.setpos(1, @info[@row][@col].size + 1)
           end
 
           # Put the focus on the current cell.
@@ -377,10 +377,10 @@ module Slithernix
                   Slithernix::Cdk.beep
                 else
                   charcount -= 1
-                  self.current_cell.mvwdelch(1, charcount + 1)
-                  self.current_cell.mvwinsch(1, charcount + 1, @filler)
+                  current_cell.mvwdelch(1, charcount + 1)
+                  current_cell.mvwinsch(1, charcount + 1, @filler)
 
-                  self.current_cell.refresh
+                  current_cell.refresh
                   @info[@row][@col] = @info[@row][@col][0...charcount]
                 end
               when Curses::KEY_RIGHT, Slithernix::Cdk::KEY_TAB
@@ -534,9 +534,9 @@ module Slithernix
                   draw_cur_cell
                 end
               when Slithernix::Cdk::COPY
-                @@g_paste_buffer = self.current_info.clone
+                @@g_paste_buffer = current_info.clone
               when Slithernix::Cdk::CUT
-                @@g_paste_buffer = self.current_info.clone
+                @@g_paste_buffer = current_info.clone
                 clean_cell(@trow + @crow - 1, @lcol + @ccol - 1)
                 draw_cur_cell
               when Slithernix::Cdk::ERASE
@@ -549,7 +549,7 @@ module Slithernix
                   Slithernix::Cdk::Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
                                                 ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
                 end
-                self.current_cell.refresh
+                current_cell.refresh
                 set_exit_type(input)
                 ret = 1
                 complete = true
@@ -563,7 +563,7 @@ module Slithernix
                   Slithernix::Cdk::Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
                                                 ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
                 end
-                self.current_cell.refresh
+                current_cell.refresh
                 set_exit_type(input)
                 complete = true
               when Slithernix::Cdk::REFRESH
@@ -598,11 +598,11 @@ module Slithernix
               # Move to the correct position in the cell.
               if refresh_cells || moved_cell
                 if @colwidths[@ccol] == 1
-                  self.current_cell.setpos(1, 1)
+                  current_cell.setpos(1, 1)
                 else
-                  self.current_cell.setpos(1, self.current_info.size + 1)
+                  current_cell.setpos(1, current_info.size + 1)
                 end
-                self.current_cell.refresh
+                current_cell.refresh
               end
 
               # Should we call a post-process?
@@ -647,10 +647,10 @@ module Slithernix
                  else
                    @filler
                  end
-            self.current_cell.mvwaddch(1, x, ch.ord | highlight)
+            current_cell.mvwaddch(1, x, ch.ord | highlight)
           end
-          self.current_cell.setpos(1, infolen + 1)
-          self.current_cell.refresh
+          current_cell.setpos(1, infolen + 1)
+          current_cell.refresh
         end
 
         # This moves the matrix field to the given location.
@@ -1281,7 +1281,7 @@ module Slithernix
 
         def focus_current
           Slithernix::Cdk::Draw.attrbox(
-            self.current_cell,
+            current_cell,
             Slithernix::Cdk::ACS_ULCORNER,
             Slithernix::Cdk::ACS_URCORNER,
             Slithernix::Cdk::ACS_LLCORNER,
@@ -1290,7 +1290,7 @@ module Slithernix
             Slithernix::Cdk::ACS_VLINE,
             Curses::A_BOLD
           )
-          self.current_cell.refresh
+          current_cell.refresh
           highlight_cell
         end
 

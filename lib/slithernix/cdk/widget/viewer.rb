@@ -472,14 +472,14 @@ module Slithernix
                 @search_direction = Slithernix::Cdk::Widget::Viewer::UP
                 get_and_store_pattern(@screen)
                 unless search_for_word(@search_pattern, @search_direction)
-                  self.pattern_not_found(@search_pattern)
+                  pattern_not_found(@search_pattern)
                 end
                 refresh = true
               when '/'
                 @search_direction = Slithernix::Cdk::Widget::Viewer :DOWN
                 get_and_store_pattern(@screen)
                 unless search_for_word(@search_pattern, @search_direction)
-                  self.pattern_not_found(@search_pattern)
+                  pattern_not_found(@search_pattern)
                 end
                 refresh = true
               when 'N', 'n'
@@ -492,7 +492,7 @@ module Slithernix
                                      else
                                        1 - @search_direction
                                      end)
-                  self.pattern_not_found(@search_pattern)
+                  pattern_not_found(@search_pattern)
                 end
                 refresh = true
               when ':'

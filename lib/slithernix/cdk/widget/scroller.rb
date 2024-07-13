@@ -80,7 +80,7 @@ module Slithernix
                 @current_top -= @view_size - 1
                 @current_item -= @view_size - 1
               else
-                self.key_home
+                key_home
               end
             else
               Slithernix::Cdk.beep
@@ -148,7 +148,7 @@ module Slithernix
 
         def set_position(item)
           if item <= 0
-            self.key_home
+            key_home
           elsif item > @list_size - 1
             @current_top = @max_top_item
             @current_item = @list_size - 1
@@ -189,13 +189,13 @@ module Slithernix
         end
 
         def update_view_width(widest)
-          @max_left_char = widest - self.available_width
+          @max_left_char = widest - available_width
           @max_left_char = 0 if @box_width > widest
           @max_left_char
         end
 
         def widest_item
-          @max_left_char + self.available_width
+          @max_left_char + available_width
         end
       end
     end

@@ -88,7 +88,7 @@ module Slithernix
           # Turn the keypad on for the window
           @win.keypad(true)
 
-          xp = self.screen_xpos(xpos)
+          xp = screen_xpos(xpos)
 
           if splace == Slithernix::Cdk::RIGHT
             xp = xpos + box_width - @border_size - 1
@@ -98,7 +98,7 @@ module Slithernix
           @scrollbar_win = @win.subwin(
             max_view_size,
             1,
-            self.screen_ypos(ypos),
+            screen_ypos(ypos),
             xp
           )
 
@@ -106,8 +106,8 @@ module Slithernix
           @list_win = @win.subwin(
             max_view_size,
             box_width - (2 * @border_size) - scroll_adjust,
-            self.screen_ypos(ypos),
-            self.screen_xpos(xpos) + (splace == Slithernix::Cdk::LEFT ? 1 : 0),
+            screen_ypos(ypos),
+            screen_xpos(xpos) + (splace == Slithernix::Cdk::LEFT ? 1 : 0),
           )
 
           # Set the rest of the variables
@@ -154,8 +154,8 @@ module Slithernix
         # Put the cursor on the currently-selected item's row.
         def fix_cursor_position
           @scrollbar_placement == LEFT ? 1 : 0
-          ypos = self.screen_ypos(@current_item - @current_top)
-          xpos = self.screen_xpos(0)
+          ypos = screen_ypos(@current_item - @current_top)
+          xpos = screen_xpos(0)
 
           @input_window.setpos(ypos, xpos)
           @input_window.refresh
@@ -216,21 +216,21 @@ module Slithernix
             if check_bind(:Scroll, input) == false
               case input
               when Curses::KEY_UP
-                self.key_up
+                key_up
               when Curses::KEY_DOWN
-                self.key_down
+                key_down
               when Curses::KEY_RIGHT
-                self.key_right
+                key_right
               when Curses::KEY_LEFT
-                self.key_left
+                key_left
               when Curses::KEY_PPAGE
-                self.key_ppage
+                key_ppage
               when Curses::KEY_NPAGE
-                self.key_npage
+                key_npage
               when Curses::KEY_HOME
-                self.key_home
+                key_home
               when Curses::KEY_END
-                self.key_end
+                key_end
               when '$'
                 @left_char = @max_left_char
               when '|'

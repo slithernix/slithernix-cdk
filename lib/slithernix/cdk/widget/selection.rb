@@ -102,15 +102,15 @@ module Slithernix
             @scrollbar_win = @win.subwin(
               max_view_size,
               1,
-              self.screen_ypos(ypos),
+              screen_ypos(ypos),
               xpos + @box_width - @border_size - 1,
             )
           elsif splace == Slithernix::Cdk::LEFT
             @scrollbar_win = @win.subwin(
               max_view_size,
               1,
-              self.screen_ypos(ypos),
-              self.screen_xpos(ypos),
+              screen_ypos(ypos),
+              screen_xpos(ypos),
             )
           else
             @scrollbar_win = nil
@@ -167,8 +167,8 @@ module Slithernix
         # Put the cursor on the currently-selected item.
         def fix_cursor_position
           @scrollbar_placement == Slithernix::Cdk::LEFT ? 1 : 0
-          ypos = self.screen_ypos(@current_item - @current_top)
-          xpos = self.screen_xpos(0)
+          ypos = screen_ypos(@current_item - @current_top)
+          xpos = screen_xpos(0)
 
           @input_window.setpos(ypos, xpos)
           @input_window.refresh
@@ -226,14 +226,14 @@ module Slithernix
               complete = true
             else
               case input
-              when Curses::KEY_UP then self.key_up
-              when Curses::KEY_DOWN then self.key_down
-              when Curses::KEY_RIGHT then self.key_right
-              when Curses::KEY_LEFT then self.key_left
-              when Curses::KEY_PPAGE then self.key_ppage
-              when Curses::KEY_NPAGE then self.key_npage
-              when Curses::KEY_HOME then self.key_home
-              when Curses::KEY_END then self.key_end
+              when Curses::KEY_UP then key_up
+              when Curses::KEY_DOWN then key_down
+              when Curses::KEY_RIGHT then key_right
+              when Curses::KEY_LEFT then key_left
+              when Curses::KEY_PPAGE then key_ppage
+              when Curses::KEY_NPAGE then key_npage
+              when Curses::KEY_HOME then key_home
+              when Curses::KEY_END then key_end
               when '$' then @left_char = @max_left_char
               when '|' then @left_char = 0
               when ' '
@@ -320,9 +320,9 @@ module Slithernix
           while j < @view_size && (j + @current_top) < @list_size
             k = j + @current_top
             if k < @list_size
-              screen_pos = self.screen_position(k, scrollbar_adj)
-              ypos = self.screen_ypos(j)
-              xpos = self.screen_xpos(0)
+              screen_pos = screen_position(k, scrollbar_adj)
+              ypos = screen_ypos(j)
+              xpos = screen_xpos(0)
 
               # Draw the empty line.
               Slithernix::Cdk::Draw.write_blanks(
@@ -438,8 +438,8 @@ module Slithernix
           (0...@view_size).each do |j|
             Slithernix::Cdk::Draw.write_blanks(
               @win,
-              self.screen_xpos(0),
-              self.screen_ypos(j),
+              screen_xpos(0),
+              screen_ypos(j),
               Slithernix::Cdk::HORIZONTAL,
               0,
               @win.maxx,
@@ -578,7 +578,7 @@ module Slithernix
             new_len = []
             new_pos = []
 
-            box_width = self.available_width
+            box_width = available_width
             adjust = @maxchoicelen + @border_size
 
             status = 1

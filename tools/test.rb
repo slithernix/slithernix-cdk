@@ -212,10 +212,8 @@ module Util
             # output.each_char do |c|
             #  if regular_character? c
             #    curses_window.addch c
-            #    x_pos += 1 if (c != "\n" and c != "
-")
-            #    y_pos += 1 if (c == "\n" or c == "
-")
+            #    x_pos += 1 if (c != "\n" and c != "")
+            #    y_pos += 1 if (c == "\n" or c == "")
             #  end
             # end
 
