@@ -942,11 +942,10 @@ module Slithernix
       end
     end
 
-    private
+    def self.needs_color_change?(tmpattr, newattr)
+      return false unless Curses.has_colors?
 
-      def self.needs_color_change?(tmpattr, newattr)
-        return false unless Curses.has_colors?
-        (tmpattr & Curses::A_COLOR) != (newattr & Curses::A_COLOR)
-      end
+      (tmpattr & Curses::A_COLOR) != (newattr & Curses::A_COLOR)
+    end
   end
 end
