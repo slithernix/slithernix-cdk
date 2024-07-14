@@ -39,9 +39,19 @@ class DialogExample < Example
     ]
 
     # Create the dialog box.
-    question = Slithernix::Cdk::Widget::Dialog.new(cdkscreen, params.x_value, params.y_value,
-                                                   message, 7, buttons, 2, Curses.color_pair(2) | Curses::A_REVERSE,
-                                                   true, params.box, params.shadow)
+    question = Slithernix::Cdk::Widget::Dialog.new(
+      cdkscreen,
+      params.x_value,
+      params.y_value,
+      message,
+      7,
+      buttons,
+      2,
+      Curses.color_pair(2) | Curses::A_REVERSE,
+      true,
+      params.box,
+      params.shadow,
+    )
 
     # Check if we got a nil value back
     if question.nil?
