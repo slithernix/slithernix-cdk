@@ -52,7 +52,7 @@ module Slithernix
         end
 
         def set_calendar_cell(d, m, y, value)
-          @marker[Slithernix::Cdk::Widget::Calendar.calendar_index(d, m, y)] =
+          @marker[self.class.calendar_index(d, m, y)] =
             value
         end
 
@@ -177,8 +177,9 @@ module Slithernix
           verify_calendar_date
 
           # Determine which day the month starts on.
-          @week_day = Slithernix::Cdk::Widget::Calendar.get_month_start_weekday(
-            @year, @month
+          @weekday = Slithernix::Cdk::Widget::Calendar.get_month_start_weekday(
+            @year,
+            @month
           )
 
           # If a shadow was requested, then create the shadow window.
@@ -222,77 +223,20 @@ module Slithernix
           ret
         end
 
-        # This injects a single character into the widget.
         def inject(input)
-          # Declare local variables
           pp_return = 1
           ret = -1
           complete = false
 
-          # Set the exit type
           set_exit_type(0)
-
-          # Refresh the widget field.
           draw_field
 
-          # Check if there is a pre-process function to be called.
-          unless @pre_process_func.nil?
-            pp_return = @pre_process_func.call(:Calendar, self,
-                                               @pre_process_data, input)
-          end
+          pp_return = call_pre_process(:Calendar, input)
+          return ret unless pp_return != 0
 
-          # Should we continue?
-          if pp_return != 0
-            # Check a predefined binding
-            if check_bind(:Calendar, input)
-              checkEarlyExit
-              complete = true
-            else
-              case input
-              when Curses::KEY_UP
-                decrement_calendar_day(7)
-              when Curses::KEY_DOWN
-                increment_calendar_day(7)
-              when Curses::KEY_LEFT
-                decrement_calendar_day(1)
-              when Curses::KEY_RIGHT
-                increment_calendar_day(1)
-              when Curses::KEY_NPAGE
-                increment_calendar_month(1)
-              when Curses::KEY_PPAGE
-                decrement_calendar_month(1)
-              when 'N'
-                increment_calendar_month(6)
-              when 'P'
-                decrement_calendar_month(6)
-              when '-'
-                decrement_calendar_year(1)
-              when '+'
-                increment_calendar_year(1)
-              when Curses::KEY_HOME
-                set_date(-1, -1, -1)
-              when Slithernix::Cdk::KEY_ESC
-                set_exit_type(input)
-                complete = true
-              when Curses::Error
-                set_exit_type(input)
-                complete = true
-              when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
-                set_exit_type(input)
-                ret = get_current_time
-                complete = true
-              when Slithernix::Cdk::REFRESH
-                @screen.erase
-                @screen.refresh
-              end
-            end
+          complete = handle_input(input)
 
-            # Should we do a post-process?
-            if !complete && @post_process_func
-              @post_process_func.call(:Calendar, self, @post_process_data,
-                                      input)
-            end
-          end
+          call_post_process(:Calendar, input) unless complete
 
           set_exit_type(0) unless complete
 
@@ -300,11 +244,85 @@ module Slithernix
           ret
         end
 
+        def call_pre_process(widget_type, input)
+          return 1 if @pre_process_func.nil?
+
+          @pre_process_func.call(
+            widget_type,
+            self,
+            @pre_process_data,
+            input
+          )
+        end
+
+        def handle_input(input)
+          return true if handle_bind_and_exit(:Calendar, input)
+
+          case input
+          when Curses::KEY_UP    then decrement_calendar_day(7)
+          when Curses::KEY_DOWN  then increment_calendar_day(7)
+          when Curses::KEY_LEFT  then decrement_calendar_day(1)
+          when Curses::KEY_RIGHT then increment_calendar_day(1)
+          when Curses::KEY_NPAGE then increment_calendar_month(1)
+          when Curses::KEY_PPAGE then decrement_calendar_month(1)
+          when 'N'               then increment_calendar_month(6)
+          when 'P'               then decrement_calendar_month(6)
+          when '-'               then decrement_calendar_year(1)
+          when '+'               then increment_calendar_year(1)
+          when Curses::KEY_HOME  then set_date(-1, -1, -1)
+          when Slithernix::Cdk::KEY_ESC, Curses::Error
+            set_exit_type(input)
+            return true
+          when
+            Slithernix::Cdk::KEY_TAB,
+            Slithernix::Cdk::KEY_RETURN,
+            Curses::KEY_ENTER
+
+            set_exit_type(input)
+            @result_data = get_current_time
+            return true
+          when Slithernix::Cdk::REFRESH
+            refresh_screen
+          end
+
+          false
+        end
+
+        def handle_bind_and_exit(widget_type, input)
+          return false unless check_bind(widget_type, input)
+
+          # This method doesn't exist anywhere so not sure what it is.
+          #checkEarlyExit
+          true
+        end
+
+        def call_post_process(widget_type, input)
+          return unless @post_process_func
+
+          @post_process_func.call(
+            widget_type,
+            self,
+            @post_process_data,
+            input
+          )
+        end
+
+        def refresh_screen
+          @screen.erase
+          @screen.refresh
+        end
+
         # This moves the calendar field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @field_win, @label_win, @shadow_win]
-          move_specific(xplace, yplace, relative, refresh_flag,
-                        windows, [])
+          move_specific(
+            xplace,
+            yplace,
+            relative,
+            refresh_flag,
+            windows,
+            []
+          )
         end
 
         # This draws the calendar widget.
@@ -326,8 +344,15 @@ module Slithernix
           (0...7).each do |col|
             src = col_len * ((col + (@week_base % 7)) % 7)
             dst = col_len * col
-            Slithernix::Cdk::Draw.write_char(@win, @x_offset + dst, @title_lines + 2,
-                                             @day_name[src..], Slithernix::Cdk::HORIZONTAL, 0, col_len)
+            Slithernix::Cdk::Draw.write_char(
+              @win,
+              @x_offset + dst,
+              @title_lines + 2,
+              @day_name[src..],
+              Slithernix::Cdk::HORIZONTAL,
+              0,
+              col_len
+            )
           end
 
           @win.refresh
@@ -337,19 +362,20 @@ module Slithernix
         # This draws the month field.
         def draw_field
           month_name = @month_name[@month]
-          month_length = Slithernix::Cdk::Widget::Calendar.get_month_length(
-            @year, @month
+          month_len = Slithernix::Cdk::Widget::Calendar.get_month_len(
+            @year,
+            @month,
           )
           year_index = Slithernix::Cdk::Widget::Calendar.year_to_index(@year)
           save_y = -1
           save_x = -1
 
-          day = (1 - @week_day + (@week_base % 7))
+          day = (1 - @weekday + (@week_base % 7))
           day -= 7 if day.positive?
 
           (1..6).each do |row|
             (0...7).each do |col|
-              if day >= 1 && day <= month_length
+              if day >= 1 && day <= month_len
                 xpos = col * 3
                 ypos = row
 
@@ -441,7 +467,7 @@ module Slithernix
           verify_calendar_date
 
           # Get the start of the current month.
-          @week_day = Slithernix::Cdk::Widget::Calendar.get_month_start_weekday(
+          @weekday = Slithernix::Cdk::Widget::Calendar.get_month_start_weekday(
             @year,
             @month,
           )
@@ -573,11 +599,11 @@ module Slithernix
           @month = 1 if @month < 1
 
           # Make sure the day given is within range of the month.
-          month_length = Slithernix::Cdk::Widget::Calendar.get_month_length(
+          month_len = Slithernix::Cdk::Widget::Calendar.get_month_len(
             @year, @month
           )
           @day = 1 if @day < 1
-          @day = month_length if @day > month_length
+          @day = month_len if @day > month_len
         end
 
         # This returns what day of the week the month starts on.
@@ -600,14 +626,14 @@ module Slithernix
 
         # This increments the current day by the given value.
         def increment_calendar_day(adjust)
-          month_length = Slithernix::Cdk::Widget::Calendar.get_month_length(
+          month_len = Slithernix::Cdk::Widget::Calendar.get_month_len(
             @year, @month
           )
 
           # Make sure we adjust the day correctly.
-          if adjust + @day > month_length
+          if adjust + @day > month_len
             # Have to increment the month by one.
-            @day = @day + adjust - month_length
+            @day = @day + adjust - month_len
             increment_calendar_month(1)
           else
             @day += adjust
@@ -631,16 +657,16 @@ module Slithernix
                 @screen.popup_label(mesg, 2)
                 return
               end
-              month_length = Slithernix::Cdk::Widget::Calendar.get_month_length(
+              month_len = Slithernix::Cdk::Widget::Calendar.get_month_len(
                 @year - 1, 12
               )
             else
-              month_length = Slithernix::Cdk::Widget::Calendar.get_month_length(
+              month_len = Slithernix::Cdk::Widget::Calendar.get_month_len(
                 @year, @month - 1
               )
             end
 
-            @day = month_length - (adjust - @day)
+            @day = month_len - (adjust - @day)
 
             # Have to decrement the month by one.
             decrement_calendar_month(1)
@@ -661,13 +687,13 @@ module Slithernix
           end
 
           # Get the length of the current month.
-          month_length = Slithernix::Cdk::Widget::Calendar.get_month_length(
+          month_len = Slithernix::Cdk::Widget::Calendar.get_month_len(
             @year, @month
           )
-          @day = month_length if @day > month_length
+          @day = month_len if @day > month_len
 
           # Get the start of the current month.
-          @week_day = Slithernix::Cdk::Widget::Calendar.get_month_start_weekday(
+          @weekday = Slithernix::Cdk::Widget::Calendar.get_month_start_weekday(
             @year, @month
           )
 
@@ -697,13 +723,13 @@ module Slithernix
           end
 
           # Get the length of the current month.
-          month_length = Slithernix::Cdk::Widget::Calendar.get_month_length(
+          month_len = Slithernix::Cdk::Widget::Calendar.get_month_len(
             @year, @month
           )
-          @day = month_length if @day > month_length
+          @day = month_len if @day > month_len
 
           # Get the start o the current month.
-          @week_day = Slithernix::Cdk::Widget::Calendar.get_month_start_weekday(
+          @weekday = Slithernix::Cdk::Widget::Calendar.get_month_start_weekday(
             @year, @month
           )
 
@@ -719,14 +745,14 @@ module Slithernix
 
           # If we are in Feb make sure we don't trip into voidness.
           if @month == 2
-            month_length = Slithernix::Cdk::Widget::Calendar.get_month_length(
+            month_len = Slithernix::Cdk::Widget::Calendar.get_month_len(
               @year, @month
             )
-            @day = month_length if @day > month_length
+            @day = month_len if @day > month_len
           end
 
           # Get the start of the current month.
-          @week_day = Slithernix::Cdk::Widget::Calendar.get_month_start_weekday(
+          @weekday = Slithernix::Cdk::Widget::Calendar.get_month_start_weekday(
             @year, @month
           )
 
@@ -753,14 +779,14 @@ module Slithernix
 
           # If we are in Feb make sure we don't trip into voidness.
           if @month == 2
-            month_length = Slithernix::Cdk::Widget::Calendar.get_month_length(
+            month_len = Slithernix::Cdk::Widget::Calendar.get_month_len(
               @year, @month
             )
-            @day = month_length if @day > month_length
+            @day = month_len if @day > month_len
           end
 
           # Get the start of the current month.
-          @week_day = Slithernix::Cdk::Widget::Calendar.get_month_start_weekday(
+          @weekday = Slithernix::Cdk::Widget::Calendar.get_month_start_weekday(
             @year, @month
           )
 
@@ -770,18 +796,16 @@ module Slithernix
         end
 
         # This returns the length of the current month.
-        def self.get_month_length(year, month)
-          month_length = DAYS_OF_THE_MONTH[month]
+        def self.get_month_len(year, month)
+          month_len = DAYS_OF_THE_MONTH[month]
 
           if month == 2
-            month_length += if Slithernix::Cdk::Widget::Calendar.is_leap_year?(year)
-                            then 1
-                            else
-                              0
-                            end
+            x = 0
+            x = 1 if Slithernix::Cdk::Widget::Calendar.is_leap_year?(year)
+            month_len += x
           end
 
-          month_length
+          month_len
         end
 
         # This returns what day of the week the month starts on.

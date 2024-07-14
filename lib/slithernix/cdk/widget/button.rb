@@ -222,93 +222,68 @@ module Slithernix
           draw(@box) if refresh_flag
         end
 
-        # This allows the user to use the cursor keys to adjust the
-        # position of the widget.
         def position
-          # Declare some variables
-          orig_x = @win.begx
-          orig_y = @win.begy
+          orig_x, orig_y = @win.begx, @win.begy
           key = 0
 
-          # Let them move the widget around until they hit return
-          # SUSPECT FOR BUG
-          while key != Curses::KEY_ENTER && key != Slithernix::Cdk::KEY_RETURN
+          until [Curses::KEY_ENTER, Slithernix::Cdk::KEY_RETURN].include?(key)
             key = getch([])
-            if [Curses::KEY_UP, '8'].include?(key)
-              if @win.begy.positive?
-                move(0, -1, true, true)
-              else
-                Slithernix::Cdk.beep
-              end
-            elsif [Curses::KEY_DOWN, '2'].include?(key)
-              if @win.begy + @win.maxy < @screen.window.maxy - 1
-                move(0, 1, true, true)
-              else
-                Slithernix::Cdk.beep
-              end
-            elsif [Curses::KEY_LEFT, '4'].include?(key)
-              if @win.begx.positive?
-                move(-1, 0, true, true)
-              else
-                Slithernix::Cdk.beep
-              end
-            elsif [Curses::KEY_RIGHT, '6'].include?(key)
-              if @win.begx + @win.maxx < @screen.window.maxx - 1
-                move(1, 0, true, true)
-              else
-                Slithernix::Cdk.beep
-              end
-            elsif key == '7'
-              if @win.begy.positive? && @win.begx.positive?
-                move(-1, -1, true, true)
-              else
-                Slithernix::Cdk.beep
-              end
-            elsif key == '9'
-              if @win.begx + @win.maxx < @screen.window.maxx - 1 &&
-                 @win.begy.positive?
-                move(1, -1, true, true)
-              else
-                Slithernix::Cdk.beep
-              end
-            elsif key == '1'
-              if @win.begx.positive? &&
-                 @win.begx + @win.maxx < @screen.window.maxx - 1
-                move(-1, 1, true, true)
-              else
-                Slithernix::Cdk.beep
-              end
-            elsif key == '3'
-              if @win.begx + @win.maxx < @screen.window.maxx - 1 &&
-                 @win.begy + @win.maxy < @screen.window.maxy - 1
-                move(1, 1, true, true)
-              else
-                Slithernix::Cdk.beep
-              end
-            elsif key == '5'
-              move(Slithernix::Cdk::CENTER, Slithernix::Cdk::CENTER, false,
-                   true)
-            elsif key == 't'
-              move(@win.begx, Slithernix::Cdk::TOP, false, true)
-            elsif key == 'b'
-              move(@win.begx, Slithernix::Cdk::BOTTOM, false, true)
-            elsif key == 'l'
-              move(Slithernix::Cdk::LEFT, @win.begy, false, true)
-            elsif key == 'r'
-              move(Slithernix::Cdk::RIGHT, @win.begy, false, true)
-            elsif key == 'c'
-              move(Slithernix::Cdk::CENTER, @win.begy, false, true)
-            elsif key == 'C'
-              move(@win.begx, Slithernix::Cdk::CENTER, false, true)
-            elsif key == Slithernix::Cdk::REFRESH
-              @screen.erase
-              @screen.refresh
-            elsif key == Slithernix::Cdk::KEY_ESC
-              move(orig_x, orig_y, false, true)
-            elsif key != Slithernix::Cdk::KEY_RETURN && key != Curses::KEY_ENTER
+            handle_key(key, orig_x, orig_y)
+          end
+        end
+
+
+        def handle_key(key, orig_x, orig_y)
+          case key
+          when Curses::KEY_UP, '8' then move_if_possible(0, -1)
+          when Curses::KEY_DOWN, '2' then move_if_possible(0, 1)
+          when Curses::KEY_LEFT, '4' then move_if_possible(-1, 0)
+          when Curses::KEY_RIGHT, '6' then move_if_possible(1, 0)
+          when '7' then move_if_possible(-1, -1)
+          when '9' then move_if_possible(1, -1)
+          when '1' then move_if_possible(-1, 1)
+          when '3' then move_if_possible(1, 1)
+          when '5'
+            move(
+              Slithernix::Cdk::CENTER,
+              Slithernix::Cdk::CENTER,
+              false,
+              true
+            )
+          when 't' then move(@win.begx, Slithernix::Cdk::TOP, false, true)
+          when 'b' then move(@win.begx, Slithernix::Cdk::BOTTOM, false, true)
+          when 'l' then move(Slithernix::Cdk::LEFT, @win.begy, false, true)
+          when 'r' then move(Slithernix::Cdk::RIGHT, @win.begy, false, true)
+          when 'c' then move(Slithernix::Cdk::CENTER, @win.begy, false, true)
+          when 'C' then move(@win.begx, Slithernix::Cdk::CENTER, false, true)
+          when Slithernix::Cdk::REFRESH
+            @screen.erase
+            @screen.refresh
+          when Slithernix::Cdk::KEY_ESC
+            move(orig_x, orig_y, false, true)
+          else
+            unless [
+              Slithernix::Cdk::KEY_RETURN,
+              Curses::KEY_ENTER
+            ].include?(key)
               Slithernix::Cdk.beep
             end
           end
+        end
+
+        def move_if_possible(dx, dy)
+          new_x, new_y = @win.begx + dx, @win.begy + dy
+          if position_valid?(new_x, new_y)
+            move(dx, dy, true, true)
+          else
+            Slithernix::Cdk.beep
+          end
+        end
+
+        def position_valid?(x, y)
+          x >= 0 && y >= 0 &&
+            x + @win.maxx < @screen.window.maxx &&
+            y + @win.maxy < @screen.window.maxy
         end
 
         # This destroys the button widget pointer.

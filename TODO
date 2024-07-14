@@ -1,5 +1,18 @@
 SlitherNix CDK TODO List (You can find the original Tawny list below)
 
+* Need to refactor all the return values
+
+  As the original programmer clearly came from the C world, he uses the C
+  style of returning integers from methods all over the place. This is
+  really not idiomatic in Ruby.
+
+* Need to assess which methods should be private as they are mostly
+  all public right now.
+
+* There's no plain button example
+
+  Need one for demonstration/testing
+
 * using CUT on alphalist fucks up the program
 
   looks all weird.

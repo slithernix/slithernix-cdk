@@ -103,8 +103,11 @@ module Slithernix
 
           # Create the string alignments.
           (0...rows).each do |x|
-            @info_pos[x] = Slithernix::Cdk.justify_string(box_width - (2 * @border_size),
-                                                          @info_len[x], @info_pos[x])
+            @info_pos[x] = Slithernix::Cdk.justify_string(
+              box_width - (2 * @border_size),
+              @info_len[x],
+              @info_pos[x],
+            )
           end
 
           # Was there a shadow?
@@ -248,9 +251,15 @@ module Slithernix
 
           # Draw in the message.
           (0...@message_rows).each do |x|
-            Slithernix::Cdk::Draw.write_chtype(@win,
-                                               @info_pos[x] + @border_size, x + @border_size, @info[x],
-                                               Slithernix::Cdk::HORIZONTAL, 0, @info_len[x])
+            Slithernix::Cdk::Draw.write_chtype(
+              @win,
+              @info_pos[x] + @border_size,
+              x + @border_size,
+              @info[x],
+              Slithernix::Cdk::HORIZONTAL,
+              0,
+              @info_len[x],
+            )
           end
 
           # Draw in the buttons.

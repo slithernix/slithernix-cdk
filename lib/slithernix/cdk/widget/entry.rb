@@ -131,31 +131,19 @@ module Slithernix
               character
             )
 
-            if plainchar == Curses::Error || entry.info.size >= entry.max
-              Slithernix::Cdk.beep
-            else
-              # Update the screen and pointer
-              if entry.screen_col == entry.field_width - 1
-                # Update the character pointer.
-                entry.info << plainchar
-                # Do not update the pointer if it's the last character
-                entry.left_char += 1 if entry.info.size < entry.max
-              else
-                front = (entry.info[0...(entry.screen_col + entry.left_char)] or '')
-                back = (entry.info[(entry.screen_col + entry.left_char)..] or '')
-                entry.info = front + plainchar.chr + back
-                entry.screen_col += 1
-              end
+            return Slithernix::Cdk.beep if invalid_input?(entry, plainchar)
 
-              # Update the entry field.
-              entry.draw_field
-            end
+            update_entry(entry, plainchar)
+            entry.draw_field
           end
 
-          # Do we want a shadow?
           if shadow
-            @shadow_win = cdkscreen.window.subwin(box_height, box_width,
-                                                  ypos + 1, xpos + 1)
+            @shadow_win = cdkscreen.window.subwin(
+              box_height,
+              box_width,
+              ypos + 1,
+              xpos + 1,
+            )
           end
 
           cdkscreen.register(:Entry, self)
@@ -579,6 +567,31 @@ module Slithernix
 
         def position
           super(@win)
+        end
+
+        def invalid_input?(entry, plainchar)
+          plainchar == Curses::Error || entry.info.size >= entry.max
+        end
+
+        def update_entry(entry, plainchar)
+          if entry.screen_col == entry.field_width - 1
+            append_character(entry, plainchar)
+          else
+            insert_character(entry, plainchar)
+          end
+        end
+
+        def append_character(entry, plainchar)
+          entry.info << plainchar
+          entry.left_char += 1 if entry.info.size < entry.max
+        end
+
+        def insert_character(entry, plainchar)
+          insert_position = entry.screen_col + entry.left_char
+          front = entry.info[0...insert_position] || ''
+          back = entry.info[insert_position..] || ''
+          entry.info = front + plainchar.chr + back
+          entry.screen_col += 1
         end
       end
     end

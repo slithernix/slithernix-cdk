@@ -109,7 +109,9 @@ class CalendarExample < Example
 
     calendar.week_base = params.week_base
 
-    # Let the user play with the widget.
+    # TODO below the programmer expected this widget to return the value
+    # of the time selected, which is not what's happening here, it's
+    # returning -1.
     ret_val = calendar.activate([])
 
     # Check which day they selected.
@@ -123,8 +125,12 @@ class CalendarExample < Example
     elsif calendar.exit_type == :NORMAL
       mesg = [
         'You selected the following date',
-        format('<C></B/16>%02d/%02d/%d (dd/mm/yyyy)', calendar.day,
-               calendar.month, calendar.year),
+        format(
+          '<C></B/16>%02d-%02d-%d (yyyy-mm-dd)',
+          calendar.year,
+          calendar.month,
+          calendar.day,
+        ),
         '<C>Press any key to continue.'
       ]
       cdkscreen.popup_label(mesg, 3)
@@ -136,7 +142,6 @@ class CalendarExample < Example
     Slithernix::Cdk::Screen.end_cdk
     $stdout.flush
     puts 'Selected Time: %s' % ret_val.ctime
-    # ExitProgram (EXIT_SUCCESS);
   end
 end
 
