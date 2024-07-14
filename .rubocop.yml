@@ -16,3 +16,7 @@ Style/TrailingCommaInArrayLiteral:
 
 Style/TrailingCommaInHashLiteral:
   Enabled: false
+
+Metrics/MethodLength:
+  Max: 20
+

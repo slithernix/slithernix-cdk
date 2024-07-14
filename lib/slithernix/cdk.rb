@@ -223,57 +223,71 @@ module Slithernix
       # Well, almost.  If attributes such as bold and underline are combined in
       # the same string, we do not necessarily reconstruct them in the same
       # order. Also, alignment markers and tabs are lost.
-
       def decode_attribute(string, from, oldattr, newattr)
-        result = string.nil? ? '' : string
+        result = string || ''
         base_len = result.size
         tmpattr = oldattr & Curses::A_ATTRIBUTES
-
         newattr &= Curses::A_ATTRIBUTES
-        if tmpattr != newattr
-          while tmpattr != newattr
-            found = false
-            curses_attr_map.each_key do |key|
-              next unless (curses_attr_map[key] & tmpattr) != (curses_attr_map[key] & newattr)
 
-              found = true
-              result << Slithernix::Cdk::L_MARKER
-              if (curses_attr_map[key] & tmpattr).nonzero?
-                result << '!'
-                tmpattr = tmpattr.clear_bits(curses_attr_map[key])
-              else
-                result << '/'
-                tmpattr |= curses_attr_map[key]
-              end
-              result << key
-              break
-            end
+        while tmpattr != newattr
+          found = false
+          tmpattr, result, found = process_attributes(tmpattr, newattr, result)
 
-            if self.needs_color_change?(tmpattr, newattr)
-              oldpair = Curses.pair_number(tmpattr)
-              newpair = Curses.pair_number(newattr)
-              unless found
-                found = true
-                result << Slithernix::Cdk::L_MARKER
-              end
-              if newpair.zero?
-                result << '!'
-                result << oldpair.to_s
-              else
-                result << '/'
-                result << newpair.to_s
-              end
-              tmpattr = tmpattr.clear_bits(Curses::A_COLOR)
-              newattr = newattr.clear_bits(Curses::A_COLOR)
-            end
-
-            break unless found
-
-            result << Slithernix::Cdk::R_MARKER
+          if needs_color_change?(tmpattr, newattr)
+            tmpattr, newattr, result, found = process_color_change(
+              tmpattr, newattr, result, found
+            )
           end
+
+          break unless found
+
+          result << Slithernix::Cdk::R_MARKER
         end
 
         from + result.size - base_len
+      end
+
+      def process_attributes(tmpattr, newattr, result)
+        found = false
+        curses_attr_map.each do |key, value|
+          next unless (value & tmpattr) != (value & newattr)
+
+          found = true
+          result << Slithernix::Cdk::L_MARKER
+          if (value & tmpattr).nonzero?
+            result << '!'
+            tmpattr = tmpattr.clear_bits(value)
+          else
+            result << '/'
+            tmpattr |= value
+          end
+          result << key
+          break
+        end
+        [tmpattr, result, found]
+      end
+
+      def process_color_change(tmpattr, newattr, result, found)
+        oldpair = Curses.pair_number(tmpattr)
+        newpair = Curses.pair_number(newattr)
+
+        unless found
+          found = true
+          result << Slithernix::Cdk::L_MARKER
+        end
+
+        if newpair.zero?
+          result << '!'
+          result << oldpair.to_s
+        else
+          result << '/'
+          result << newpair.to_s
+        end
+
+        tmpattr = tmpattr.clear_bits(Curses::A_COLOR)
+        newattr = newattr.clear_bits(Curses::A_COLOR)
+
+        [tmpattr, newattr, result, found]
       end
 
       # This function takes a string, full of format markers and translates
