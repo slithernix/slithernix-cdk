@@ -19,9 +19,10 @@ end
 Curses.ESCDELAY = 0
 
 module Slithernix
+  # Top-level module for Curses Development Kit
   module Cdk
-    def self.ctrl(c)
-      c.ord & 0x1f
+    def self.ctrl(key)
+      key.ord & 0x1f
     end
 
     # some useful global values
@@ -124,64 +125,53 @@ module Slithernix
     end
 
     # This sets a blank string to be len of the given characer.
-    def self.clean_char(s, len, character)
-      s << (character * len)
+    def self.clean_char(str, len, char)
+      str << (char * len)
     end
 
-    def self.clean_chtype(s, len, character)
-      s.concat(character * len)
+    def self.clean_chtype(str, len, char)
+      str.concat(char * len)
     end
 
     # This takes an x and y position and realigns the values iff they sent in
     # values like CENTER, LEFT, RIGHT
     #
-    # window is an Curses::WINDOW widget
+    # window is an Curses::Window
     # xpos, ypos is an array with exactly one value, an integer
     # box_width, box_height is an integer
     def self.alignxy(window, xpos, ypos, box_width, box_height)
-      first = window.begx
-      last = window.maxx
-      if (gap = (last - box_width)).negative?
-        gap = 0
-      end
+      align_dimension(window, xpos, box_width, :x)
+      align_dimension(window, ypos, box_height, :y)
+    end
+
+    def self.align_dimension(window, pos, box_size, dimension)
+      first, last = get_window_bounds(window, dimension)
+      gap = calculate_gap(last, box_size)
       last = first + gap
 
-      case xpos[0]
-      when LEFT
-        xpos[0] = first
-      when RIGHT
-        xpos[0] = first + gap
-      when CENTER
-        xpos[0] = first + (gap / 2)
-      else
-        if xpos[0] > last
-          xpos[0] = last
-        elsif xpos[0] < first
-          xpos[0] = first
-        end
-      end
+      pos[0] = case pos[0]
+               when LEFT, TOP then first
+               when RIGHT, BOTTOM then first + gap
+               when CENTER then first + (gap / 2)
+               else constrain_position(pos[0], first, last)
+               end
+    end
 
-      first = window.begy
-      last = window.maxy
-      if (gap = (last - box_height)).negative?
-        gap = 0
-      end
-      last = first + gap
-
-      case ypos[0]
-      when TOP
-        ypos[0] = first
-      when BOTTOM
-        ypos[0] = first + gap
-      when CENTER
-        ypos[0] = first + (gap / 2)
+    def self.get_window_bounds(window, dimension)
+      if dimension == :x
+        [window.begx, window.maxx]
       else
-        if ypos[0] > last
-          ypos[0] = last
-        elsif ypos[0] < first
-          ypos[0] = first
-        end
+        [window.begy, window.maxy]
       end
+    end
+
+    def self.calculate_gap(last, box_size)
+      gap = last - box_size
+      gap.negative? ? 0 : gap
+    end
+
+    def self.constrain_position(pos, first, last)
+      pos.clamp(first, last)
     end
 
     # This takes a string, a field width, and a justification type
@@ -206,7 +196,7 @@ module Slithernix
     end
 
     # This reads a file and sticks it into the list provided.
-    def self.read_file(filename, array)
+    def self.read_file(filename, arr)
       begin
         fd = File.new(filename, 'r')
       rescue StandardError
@@ -220,9 +210,9 @@ module Slithernix
           line
         end
       end
-      array.concat(lines)
+      arr.concat(lines)
       fd.close
-      array.size
+      arr.size
     end
 
     def self.encode_attribute(string, from, mask)
