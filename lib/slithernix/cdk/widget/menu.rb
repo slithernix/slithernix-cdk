@@ -66,31 +66,42 @@ module Slithernix
             end
 
             max = -1
-            (Slithernix::Cdk::Widget::Menu::TITLELINES...subsize[x]).to_a.each do |y|
+            r = Slithernix::Cdk::Widget::Menu::TITLELINES...subsize[x]
+            r.to_a.each do |y|
               y0 = y - Slithernix::Cdk::Widget::Menu::TITLELINES
               sublist_len = []
-              @sublist[x1][y0] = Slithernix::Cdk.char_to_chtype(menu_list[x][y],
-                                                                sublist_len, [])
+              @sublist[x1][y0] = Slithernix::Cdk.char_to_chtype(
+                menu_list[x][y],
+                sublist_len,
+                []
+              )
               @sublist_len[x1][y0] = sublist_len[0]
               max = [max, sublist_len[0]].max
             end
 
-            x2 = if menu_location[x] == Slithernix::Cdk::LEFT
-                   leftloc
-                 else
-                   (rightloc -= max + 2)
-                 end
+            x2 = menu_location[x] == Slithernix::Cdk::LEFT ? leftloc : (rightloc -= max + 2)
 
             title_len = []
-            @title[x1] =
-              Slithernix::Cdk.char_to_chtype(menu_list[x][0], title_len, [])
+            @title[x1] = Slithernix::Cdk.char_to_chtype(
+              menu_list[x][0],
+              title_len,
+              [],
+            )
+
             @title_len[x1] = title_len[0]
-            @subsize[x1] =
-              subsize[x] - Slithernix::Cdk::Widget::Menu::TITLELINES
-            @title_win[x1] = cdkscreen.window.subwin(Slithernix::Cdk::Widget::Menu::TITLELINES,
-                                                     @title_len[x1] + 2, ypos + y1, xpos + x2)
-            @pull_win[x1] = cdkscreen.window.subwin(high, max + 2,
-                                                    ypos + y2, xpos + x2)
+            @subsize[x1] = subsize[x] - Slithernix::Cdk::Widget::Menu::TITLELINES
+            @title_win[x1] = cdkscreen.window.subwin(
+              Slithernix::Cdk::Widget::Menu::TITLELINES,
+              @title_len[x1] + 2,
+              ypos + y1,
+              xpos + x2
+            )
+            @pull_win[x1] = cdkscreen.window.subwin(
+              high,
+              max + 2,
+              ypos + y2,
+              xpos + x2,
+            )
             if @title_win[x1].nil? || @pull_win[x1].nil?
               destroy
               return nil
@@ -243,8 +254,12 @@ module Slithernix
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
             # Call the pre-process function.
-            pp_return = @pre_process_func.call(:Menu, self,
-                                               @pre_process_data, input)
+            pp_return = @pre_process_func.call(
+              :Menu,
+              self,
+              @pre_process_data,
+              input,
+            )
           end
 
           # Should we continue?

@@ -43,8 +43,11 @@ module Slithernix
 
           # Create the string alignments.
           (0...rows).each do |x|
-            @info_pos[x] = Slithernix::Cdk.justify_string(box_width - (2 * @border_size),
-                                                          @info_len[x], @info_pos[x])
+            @info_pos[x] = Slithernix::Cdk.justify_string(
+              box_width - (2 * @border_size),
+              @info_len[x],
+              @info_pos[x],
+            )
           end
 
           # Make sure we didn't extend beyond the dimensions of the window.
@@ -52,8 +55,14 @@ module Slithernix
           box_height = parent_height if box_height > parent_height
 
           # Rejustify the x and y positions if we need to
-          Slithernix::Cdk.alignxy(cdkscreen.window, xpos, ypos, box_width,
-                                  box_height)
+          Slithernix::Cdk.alignxy(
+            cdkscreen.window,
+            xpos,
+            ypos,
+            box_width,
+            box_height
+          )
+
           @screen = cdkscreen
           @parent = cdkscreen.window
           @win = Curses::Window.new(box_height, box_width, ypos[0], xpos[0])
@@ -76,8 +85,12 @@ module Slithernix
 
           # If a shadow was requested, then create the shadow window.
           if shadow
-            @shadow_win = Curses::Window.new(box_height, box_width,
-                                             ypos[0] + 1, xpos[0] + 1)
+            @shadow_win = Curses::Window.new(
+              box_height,
+              box_width,
+              ypos[0] + 1,
+              xpos[0] + 1,
+            )
           end
 
           # Register this
@@ -174,11 +187,6 @@ module Slithernix
           Slithernix::Cdk.erase_curses_window(@win)
           Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
-
-        # This moves the label field to the given location
-        # Inherited
-        # def move(xplace, yplace, relative, refresh_flag)
-        # end
 
         # This destroys the label widget pointer.
         def destroy

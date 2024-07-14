@@ -1,5 +1,12 @@
 SlitherNix CDK TODO List (You can find the original Tawny list below)
 
+* Assess whether all these key constants are necessary
+
+  Curses itself has over 180 KEY_ constants so need to take a good look
+  at why the original developer created these in the Cdk namespace. Most
+  likely the curses lib he was using at the time didn't have these constants
+  is what I am guessing.
+
 * Need to refactor all the return values
 
   As the original programmer clearly came from the C world, he uses the C

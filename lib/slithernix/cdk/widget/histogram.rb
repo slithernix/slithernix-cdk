@@ -125,15 +125,14 @@ module Slithernix
           @percent = @high.zero? ? 0 : (1.0 * (@value / @high))
 
           # Determine the size of the histogram bar.
-          @bar_size = if @orient == Slithernix::Cdk::VERTICAL
-                        @percent * @field_height
-                      else
-                        @percent * @field_width
-                      end
+          @bar_size = @percent * @field_width
+          if @orient == Slithernix::Cdk::VERTICAL
+            @bar_size = @percent * @field_height
+          end
 
-          # We have a number of variables which determine the personality of the
-          # histogram.  We have to go through each one methodically, and set them
-          # correctly.  This section does this.
+          # We have a number of variables which determine the personality of
+          # the histogram.  We have to go through each one methodically, and
+          # set them correctly. This section does this.
           return unless @view_type != :NONE
 
           if @orient == Slithernix::Cdk::VERTICAL

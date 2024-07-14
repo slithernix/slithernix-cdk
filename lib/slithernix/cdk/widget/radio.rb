@@ -238,7 +238,11 @@ module Slithernix
               when Curses::Error
                 set_exit_type(input)
                 complete = true
-              when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
+              when
+                Slithernix::Cdk::KEY_TAB,
+                Slithernix::Cdk::KEY_RETURN,
+                Curses::KEY_ENTER
+
                 set_exit_type(input)
                 ret = @selected_item
                 complete = true
@@ -267,8 +271,14 @@ module Slithernix
         # This moves the radio field to the given location.
         def move(xplace, yplace, relative, refresh_flag)
           windows = [@win, @scrollbar_win, @shadow_win]
-          move_specific(xplace, yplace, relative, refresh_flag,
-                        windows, subwidgets)
+          move_specific(
+            xplace,
+            yplace,
+            relative,
+            refresh_flag,
+            windows,
+            subwidgets
+          )
         end
 
         # This function draws the radio widget.
@@ -446,7 +456,9 @@ module Slithernix
 
         def get_items(list)
           (0...@list_size).each do |j|
-            list << Slithernix::Cdk.chtype_string_to_unformatted_string(@item[j])
+            list << Slithernix::Cdk.chtype_string_to_unformatted_string(
+              @item[j]
+            )
           end
           @list_size
         end
@@ -479,8 +491,8 @@ module Slithernix
           @left_box_char
         end
 
-        # This sets the character to use to draw the right side of the choice box
-        # on the list
+        # This sets the character to use to draw the right side of the choice
+        # box on the list
         def set_right_brace(character)
           @right_box_char = character
         end

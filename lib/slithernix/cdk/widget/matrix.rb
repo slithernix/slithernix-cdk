@@ -546,8 +546,16 @@ module Slithernix
                 if @box_cell
                   draw_old_cell
                 else
-                  Slithernix::Cdk::Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
-                                                ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
+                  Slithernix::Cdk::Draw.attrbox(
+                    @cell[@oldcrow][@oldccol],
+                    ' '.ord,
+                    ' '.ord,
+                    ' '.ord,
+                    ' '.ord,
+                    ' '.ord,
+                    ' '.ord,
+                    Curses::A_NORMAL,
+                  )
                 end
                 current_cell.refresh
                 set_exit_type(input)
@@ -560,8 +568,16 @@ module Slithernix
                 if @box_cell
                   draw_old_cell
                 else
-                  Slithernix::Cdk::Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
-                                                ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
+                  Slithernix::Cdk::Draw.attrbox(
+                    @cell[@oldcrow][@oldccol],
+                    ' '.ord,
+                    ' '.ord,
+                    ' '.ord,
+                    ' '.ord,
+                    ' '.ord,
+                    ' '.ord,
+                    Curses::A_NORMAL,
+                  )
                 end
                 current_cell.refresh
                 set_exit_type(input)
@@ -581,8 +597,16 @@ module Slithernix
                 if @box_cell
                   draw_old_cell
                 else
-                  Slithernix::Cdk::Draw.attrbox(@cell[@oldcrow][@oldccol], ' '.ord, ' '.ord,
-                                                ' '.ord, ' '.ord, ' '.ord, ' '.ord, Curses::A_NORMAL)
+                  Slithernix::Cdk::Draw.attrbox(
+                    @cell[@oldcrow][@oldccol],
+                    ' '.ord,
+                    ' '.ord,
+                    ' '.ord,
+                    ' '.ord,
+                    ' '.ord,
+                    ' '.ord,
+                    Curses::A_NORMAL,
+                  )
                 end
                 @cell[@oldcrow][@oldccol].refresh
 
@@ -606,8 +630,12 @@ module Slithernix
               end
 
               # Should we call a post-process?
-              @post_process_func&.call(:Matrix, self, @post_process_data,
-                                       input)
+              @post_process_func&.call(
+                :Matrix,
+                self,
+                @post_process_data,
+                input,
+              )
             end
           end
 
@@ -642,11 +670,11 @@ module Slithernix
 
           # If the column is only one char.
           (1..@colwidths[@ccol]).each do |x|
-            ch = if x <= infolen && !Slithernix::Cdk::Display.is_hidden_display_type?(disptype)
-                 then Slithernix::Cdk.chtype_to_char(@info[@row][@col][x - 1])
-                 else
-                   @filler
-                 end
+            ch = @filler
+            if x <= infolen && !Slithernix::Cdk::Display.is_hidden_display_type?(disptype)
+              Slithernix::Cdk.chtype_to_char(@info[@row][@col][x - 1])
+            end
+
             current_cell.mvwaddch(1, x, ch.ord | highlight)
           end
           current_cell.setpos(1, infolen + 1)
@@ -692,11 +720,10 @@ module Slithernix
 
           # Draw in the cell info.
           (1..@colwidths[col]).each do |x|
-            ch = if x <= infolen && !Slithernix::Cdk::Display.is_hidden_display_type?(disptype)
-                 then Slithernix::Cdk.chtype_to_char(@info[vrow][vcol][x - 1]).ord | highlight
-                 else
-                   @filler
-                 end
+            ch = @filler
+            if x <= infolen && !Slithernix::Cdk::Display.is_hidden_display_type?(disptype)
+              ch = Slithernix::Cdk.chtype_to_char(@info[vrow][vcol][x - 1]).ord | highlight
+            end
             @cell[row][col].mvwaddch(1, x, ch.ord | highlight)
           end
 
@@ -925,10 +952,15 @@ module Slithernix
             next if @cell[0][x].nil?
 
             @cell[0][x].erase
-            Slithernix::Cdk::Draw.write_chtype(@cell[0][x],
-                                               @coltitle_pos[@lcol + x - 1], 0,
-                                               @coltitle[@lcol + x - 1], Slithernix::Cdk::HORIZONTAL, 0,
-                                               @coltitle_len[@lcol + x - 1])
+            Slithernix::Cdk::Draw.write_chtype(
+              @cell[0][x],
+              @coltitle_pos[@lcol + x - 1],
+              0,
+              @coltitle[@lcol + x - 1],
+              Slithernix::Cdk::HORIZONTAL,
+              0,
+              @coltitle_len[@lcol + x - 1],
+            )
             @cell[0][x].refresh
           end
         end

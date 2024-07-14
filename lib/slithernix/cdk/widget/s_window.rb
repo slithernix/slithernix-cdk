@@ -357,8 +357,12 @@ module Slithernix
           # Check if there is a pre-process function to be called.
           unless @pre_process_func.nil?
             # Call the pre-process function.
-            pp_return = @pre_process_func.call(:SWindow, self,
-                                               @pre_process_data, input)
+            pp_return = @pre_process_func.call(
+              :SWindow,
+              self,
+              @pre_process_data,
+              input,
+            )
           end
 
           # Should we continue?
@@ -406,11 +410,10 @@ module Slithernix
                 if @current_top == @max_top_line
                   Slithernix::Cdk.beep
                 else
-                  @current_top = if @current_top + @view_size < @max_top_line
-                                   @current_top + (@view_size - 1)
-                                 else
-                                   @max_top_line
-                                 end
+                  @current_top = @max_top_line
+                  if @current_top + @view_size < @max_top_line
+                    @current_top = @current_top + (@view_size - 1)
+                  end
                 end
               when Curses::KEY_HOME
                 @left_char = 0
@@ -424,7 +427,11 @@ module Slithernix
                 load_information
               when 's', 'S'
                 save_information
-              when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
+              when
+                Slithernix::Cdk::KEY_TAB,
+                Slithernix::Cdk::KEY_RETURN,
+                Curses::KEY_ENTER
+
                 set_exit_type(input)
                 ret = 1
                 complete = true
@@ -558,7 +565,8 @@ module Slithernix
           Slithernix::Cdk.erase_curses_window(@shadow_win)
         end
 
-        # This execs a command and redirects the output to the scrolling window.
+        # This execs a command and redirects the output to the scrolling
+        # window.
         def exec(command, insert_pos)
           count = -1
           Curses.close_screen
@@ -663,8 +671,11 @@ module Slithernix
           # Was the save successful?
           if lines_saved == -1
             # Nope, tell 'em
-            show_two_messages('<C></B/16>Error', '<C>Could not save to the file.',
-                              filename)
+            show_two_messages(
+              '<C></B/16>Error',
+              '<C>Could not save to the file.',
+              filename
+            )
           else
             # Yep, let them know how many lines were saved.
             show_two_messages(
@@ -680,8 +691,8 @@ module Slithernix
           @screen.draw
         end
 
-        # This function allows the user to load new information into the scrolling
-        # window.
+        # This function allows the user to load new information into the
+        # scrolling window.
         def load_information
           # Create the file selector to choose the file.
           fselect = Slithernix::Cdk::Widget::FSelect.new(
@@ -791,7 +802,8 @@ module Slithernix
           set(file_info, file_info.size, @box)
         end
 
-        # This actually dumps the information from the scrolling window to a file.
+        # This actually dumps the information from the scrolling window to a
+        # file.
         def dump(filename)
           # Try to open the file.
           # if ((outputFile = fopen (filename, "w")) == 0)
@@ -802,7 +814,9 @@ module Slithernix
 
           # Start writing out the file.
           @list.each do |item|
-            raw_line = Slithernix::Cdk.chtype_string_to_unformatted_string(item)
+            raw_line = Slithernix::Cdk.chtype_string_to_unformatted_string(
+              item
+            )
             output_file << ("%s\n" % raw_line)
           end
 

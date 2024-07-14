@@ -564,8 +564,8 @@ module Slithernix
           get_pattern.destroy
         end
 
-        # This searches for a line containing the word and realigns the value on
-        # the screen.
+        # This searches for a line containing the word and realigns the value
+        # on the screen.
         def search_for_word(pattern, direction)
           found = false
 
@@ -581,7 +581,7 @@ module Slithernix
                   plain_char = Slithernix::Cdk.chtype_to_char(@list[x][y])
 
                   pos += 1
-                  if @CDK.chtype_to_char(pattern[pos - 1]) != plain_char
+                  if Slithernix::Cdk.chtype_to_char(pattern[pos - 1]) != plain_char
                     y -= (pos - 1)
                     pos = 0
                   elsif pos == pattern.size
@@ -704,7 +704,9 @@ module Slithernix
           # Highlight the current button.
           (0...@button_len[@current_button]).each do |x|
             # Strip the character of any extra attributes.
-            character = Slithernix::Cdk.chtype_to_char(@button[@current_button][x])
+            character = Slithernix::Cdk.chtype_to_char(
+              @button[@current_button][x]
+            )
 
             # Add the character into the window.
             @win.mvwaddch(

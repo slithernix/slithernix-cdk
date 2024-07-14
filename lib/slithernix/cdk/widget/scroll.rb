@@ -161,7 +161,8 @@ module Slithernix
           @input_window.refresh
         end
 
-        # This actually does all the 'real' work of managing the scrolling list.
+        # This actually does all the 'real' work of managing the scrolling
+        # list.
         def activate(actions)
           # Draw the scrolling list
           draw(@box)
@@ -244,7 +245,11 @@ module Slithernix
               when Slithernix::Cdk::REFRESH
                 @screen.erase
                 @screen.refresh
-              when Slithernix::Cdk::KEY_TAB, Curses::KEY_ENTER, Slithernix::Cdk::KEY_RETURN
+              when
+                Slithernix::Cdk::KEY_TAB,
+                Curses::KEY_ENTER,
+                Slithernix::Cdk::KEY_RETURN
+
                 set_exit_type(input)
                 ret = @current_item
                 complete = true
@@ -533,7 +538,9 @@ module Slithernix
 
         def get_items(list)
           (0...@list_size).each do |x|
-            list << Slithernix::Cdk.chtype_string_to_unformatted_string(@item[x])
+            list << Slithernix::Cdk.chtype_string_to_unformatted_string(
+              @item[x]
+            )
           end
 
           @list_size

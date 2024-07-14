@@ -184,7 +184,8 @@ module Slithernix
           -1
         end
 
-        # Check if the value lies outside the low/high range. If so, force it in.
+        # Check if the value lies outside the low/high range. If so, force it
+        # in.
         def limit_current_value
           if @current < @low
             @current = @low
@@ -224,9 +225,10 @@ module Slithernix
           false
         end
 
-        # Set the edit position.  Normally the cursor is one cell to the right of
-        # the editable field.  Moving it left, over the field, allows the user to
-        # modify cells by typing in replacement characters for the field's value.
+        # Set the edit position.  Normally the cursor is one cell to the right
+        # of the editable field.  Moving it left, over the field, allows the
+        # user to modify cells by typing in replacement characters for the
+        # field's value.
         def set_edit_position(new_position)
           if new_position.negative?
             Slithernix::Cdk.beep
@@ -239,8 +241,8 @@ module Slithernix
           end
         end
 
-        # Remove the character from the string at the given column, if it is blank.
-        # Returns true if a change was made.
+        # Remove the character from the string at the given column, if it is
+        # blank. Returns true if a change was made.
         def self.remove_char(string, col)
           result = false
           if col >= 0 && string[col] != ' '
@@ -350,7 +352,11 @@ module Slithernix
                 @current = @low
               when Curses::KEY_END
                 @current = @high
-              when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
+              when
+                Slithernix::Cdk::KEY_TAB,
+                Slithernix::Cdk::KEY_RETURN,
+                Curses::KEY_ENTER
+
                 set_exit_type(input)
                 ret = @current
                 complete = true

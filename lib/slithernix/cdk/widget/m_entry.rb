@@ -133,9 +133,10 @@ module Slithernix
           @min = min
           @logical_rows = logical_rows
 
-          # This is a generic character parser for the mentry field. It is used as
-          # a callback function, so any personal modifications can be made by
-          # creating a new function and calling that one the mentry activation.
+          # This is a generic character parser for the mentry field. It is used
+          # as a callback function, so any personal modifications can be made
+          # by creating a new function and calling that one the mentry
+          # activation.
           mentry_callback = lambda do |mentry, character|
             cursor_pos = mentry.get_cursor_pos
             newchar = Slithernix::Cdk::Display.filter_by_display_type(
@@ -404,7 +405,11 @@ module Slithernix
                   set_value(@@g_paste_buffer)
                   draw(@box)
                 end
-              when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
+              when
+                Slithernix::Cdk::KEY_TAB,
+                Slithernix::Cdk::KEY_RETURN,
+                Curses::KEY_ENTER
+
                 if @info.size < @min + 1
                   Slithernix::Cdk.beep
                 else
@@ -504,8 +509,15 @@ module Slithernix
 
           # Draw in the label to the widget.
           unless @label_win.nil?
-            Slithernix::Cdk::Draw.write_chtype(@label_win, 0, 0, @label, Slithernix::Cdk::HORIZONTAL,
-                                               0, @label_len)
+            Slithernix::Cdk::Draw.write_chtype(
+              @label_win,
+              0,
+              0,
+              @label,
+              Slithernix::Cdk::HORIZONTAL,
+              0,
+              @label_len,
+            )
             @label_win.refresh
           end
 

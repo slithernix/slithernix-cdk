@@ -326,7 +326,11 @@ module Slithernix
                   set_value(@@g_paste_buffer)
                   draw_field
                 end
-              when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
+              when
+                Slithernix::Cdk::KEY_TAB,
+                Slithernix::Cdk::KEY_RETURN,
+                Curses::KEY_ENTER
+
                 if @info.size >= @min
                   set_exit_type(input)
                   ret = @info

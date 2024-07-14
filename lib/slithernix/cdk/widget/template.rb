@@ -290,7 +290,11 @@ module Slithernix
                 else
                   Slithernix::Cdk.beep
                 end
-              when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
+              when
+                Slithernix::Cdk::KEY_TAB,
+                Slithernix::Cdk::KEY_RETURN,
+                Curses::KEY_ENTER
+
                 if @info.size < @min
                   Slithernix::Cdk.beep
                 else
@@ -368,7 +372,7 @@ module Slithernix
             while plate_pos < @plate_len && info_pos < @info.size
               mixed_string << if Slithernix::Cdk::Widget::Template.is_plate_char?(@plate[plate_pos])
                               then info_pos += 1
-                                   @info[info_pos - 1]
+                                @info[info_pos - 1]
                               else
                                 @plate[plate_pos]
                               end
@@ -456,7 +460,7 @@ module Slithernix
           if @info.size.positive?
             pos = 0
             (0...[@field_width, @plate.size].min).each do |x|
-              unless Slithernix::Cdk::Widget::Template.is_plate_char?(@plate[x]) && pos < @info.size
+              unless self.class.is_plate_char?(@plate[x]) && pos < @info.size
                 next
               end
 
@@ -473,8 +477,7 @@ module Slithernix
 
         # Adjust the cursor for the template
         def adjust_cursor(direction)
-          while @plate_pos < [@field_width, @plate.size].min &&
-                !Slithernix::Cdk::Widget::Template.is_plate_char?(@plate[@plate_pos])
+          while @plate_pos < [@field_width, @plate.size].min && !self.class.is_plate_char?(@plate[@plate_pos])
             @plate_pos += direction
             @screen_pos += direction
           end

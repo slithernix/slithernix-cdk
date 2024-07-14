@@ -197,7 +197,11 @@ module Slithernix
               when Curses::Error
                 set_exit_type(input)
                 complete = true
-              when Slithernix::Cdk::KEY_TAB, Slithernix::Cdk::KEY_RETURN, Curses::KEY_ENTER
+              when
+                Slithernix::Cdk::KEY_TAB,
+                Slithernix::Cdk::KEY_RETURN,
+                Curses::KEY_ENTER
+
                 set_exit_type(input)
                 ret = @current_item
                 complete = true
