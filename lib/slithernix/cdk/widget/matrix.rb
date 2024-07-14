@@ -670,10 +670,11 @@ module Slithernix
 
           # If the column is only one char.
           (1..@colwidths[@ccol]).each do |x|
-            ch = @filler
-            if x <= infolen && !Slithernix::Cdk::Display.is_hidden_display_type?(disptype)
-              Slithernix::Cdk.chtype_to_char(@info[@row][@col][x - 1])
-            end
+           ch = if x <= infolen && !Slithernix::Cdk::Display.is_hidden_display_type?(disptype)
+                then Slithernix::Cdk.chtype_to_char(@info[@row][@col][x - 1])
+                else
+                  @filler
+                end
 
             current_cell.mvwaddch(1, x, ch.ord | highlight)
           end
@@ -720,10 +721,12 @@ module Slithernix
 
           # Draw in the cell info.
           (1..@colwidths[col]).each do |x|
-            ch = @filler
-            if x <= infolen && !Slithernix::Cdk::Display.is_hidden_display_type?(disptype)
-              ch = Slithernix::Cdk.chtype_to_char(@info[vrow][vcol][x - 1]).ord | highlight
-            end
+            ch = if x <= infolen && !Slithernix::Cdk::Display.is_hidden_display_type?(disptype)
+                 then Slithernix::Cdk.chtype_to_char(@info[vrow][vcol][x - 1]).ord | highlight
+                 else
+                   @filler
+                 end
+
             @cell[row][col].mvwaddch(1, x, ch.ord | highlight)
           end
 
