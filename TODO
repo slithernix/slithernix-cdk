@@ -1,5 +1,10 @@
 SlitherNix CDK TODO List (You can find the original Tawny list below)
 
+* On Rolodex demo, highlighting is broken after going back to groups
+
+  After loading a group and going into an entry, then going back, the
+  highlight is gone.
+
 * Assess whether all these key constants are necessary
 
   Curses itself has over 180 KEY_ constants so need to take a good look
