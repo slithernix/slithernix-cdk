@@ -24,8 +24,18 @@ module Slithernix
     @all_screens = []
     @all_objects = []
 
+    @curses_attr_map = {
+      'B' => Curses::A_BOLD,
+      'D' => Curses::A_DIM,
+      'K' => Curses::A_BLINK,
+      'R' => Curses::A_REVERSE,
+      'S' => Curses::A_STANDOUT,
+      'U' => Curses::A_UNDERLINE,
+    }.freeze
+
     class << self
       attr_accessor :all_screens, :all_objects
+      attr_reader :curses_attr_map
 
       def ctrl(key)
         key.ord & 0x1f
@@ -193,26 +203,19 @@ module Slithernix
       end
 
       def encode_attribute(string, from, mask)
-        attribute_map = {
-          'B' => Curses::A_BOLD,
-          'D' => Curses::A_DIM,
-          'K' => Curses::A_BLINK,
-          'R' => Curses::A_REVERSE,
-          'S' => Curses::A_STANDOUT,
-          'U' => Curses::A_UNDERLINE
-        }
-
-        mask[0] = attribute_map[string[from + 1]] || 0
-
+        mask[0] = curses_attr_map[string[from + 1]] || 0
         return from + 1 if mask[0] != 0
 
+        encode_color_pair(string, from, mask)
+      end
+
+      def encode_color_pair(string, from, mask)
         return from unless digit?(string[from + 1])
 
         match = string[(from + 1)..].match(/\d+/)
         return from unless match
 
-        pair = match[0].to_i
-        mask[0] = Curses.color_pair(pair)
+        mask[0] = Curses.color_pair(match[0].to_i)
         from + match[0].length
       end
 
@@ -222,15 +225,6 @@ module Slithernix
       # order. Also, alignment markers and tabs are lost.
 
       def decode_attribute(string, from, oldattr, newattr)
-        table = {
-          'B' => Curses::A_BOLD,
-          'D' => Curses::A_DIM,
-          'K' => Curses::A_BLINK,
-          'R' => Curses::A_REVERSE,
-          'S' => Curses::A_STANDOUT,
-          'U' => Curses::A_UNDERLINE
-        }
-
         result = string.nil? ? '' : string
         base_len = result.size
         tmpattr = oldattr & Curses::A_ATTRIBUTES
@@ -239,17 +233,17 @@ module Slithernix
         if tmpattr != newattr
           while tmpattr != newattr
             found = false
-            table.each_key do |key|
-              next unless (table[key] & tmpattr) != (table[key] & newattr)
+            curses_attr_map.each_key do |key|
+              next unless (curses_attr_map[key] & tmpattr) != (curses_attr_map[key] & newattr)
 
               found = true
               result << Slithernix::Cdk::L_MARKER
-              if (table[key] & tmpattr).nonzero?
+              if (curses_attr_map[key] & tmpattr).nonzero?
                 result << '!'
-                tmpattr = tmpattr.clear_bits(table[key])
+                tmpattr = tmpattr.clear_bits(curses_attr_map[key])
               else
                 result << '/'
-                tmpattr |= table[key]
+                tmpattr |= curses_attr_map[key]
               end
               result << key
               break
@@ -276,7 +270,6 @@ module Slithernix
             break unless found
 
             result << Slithernix::Cdk::R_MARKER
-
           end
         end
 

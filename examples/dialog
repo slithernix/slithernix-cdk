@@ -33,7 +33,7 @@ class DialogExample < Example
       ' ',
       '<C>The dialog widget allows the programmer to create',
       '<C>a popup dialog box with buttons. The dialog box',
-      '<C>can contain </B/32>colours<!B!32>, </R>character attributes<!R>',
+      '<C>can contain </B/32>colours<!B!32>, </K>character attributes<!K>',
       '<R>and even be right justified.',
       '<L>and left.'
     ]
