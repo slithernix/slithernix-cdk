@@ -1,5 +1,15 @@
 SlitherNix CDK TODO List (You can find the original Tawny list below)
 
+* Matrix is not correctly counting lines
+
+  If you scroll down to the end, row 8, still says when you hit enter
+  that you got row 3. clearly it isn't shifting as you scroll past
+  the box.
+
+* Ending a colorpair/attribute with <! is not working
+
+  char_to_chtype shenanigans again.
+
 * Way too many side effects/mutations
 
   Probably the worst thing about this codebase is how common it is

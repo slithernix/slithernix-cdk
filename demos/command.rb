@@ -30,8 +30,7 @@ class Command
       '<B=Page Down > Scrolls forward one page.',
       '<B=Tab/Escape> Returns to the command line.',
       '',
-      '<C> (</B/24>Refer to the scrolling window online manual ' \
-      'for more help<!B!24>.)'
+      '<C> (</B/24>Refer to the scrolling window online manual for more help<!B!24>.)'
     ]
     entry.screen.popup_label(mesg, mesg.size)
   end

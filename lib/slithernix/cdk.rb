@@ -311,7 +311,6 @@ module Slithernix
         last_char = 0
         start = 0
         used = 0
-        x = 3
 
         if string[0] == L_MARKER && string[2] == R_MARKER
           align[0] = fmt_str_to_alignment_char(string[1])
@@ -321,32 +320,9 @@ module Slithernix
         if string[0] == L_MARKER && string[2] == '='
           case string[1]
           when 'B'
-            # Set the item index value in the string.
-            result = [' '.ord, ' '.ord, ' '.ord]
-
-            # Pull out the bullet marker.
-            while (x < string.size) && (string[x] != R_MARKER)
-              result << (string[x].ord | Curses::A_BOLD)
-              x += 1
-            end
-            adjust = 1
-
-            # Set the alignment variables
-            start = x
-            used = x
+            result, start, used, adjust = process_bullet_marker(string, 3)
           when 'I'
-            from = 3
-            x = 0
-
-            while from < string.size && string[from] != R_MARKER
-              if digit?(string[from])
-                adjust = (adjust * 10) + string[from].to_i
-                x += 1
-              end
-              from += 1
-            end
-
-            start = x + 4
+            start, adjust = process_indent_marker(string, 3)
           else
             raise StandardError, "invalid format marker #{string[1]}"
           end
@@ -430,6 +406,35 @@ module Slithernix
         to[0] = used
 
         result
+      end
+
+      def process_bullet_marker(str, idx)
+        # Set the item index value in the string.
+        result = [' '.ord, ' '.ord, ' '.ord]
+
+        # Pull out the bullet marker.
+        while (idx < str.size) && (str[idx] != R_MARKER)
+          result << (str[idx].ord | Curses::A_BOLD)
+          idx += 1
+        end
+
+        [ result, idx, idx, 1 ]
+      end
+
+      def process_indent_marker(str, from)
+        idx = 0
+
+        while from < str.size && str[from] != R_MARKER
+          if digit?(str[from])
+            adjust = (adjust * 10) + str[from].to_i
+            idx += 1
+          end
+
+          from += 1
+        end
+
+        start = idx + 4
+        [ start, adjust ]
       end
 
       def fmt_str_to_alignment_char(str)
