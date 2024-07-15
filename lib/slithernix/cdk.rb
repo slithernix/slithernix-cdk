@@ -294,201 +294,200 @@ module Slithernix
       # them into a chtype array.  This is better suited to curses because
       # curses uses chtype almost exclusively
       def char_to_chtype(string, to, align)
-        return [] unless string.size.positive?
-
         to << 0
         align << LEFT
         result = []
-        used = 0
 
-        adjust = 0
-        attrib = Curses::A_NORMAL
-        last_char = 0
-        start = 0
-        used = 0
-        x = 3
+        if string.size.positive?
+          used = 0
 
-        if string[0] == L_MARKER && string[2] == R_MARKER
-          align[0] = case string[1]
-                     when 'C' then CENTER
-                     when 'L' then LEFT
-                     when 'R' then RIGHT
-                     else
-                       raise StandardError, "invalid format marker #{string[1]}"
-                     end
+          # The original code makes two passes since it has to pre-allocate
+          # space but we should be able to make do with one since we can
+          # dynamically size it.
+          adjust = 0
+          attrib = Curses::A_NORMAL
+          last_char = 0
+          start = 0
+          used = 0
+          x = 3
 
-          start = 3
-        end
+          # Look for an alignment marker.
+          if string[0] == L_MARKER
+            if string[1] == 'C' && string[2] == R_MARKER
+              align[0] = CENTER
+              start = 3
+            elsif string[1] == 'R' && string[2] == R_MARKER
+              align[0] = RIGHT
+              start = 3
+            elsif string[1] == 'L' && string[2] == R_MARKER
+              start = 3
+            elsif string[1] == 'B' && string[2] == '='
+              # Set the item index value in the string.
+              result = [' '.ord, ' '.ord, ' '.ord]
 
-        if string[0] == L_MARKER && string[2] == '='
-          case string[1]
-          when 'B'
-            # Set the item index value in the string.
-            result = [' '.ord, ' '.ord, ' '.ord]
-
-            # Pull out the bullet marker.
-            while (x < string.size) && (string[x] != R_MARKER)
-              result << (string[x].ord | Curses::A_BOLD)
-              x += 1
-            end
-            adjust = 1
-
-            # Set the alignment variables
-            start = x
-            used = x
-          when 'I'
-            from = 3
-            x = 0
-
-            while from < string.size && string[from] != Curses.R_MARKER
-              if digit?(string[from])
-                adjust = (adjust * 10) + string[from].to_i
+              # Pull out the bullet marker.
+              while (x < string.size) && (string[x] != R_MARKER)
+                result << (string[x].ord | Curses::A_BOLD)
                 x += 1
               end
-              from += 1
-            end
+              adjust = 1
 
-            start = x + 4
-          else
-            raise StandardError, "invalid format marker #{string[1]}"
-          end
-        end
+              # Set the alignment variables
+              start = x
+              used = x
+            elsif string[1] == 'I' && string[2] == '='
+              from = 3
+              x = 0
 
-        while adjust.positive?
-          adjust -= 1
-          result << ' '
-          used += 1
-        end
-
-        # Set the format marker boolean to false
-        inside_marker = false
-
-        # Start parsing the character string.
-        from = start
-        while from < string.size
-          # Are we inside a format marker?
-          if inside_marker
-            case string[from]
-            when R_MARKER
-              inside_marker = false
-            when '#'
-              last_char = 0
-              case string[from + 2]
-              when 'L'
-                case string[from + 1]
-                when 'L'
-                  last_char = Slithernix::Cdk::ACS_LLCORNER
-                when 'U'
-                  last_char = Slithernix::Cdk::ACS_ULCORNER
-                when 'H'
-                  last_char = Slithernix::Cdk::ACS_HLINE
-                when 'V'
-                  last_char = Slithernix::Cdk::ACS_VLINE
-                when 'P'
-                  last_char = Slithernix::Cdk::ACS_PLUS
+              while from < string.size && string[from] != Curses.R_MARKER
+                if digit?(string[from])
+                  adjust = (adjust * 10) + string[from].to_i
+                  x += 1
                 end
-              when 'R'
-                case string[from + 1]
-                when 'L'
-                  last_char = Slithernix::Cdk::ACS_LRCORNER
-                when 'U'
-                  last_char = Slithernix::Cdk::ACS_URCORNER
-                end
-              when 'T'
-                case string[from + 1]
-                when 'T'
-                  last_char = Slithernix::Cdk::ACS_TTEE
-                when 'R'
-                  last_char = Slithernix::Cdk::ACS_RTEE
-                when 'L'
-                  last_char = Slithernix::Cdk::ACS_LTEE
-                when 'B'
-                  last_char = Slithernix::Cdk::ACS_BTEE
-                end
-              when 'A'
-                case string[from + 1]
-                when 'L'
-                  last_char = Slithernix::Cdk::ACS_LARROW
-                when 'R'
-                  last_char = Slithernix::Cdk::ACS_RARROW
-                when 'U'
-                  last_char = Slithernix::Cdk::ACS_UARROW
-                when 'D'
-                  last_char = Slithernix::Cdk::ACS_DARROW
-                end
-              else
-                case [string[from + 1], string[from + 2]]
-                when %w[D I]
-                  last_char = Slithernix::Cdk::ACS_DIAMOND
-                when %w[C B]
-                  last_char = Slithernix::Cdk::ACS_CKBOARD
-                when %w[D G]
-                  last_char = Slithernix::Cdk::ACS_DEGREE
-                when %w[P M]
-                  last_char = Slithernix::Cdk::ACS_PLMINUS
-                when %w[B U]
-                  last_char = Slithernix::Cdk::ACS_BULLET
-                when %w[S 1]
-                  last_char = Slithernix::Cdk::ACS_S1
-                when %w[S 9]
-                  last_char = Slithernix::Cdk::ACS_S9
-                end
+                from += 1
               end
 
-              if last_char.nonzero?
-                adjust = 1
-                from += 2
+              start = x + 4
+            end
+          end
 
-                if string[from + 1] == '('
-                  # check for a possible numeric modifier
-                  from += 2
-                  adjust = 0
+          while adjust.positive?
+            adjust -= 1
+            result << ' '
+            used += 1
+          end
 
-                  while from < string.size && string[from] != ')'
-                    if digit?(string[from])
-                      adjust = (adjust * 10) + string[from].to_i
-                    end
-                    from += 1
+          # Set the format marker boolean to false
+          inside_marker = false
+
+          # Start parsing the character string.
+          from = start
+          while from < string.size
+            # Are we inside a format marker?
+            if inside_marker
+              case string[from]
+              when R_MARKER
+                inside_marker = false
+              when '#'
+                last_char = 0
+                case string[from + 2]
+                when 'L'
+                  case string[from + 1]
+                  when 'L'
+                    last_char = Slithernix::Cdk::ACS_LLCORNER
+                  when 'U'
+                    last_char = Slithernix::Cdk::ACS_ULCORNER
+                  when 'H'
+                    last_char = Slithernix::Cdk::ACS_HLINE
+                  when 'V'
+                    last_char = Slithernix::Cdk::ACS_VLINE
+                  when 'P'
+                    last_char = Slithernix::Cdk::ACS_PLUS
+                  end
+                when 'R'
+                  case string[from + 1]
+                  when 'L'
+                    last_char = Slithernix::Cdk::ACS_LRCORNER
+                  when 'U'
+                    last_char = Slithernix::Cdk::ACS_URCORNER
+                  end
+                when 'T'
+                  case string[from + 1]
+                  when 'T'
+                    last_char = Slithernix::Cdk::ACS_TTEE
+                  when 'R'
+                    last_char = Slithernix::Cdk::ACS_RTEE
+                  when 'L'
+                    last_char = Slithernix::Cdk::ACS_LTEE
+                  when 'B'
+                    last_char = Slithernix::Cdk::ACS_BTEE
+                  end
+                when 'A'
+                  case string[from + 1]
+                  when 'L'
+                    last_char = Slithernix::Cdk::ACS_LARROW
+                  when 'R'
+                    last_char = Slithernix::Cdk::ACS_RARROW
+                  when 'U'
+                    last_char = Slithernix::Cdk::ACS_UARROW
+                  when 'D'
+                    last_char = Slithernix::Cdk::ACS_DARROW
+                  end
+                else
+                  case [string[from + 1], string[from + 2]]
+                  when %w[D I]
+                    last_char = Slithernix::Cdk::ACS_DIAMOND
+                  when %w[C B]
+                    last_char = Slithernix::Cdk::ACS_CKBOARD
+                  when %w[D G]
+                    last_char = Slithernix::Cdk::ACS_DEGREE
+                  when %w[P M]
+                    last_char = Slithernix::Cdk::ACS_PLMINUS
+                  when %w[B U]
+                    last_char = Slithernix::Cdk::ACS_BULLET
+                  when %w[S 1]
+                    last_char = Slithernix::Cdk::ACS_S1
+                  when %w[S 9]
+                    last_char = Slithernix::Cdk::ACS_S9
                   end
                 end
+
+                if last_char.nonzero?
+                  adjust = 1
+                  from += 2
+
+                  if string[from + 1] == '('
+                    # check for a possible numeric modifier
+                    from += 2
+                    adjust = 0
+
+                    while from < string.size && string[from] != ')'
+                      if digit?(string[from])
+                        adjust = (adjust * 10) + string[from].to_i
+                      end
+                      from += 1
+                    end
+                  end
+                end
+                (0...adjust).each do |_x|
+                  result << (last_char | attrib)
+                  used += 1
+                end
+              when '/'
+                mask = []
+                from = encode_attribute(string, from, mask)
+                attrib |= mask[0]
+              when '!'
+                mask = []
+                from = encode_attribute(string, from, mask)
+                attrib = attrib.clear_bits(mask[0])
               end
-              (0...adjust).each do |_x|
-                result << (last_char | attrib)
-                used += 1
-              end
-            when '/'
-              mask = []
-              from = encode_attribute(string, from, mask)
-              attrib |= mask[0]
-            when '!'
-              mask = []
-              from = encode_attribute(string, from, mask)
-              attrib = attrib.clear_bits(mask[0])
-            end
-          elsif string[from] == L_MARKER &&
-                ['/', '!', '#'].include?(string[from + 1])
-            inside_marker = true
-          elsif string[from] == '\\' && string[from + 1] == L_MARKER
-            from += 1
-            result << (string[from].ord | attrib)
-            used += 1
-            from += 1
-          elsif string[from] == "\t"
-            loop do
-              result << ' '
+            elsif string[from] == L_MARKER &&
+                  ['/', '!', '#'].include?(string[from + 1])
+              inside_marker = true
+            elsif string[from] == '\\' && string[from + 1] == L_MARKER
+              from += 1
+              result << (string[from].ord | attrib)
               used += 1
-              break unless (used & 7).nonzero?
+              from += 1
+            elsif string[from] == "\t"
+              loop do
+                result << ' '
+                used += 1
+                break unless (used & 7).nonzero?
+              end
+            else
+              result << (string[from].ord | attrib)
+              used += 1
             end
-          else
-            result << (string[from].ord | attrib)
-            used += 1
+            from += 1
           end
-          from += 1
+
+          result << attrib if result.empty?
+          to[0] = used
+        else
+          result = []
         end
-
-        result << attrib if result.empty?
-        to[0] = used
-
         result
       end
 
@@ -652,11 +651,25 @@ module Slithernix
       # height/width of the parent window - the value of the dimension.
       # Otherwise, the dimension will be the given value.
       def set_widget_dimension(parent_dim, proposed_dim, adjustment)
-        return parent_dim if [FULL, 0].include?(proposed_dim)
+        # If the user passed in FULL, return the parents size
+        if [FULL, 0].include?(proposed_dim)
+          parent_dim
+        elsif proposed_dim >= 0
+          # if they gave a positive value, return it
 
-        result = parent_dim + proposed_dim
-        result = proposed_dim + adjustment if proposed_dim.positive?
-        [result, parent_dim].min
+          if proposed_dim >= parent_dim
+            parent_dim
+          else
+            proposed_dim + adjustment
+          end
+        elsif (parent_dim + proposed_dim).negative?
+          # if they gave a negative value then return the dimension
+          # of the parent plus the value given
+          #
+          parent_dim
+        else
+          parent_dim + proposed_dim
+        end
       end
 
       # This safely erases a given window
@@ -675,10 +688,8 @@ module Slithernix
         window.close
       end
 
-      # ORIGINAL COMMENT IS AS FOLLOWS
-      # This moves a given window (if we're able to set the window's beginning)
+      # This moves a given window (if we're able to set the window's beginning).
       # We do not use mvwin(), because it does not (usually) move subwindows.
-      # END ORIGINAL COMMENT
       #
       # This just didn't work as it was. Maybe this mvwin() comment is no longer
       # accurate but for now, leaving in the usage of window.move. --snake 2024
