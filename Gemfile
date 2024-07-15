@@ -17,6 +17,6 @@ group :development, :test do
   gem 'pry-rescue', '>= 1.5.2'
   gem 'pry-theme', '>= 1.3.1'
   gem 'rake', '>= 1.64.1'
-  gem 'rspec', '~> 3.0'
   gem 'rubocop', '~> 1.64.0'
+  gem 'rubocop-rake', '~> 0.6.0'
 end

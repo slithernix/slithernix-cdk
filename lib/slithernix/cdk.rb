@@ -301,9 +301,9 @@ module Slithernix
         if string.size.positive?
           used = 0
 
-          # The original code makes two passes since it has to pre-allocate space
-          # but we should be able to make do with one since we can dynamically
-          # size it.
+          # The original code makes two passes since it has to pre-allocate
+          # space but we should be able to make do with one since we can
+          # dynamically size it.
           adjust = 0
           attrib = Curses::A_NORMAL
           last_char = 0

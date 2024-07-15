@@ -748,7 +748,7 @@ module Slithernix
             button = ['(Yes)', '(No)']
 
             # Create the dialog widget.
-            dialog = Slithernix::Cdk::Dialog.new(
+            dialog = Slithernix::Cdk::Widget::Dialog.new(
               @screen,
               Slithernix::Cdk::CENTER,
               Slithernix::Cdk::CENTER,

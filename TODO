@@ -72,7 +72,9 @@ SlitherNix CDK TODO List (You can find the original Tawny list below)
 
 * Figure out how to do a kind of standardish-RGB integration
 
-  Right now it's just color pairs. Should find a way to look up via RGB stuff
+  Right now it's just color pairs. Should find a way to look up via RGB stuff. Curses
+  has init_color to create a new color. I tried to fake 65k color pairs by monkey
+  patching Curses (code is in TODO.truecolor or something).
 
 * Down the road, add yaml description feature
 

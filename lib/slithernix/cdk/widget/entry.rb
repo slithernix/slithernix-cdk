@@ -7,7 +7,7 @@ module Slithernix
     class Widget
       class Entry < Slithernix::Cdk::Widget
         attr_accessor :info, :left_char, :screen_col
-        attr_reader :win, :box_height, :box_width, :max, :field_width, :min
+        attr_reader :win, :box_height, :box_width, :max, :field_width, :min, :exit_type
 
         def initialize(cdkscreen, xplace, yplace, title, label, field_attr, filler, disp_type, f_width, min, max, box, shadow)
           super()

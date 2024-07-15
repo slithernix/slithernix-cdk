@@ -242,12 +242,27 @@ class Command
 
     command_entry.bind(:Entry, Curses::KEY_UP, history_up_cb, history)
     command_entry.bind(:Entry, Curses::KEY_DOWN, history_down_cb, history)
-    command_entry.bind(:Entry, Slithernix::Cdk::KEY_TAB, view_history_cb,
-                       command_output)
-    command_entry.bind(:Entry, Slithernix::Cdk.ctrl('^'), list_history_cb,
-                       history)
-    command_entry.bind(:Entry, Slithernix::Cdk.ctrl('G'), jump_window_cb,
-                       command_output)
+
+    command_entry.bind(
+      :Entry,
+      Slithernix::Cdk::KEY_TAB,
+      view_history_cb,
+      command_output,
+    )
+
+    command_entry.bind(
+      :Entry,
+      Slithernix::Cdk.ctrl('^'),
+      list_history_cb,
+      history
+    )
+
+    command_entry.bind(
+      :Entry,
+      Slithernix::Cdk.ctrl('G'),
+      jump_window_cb,
+      command_output,
+    )
 
     # Draw the screen.
     cdkscreen.refresh

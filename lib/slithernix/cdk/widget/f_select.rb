@@ -555,6 +555,7 @@ module Slithernix
 
           # If we exited early, make sure we don't interpret it as a file.
           return 0 if @exit_type == :EARLY_EXIT
+          return 1 if @exit_type == :ESCAPE_HIT
 
           # Can we change into the directory
           # file = Dir.chdir(filename)
