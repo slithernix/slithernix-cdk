@@ -293,12 +293,17 @@ module Slithernix
       # This function takes a string, full of format markers and translates
       # them into a chtype array.  This is better suited to curses because
       # curses uses chtype almost exclusively
+      #
+      # This is where all the magical text conversion happens for format
+      # stuff and it really needs to be documented.
+      # The alightment tag must be first.
       def char_to_chtype(string, to, align)
-        return [] unless string.size.positive?
-
         to << 0
         align << LEFT
-        result = []
+        result = Array.new
+
+        return [] unless string&.size.positive?
+
         used = 0
 
         adjust = 0
@@ -309,14 +314,7 @@ module Slithernix
         x = 3
 
         if string[0] == L_MARKER && string[2] == R_MARKER
-          align[0] = case string[1]
-                     when 'C' then CENTER
-                     when 'L' then LEFT
-                     when 'R' then RIGHT
-                     else
-                       raise StandardError, "invalid format marker #{string[1]}"
-                     end
-
+          align[0] = fmt_str_to_alignment_char(string[1])
           start = 3
         end
 
@@ -340,7 +338,7 @@ module Slithernix
             from = 3
             x = 0
 
-            while from < string.size && string[from] != Curses.R_MARKER
+            while from < string.size && string[from] != R_MARKER
               if digit?(string[from])
                 adjust = (adjust * 10) + string[from].to_i
                 x += 1
@@ -360,80 +358,21 @@ module Slithernix
           used += 1
         end
 
-        # Set the format marker boolean to false
         inside_marker = false
 
-        # Start parsing the character string.
         from = start
         while from < string.size
-          # Are we inside a format marker?
           if inside_marker
             case string[from]
             when R_MARKER
               inside_marker = false
             when '#'
-              last_char = 0
-              case string[from + 2]
-              when 'L'
-                case string[from + 1]
-                when 'L'
-                  last_char = Slithernix::Cdk::ACS_LLCORNER
-                when 'U'
-                  last_char = Slithernix::Cdk::ACS_ULCORNER
-                when 'H'
-                  last_char = Slithernix::Cdk::ACS_HLINE
-                when 'V'
-                  last_char = Slithernix::Cdk::ACS_VLINE
-                when 'P'
-                  last_char = Slithernix::Cdk::ACS_PLUS
-                end
-              when 'R'
-                case string[from + 1]
-                when 'L'
-                  last_char = Slithernix::Cdk::ACS_LRCORNER
-                when 'U'
-                  last_char = Slithernix::Cdk::ACS_URCORNER
-                end
-              when 'T'
-                case string[from + 1]
-                when 'T'
-                  last_char = Slithernix::Cdk::ACS_TTEE
-                when 'R'
-                  last_char = Slithernix::Cdk::ACS_RTEE
-                when 'L'
-                  last_char = Slithernix::Cdk::ACS_LTEE
-                when 'B'
-                  last_char = Slithernix::Cdk::ACS_BTEE
-                end
-              when 'A'
-                case string[from + 1]
-                when 'L'
-                  last_char = Slithernix::Cdk::ACS_LARROW
-                when 'R'
-                  last_char = Slithernix::Cdk::ACS_RARROW
-                when 'U'
-                  last_char = Slithernix::Cdk::ACS_UARROW
-                when 'D'
-                  last_char = Slithernix::Cdk::ACS_DARROW
-                end
-              else
-                case [string[from + 1], string[from + 2]]
-                when %w[D I]
-                  last_char = Slithernix::Cdk::ACS_DIAMOND
-                when %w[C B]
-                  last_char = Slithernix::Cdk::ACS_CKBOARD
-                when %w[D G]
-                  last_char = Slithernix::Cdk::ACS_DEGREE
-                when %w[P M]
-                  last_char = Slithernix::Cdk::ACS_PLMINUS
-                when %w[B U]
-                  last_char = Slithernix::Cdk::ACS_BULLET
-                when %w[S 1]
-                  last_char = Slithernix::Cdk::ACS_S1
-                when %w[S 9]
-                  last_char = Slithernix::Cdk::ACS_S9
-                end
-              end
+              last_char = fmt_str_to_acs_char(
+                string[from + 1],
+                string[from + 2],
+              )
+
+              last_char ||= 0
 
               if last_char.nonzero?
                 adjust = 1
@@ -452,7 +391,8 @@ module Slithernix
                   end
                 end
               end
-              (0...adjust).each do |_x|
+
+              (0...adjust).each do
                 result << (last_char | attrib)
                 used += 1
               end
@@ -465,8 +405,7 @@ module Slithernix
               from = encode_attribute(string, from, mask)
               attrib = attrib.clear_bits(mask[0])
             end
-          elsif string[from] == L_MARKER &&
-                ['/', '!', '#'].include?(string[from + 1])
+          elsif string[from] == L_MARKER && ['/', '!', '#'].include?(string[from + 1])
             inside_marker = true
           elsif string[from] == '\\' && string[from + 1] == L_MARKER
             from += 1
@@ -483,6 +422,7 @@ module Slithernix
             result << (string[from].ord | attrib)
             used += 1
           end
+
           from += 1
         end
 
@@ -490,6 +430,64 @@ module Slithernix
         to[0] = used
 
         result
+      end
+
+      def fmt_str_to_alignment_char(str)
+        case str
+        when 'C' then CENTER
+        when 'L' then LEFT
+        when 'R' then RIGHT
+        else
+          raise(
+            StandardError,
+            "invalid alignment marker #{string[1]}",
+          )
+        end
+      end
+
+      def fmt_str_to_acs_char(next_char, after_next_char)
+        case after_next_char
+        when 'L'
+          case next_char
+          when 'H' then Slithernix::Cdk::ACS_HLINE
+          when 'L' then Slithernix::Cdk::ACS_LLCORNER
+          when 'P' then Slithernix::Cdk::ACS_PLUS
+          when 'U' then Slithernix::Cdk::ACS_ULCORNER
+          when 'V' then Slithernix::Cdk::ACS_VLINE
+          end
+        when 'R'
+          case next_char
+          when 'L' then Slithernix::Cdk::ACS_LRCORNER
+          when 'U' then Slithernix::Cdk::ACS_URCORNER
+          end
+        when 'T'
+          case next_char
+          when 'B' then Slithernix::Cdk::ACS_BTEE
+          when 'L' then Slithernix::Cdk::ACS_LTEE
+          when 'R' then Slithernix::Cdk::ACS_RTEE
+          when 'T' then Slithernix::Cdk::ACS_TTEE
+          end
+        when 'A'
+          case next_char
+          when 'D' then Slithernix::Cdk::ACS_DARROW
+          when 'L' then Slithernix::Cdk::ACS_LARROW
+          when 'R' then Slithernix::Cdk::ACS_RARROW
+          when 'U' then Slithernix::Cdk::ACS_UARROW
+          end
+        else
+          case [next_char, after_next_char]
+          when %w[D I] then Slithernix::Cdk::ACS_DIAMOND
+          when %w[C B] then Slithernix::Cdk::ACS_CKBOARD
+          when %w[D G] then Slithernix::Cdk::ACS_DEGREE
+          when %w[P M] then Slithernix::Cdk::ACS_PLMINUS
+          when %w[B U] then Slithernix::Cdk::ACS_BULLET
+          when %w[S 1] then Slithernix::Cdk::ACS_S1
+          when %w[S 3] then Slithernix::Cdk::ACS_S3
+          when %w[S 5] then Slithernix::Cdk::ACS_S5
+          when %w[S 7] then Slithernix::Cdk::ACS_S7
+          when %w[S 9] then Slithernix::Cdk::ACS_S9
+          end
+        end
       end
 
       # Compare a regular string to a chtype string

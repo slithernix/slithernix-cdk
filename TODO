@@ -1,5 +1,12 @@
 SlitherNix CDK TODO List (You can find the original Tawny list below)
 
+* Way too many side effects/mutations
+
+  Probably the worst thing about this codebase is how common it is
+  for methods to mutate its arguments, and often return an integer
+  or something. I really hate that because it makes things so unclear
+  when it comes to refactoring. Again, this is all very C-like.
+
 * On Rolodex demo, highlighting is broken after going back to groups
 
   After loading a group and going into an entry, then going back, the

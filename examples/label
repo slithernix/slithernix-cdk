@@ -29,10 +29,10 @@ class LabelExample < Example
 
     # Set the labels up.
     mesg = [
-      '</29/B>This line should have a yellow foreground and a blue background.',
-      '</5/B>This line should have a white  foreground and a blue background.',
-      '</26/B>This line should have a yellow foreground and a red  background.',
-      '<C>This line should be set to whatever the screen default is.'
+      '<C></202/B>This line should be CENTERED and BOLD with color pair 202.',
+      '<C></33/B>This line should be CENTERED and BOLD with color pair 33.',
+      '<C></135/B>This line should be CENTERED and BOLD with color pair 135.',
+      '<C>This line should be CENTERED and set to whatever the screen default is.'
     ]
 
     # Declare the labels.
