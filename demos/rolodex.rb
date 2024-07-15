@@ -1421,20 +1421,20 @@ class Rolodex
   # This function displays a little pop up window discussing this demo.
   def self.about_rolodex(screen)
     mesg = [
-      '<C></U>About Cdk Rolodex',
+      '<C></U>About CDK Rolodex',
       ' ',
-      '</B/24>This demo was written to demonstrate the widget',
-      '</B/24>available with the Cdk library. Not all of the',
-      '</B/24>Cdk widget are used, but most of them have been.',
+      '</B/24>This demo was written to demonstrate the widgets',
+      '</B/24>available with the CDK library. Not all of the',
+      '</B/24>widgets are used, but most of them are.',
       '</B/24>I hope this little demonstration helps give you an',
       '</B/24>understanding of what the Cdk library offers.',
       ' ',
       '<C></B/24>Have fun with it.',
       ' ',
-      '</B/24>Cheers,',
-      '<C></B/24>Chris',
+      '<C></B/24>Cheers,',
+      '<C></B/24>Chris and Snake',
       '<C><#HL(35)>',
-      '<R></B/24>March 2013',
+      '<C></B/24>March 2013, Updated 2024 by Snake',
     ]
 
     screen.popup_label(mesg, mesg.size)
