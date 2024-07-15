@@ -2,18 +2,6 @@
 
 require 'pry-remote'
 
-class Integer
-  def clear_bits(mask)
-    self & ~mask
-    self
-  end
-
-  def keep_bits(mask)
-    self & mask
-    self
-  end
-end
-
 # I hate this but, whatever
 module Curses
   def self.napms(ms)

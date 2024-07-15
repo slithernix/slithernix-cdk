@@ -256,7 +256,7 @@ module Slithernix
           result << Slithernix::Cdk::L_MARKER
           if (value & tmpattr).nonzero?
             result << '!'
-            tmpattr = tmpattr.clear_bits(value)
+            tmpattr &= ~value
           else
             result << '/'
             tmpattr |= value
@@ -284,8 +284,8 @@ module Slithernix
           result << newpair.to_s
         end
 
-        tmpattr = tmpattr.clear_bits(Curses::A_COLOR)
-        newattr = newattr.clear_bits(Curses::A_COLOR)
+        tmpattr &= ~Curses::A_COLOR
+        newattr &= ~Curses::A_COLOR
 
         [tmpattr, newattr, result, found]
       end
@@ -379,7 +379,7 @@ module Slithernix
             when '!'
               mask = []
               from = encode_attribute(string, from, mask)
-              attrib = attrib.clear_bits(mask[0])
+              attrib &= ~mask[0]
             end
           elsif string[from] == L_MARKER && ['/', '!', '#'].include?(string[from + 1])
             inside_marker = true
