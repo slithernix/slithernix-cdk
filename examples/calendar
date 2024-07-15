@@ -126,7 +126,7 @@ class CalendarExample < Example
       mesg = [
         'You selected the following date',
         format(
-          '<C></B/16>%02d-%02d-%d (yyyy-mm-dd)',
+          '<C></B/16>%d-%02d-%02d (yyyy-mm-dd)',
           calendar.year,
           calendar.month,
           calendar.day,

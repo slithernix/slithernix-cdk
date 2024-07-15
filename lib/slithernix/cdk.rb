@@ -163,11 +163,9 @@ module Slithernix
       end
 
       def get_window_bounds(window, dimension)
-        if dimension == :x
-          [window.begx, window.maxx]
-        else
-          [window.begy, window.maxy]
-        end
+        return [window.begx, window.maxx] if dimension == :x
+
+        [window.begy, window.maxy]
       end
 
       def calculate_gap(last, box_size)
@@ -296,21 +294,13 @@ module Slithernix
       #
       # This is where all the magical text conversion happens for format
       # stuff and it really needs to be documented.
+      # Here is another method where an argument is mutated, 'to'
       # The alightment tag must be first.
       def char_to_chtype(string, to, align)
         to << 0
         align << LEFT
-        result = Array.new
 
         return [] unless string&.size.positive?
-
-        used = 0
-
-        adjust = 0
-        attrib = Curses::A_NORMAL
-        last_char = 0
-        start = 0
-        used = 0
 
         if string[0] == L_MARKER && string[2] == R_MARKER
           align[0] = fmt_str_to_alignment_char(string[1])
@@ -327,6 +317,13 @@ module Slithernix
             raise StandardError, "invalid format marker #{string[1]}"
           end
         end
+
+        adjust ||= 0
+        attrib ||= Curses::A_NORMAL
+        last_char ||= 0
+        result ||= Array.new
+        start ||= 0
+        used ||= 0
 
         while adjust.positive?
           adjust -= 1
@@ -372,14 +369,12 @@ module Slithernix
                 result << (last_char | attrib)
                 used += 1
               end
-            when '/'
+            when '/', '!'
               mask = []
+              og_from = from
               from = encode_attribute(string, from, mask)
-              attrib |= mask[0]
-            when '!'
-              mask = []
-              from = encode_attribute(string, from, mask)
-              attrib &= ~mask[0]
+              attrib |= mask[0] if string[og_from] == '/'
+              attrib &= ~mask[0] if string[og_from] == '!'
             end
           elsif string[from] == L_MARKER && ['/', '!', '#'].include?(string[from + 1])
             inside_marker = true

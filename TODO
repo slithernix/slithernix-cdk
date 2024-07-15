@@ -6,10 +6,6 @@ SlitherNix CDK TODO List (You can find the original Tawny list below)
   that you got row 3. clearly it isn't shifting as you scroll past
   the box.
 
-* Ending a colorpair/attribute with <! is not working
-
-  char_to_chtype shenanigans again.
-
 * Way too many side effects/mutations
 
   Probably the worst thing about this codebase is how common it is
@@ -45,14 +41,6 @@ SlitherNix CDK TODO List (You can find the original Tawny list below)
 * using CUT on alphalist fucks up the program
 
   looks all weird.
-
-* mentry broken when you go beyond the screen then hit home and end a couple times
-
- /home/snake/work/src/git/github.com/slithernix/slithernix-cdk/lib/slithernix/cdk/widget/m_entry.rb:217:in `set_top_row': wrong number of arguments (given 2, expected 1) (ArgumentError)
-	from /home/snake/work/src/git/github.com/slithernix/slithernix-cdk/lib/slithernix/cdk/widget/m_entry.rb:304:in `inject'
-	from /home/snake/work/src/git/github.com/slithernix/slithernix-cdk/lib/slithernix/cdk/widget/m_entry.rb:202:in `activate'
-	from examples/mentry:83:in `main'
-	from examples/mentry:97:in `<main>'
 
 * Widgets do not scale
 

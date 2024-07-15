@@ -302,7 +302,7 @@ module Slithernix
                     @info.size / @field_width, @info.size % @field_width
                   )
                 else
-                  redraw = set_top_row(@info.size / @field_width, @rows + 1)
+                  redraw = set_top_row((@info.size / @field_width) - @rows + 1)
                   moved = set_cur_pos(@rows - 1, @info.size % @field_width)
                 end
               when Curses::KEY_LEFT
